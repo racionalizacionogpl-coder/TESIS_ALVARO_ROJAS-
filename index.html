@@ -3,6 +3,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root{
     --bg:#eef1f4; --bg-dot:#d7dee3; --card:#ffffff; --card-2:#f4f6f8;
@@ -239,6 +241,12 @@
 
   footer.site{padding:26px 20px 40px; text-align:center; color:var(--muted); font-size:12.5px;}
 
+  .plan-hero-actions{display:flex; justify-content:flex-end; margin-top:14px;}
+  .btn-export{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); font-weight:700; font-size:12.5px;
+    padding:9px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff; cursor:pointer;}
+  .btn-export:hover{background:rgba(255,255,255,.2);}
+  .btn-export:disabled{opacity:.55; cursor:wait;}
+
   /* ---------- EDIT MODE ---------- */
   body.editing [data-editable]{outline:1.5px dashed color-mix(in srgb, var(--navy-2) 55%, transparent); outline-offset:3px; border-radius:5px; cursor:text;}
   body.editing [data-editable]:hover{background:color-mix(in srgb, var(--pill-active-bg) 45%, transparent);}
@@ -347,6 +355,9 @@
         <span class="kicker" data-editable data-path="planHero.kicker" id="planKicker"></span>
         <h1 data-editable data-path="planHero.title" id="planTitle"></h1>
         <p data-editable data-path="planHero.sub" id="planSub"></p>
+        <div class="plan-hero-actions">
+          <button class="btn-export" id="exportPlanPdf" type="button">⬇ Exportar plan completo en PDF</button>
+        </div>
       </div>
       <div class="plan-shell">
         <div class="meta-grid" id="planMetaGrid"></div>
@@ -367,6 +378,9 @@
         <span class="kicker" data-editable data-path="cronoHero.kicker" id="cronoKicker"></span>
         <h1 data-editable data-path="cronoHero.title" id="cronoTitle"></h1>
         <p data-editable data-path="cronoHero.sub" id="cronoSub"></p>
+        <div class="plan-hero-actions">
+          <button class="btn-export" id="exportCronoPdf" type="button">⬇ Exportar cronograma en PDF</button>
+        </div>
       </div>
       <div class="plan-shell">
         <div class="meta-grid" style="grid-template-columns:repeat(4,1fr);" id="cronoMetaGrid"></div>
@@ -424,7 +438,7 @@
 
 <footer class="site" data-editable data-path="strings.footer" id="footerText"></footer>
 
-<button class="btn btn-dark edit-fab" id="editFab" hidden>✎ Editar</button>
+<button class="btn btn-dark edit-fab" id="editFab">✎ Editar</button>
 <div class="edit-bar" id="editBar" hidden>
   <span>Modo edición</span>
   <button class="btn-sm" id="cancelEditBtn">Cancelar</button>
@@ -434,7 +448,7 @@
 <div class="modal-backdrop" id="saveModal" hidden>
   <div class="modal">
     <h3>Guardar cambios</h3>
-    <p>Describe brevemente qué cambiaste. Quedará en el historial de versiones (pestaña Dashboard).</p>
+    <p id="saveModalHint">Describe brevemente qué cambiaste. Quedará en el historial de versiones (pestaña Dashboard).</p>
     <input type="text" id="saveNote" placeholder="Ej: Actualicé los datos de la Sección 11 (riesgos)">
     <div class="modal-actions">
       <button class="btn-sm" id="modalCancel">Cancelar</button>
@@ -931,7 +945,7 @@ function initScrollSpy(){
 
 var editing = false;
 var canEdit = false;
-var artifactCap = null, userCap = null;
+var artifactCap = null, userCap = null, downloadsCap = null;
 
 function harvestEdits(){
   document.querySelectorAll("[data-path]").forEach(function(node){
@@ -945,7 +959,7 @@ function setEditing(on){
   renderAll();
   document.querySelectorAll("[data-editable]").forEach(function(node){ node.setAttribute("contenteditable", on?"true":"false"); });
   document.getElementById("editBar").hidden = !on;
-  document.getElementById("editFab").hidden = on || !canEdit;
+  document.getElementById("editFab").hidden = on;
 }
 
 document.getElementById("editFab").addEventListener("click", function(){ setEditing(true); });
@@ -984,6 +998,9 @@ function toast(msg, isError){
 var saveModal = document.getElementById("saveModal");
 document.getElementById("saveEditBtn").addEventListener("click", function(){
   document.getElementById("saveNote").value="";
+  document.getElementById("saveModalHint").textContent = artifactCap
+    ? "Describe brevemente qué cambiaste. Quedará en el historial de versiones (pestaña Dashboard)."
+    : "Esta vista no tiene conexión con el editor en vivo de Claude: al guardar se descargará un archivo HTML con tus cambios para que se lo envíes a Claude o lo subas tú mismo al repositorio.";
   saveModal.hidden = false;
   document.getElementById("saveNote").focus();
 });
@@ -1003,40 +1020,155 @@ function buildFullDocument(){
   return "<!doctype html><html>"+head+"<body>"+document.body.innerHTML+"</body></html>";
 }
 
+function downloadFile(blob, filename){
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+}
+
 async function doSave(note){
   harvestEdits();
   STATE.changelog.unshift({ts:Date.now(), note:note});
   setEditing(false);
   var html = buildFullDocument();
   var statusEl = document.getElementById("saveStatus");
-  if(!artifactCap){
-    toast("El modo de guardado en vivo no está disponible en esta vista. Pide a Claude que republique la página con tus cambios.", true);
-    return;
-  }
-  statusEl.textContent = "Guardando…";
-  try{
-    await artifactCap.publish(html);
-    statusEl.textContent = "Guardado";
-    toast("Guardado ✓ — nueva versión publicada");
-  }catch(err){
-    var code = err && err.code;
-    if(code === "conflict"){
-      toast("Alguien más guardó cambios primero. Se actualizó a la versión más reciente.");
-    } else if(code === "not_granted" || code === "not_writer"){
-      toast("Tu vista es de solo lectura: no tienes permiso para guardar cambios aquí.", true);
-    } else {
-      toast("No se pudo guardar: "+(err && err.message ? err.message : String(err)), true);
+  if(artifactCap){
+    statusEl.textContent = "Guardando…";
+    try{
+      await artifactCap.publish(html);
+      statusEl.textContent = "Guardado";
+      toast("Guardado ✓ — nueva versión publicada");
+      return;
+    }catch(err){
+      var code = err && err.code;
+      if(code === "conflict"){
+        toast("Alguien más guardó cambios primero. Se actualizó a la versión más reciente.");
+        statusEl.textContent = "";
+        return;
+      }
+      // cualquier otro error (sin permiso, capacidad no disponible, vista no reconocida, etc.): sigue al respaldo de descarga
     }
-    statusEl.textContent = "";
   }
+  statusEl.textContent = "";
+  downloadFile(new Blob([html], {type:"text/html"}), "plan-gestion-editado.html");
+  toast("Esta vista no puede publicar en vivo. Se descargó un archivo HTML con tus cambios: envíaselo a Claude o súbelo al repositorio para que quede publicado.", true);
 }
 
 async function initCapabilities(){
-  try{ userCap = window.claude && window.claude.use ? await window.claude.use("user") : null; }catch(e){ userCap = null; }
-  try{ artifactCap = window.claude && window.claude.use ? await window.claude.use("artifact") : null; }catch(e){ artifactCap = null; }
-  canEdit = !!(artifactCap && userCap && typeof userCap.canEdit === "function" && userCap.canEdit());
-  document.getElementById("editFab").hidden = !canEdit || editing;
+  var hasClaude = !!(window.claude && window.claude.use);
+  try{ userCap = hasClaude ? await window.claude.use("user") : null; }catch(e){ userCap = null; }
+  try{ artifactCap = hasClaude ? await window.claude.use("artifact") : null; }catch(e){ artifactCap = null; }
+  try{ downloadsCap = hasClaude ? await window.claude.use("downloads") : null; }catch(e){ downloadsCap = null; }
+  var editPermission = false;
+  if(userCap && typeof userCap.canEdit === "function"){
+    try{ editPermission = await userCap.canEdit(); }catch(e){ editPermission = false; }
+  }
+  canEdit = !!(artifactCap && editPermission);
 }
+
+/* ================= EXPORTAR PDF ================= */
+
+function printableTable(head, rows){
+  var h = "<table style='width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:11px;'>";
+  h += "<thead><tr>"+head.map(function(c){ return "<th style='background:#153039;color:#fff;text-align:left;padding:6px 8px;border:1px solid #153039;'>"+c+"</th>"; }).join("")+"</tr></thead><tbody>";
+  rows.forEach(function(r, ri){
+    h += "<tr>"+r.map(function(c){ return "<td style='padding:6px 8px;border:1px solid #d7dee3;background:"+(ri%2?"#f4f6f8":"#fff")+";vertical-align:top;'>"+c+"</td>"; }).join("")+"</tr>";
+  });
+  h += "</tbody></table>";
+  return h;
+}
+
+function buildPrintableNode(kind){
+  var wrap = document.createElement("div");
+  wrap.style.cssText = "position:fixed; left:-10000px; top:0; width:780px; background:#ffffff; color:#152227; font-family:Arial,Helvetica,sans-serif; padding:32px; line-height:1.5; z-index:-1;";
+  var html = "";
+  if(kind === "plan"){
+    html += "<h1 style='font-size:22px;margin:0 0 6px;color:#0d1f24;'>"+STATE.planHero.title+"</h1>";
+    html += "<p style='font-size:12.5px;color:#3d4d54;margin:0 0 18px;'>"+STATE.planHero.sub+"</p>";
+    html += "<table style='width:100%;border-collapse:collapse;margin-bottom:18px;font-size:11px;'>";
+    STATE.planMeta.forEach(function(m){
+      html += "<tr><td style='padding:4px 8px;border:1px solid #e1e6ea;font-weight:700;width:35%;background:#f4f6f8;'>"+m[0]+"</td><td style='padding:4px 8px;border:1px solid #e1e6ea;'>"+m[1]+"</td></tr>";
+    });
+    html += "</table>";
+    STATE.sections.forEach(function(s){
+      html += "<div style='page-break-inside:avoid;margin-bottom:20px;'>";
+      html += "<div style='display:inline-block;background:#c7e8ef;color:#0d3540;font-weight:700;font-size:10.5px;padding:3px 9px;border-radius:999px;margin-bottom:6px;'>SECCIÓN "+s.n+"</div>";
+      html += "<h2 style='font-size:15px;margin:0 0 8px;color:#0d1f24;'>"+s.title+"</h2>";
+      if(s.body) html += "<div style='font-size:11.5px;color:#3d4d54;'>"+s.body+"</div>";
+      if(s.decisions) html += printableTable(["ID","Fecha","Decisión","Justificación"], s.decisions);
+      if(s.table) html += printableTable(s.table.head, s.table.rows);
+      if(s.docs) html += "<ul style='font-size:11.5px;color:#3d4d54;'>"+s.docs.map(function(d){ return "<li><b>"+d[0]+"</b> — "+d[1]+"</li>"; }).join("")+"</ul>";
+      if(s.after) html += "<div style='font-size:11px;color:#8a6412;background:#fbf0d4;padding:8px 10px;border-radius:8px;margin-top:6px;'>"+s.after+"</div>";
+      html += "</div>";
+    });
+  } else {
+    html += "<h1 style='font-size:22px;margin:0 0 6px;color:#0d1f24;'>"+STATE.cronoHero.title+"</h1>";
+    html += "<p style='font-size:12.5px;color:#3d4d54;margin:0 0 18px;'>"+STATE.cronoHero.sub+"</p>";
+    html += "<table style='width:100%;border-collapse:collapse;margin-bottom:18px;font-size:11px;'>";
+    STATE.cronoMeta.forEach(function(m){
+      html += "<tr><td style='padding:4px 8px;border:1px solid #e1e6ea;font-weight:700;width:35%;background:#f4f6f8;'>"+m[0]+"</td><td style='padding:4px 8px;border:1px solid #e1e6ea;'>"+m[1]+"</td></tr>";
+    });
+    html += "</table>";
+    html += printableTable(STATE.cronogramaHead, STATE.cronogramaRows);
+  }
+  wrap.innerHTML = html;
+  document.body.appendChild(wrap);
+  return wrap;
+}
+
+async function renderPdfFromNode(node, filename){
+  var canvas = await html2canvas(node, {scale:2, backgroundColor:"#ffffff", windowWidth:node.scrollWidth});
+  var pdf = new jspdf.jsPDF({unit:"pt", format:"a4"});
+  var pageWidth = pdf.internal.pageSize.getWidth();
+  var pageHeight = pdf.internal.pageSize.getHeight();
+  var imgWidth = pageWidth;
+  var imgHeight = canvas.height * imgWidth / canvas.width;
+  var imgData = canvas.toDataURL("image/jpeg", 0.95);
+  var heightLeft = imgHeight;
+  var position = 0;
+  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+  while(heightLeft > 0){
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
+  var blob = pdf.output("blob");
+  if(downloadsCap){
+    try{
+      await downloadsCap.save({filename: filename, data: blob});
+      toast("PDF exportado ✓");
+      return;
+    }catch(err){
+      if(err && err.code === "declined") return;
+      // sigue al respaldo de descarga directa del navegador
+    }
+  }
+  downloadFile(blob, filename);
+  toast("PDF exportado ✓");
+}
+
+async function exportPdf(kind, btn){
+  var oldText = btn ? btn.textContent : "";
+  if(btn){ btn.disabled = true; btn.textContent = "Generando PDF…"; }
+  try{
+    harvestEdits();
+    var node = buildPrintableNode(kind);
+    var filename = kind === "plan" ? "Plan_Gestion_Proyecto.pdf" : "Plan_Gestion_Cronograma.pdf";
+    await renderPdfFromNode(node, filename);
+    node.remove();
+  }catch(err){
+    toast("No se pudo generar el PDF: "+(err && err.message ? err.message : String(err)), true);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = oldText; }
+  }
+}
+
+document.getElementById("exportPlanPdf").addEventListener("click", function(){ exportPdf("plan", this); });
+document.getElementById("exportCronoPdf").addEventListener("click", function(){ exportPdf("cronograma", this); });
 
 /* ================= INIT ================= */
 
