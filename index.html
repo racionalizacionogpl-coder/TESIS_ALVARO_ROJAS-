@@ -1222,49 +1222,92 @@ async function initCapabilities(){
 
 /* ================= EXPORTAR PDF ================= */
 
+/* Paleta calcada del Word "Plan de Gestión del Proyecto" (v1.0) para que el PDF exportado se vea igual */
+var DOCX_NAVY = "#1F3864", DOCX_BLUE = "#2E75B6", DOCX_COVER_BLUE = "#2E74B5",
+    DOCX_LIGHTBLUE = "#DCE6F2", DOCX_AMBER = "#ED9B33", DOCX_AMBER_BORDER = "#BF8F00",
+    DOCX_DARK = "#262626", DOCX_ALTROW = "#F2F2F2", DOCX_NOTE_BG = "#FFF2CC", DOCX_NOTE_INK = "#7F6000",
+    DOCX_GRAY = "#808080";
+
 function printableTable(head, rows){
-  var h = "<table style='width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:11px;'>";
-  h += "<thead><tr>"+head.map(function(c){ return "<th style='background:#153039;color:#fff;text-align:left;padding:6px 8px;border:1px solid #153039;'>"+c+"</th>"; }).join("")+"</tr></thead><tbody>";
+  var h = "<table style='width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:10.5px;'>";
+  h += "<thead><tr>"+head.map(function(c){ return "<th style='background:"+DOCX_NAVY+";color:#fff;text-align:left;padding:6px 8px;border:1px solid "+DOCX_NAVY+";'>"+c+"</th>"; }).join("")+"</tr></thead><tbody>";
   rows.forEach(function(r, ri){
-    h += "<tr>"+r.map(function(c){ return "<td style='padding:6px 8px;border:1px solid #d7dee3;background:"+(ri%2?"#f4f6f8":"#fff")+";vertical-align:top;'>"+c+"</td>"; }).join("")+"</tr>";
+    h += "<tr>"+r.map(function(c){ return "<td style='padding:6px 8px;border:1px solid #d9d9d9;background:"+(ri%2?DOCX_ALTROW:"#fff")+";color:"+DOCX_DARK+";vertical-align:top;'>"+c+"</td>"; }).join("")+"</tr>";
   });
   h += "</tbody></table>";
   return h;
 }
 
+function pdfCoverHtml(){
+  var fields = [
+    ["PROYECTO", "Análisis de la capacidad de servicio de un flujo documentario digital (teoría de colas) — Oficina de Presupuesto UNMSM"],
+    ["AUTOR / TESISTA", "Alvaro Rojas Carnero"],
+    ["ENTIDAD", "Oficina General de Planificación (OGPL) — Oficina de Presupuesto, UNMSM"],
+    ["SUPERVISOR INSTITUCIONAL", "CPC. Heiner Armando Chávez Andrade"],
+    ["ASESOR ACADÉMICO", "Prof. Ricardo López Guevara"],
+    ["VERSIÓN Y FECHA", "v1.0  |  Lima, Perú — Setiembre 2026"]
+  ];
+  var titleLines = STATE.planHero.title.replace(/^Plan de Gestión del Proyecto:\s*/i,"").split(" — ")[0];
+  var h = "<div style='background:"+DOCX_NAVY+";color:"+DOCX_AMBER+";font-weight:700;font-size:11px;letter-spacing:.03em;padding:8px 14px;'>◆ PLAN DE GESTIÓN DEL PROYECTO &nbsp;|&nbsp; UNMSM — Investigación Operativa</div>";
+  h += "<div style='height:3px;background:"+DOCX_AMBER+";'></div>";
+  h += "<div style='background:"+DOCX_COVER_BLUE+";color:#fff;text-align:center;padding:34px 24px 22px;'>";
+  h += "<div style='font-size:30px;font-weight:800;line-height:1.15;'>PLAN DE GESTIÓN<br>DEL PROYECTO</div>";
+  h += "<div style='font-size:13px;font-weight:700;color:"+DOCX_LIGHTBLUE+";margin-top:14px;line-height:1.5;'>"+STATE.planHero.sub+"</div>";
+  h += "</div>";
+  h += "<div style='padding:18px 6px;'>";
+  fields.forEach(function(f){
+    h += "<div style='margin-bottom:9px;'><div style='font-size:9.5px;font-weight:800;letter-spacing:.04em;color:"+DOCX_AMBER+";'>"+f[0]+"</div><div style='font-size:12.5px;color:"+DOCX_NAVY+";'>"+f[1]+"</div></div>";
+  });
+  h += "</div>";
+  h += "<div style='font-size:10px;font-style:italic;color:"+DOCX_GRAY+";text-align:center;padding:4px 0 20px;'>Documento de control interno del proyecto — uso académico</div>";
+  h += "<h2 style='font-size:13.5px;font-weight:800;color:"+DOCX_BLUE+";margin:0 0 8px;'>Control de versiones del documento</h2>";
+  h += printableTable(["Versión","Fecha","Autor","Descripción del cambio"], [
+    ["0.1","15-Set-2026","A. Rojas Carnero","Diagnóstico inicial de datos y del documento de tesis"],
+    ["0.5","22-Set-2026","A. Rojas Carnero","Reformulación de la Situación Problemática (v2)"],
+    ["1.0","27-Set-2026","A. Rojas Carnero","Emisión del Plan de Gestión del Proyecto completo"]
+  ]);
+  return h;
+}
+
+var PDF_DOC_STYLE = "<style>"
+  + ".pdf-doc h4{color:"+DOCX_BLUE+";font-weight:700;font-size:12.5px;margin:14px 0 6px;}"
+  + ".pdf-doc ul{margin:0 0 10px;padding-left:20px;color:"+DOCX_DARK+";}"
+  + ".pdf-doc li{margin-bottom:5px;font-size:11.5px;}"
+  + ".pdf-doc em{font-style:italic;}"
+  + ".pdf-doc .note{background:"+DOCX_NOTE_BG+" !important;color:"+DOCX_NOTE_INK+" !important;border-left:4px solid "+DOCX_AMBER_BORDER+" !important;border-radius:0 !important;padding:10px 12px;font-size:11px;font-style:italic;margin-top:8px;}"
+  + ".pdf-doc .linklike{color:"+DOCX_BLUE+";text-decoration:underline;}"
+  + "</style>";
+
 function buildPrintableNode(kind){
   var wrap = document.createElement("div");
-  wrap.style.cssText = "position:fixed; left:-10000px; top:0; width:780px; background:#ffffff; color:#152227; font-family:Arial,Helvetica,sans-serif; padding:32px; line-height:1.5; z-index:-1;";
-  var html = "";
+  wrap.className = "pdf-doc";
+  wrap.style.cssText = "position:fixed; left:-10000px; top:0; width:780px; background:#ffffff; color:"+DOCX_DARK+"; font-family:Calibri,Arial,Helvetica,sans-serif; padding:0 0 32px; line-height:1.5; z-index:-1;";
+  var html = PDF_DOC_STYLE;
   if(kind === "plan"){
-    html += "<h1 style='font-size:22px;margin:0 0 6px;color:#0d1f24;'>"+STATE.planHero.title+"</h1>";
-    html += "<p style='font-size:12.5px;color:#3d4d54;margin:0 0 18px;'>"+STATE.planHero.sub+"</p>";
-    html += "<table style='width:100%;border-collapse:collapse;margin-bottom:18px;font-size:11px;'>";
-    STATE.planMeta.forEach(function(m){
-      html += "<tr><td style='padding:4px 8px;border:1px solid #e1e6ea;font-weight:700;width:35%;background:#f4f6f8;'>"+m[0]+"</td><td style='padding:4px 8px;border:1px solid #e1e6ea;'>"+m[1]+"</td></tr>";
-    });
-    html += "</table>";
+    html += pdfCoverHtml();
+    html += "<div style='padding:0 26px;'>";
     STATE.sections.forEach(function(s){
-      html += "<div style='page-break-inside:avoid;margin-bottom:20px;'>";
-      html += "<div style='display:inline-block;background:#c7e8ef;color:#0d3540;font-weight:700;font-size:10.5px;padding:3px 9px;border-radius:999px;margin-bottom:6px;'>SECCIÓN "+s.n+"</div>";
-      html += "<h2 style='font-size:15px;margin:0 0 8px;color:#0d1f24;'>"+s.title+"</h2>";
-      if(s.body) html += "<div style='font-size:11.5px;color:#3d4d54;'>"+s.body+"</div>";
+      html += "<div style='page-break-inside:avoid;margin-bottom:18px;'>";
+      html += "<h1 style='font-size:16px;font-weight:800;color:"+DOCX_NAVY+";margin:0 0 8px;padding-bottom:6px;border-bottom:2px solid "+DOCX_NAVY+";'>"+s.n+". "+s.title+"</h1>";
+      if(s.body) html += "<div style='font-size:12.5px;color:"+DOCX_DARK+";'>"+s.body+"</div>";
       if(s.decisions) html += printableTable(["ID","Fecha","Decisión","Justificación"], s.decisions);
       if(s.table) html += printableTable(s.table.head, s.table.rows);
-      if(s.docs) html += "<ul style='font-size:11.5px;color:#3d4d54;'>"+s.docs.map(function(d){ return "<li><b>"+d[0]+"</b> — "+d[1]+"</li>"; }).join("")+"</ul>";
-      if(s.after) html += "<div style='font-size:11px;color:#8a6412;background:#fbf0d4;padding:8px 10px;border-radius:8px;margin-top:6px;'>"+s.after+"</div>";
+      if(s.docs) html += "<ul style='font-size:12px;color:"+DOCX_DARK+";'>"+s.docs.map(function(d){ return "<li><b>"+d[0]+"</b> — "+d[1]+"</li>"; }).join("")+"</ul>";
+      if(s.after) html += s.after;
       html += "</div>";
     });
+    html += "</div>";
   } else {
-    html += "<h1 style='font-size:22px;margin:0 0 6px;color:#0d1f24;'>"+STATE.cronoHero.title+"</h1>";
-    html += "<p style='font-size:12.5px;color:#3d4d54;margin:0 0 18px;'>"+STATE.cronoHero.sub+"</p>";
+    html += "<div style='padding:26px 26px 0;'>";
+    html += "<h1 style='font-size:20px;margin:0 0 6px;color:"+DOCX_NAVY+";'>"+STATE.cronoHero.title+"</h1>";
+    html += "<p style='font-size:12.5px;color:"+DOCX_DARK+";margin:0 0 18px;'>"+STATE.cronoHero.sub+"</p>";
     html += "<table style='width:100%;border-collapse:collapse;margin-bottom:18px;font-size:11px;'>";
     STATE.cronoMeta.forEach(function(m){
-      html += "<tr><td style='padding:4px 8px;border:1px solid #e1e6ea;font-weight:700;width:35%;background:#f4f6f8;'>"+m[0]+"</td><td style='padding:4px 8px;border:1px solid #e1e6ea;'>"+m[1]+"</td></tr>";
+      html += "<tr><td style='padding:4px 8px;border:1px solid #d9d9d9;font-weight:700;width:35%;background:"+DOCX_ALTROW+";'>"+m[0]+"</td><td style='padding:4px 8px;border:1px solid #d9d9d9;'>"+m[1]+"</td></tr>";
     });
     html += "</table>";
     html += printableTable(STATE.cronogramaHead, STATE.cronogramaRows);
-    html += "<h2 style='font-size:15px;margin:20px 0 8px;color:#0d1f24;'>Cronograma detallado (Gantt) — estado al "+fmtDayMonth(new Date())+"</h2>";
+    html += "<h2 style='font-size:14px;font-weight:800;margin:20px 0 8px;color:"+DOCX_NAVY+";'>Cronograma detallado (Gantt) — estado al "+fmtDayMonth(new Date())+"</h2>";
     var todayPdf = new Date(); todayPdf.setHours(0,0,0,0);
     var ganttRows = STATE.ganttTasks.map(function(t){
       var status = gantTaskStatus(t, todayPdf);
@@ -1273,6 +1316,7 @@ function buildPrintableNode(kind){
       return [t.hito ? "◆ "+t.tarea : t.tarea, t.responsable, fmtDayMonth(parseISODate(t.inicio)), fmtDayMonth(parseISODate(t.fin)), statusLabel, progreso+"%"];
     });
     html += printableTable(["Tarea","Responsable","Inicio","Fin","Estado","Avance"], ganttRows);
+    html += "</div>";
   }
   wrap.innerHTML = html;
   document.body.appendChild(wrap);
