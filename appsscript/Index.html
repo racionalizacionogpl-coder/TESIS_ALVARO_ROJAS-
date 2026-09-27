@@ -208,6 +208,31 @@
   .row-del{width:34px; text-align:center;}
   .table-add{padding:10px; border-top:1px solid var(--line); background:var(--card-2);}
 
+  .gantt-legend{display:flex; gap:14px; flex-wrap:wrap; margin:0 0 10px; font-size:12px; color:var(--ink-2);}
+  .gantt-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .gantt-legend i{width:12px; height:12px; border-radius:4px; display:inline-block; flex:none;}
+  .gantt-wrap{display:flex; border:1px solid var(--line); border-radius:12px; background:var(--card); overflow-x:auto; margin-bottom:20px;}
+  .gantt-sidebar{flex:none; width:460px; border-right:1px solid var(--line);}
+  .gantt-sidebar-head{display:flex; background:var(--navy); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:.03em; height:28px; align-items:center;}
+  .gantt-sidebar-row{display:flex; align-items:center; height:34px; border-top:1px solid var(--line); font-size:11.5px;}
+  .gs-tarea{width:260px; flex:none; padding:0 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink);}
+  .gs-fase{display:block; font-size:9.5px; font-weight:800; color:var(--navy-2); text-transform:uppercase; letter-spacing:.03em;}
+  .gs-resp{width:120px; flex:none; padding:0 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink-2);}
+  .gs-fechas{width:80px; flex:none; padding:0 8px; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .gantt-sidebar-head .gs-tarea, .gantt-sidebar-head .gs-resp, .gantt-sidebar-head .gs-fechas{width:auto; flex:1;}
+  .gantt-track-area{flex:1; min-width:780px; position:relative;}
+  .gantt-week-header{display:flex; height:28px; background:var(--navy); color:#fff;}
+  .gantt-week-lbl{flex:1; text-align:center; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; border-left:1px solid rgba(255,255,255,.18);}
+  .gantt-bars{position:relative; background-image:repeating-linear-gradient(90deg, var(--line), var(--line) 1px, transparent 1px, transparent calc(100%/12));}
+  .gantt-bar{position:absolute; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; cursor:default;}
+  .gantt-bar.completado{background:var(--sage-ink);}
+  .gantt-bar.en_progreso{background:var(--rose-ink);}
+  .gantt-bar.atrasada{background:var(--amber-ink);}
+  .gantt-bar.pendiente{background:var(--lavender-ink); opacity:.6;}
+  .gantt-bar.hito{background:var(--navy); border-radius:50%; width:26px!important; font-size:13px;}
+  .gantt-today-line{position:absolute; top:0; width:2px; background:var(--rose-ink); z-index:5;}
+  .gantt-today-label{position:absolute; top:-27px; transform:translateX(-50%); background:var(--rose-ink); color:#fff; font-size:9.5px; font-weight:800; padding:3px 7px; border-radius:6px; white-space:nowrap; z-index:6;}
+
   .page-head{padding-block:34px 6px;}
   .page-head h1{font-size:clamp(24px,3.4vw,32px); margin-bottom:8px;}
   .page-head p{color:var(--ink-2); max-width:70ch;}
@@ -387,6 +412,28 @@
         <div class="stat-row" id="cronoTilesRow"></div>
         <h4 style="font-family:var(--font-body); margin:10px 0 4px;" data-editable data-path="strings.cronoFasesLabel" id="cronoFasesLabel"></h4>
         <div class="table-wrap" style="margin-bottom:10px;"><table id="tblCronograma"></table></div>
+
+        <h4 style="font-family:var(--font-body); margin:26px 0 4px;">Cronograma detallado (Gantt automático)</h4>
+        <p style="color:var(--ink-2); font-size:13px; margin-bottom:10px;">Se actualiza solo, según la fecha real de quien lo mira: la línea "HOY" y el % de avance de cada tarea en curso avanzan día a día sin que nadie tenga que tocar nada.</p>
+        <div class="gantt-legend">
+          <span><i style="background:var(--sage-ink);"></i>Completada</span>
+          <span><i style="background:var(--rose-ink);"></i>En ejecución (hoy)</span>
+          <span><i style="background:var(--amber-ink);"></i>Atrasada</span>
+          <span><i style="background:var(--lavender-ink);opacity:.55;"></i>Pendiente</span>
+          <span><i style="background:var(--navy);border-radius:50%;"></i>Hito</span>
+        </div>
+        <div class="gantt-wrap">
+          <div class="gantt-sidebar">
+            <div class="gantt-sidebar-head">
+              <div class="gs-tarea">Tarea</div><div class="gs-resp">Responsable</div><div class="gs-fechas">Fechas</div>
+            </div>
+            <div id="ganttSidebarRows"></div>
+          </div>
+          <div class="gantt-track-area">
+            <div class="gantt-week-header" id="ganttWeekHeader"></div>
+            <div class="gantt-bars" id="ganttBars"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -667,6 +714,37 @@ var DEFAULT_STATE = {
     riskTiles:[["1","CRÍTICO","rose"],["3","ALTO","peach"],["5","MEDIO","amber"],["0","BAJO","sage"]]
   },
   cronogramaHead:["Fase","Paquetes","Periodo","Entregable"],
+  ganttWeeks:["2026-09-07","2026-09-14","2026-09-21","2026-09-28","2026-10-05","2026-10-12","2026-10-19","2026-10-26","2026-11-02","2026-11-09","2026-11-16","2026-11-23"],
+  ganttTasks:[
+    {fase:"FASE 1: DIAGNÓSTICO Y LEVANTAMIENTO DE INFORMACIÓN", etapa:"Etapa 1.1: Recolección y Preparación", tarea:"Tarea 1.1.1.1: Descarga de logs de entrada del SGD (2021-2026)", responsable:"Alvaro Rojas", inicio:"2026-09-07", fin:"2026-09-09", completado:true, hito:null},
+    {fase:"FASE 1: DIAGNÓSTICO Y LEVANTAMIENTO DE INFORMACIÓN", etapa:"Etapa 1.1: Recolección y Preparación", tarea:"Tarea 1.1.1.2: Clasificación por categoría (Transferencias/Personal)", responsable:"Isabel Flores", inicio:"2026-09-10", fin:"2026-09-11", completado:true, hito:null},
+    {fase:"FASE 1: DIAGNÓSTICO Y LEVANTAMIENTO DE INFORMACIÓN", etapa:"Etapa 1.1: Recolección y Preparación", tarea:"Tarea 1.1.2.1: Filtrado y eliminación de atípicos (outliers)", responsable:"Oriol Romero", inicio:"2026-09-14", fin:"2026-09-16", completado:true, hito:null},
+    {fase:"FASE 1: DIAGNÓSTICO Y LEVANTAMIENTO DE INFORMACIÓN", etapa:"Etapa 1.1: Recolección y Preparación", tarea:"Tarea 1.1.2.2: Estructuración de matrices de tiempos de permanencia", responsable:"Alvaro Rojas", inicio:"2026-09-17", fin:"2026-09-18", completado:true, hito:null},
+    {fase:"FASE 1: DIAGNÓSTICO Y LEVANTAMIENTO DE INFORMACIÓN", etapa:"Etapa 1.2: Caracterización y Línea Base", tarea:"Tarea 1.2.1.1: Cálculo del Lead Time medio actual (13h 22m)", responsable:"Isabel Flores", inicio:"2026-09-21", fin:"2026-09-23", completado:true, hito:null},
+    {fase:"FASE 1: DIAGNÓSTICO Y LEVANTAMIENTO DE INFORMACIÓN", etapa:"Etapa 1.2: Caracterización y Línea Base", tarea:"Tarea 1.2.1.2: Medición de la tasa de devueltos (reprocesos)", responsable:"Alvaro Rojas", inicio:"2026-09-24", fin:"2026-09-25", completado:true, hito:null},
+    {fase:"FASE 1: DIAGNÓSTICO Y LEVANTAMIENTO DE INFORMACIÓN", etapa:"Etapa 1.2: Caracterización y Línea Base", tarea:"HITO 1: Entrega de Línea Base y Reporte de Diagnóstico", responsable:"Equipo Completo", inicio:"2026-09-25", fin:"2026-09-25", completado:true, hito:"H1"},
+    {fase:"FASE 2: MODELADO MATEMÁTICO DE COLAS (AS-IS)", etapa:"Etapa 2.1: Mapeo BPMN 2.0 y Verificación", tarea:"Tarea 2.1.1.1: Mapeo de subprocesos Mesa de Partes y Presupuesto", responsable:"Isabel Flores", inicio:"2026-09-28", fin:"2026-09-30", completado:false, hito:null},
+    {fase:"FASE 2: MODELADO MATEMÁTICO DE COLAS (AS-IS)", etapa:"Etapa 2.1: Mapeo BPMN 2.0 y Verificación", tarea:"Tarea 2.1.1.2: Validación del diagrama AS-IS con supervisor OGPL", responsable:"Heiner Chávez / Isabel Flores", inicio:"2026-10-01", fin:"2026-10-02", completado:false, hito:null},
+    {fase:"FASE 2: MODELADO MATEMÁTICO DE COLAS (AS-IS)", etapa:"Etapa 2.1: Mapeo BPMN 2.0 y Verificación", tarea:"Tarea 2.1.2.1: Ajuste de tasas de llegada (λ) con Chi-cuadrado", responsable:"Oriol Romero", inicio:"2026-10-05", fin:"2026-10-07", completado:false, hito:null},
+    {fase:"FASE 2: MODELADO MATEMÁTICO DE COLAS (AS-IS)", etapa:"Etapa 2.1: Mapeo BPMN 2.0 y Verificación", tarea:"Tarea 2.1.2.2: Ajuste de tasas de servicio (μ) con Kolmogorov-Smirnov", responsable:"Alvaro Rojas", inicio:"2026-10-08", fin:"2026-10-09", completado:false, hito:null},
+    {fase:"FASE 2: MODELADO MATEMÁTICO DE COLAS (AS-IS)", etapa:"Etapa 2.2: Formulación del Modelo M/M/s", tarea:"Tarea 2.2.1.1: Cálculo de utilización del sistema (ρ) con s=1", responsable:"Alvaro Rojas", inicio:"2026-10-12", fin:"2026-10-14", completado:false, hito:null},
+    {fase:"FASE 2: MODELADO MATEMÁTICO DE COLAS (AS-IS)", etapa:"Etapa 2.2: Formulación del Modelo M/M/s", tarea:"Tarea 2.2.1.2: Determinación de tiempo de cola (Wq) y en sistema (Ws)", responsable:"Oriol Romero", inicio:"2026-10-15", fin:"2026-10-16", completado:false, hito:null},
+    {fase:"FASE 2: MODELADO MATEMÁTICO DE COLAS (AS-IS)", etapa:"Etapa 2.2: Formulación del Modelo M/M/s", tarea:"HITO 2: Informe Aprobado de Modelo Teórico AS-IS", responsable:"Equipo Completo", inicio:"2026-10-16", fin:"2026-10-16", completado:false, hito:"H2"},
+    {fase:"FASE 3: SIMULACIÓN DE EVENTOS DISCRETOS Y TO-BE", etapa:"Etapa 3.1: Construcción y Calibración Gemelo Digital", tarea:"Tarea 3.1.1.1: Configuración de entidades, módulos y ruteo", responsable:"Oriol Romero", inicio:"2026-10-19", fin:"2026-10-21", completado:false, hito:null},
+    {fase:"FASE 3: SIMULACIÓN DE EVENTOS DISCRETOS Y TO-BE", etapa:"Etapa 3.1: Construcción y Calibración Gemelo Digital", tarea:"Tarea 3.1.1.2: Calibración del modelo AS-IS frente a datos reales", responsable:"Alvaro Rojas", inicio:"2026-10-22", fin:"2026-10-23", completado:false, hito:null},
+    {fase:"FASE 3: SIMULACIÓN DE EVENTOS DISCRETOS Y TO-BE", etapa:"Etapa 3.1: Construcción y Calibración Gemelo Digital", tarea:"Tarea 3.1.2.1: Simulación de incremento de servidores (s=2, s=3)", responsable:"Alvaro Rojas", inicio:"2026-10-26", fin:"2026-10-28", completado:false, hito:null},
+    {fase:"FASE 3: SIMULACIÓN DE EVENTOS DISCRETOS Y TO-BE", etapa:"Etapa 3.1: Construcción y Calibración Gemelo Digital", tarea:"Tarea 3.1.2.2: Evaluación de reducción de colas con filtro Poka-Yoke", responsable:"Isabel Flores", inicio:"2026-10-29", fin:"2026-10-30", completado:false, hito:null},
+    {fase:"FASE 3: SIMULACIÓN DE EVENTOS DISCRETOS Y TO-BE", etapa:"Etapa 3.2: Selección de la Solución Óptima", tarea:"Tarea 3.2.1.1: Análisis de reducción de Lead Time (% de mejora)", responsable:"Alvaro Rojas", inicio:"2026-11-02", fin:"2026-11-04", completado:false, hito:null},
+    {fase:"FASE 3: SIMULACIÓN DE EVENTOS DISCRETOS Y TO-BE", etapa:"Etapa 3.2: Selección de la Solución Óptima", tarea:"Tarea 3.2.1.2: Selección de propuesta optimizada aprobada por OGPL", responsable:"Heiner Chávez / Equipo", inicio:"2026-11-05", fin:"2026-11-06", completado:false, hito:null},
+    {fase:"FASE 3: SIMULACIÓN DE EVENTOS DISCRETOS Y TO-BE", etapa:"Etapa 3.2: Selección de la Solución Óptima", tarea:"HITO 3: Modelo de Simulación TO-BE Validado", responsable:"Equipo Completo", inicio:"2026-11-06", fin:"2026-11-06", completado:false, hito:"H3"},
+    {fase:"FASE 4: IMPLEMENTACIÓN TÉCNICA Y CIERRE", etapa:"Etapa 4.1: Desarrollo Poka-Yoke y Automatización", tarea:"Tarea 4.1.1.1: Creación de formulario/checklist de entrada", responsable:"Isabel Flores", inicio:"2026-11-09", fin:"2026-11-11", completado:false, hito:null},
+    {fase:"FASE 4: IMPLEMENTACIÓN TÉCNICA Y CIERRE", etapa:"Etapa 4.1: Desarrollo Poka-Yoke y Automatización", tarea:"Tarea 4.1.1.2: Script de alertas de expedientes devueltos/incompletos", responsable:"Isabel Flores", inicio:"2026-11-12", fin:"2026-11-13", completado:false, hito:null},
+    {fase:"FASE 4: IMPLEMENTACIÓN TÉCNICA Y CIERRE", etapa:"Etapa 4.2: Despliegue Dashboard y Capacitación", tarea:"Tarea 4.2.1.1: Conexión de métricas de Lead Time y Wq en Dashboard", responsable:"Alvaro Rojas", inicio:"2026-11-16", fin:"2026-11-18", completado:false, hito:null},
+    {fase:"FASE 4: IMPLEMENTACIÓN TÉCNICA Y CIERRE", etapa:"Etapa 4.2: Despliegue Dashboard y Capacitación", tarea:"Tarea 4.2.1.2: Taller de capacitación a responsables de facultades", responsable:"Isabel Flores / Equipo", inicio:"2026-11-19", fin:"2026-11-20", completado:false, hito:null},
+    {fase:"FASE 4: IMPLEMENTACIÓN TÉCNICA Y CIERRE", etapa:"Etapa 4.3: Consolidación y Cierre Académico", tarea:"Tarea 4.3.1.1: Redacción del informe final y anexos técnicos", responsable:"Alvaro Rojas / Oriol Romero", inicio:"2026-11-23", fin:"2026-11-27", completado:false, hito:null},
+    {fase:"FASE 4: IMPLEMENTACIÓN TÉCNICA Y CIERRE", etapa:"Etapa 4.3: Consolidación y Cierre Académico", tarea:"Tarea 4.3.1.2: Sustentación académica y entrega final a la OGPL", responsable:"Equipo Completo", inicio:"2026-11-30", fin:"2026-11-30", completado:false, hito:null},
+    {fase:"FASE 4: IMPLEMENTACIÓN TÉCNICA Y CIERRE", etapa:"Etapa 4.3: Consolidación y Cierre Académico", tarea:"HITO 4: Cierre del Proyecto e Informe Final Aprobado", responsable:"Equipo Completo", inicio:"2026-11-30", fin:"2026-11-30", completado:false, hito:"H4"}
+  ],
   strings:{
     idxLabel:"ÍNDICE DEL PLAN",
     cronoFasesLabel:"Fases y entregables",
@@ -822,6 +900,80 @@ function renderCronograma(){
   document.getElementById("tblCronograma").innerHTML = renderTable(
     STATE.cronogramaHead, STATE.cronogramaRows, "cronogramaRows", "cronogramaHead"
   );
+  renderGantt();
+}
+
+function parseISODate(s){ var p=s.split("-"); return new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10)); }
+function fmtDayMonth(d){ function pad(n){ return n<10?"0"+n:""+n; } return pad(d.getDate())+"/"+pad(d.getMonth()+1); }
+function addDaysToDate(d,n){ var r=new Date(d.getTime()); r.setDate(r.getDate()+n); return r; }
+
+function gantTaskStatus(t, today){
+  var start = parseISODate(t.inicio), end = parseISODate(t.fin);
+  if(t.completado) return "completado";
+  if(today > end) return "atrasada";
+  if(today >= start) return "en_progreso";
+  return "pendiente";
+}
+
+function gantTaskProgress(t, status, today){
+  if(status === "completado" || status === "atrasada") return 100;
+  if(status === "pendiente") return 0;
+  var start = parseISODate(t.inicio), end = parseISODate(t.fin);
+  var span = Math.max(1, Math.round((end-start)/86400000) + 1);
+  var elapsed = Math.max(0, Math.round((today-start)/86400000) + 1);
+  return Math.round(Math.max(0, Math.min(100, elapsed/span*100)));
+}
+
+function renderGantt(){
+  var head = document.getElementById("ganttWeekHeader");
+  var sideRows = document.getElementById("ganttSidebarRows");
+  var barsWrap = document.getElementById("ganttBars");
+  if(!head || !sideRows || !barsWrap || !STATE.ganttWeeks || !STATE.ganttTasks) return;
+
+  var weeks = STATE.ganttWeeks.map(parseISODate);
+  var rangeStart = weeks[0];
+  var rangeEnd = addDaysToDate(weeks[weeks.length-1], 7);
+  var totalDays = Math.round((rangeEnd - rangeStart) / 86400000);
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  function pct(d){
+    var days = (d - rangeStart) / 86400000;
+    return Math.max(0, Math.min(100, days/totalDays*100));
+  }
+
+  head.innerHTML = weeks.map(function(w){ return "<div class='gantt-week-lbl'>"+fmtDayMonth(w)+"</div>"; }).join("");
+
+  var rowH = 34, headH = 28;
+  var sideHtml = "", barsHtml = "";
+  STATE.ganttTasks.forEach(function(t, i){
+    var status = gantTaskStatus(t, today);
+    var progreso = gantTaskProgress(t, status, today);
+    var start = parseISODate(t.inicio), end = addDaysToDate(parseISODate(t.fin), 1);
+    var left = pct(start), right = pct(end);
+    var width = Math.max(right-left, 100/totalDays*0.9);
+    var faseNum = (t.fase.match(/\d+/)||["?"])[0];
+
+    sideHtml += "<div class='gantt-sidebar-row'>"
+      + "<div class='gs-tarea' title='"+t.fase+" — "+t.etapa+" — "+t.tarea+"'><span class='gs-fase'>F"+faseNum+"</span>"+t.tarea+"</div>"
+      + "<div class='gs-resp' title='"+t.responsable+"'>"+t.responsable+"</div>"
+      + "<div class='gs-fechas'>"+fmtDayMonth(parseISODate(t.inicio))+"–"+fmtDayMonth(parseISODate(t.fin))+"</div>"
+      + "</div>";
+
+    if(t.hito){
+      barsHtml += "<div class='gantt-bar hito' style='top:"+(headH+i*rowH+4)+"px; left:calc("+left+"% - 13px);' title='"+t.tarea+"'>◆</div>";
+    } else {
+      barsHtml += "<div class='gantt-bar "+status+"' style='top:"+(headH+i*rowH+4)+"px; left:"+left+"%; width:"+width+"%;' title='"+t.tarea+" ("+progreso+"%, "+status+")'>"+progreso+"%</div>";
+    }
+  });
+
+  var totalHeight = headH + STATE.ganttTasks.length*rowH + 6;
+  var todayPct = pct(today);
+  barsHtml += "<div class='gantt-today-line' style='left:"+todayPct+"%; top:"+headH+"px; height:"+(totalHeight-headH)+"px;'></div>";
+  barsHtml += "<div class='gantt-today-label' style='left:"+todayPct+"%; top:"+headH+"px;'>HOY "+fmtDayMonth(today)+"</div>";
+
+  sideRows.innerHTML = sideHtml;
+  barsWrap.innerHTML = barsHtml;
+  barsWrap.style.height = totalHeight+"px";
 }
 
 function renderNormativas(){
@@ -1073,6 +1225,15 @@ function buildPrintableNode(kind){
     });
     html += "</table>";
     html += printableTable(STATE.cronogramaHead, STATE.cronogramaRows);
+    html += "<h2 style='font-size:15px;margin:20px 0 8px;color:#0d1f24;'>Cronograma detallado (Gantt) — estado al "+fmtDayMonth(new Date())+"</h2>";
+    var todayPdf = new Date(); todayPdf.setHours(0,0,0,0);
+    var ganttRows = STATE.ganttTasks.map(function(t){
+      var status = gantTaskStatus(t, todayPdf);
+      var progreso = gantTaskProgress(t, status, todayPdf);
+      var statusLabel = {completado:"Completada", en_progreso:"En ejecución", atrasada:"Atrasada", pendiente:"Pendiente"}[status];
+      return [t.hito ? "◆ "+t.tarea : t.tarea, t.responsable, fmtDayMonth(parseISODate(t.inicio)), fmtDayMonth(parseISODate(t.fin)), statusLabel, progreso+"%"];
+    });
+    html += printableTable(["Tarea","Responsable","Inicio","Fin","Estado","Avance"], ganttRows);
   }
   wrap.innerHTML = html;
   document.body.appendChild(wrap);
