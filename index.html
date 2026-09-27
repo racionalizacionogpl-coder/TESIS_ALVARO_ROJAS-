@@ -786,11 +786,44 @@ var DEFAULT_STATE = {
   changelog:[]
 };
 
+/**
+ * Combina un estado guardado (posiblemente de una versión anterior del sitio,
+ * sin campos que se agregaron después) con DEFAULT_STATE, para que nunca falte
+ * una clave que el código nuevo espera. Los arreglos y objetos anidados del
+ * estado guardado se conservan tal cual; solo se completan las claves que
+ * falten con el valor por defecto.
+ */
+function mergeState(saved, def){
+  var out = {};
+  Object.keys(def).forEach(function(k){
+    var hasSaved = Object.prototype.hasOwnProperty.call(saved, k);
+    var defIsPlainObj = def[k] && typeof def[k] === "object" && !Array.isArray(def[k]);
+    var savedIsPlainObj = hasSaved && saved[k] && typeof saved[k] === "object" && !Array.isArray(saved[k]);
+    if(!hasSaved){
+      out[k] = def[k];
+    } else if(defIsPlainObj && savedIsPlainObj){
+      out[k] = {};
+      Object.keys(def[k]).forEach(function(k2){
+        out[k][k2] = Object.prototype.hasOwnProperty.call(saved[k], k2) ? saved[k][k2] : def[k][k2];
+      });
+      Object.keys(saved[k]).forEach(function(k2){
+        if(!Object.prototype.hasOwnProperty.call(out[k], k2)) out[k][k2] = saved[k][k2];
+      });
+    } else {
+      out[k] = saved[k];
+    }
+  });
+  Object.keys(saved).forEach(function(k){
+    if(!Object.prototype.hasOwnProperty.call(out, k)) out[k] = saved[k];
+  });
+  return out;
+}
+
 var STATE = null;
 try{
   var raw = document.getElementById("state-data").textContent;
   var parsed = raw && raw.trim() !== "null" ? JSON.parse(raw) : null;
-  STATE = parsed || JSON.parse(JSON.stringify(DEFAULT_STATE));
+  STATE = parsed ? mergeState(parsed, DEFAULT_STATE) : JSON.parse(JSON.stringify(DEFAULT_STATE));
 }catch(e){ STATE = JSON.parse(JSON.stringify(DEFAULT_STATE)); }
 
 /* ================= PATH HELPERS ================= */
