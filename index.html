@@ -241,6 +241,15 @@
   .tile b{display:block; font-size:26px; font-weight:800; font-variant-numeric:tabular-nums;}
   .tile span{font-size:11px; letter-spacing:.04em; color:var(--muted); font-weight:700;}
 
+  .kpi-time-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:8px;}
+  .kpi-time-card{background:linear-gradient(145deg, var(--card), var(--card-2)); border-radius:20px; padding:22px 24px;
+    box-shadow:10px 10px 20px rgba(15,26,46,.08), -10px -10px 20px rgba(255,255,255,.5); border:1px solid var(--line);}
+  .kpi-time-label{font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;}
+  .kpi-time-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .kpi-time-val{font-size:32px; font-weight:900; color:var(--ink); letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
+  .kpi-time-badge{font-size:11.5px; font-weight:700; color:var(--sage-ink); background:var(--sage-bg); padding:4px 10px; border-radius:8px;}
+  @media (max-width:880px){ .kpi-time-grid{grid-template-columns:1fr;} }
+
   .people-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding-block:26px 60px;}
   .person{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px;}
   .person .av{width:44px;height:44px;border-radius:50%; background:var(--navy); color:#fff; display:grid; place-items:center; font-weight:800; margin-bottom:12px;}
@@ -477,6 +486,8 @@
       <div class="stat-row" id="dashReqRow"></div>
       <h4 style="font-family:var(--font-body); margin:20px 0 4px;" data-editable data-path="strings.dashboardRiskLabel" id="dashboardRiskLabel"></h4>
       <div class="stat-row" style="grid-template-columns:repeat(4,1fr);" id="dashRiskRow"></div>
+      <h4 style="font-family:var(--font-body); margin:26px 0 4px;" data-editable data-path="strings.dashboardTimeLabel" id="dashboardTimeLabel"></h4>
+      <div class="kpi-time-grid" id="dashTimeGrid"></div>
       <h4 style="font-family:var(--font-body); margin:26px 0 4px;" data-editable data-path="strings.dashboardChangelogLabel" id="dashboardChangelogLabel"></h4>
       <div class="changelog" id="changelogList"></div>
     </div>
@@ -712,7 +723,11 @@ var DEFAULT_STATE = {
   ],
   dashboard:{
     reqTiles:[["9","REQUISITOS TRAZADOS"],["2","COMPLETOS"],["2","EN PROCESO"],["5","PENDIENTES"],["4","RIESGOS ALTOS/CRÍTICOS"]],
-    riskTiles:[["1","CRÍTICO","rose"],["3","ALTO","peach"],["5","MEDIO","amber"],["0","BAJO","sage"]]
+    riskTiles:[["1","CRÍTICO","rose"],["3","ALTO","peach"],["5","MEDIO","amber"],["0","BAJO","sage"]],
+    timeTiles:[
+      ["Disponibilidad y Transferencia Presupuestal interna","13h 22m","30.36% de la demanda (68 expedientes) · categoría principal"],
+      ["Gestión de Personal, Planillas y Contratos","9h 59m","24.55% de la demanda (55 expedientes) · categoría secundaria"]
+    ]
   },
   cronogramaHead:["Fase","Paquetes","Periodo","Entregable"],
   ganttWeeks:["2026-09-07","2026-09-14","2026-09-21","2026-09-28","2026-10-05","2026-10-12","2026-10-19","2026-10-26","2026-11-02","2026-11-09","2026-11-16","2026-11-23"],
@@ -762,6 +777,7 @@ var DEFAULT_STATE = {
     dashboardTitle:"Dashboard del proyecto",
     dashboardSub:"Estado agregado de requisitos, riesgos y calidad, tal como quedaron definidos en el Plan de Gestión.",
     dashboardRiskLabel:"Riesgos por nivel",
+    dashboardTimeLabel:"Tiempos promedio de atención por categoría (fuente: tesis, Cap. 1.1)",
     dashboardChangelogLabel:"Historial de cambios",
     changelogEmptyTitle:"Sin cambios registrados todavía",
     changelogEmptyText:"Cuando edites y guardes contenido, cada versión quedará listada aquí con fecha y nota.",
@@ -1017,6 +1033,15 @@ function renderDashboard(){
   STATE.dashboard.riskTiles.forEach(function(t,i){
     rk.appendChild(el("div","tile","<b style='color:var(--"+t[2]+"-ink)' "+ed("dashboard.riskTiles."+i+".0")+">"+t[0]+"</b><span "+ed("dashboard.riskTiles."+i+".1")+">"+t[1]+"</span>"));
   });
+  var tg = document.getElementById("dashTimeGrid"); tg.innerHTML="";
+  STATE.dashboard.timeTiles.forEach(function(t,i){
+    var p = "dashboard.timeTiles."+i;
+    tg.appendChild(el("div","kpi-time-card",
+      "<h3 class='kpi-time-label' "+ed(p+".0")+">"+t[0]+"</h3>"
+      + "<div class='kpi-time-row'><span class='kpi-time-val' "+ed(p+".1")+">"+t[1]+"</span>"
+      + "<span class='kpi-time-badge' "+ed(p+".2")+">"+t[2]+"</span></div>"
+    ));
+  });
   var cl = document.getElementById("changelogList"); cl.innerHTML="";
   if(!STATE.changelog.length){
     cl.appendChild(el("div","empty","<b "+ed("strings.changelogEmptyTitle")+">"+STATE.strings.changelogEmptyTitle+"</b><p "+ed("strings.changelogEmptyText")+">"+STATE.strings.changelogEmptyText+"</p>"));
@@ -1039,7 +1064,7 @@ function hydrateStatics(){
     actasTitle:"actasTitle", actasSub:"actasSub",
     actasEmptyTitle:"actasEmptyTitle", actasEmptyText:"actasEmptyText",
     dashboardTitle:"dashboardTitle", dashboardSub:"dashboardSub",
-    dashboardRiskLabel:"dashboardRiskLabel", dashboardChangelogLabel:"dashboardChangelogLabel",
+    dashboardRiskLabel:"dashboardRiskLabel", dashboardTimeLabel:"dashboardTimeLabel", dashboardChangelogLabel:"dashboardChangelogLabel",
     footer:"footerText"
   };
   Object.keys(map).forEach(function(k){
