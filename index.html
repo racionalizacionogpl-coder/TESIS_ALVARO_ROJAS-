@@ -64,6 +64,7 @@
   p{margin:0;}
   a{color:inherit;}
   .wrap{max-width:1180px; margin:0 auto; padding-inline:20px;}
+  .wrap-wide{max-width:1400px; margin:0 auto; padding-inline:20px;}
   ::selection{background:var(--pill-active-bg); color:var(--pill-active-ink);}
 
   header.nav{
@@ -71,20 +72,25 @@
     background:color-mix(in srgb, var(--card) 92%, transparent);
     backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
   }
-  .nav-row{display:flex; align-items:center; gap:28px; padding-block:14px; flex-wrap:wrap;}
-  .brand{display:flex; align-items:center; gap:10px; margin-right:6px;}
-  .brand-mark{width:38px; height:38px; border-radius:50%; background:var(--navy); display:grid; place-items:center; flex:none;}
-  .brand-text b{display:block; font-family:var(--font-display); font-weight:700; font-size:15px; letter-spacing:.2px;}
-  .brand-text span{display:block; font-size:11.5px; color:var(--muted); font-weight:600;}
-  nav.tabs{display:flex; gap:2px; flex-wrap:wrap; flex:1;}
+  .nav-row{display:flex; align-items:center; gap:10px; padding-block:12px; flex-wrap:nowrap;}
+  .brand{display:flex; align-items:center; gap:8px; margin-right:0; flex:none;}
+  .brand-mark{width:30px; height:30px; border-radius:50%; background:var(--navy); display:grid; place-items:center; flex:none;}
+  .brand-text b{display:block; font-family:var(--font-display); font-weight:700; font-size:13px; letter-spacing:.1px; white-space:nowrap;}
+  .brand-text span{display:block; font-size:10.5px; color:var(--muted); font-weight:600; white-space:nowrap;}
+  nav.tabs{display:flex; gap:0; flex:1 1 auto; min-width:0; flex-wrap:nowrap; justify-content:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none;}
+  nav.tabs::-webkit-scrollbar{display:none;}
   nav.tabs button{
-    font-family:var(--font-body); font-weight:600; font-size:13.5px; color:var(--ink-2);
-    background:transparent; border:none; padding:9px 14px; border-radius:999px; cursor:pointer; white-space:nowrap;
+    font-family:var(--font-body); font-weight:600; font-size:11.2px; color:var(--ink-2);
+    background:transparent; border:none; padding:7px 8px; border-radius:999px; cursor:pointer; white-space:nowrap; flex:none;
   }
   nav.tabs button:hover{background:var(--card-2);}
   nav.tabs button[aria-current="page"]{background:var(--pill-active-bg); color:var(--pill-active-ink);}
   nav.tabs button:focus-visible, .btn:focus-visible, .idx-item:focus-visible{outline:2px solid var(--navy-2); outline-offset:2px;}
-  .save-status{font-size:11.5px; color:var(--muted); white-space:nowrap;}
+  .save-status{font-size:10.5px; color:var(--muted); white-space:nowrap; flex:none;}
+  @media (max-width:1200px){
+    nav.tabs{justify-content:flex-start;}
+    .brand-text span{display:none;}
+  }
 
   .btn{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); font-weight:700; font-size:14px;
     padding:12px 20px; border-radius:999px; border:1px solid transparent; cursor:pointer; text-decoration:none;}
@@ -96,6 +102,7 @@
   .btn-sm.primary{background:var(--navy); color:#fff; border-color:var(--navy);}
   .btn-sm.danger{background:var(--rose-bg); color:var(--rose-ink); border-color:transparent;}
 
+  .hero-shell{background:var(--card); border-bottom:1px solid var(--line);}
   .hero{padding-block:56px 44px;}
   .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:36px; align-items:center;}
   .badge-pill{display:inline-flex; align-items:center; gap:8px; background:var(--navy); color:#fff; font-weight:700;
@@ -137,11 +144,15 @@
   .stat-card b{display:block; font-size:24px; font-weight:800; font-variant-numeric:tabular-nums;}
   .stat-card span{display:block; font-size:11px; letter-spacing:.05em; color:rgba(255,255,255,.68); font-weight:700; margin-top:2px;}
 
-  .plan-hero{background:var(--navy); color:#fff; border-radius:var(--radius-lg); padding:30px 32px; margin-block:26px 20px;}
+  .plan-hero{background:var(--navy); color:#fff; border-radius:var(--radius-lg); padding:30px 32px; margin:26px 0 -46px; position:relative; z-index:2;
+    box-shadow:0 24px 46px -20px rgba(6,20,24,.5);}
   .kicker{display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); font-size:12px; font-weight:700;
     padding:6px 12px; border-radius:999px; margin-bottom:14px;}
   .plan-hero h1{font-size:clamp(22px,3vw,30px); line-height:1.25; margin-bottom:10px;}
   .plan-hero p{color:rgba(255,255,255,.75); max-width:80ch; font-size:14.5px;}
+
+  .plan-shell{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow);
+    padding:64px 24px 24px; position:relative; z-index:1; margin-bottom:30px;}
 
   .meta-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:26px;}
   .meta-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px;}
@@ -232,6 +243,12 @@
   body.editing [data-editable]{outline:1.5px dashed color-mix(in srgb, var(--navy-2) 55%, transparent); outline-offset:3px; border-radius:5px; cursor:text;}
   body.editing [data-editable]:hover{background:color-mix(in srgb, var(--pill-active-bg) 45%, transparent);}
   body.editing [data-editable]:focus{outline:2px solid var(--navy-2); background:var(--pill-active-bg); color:var(--pill-active-ink);}
+  body.editing th[data-editable]{outline-color:rgba(255,255,255,.55);}
+  body.editing th[data-editable]:hover{background:rgba(255,255,255,.14);}
+  body.editing th[data-editable]:focus{background:rgba(255,255,255,.22); color:#fff; outline-color:#fff;}
+  body.editing .kicker[data-editable], body.editing .plan-hero h1[data-editable], body.editing .plan-hero p[data-editable]{outline-color:rgba(255,255,255,.55);}
+  body.editing .plan-hero [data-editable]:hover{background:rgba(255,255,255,.12);}
+  body.editing .plan-hero [data-editable]:focus{background:rgba(255,255,255,.18); color:#fff; outline-color:#fff;}
   .edit-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(18px + env(safe-area-inset-bottom,0px)); z-index:80;
     background:var(--navy); color:#fff; border-radius:999px; padding:10px 12px; display:flex; align-items:center; gap:10px;
     box-shadow:0 10px 30px -8px rgba(0,0,0,.4);}
@@ -264,7 +281,7 @@
 </style>
 
 <header class="nav">
-  <div class="wrap nav-row">
+  <div class="wrap-wide nav-row">
     <div class="brand">
       <div class="brand-mark">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="2.4" fill="#fff"/><circle cx="12" cy="12" r="2.4" fill="#fff" opacity=".75"/><circle cx="18" cy="12" r="2.4" fill="#fff" opacity=".45"/></svg>
@@ -287,23 +304,25 @@
 
 <main>
   <section class="page" id="page-inicio">
-    <div class="wrap hero">
-      <div class="hero-grid">
-        <div>
-          <span class="badge-pill"><span class="dot"></span><span data-editable data-path="hero.badge" id="heroBadge"></span></span>
-          <h1 class="hero-title" data-editable data-path="hero.title" id="heroTitle"></h1>
-          <p class="hero-sub" data-editable data-path="hero.sub" id="heroSub"></p>
-          <div class="hero-actions">
-            <button class="btn btn-dark" data-goto="plan">Ver Plan de Gestión →</button>
-            <button class="btn btn-ghost" data-goto="dashboard">Dashboard</button>
+    <div class="hero-shell">
+      <div class="wrap hero">
+        <div class="hero-grid">
+          <div>
+            <span class="badge-pill"><span class="dot"></span><span data-editable data-path="hero.badge" id="heroBadge"></span></span>
+            <h1 class="hero-title" data-editable data-path="hero.title" id="heroTitle"></h1>
+            <p class="hero-sub" data-editable data-path="hero.sub" id="heroSub"></p>
+            <div class="hero-actions">
+              <button class="btn btn-dark" data-goto="plan">Ver Plan de Gestión →</button>
+              <button class="btn btn-ghost" data-goto="dashboard">Dashboard</button>
+            </div>
           </div>
-        </div>
-        <div class="hero-card">
-          <div class="crumbs" id="heroCrumbs"></div>
-          <h2 data-editable data-path="hero.cardHeading" id="heroHeading"></h2>
-          <p data-editable data-path="hero.cardPara" id="heroPara"></p>
-          <p class="hero-quote" data-editable data-path="hero.quote" id="heroQuote"></p>
-          <div class="cat-list" id="catList"></div>
+          <div class="hero-card">
+            <div class="crumbs" id="heroCrumbs"></div>
+            <h2 data-editable data-path="hero.cardHeading" id="heroHeading"></h2>
+            <p data-editable data-path="hero.cardPara" id="heroPara"></p>
+            <p class="hero-quote" data-editable data-path="hero.quote" id="heroQuote"></p>
+            <div class="cat-list" id="catList"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -329,13 +348,15 @@
         <h1 data-editable data-path="planHero.title" id="planTitle"></h1>
         <p data-editable data-path="planHero.sub" id="planSub"></p>
       </div>
-      <div class="meta-grid" id="planMetaGrid"></div>
-      <div class="plan-body">
-        <div class="idx-wrap">
-          <div class="idx-title">ÍNDICE DEL PLAN</div>
-          <div id="idxList"></div>
+      <div class="plan-shell">
+        <div class="meta-grid" id="planMetaGrid"></div>
+        <div class="plan-body">
+          <div class="idx-wrap">
+            <div class="idx-title" data-editable data-path="strings.idxLabel" id="idxLabel"></div>
+            <div id="idxList"></div>
+          </div>
+          <div id="secList"></div>
         </div>
-        <div id="secList"></div>
       </div>
     </div>
   </section>
@@ -347,17 +368,19 @@
         <h1 data-editable data-path="cronoHero.title" id="cronoTitle"></h1>
         <p data-editable data-path="cronoHero.sub" id="cronoSub"></p>
       </div>
-      <div class="meta-grid" style="grid-template-columns:repeat(4,1fr);" id="cronoMetaGrid"></div>
-      <div class="stat-row" id="cronoTilesRow"></div>
-      <h4 style="font-family:var(--font-body); margin:10px 0 4px;">Fases y entregables</h4>
-      <div class="table-wrap" style="margin-bottom:60px;"><table id="tblCronograma"></table></div>
+      <div class="plan-shell">
+        <div class="meta-grid" style="grid-template-columns:repeat(4,1fr);" id="cronoMetaGrid"></div>
+        <div class="stat-row" id="cronoTilesRow"></div>
+        <h4 style="font-family:var(--font-body); margin:10px 0 4px;" data-editable data-path="strings.cronoFasesLabel" id="cronoFasesLabel"></h4>
+        <div class="table-wrap" style="margin-bottom:10px;"><table id="tblCronograma"></table></div>
+      </div>
     </div>
   </section>
 
   <section class="page" id="page-normativas" hidden>
     <div class="wrap">
-      <div class="page-head"><h1>Normativas &amp; Guías</h1>
-        <p>Marco normativo y teórico que sustenta el proyecto: desde la política nacional de modernización del Estado hasta la formulación matemática de la teoría de colas.</p>
+      <div class="page-head"><h1 data-editable data-path="strings.normativasTitle" id="normativasTitle"></h1>
+        <p data-editable data-path="strings.normativasSub" id="normativasSub"></p>
       </div>
       <div class="norm-grid" id="normGrid"></div>
     </div>
@@ -365,41 +388,41 @@
 
   <section class="page" id="page-anexos" hidden>
     <div class="wrap">
-      <div class="page-head"><h1>Formato y anexos</h1><p>Documentos fuente que integran y sustentan este plan.</p></div>
+      <div class="page-head"><h1 data-editable data-path="strings.anexosTitle" id="anexosTitle"></h1><p data-editable data-path="strings.anexosSub" id="anexosSub"></p></div>
       <div style="padding-block:24px 60px;" id="docList"></div>
     </div>
   </section>
 
   <section class="page" id="page-equipo" hidden>
     <div class="wrap">
-      <div class="page-head"><h1>Equipo de trabajo</h1><p>Interesados directos del proyecto y su rol frente al modelo de colas.</p></div>
+      <div class="page-head"><h1 data-editable data-path="strings.equipoTitle" id="equipoTitle"></h1><p data-editable data-path="strings.equipoSub" id="equipoSub"></p></div>
       <div class="people-grid" id="peopleGrid"></div>
     </div>
   </section>
 
   <section class="page" id="page-actas" hidden>
     <div class="wrap">
-      <div class="page-head"><h1>Actas de Reunión</h1><p>Registro de coordinaciones con el asesor académico y el supervisor institucional.</p></div>
+      <div class="page-head"><h1 data-editable data-path="strings.actasTitle" id="actasTitle"></h1><p data-editable data-path="strings.actasSub" id="actasSub"></p></div>
       <div class="empty">
-        <b>Aún no se han registrado actas formales</b>
-        <p>Cuando se realicen las reuniones de revisión con el Prof. López Guevara y de coordinación con el CPC. Chávez Andrade (ver Equipo de trabajo), regístralas aquí: fecha, asistentes, acuerdos y compromisos.</p>
+        <b data-editable data-path="strings.actasEmptyTitle" id="actasEmptyTitle"></b>
+        <p data-editable data-path="strings.actasEmptyText" id="actasEmptyText"></p>
       </div>
     </div>
   </section>
 
   <section class="page" id="page-dashboard" hidden>
     <div class="wrap">
-      <div class="page-head"><h1>Dashboard del proyecto</h1><p>Estado agregado de requisitos, riesgos y calidad, tal como quedaron definidos en el Plan de Gestión.</p></div>
+      <div class="page-head"><h1 data-editable data-path="strings.dashboardTitle" id="dashboardTitle"></h1><p data-editable data-path="strings.dashboardSub" id="dashboardSub"></p></div>
       <div class="stat-row" id="dashReqRow"></div>
-      <h4 style="font-family:var(--font-body); margin:20px 0 4px;">Riesgos por nivel</h4>
+      <h4 style="font-family:var(--font-body); margin:20px 0 4px;" data-editable data-path="strings.dashboardRiskLabel" id="dashboardRiskLabel"></h4>
       <div class="stat-row" style="grid-template-columns:repeat(4,1fr);" id="dashRiskRow"></div>
-      <h4 style="font-family:var(--font-body); margin:26px 0 4px;">Historial de cambios</h4>
+      <h4 style="font-family:var(--font-body); margin:26px 0 4px;" data-editable data-path="strings.dashboardChangelogLabel" id="dashboardChangelogLabel"></h4>
       <div class="changelog" id="changelogList"></div>
     </div>
   </section>
 </main>
 
-<footer class="site">Documento de control interno del proyecto — uso académico · UNMSM, Escuela Profesional de Investigación Operativa</footer>
+<footer class="site" data-editable data-path="strings.footer" id="footerText"></footer>
 
 <button class="btn btn-dark edit-fab" id="editFab" hidden>✎ Editar</button>
 <div class="edit-bar" id="editBar" hidden>
@@ -630,6 +653,28 @@ var DEFAULT_STATE = {
     reqTiles:[["9","REQUISITOS TRAZADOS"],["2","COMPLETOS"],["2","EN PROCESO"],["5","PENDIENTES"],["4","RIESGOS ALTOS/CRÍTICOS"]],
     riskTiles:[["1","CRÍTICO","rose"],["3","ALTO","peach"],["5","MEDIO","amber"],["0","BAJO","sage"]]
   },
+  cronogramaHead:["Fase","Paquetes","Periodo","Entregable"],
+  strings:{
+    idxLabel:"ÍNDICE DEL PLAN",
+    cronoFasesLabel:"Fases y entregables",
+    normativasTitle:"Normativas & Guías",
+    normativasSub:"Marco normativo y teórico que sustenta el proyecto: desde la política nacional de modernización del Estado hasta la formulación matemática de la teoría de colas.",
+    anexosTitle:"Formato y anexos",
+    anexosSub:"Documentos fuente que integran y sustentan este plan.",
+    equipoTitle:"Equipo de trabajo",
+    equipoSub:"Interesados directos del proyecto y su rol frente al modelo de colas.",
+    actasTitle:"Actas de Reunión",
+    actasSub:"Registro de coordinaciones con el asesor académico y el supervisor institucional.",
+    actasEmptyTitle:"Aún no se han registrado actas formales",
+    actasEmptyText:"Cuando se realicen las reuniones de revisión con el Prof. López Guevara y de coordinación con el CPC. Chávez Andrade (ver Equipo de trabajo), regístralas aquí: fecha, asistentes, acuerdos y compromisos.",
+    dashboardTitle:"Dashboard del proyecto",
+    dashboardSub:"Estado agregado de requisitos, riesgos y calidad, tal como quedaron definidos en el Plan de Gestión.",
+    dashboardRiskLabel:"Riesgos por nivel",
+    dashboardChangelogLabel:"Historial de cambios",
+    changelogEmptyTitle:"Sin cambios registrados todavía",
+    changelogEmptyText:"Cuando edites y guardes contenido, cada versión quedará listada aquí con fecha y nota.",
+    footer:"Documento de control interno del proyecto — uso académico · UNMSM, Escuela Profesional de Investigación Operativa"
+  },
   changelog:[]
 };
 
@@ -657,9 +702,11 @@ function setPath(obj, path, value){
 function el(tag, cls, html){var e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e;}
 function ed(path){ return "data-editable data-path='"+path+"'"; }
 
-function renderTable(head, rows, rowsPath){
+function renderTable(head, rows, rowsPath, headPath){
   var editing = document.body.classList.contains("editing");
-  var t = "<thead><tr>"+head.map(function(h){return "<th>"+h+"</th>";}).join("")+(editing?"<th class='row-del'></th>":"")+"</tr></thead><tbody>";
+  var t = "<thead><tr>"+head.map(function(h,hi){
+    return "<th "+(headPath?ed(headPath+"."+hi):"")+">"+h+"</th>";
+  }).join("")+(editing?"<th class='row-del'></th>":"")+"</tr></thead><tbody>";
   rows.forEach(function(r, ri){
     t += "<tr>"+r.map(function(c,ci){
       return "<td "+ed(rowsPath+"."+ri+"."+ci)+">"+c+"</td>";
@@ -705,7 +752,7 @@ function renderPlan(){
       html += "</div>";
     }
     if(s.table){
-      html += "<div class='table-wrap'><table>"+renderTable(s.table.head, s.table.rows, "sections."+si+".table.rows")+"</table></div>";
+      html += "<div class='table-wrap'><table>"+renderTable(s.table.head, s.table.rows, "sections."+si+".table.rows", "sections."+si+".table.head")+"</table></div>";
     }
     if(s.docs){
       html += "<div>";
@@ -765,7 +812,7 @@ function renderCronograma(){
     tr.appendChild(el("div","tile","<b "+ed("cronoTiles."+i+".0")+">"+t[0]+"</b><span "+ed("cronoTiles."+i+".1")+">"+t[1]+"</span>"));
   });
   document.getElementById("tblCronograma").innerHTML = renderTable(
-    ["Fase","Paquetes","Periodo","Entregable"], STATE.cronogramaRows, "cronogramaRows"
+    STATE.cronogramaHead, STATE.cronogramaRows, "cronogramaRows", "cronogramaHead"
   );
 }
 
@@ -806,7 +853,7 @@ function renderDashboard(){
   });
   var cl = document.getElementById("changelogList"); cl.innerHTML="";
   if(!STATE.changelog.length){
-    cl.appendChild(el("div","empty","<b>Sin cambios registrados todavía</b><p>Cuando edites y guardes contenido, cada versión quedará listada aquí con fecha y nota.</p>"));
+    cl.appendChild(el("div","empty","<b "+ed("strings.changelogEmptyTitle")+">"+STATE.strings.changelogEmptyTitle+"</b><p "+ed("strings.changelogEmptyText")+">"+STATE.strings.changelogEmptyText+"</p>"));
   } else {
     STATE.changelog.forEach(function(c){
       var d = new Date(c.ts);
@@ -816,7 +863,27 @@ function renderDashboard(){
   }
 }
 
+function hydrateStatics(){
+  var s = STATE.strings;
+  var map = {
+    idxLabel:"idxLabel", cronoFasesLabel:"cronoFasesLabel",
+    normativasTitle:"normativasTitle", normativasSub:"normativasSub",
+    anexosTitle:"anexosTitle", anexosSub:"anexosSub",
+    equipoTitle:"equipoTitle", equipoSub:"equipoSub",
+    actasTitle:"actasTitle", actasSub:"actasSub",
+    actasEmptyTitle:"actasEmptyTitle", actasEmptyText:"actasEmptyText",
+    dashboardTitle:"dashboardTitle", dashboardSub:"dashboardSub",
+    dashboardRiskLabel:"dashboardRiskLabel", dashboardChangelogLabel:"dashboardChangelogLabel",
+    footer:"footerText"
+  };
+  Object.keys(map).forEach(function(k){
+    var node = document.getElementById(map[k]);
+    if(node) node.textContent = s[k];
+  });
+}
+
 function renderAll(){
+  hydrateStatics();
   renderHero(); renderPlan(); renderCronograma(); renderNormativas(); renderDocs(); renderPeople(); renderDashboard();
   initScrollSpy();
 }
