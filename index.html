@@ -1353,18 +1353,28 @@ async function renderPdfFromNode(node, filename){
   var pdf = new jspdf.jsPDF({unit:"pt", format:"a4"});
   var pageWidth = pdf.internal.pageSize.getWidth();
   var pageHeight = pdf.internal.pageSize.getHeight();
-  var imgWidth = pageWidth;
-  var imgHeight = canvas.height * imgWidth / canvas.width;
-  var imgData = canvas.toDataURL("image/jpeg", 0.95);
-  var heightLeft = imgHeight;
-  var position = 0;
-  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-  heightLeft -= pageHeight;
-  while(heightLeft > 0){
-    position = heightLeft - imgHeight;
-    pdf.addPage();
-    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+  var MARGIN_X = 36, MARGIN_Y = 45; /* igual que los márgenes del Word (0.5in / 0.625in) */
+  var contentWidthPt = pageWidth - MARGIN_X*2;
+  var contentHeightPt = pageHeight - MARGIN_Y*2;
+  var pxPerPt = canvas.width / contentWidthPt;
+  var sliceHeightPx = Math.max(1, Math.floor(contentHeightPt * pxPerPt));
+
+  var y = 0, first = true;
+  while(y < canvas.height){
+    var thisSliceHeightPx = Math.min(sliceHeightPx, canvas.height - y);
+    var sliceCanvas = document.createElement("canvas");
+    sliceCanvas.width = canvas.width;
+    sliceCanvas.height = thisSliceHeightPx;
+    var ctx = sliceCanvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+    ctx.drawImage(canvas, 0, y, canvas.width, thisSliceHeightPx, 0, 0, canvas.width, thisSliceHeightPx);
+    var sliceData = sliceCanvas.toDataURL("image/jpeg", 0.95);
+    var sliceHeightPt = thisSliceHeightPx / pxPerPt;
+    if(!first) pdf.addPage();
+    pdf.addImage(sliceData, "JPEG", MARGIN_X, MARGIN_Y, contentWidthPt, sliceHeightPt);
+    first = false;
+    y += thisSliceHeightPx;
   }
   var blob = pdf.output("blob");
   if(downloadsCap){
