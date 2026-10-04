@@ -1,0 +1,1538 @@
+<title>Centro de Monitoreo DGP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Concepto: sala de mando de una oficina de proyectos. Barra lateral con la cartera y una mesa de trabajo
+   por dominio de desempeño (PMBOK 8). Granate institucional como único acento; neutros fríos; cifras en
+   semicondensada, como en los tableros de control de obra y planificación. */
+:root{
+  --bg:#F2F3F6; --surface:#FFFFFF; --surface-2:#F7F8FA; --ink:#19202D; --muted:#566072; --faint:#8790A0;
+  --line:#DADFE6; --line-2:#E8EBF0;
+  --accent:#8A1C2E; --accent-hover:#741726; --accent-soft:#F5E6E9; --on-accent:#FFFFFF;
+  --data:#2C5A87; --data-soft:#DFE9F3; --data-mid:#9DB8D3;
+  --ok:#2A7849; --ok-soft:#DFF0E6; --warn:#A5680F; --warn-soft:#FAEED8; --crit:#B6312A; --crit-soft:#FAE2DF;
+  --idle:#7D8696; --idle-soft:#E9ECF0;
+  --q-prior:#FBE3C2; --q-act:#DCEFD9; --q-np:#E1ECF7; --q-na:#E6E8EC;
+  --scrim:rgba(12,16,24,.48);
+  --f-display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --radius:6px;
+  --shadow:0 1px 2px rgba(18,26,40,.06),0 6px 18px rgba(18,26,40,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1218; --surface:#171B22; --surface-2:#1C212A; --ink:#E5E8EE; --muted:#A1A9B7; --faint:#717A8A;
+    --line:#2B313C; --line-2:#232833;
+    --accent:#E37A8B; --accent-hover:#EC93A1; --accent-soft:#3A1E25; --on-accent:#1B0B0F;
+    --data:#82AEDD; --data-soft:#1C2836; --data-mid:#3E5C7C;
+    --ok:#62C38A; --ok-soft:#173023; --warn:#E5B35A; --warn-soft:#352812; --crit:#F27B70; --crit-soft:#3B1C1A;
+    --idle:#7A8394; --idle-soft:#242932;
+    --q-prior:#3A2C14; --q-act:#1B3222; --q-np:#1C2A3A; --q-na:#262A31;
+    --scrim:rgba(0,0,0,.6);
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1218; --surface:#171B22; --surface-2:#1C212A; --ink:#E5E8EE; --muted:#A1A9B7; --faint:#717A8A;
+  --line:#2B313C; --line-2:#232833;
+  --accent:#E37A8B; --accent-hover:#EC93A1; --accent-soft:#3A1E25; --on-accent:#1B0B0F;
+  --data:#82AEDD; --data-soft:#1C2836; --data-mid:#3E5C7C;
+  --ok:#62C38A; --ok-soft:#173023; --warn:#E5B35A; --warn-soft:#352812; --crit:#F27B70; --crit-soft:#3B1C1A;
+  --idle:#7A8394; --idle-soft:#242932;
+  --q-prior:#3A2C14; --q-act:#1B3222; --q-np:#1C2A3A; --q-na:#262A31;
+  --scrim:rgba(0,0,0,.6);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.mono{font-family:var(--f-mono);font-size:12.5px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- estructura ---------- */
+.app{display:grid;grid-template-columns:272px minmax(0,1fr);min-height:100%}
+.side{background:var(--surface);border-right:1px solid var(--line);padding:18px 14px 20px;display:flex;flex-direction:column;gap:18px;position:sticky;top:env(safe-area-inset-top,0px);height:100vh;height:100dvh;overflow-y:auto}
+.brand{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;padding:0 4px}
+.brand svg{display:block}
+.brand b{display:block;font:700 18px/1.1 var(--f-display);letter-spacing:.01em}
+.brand small{display:block;font-size:11px;color:var(--muted);line-height:1.3}
+.status{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:0 4px;font-size:12px;color:var(--muted)}
+.live{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ok);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.live i{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 currentColor;animation:pulse 2.4s infinite}
+.live.off{color:var(--faint)} .live.off i,.live.wait i{animation:none}
+.live.wait{color:var(--warn)} .live.err{color:var(--crit)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,currentColor 45%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.live i{animation:none}}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);padding:10px 8px 4px}
+.nav-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:7px 8px;border-radius:5px;cursor:pointer;color:var(--ink)}
+.nav-item:hover{background:var(--surface-2)}
+.nav-item[aria-current="true"]{background:var(--accent-soft);color:var(--ink)}
+.nav-item .code{font:600 12px var(--f-mono);color:var(--muted);min-width:30px}
+.nav-item[aria-current="true"] .code{color:var(--accent)}
+.nav-item .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--idle)}
+.dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.crit{background:var(--crit)} .dot.idle{background:var(--idle)}
+.glyph{width:30px;display:flex;justify-content:center;color:var(--muted)}
+.side-foot{margin-top:auto;font-size:11.5px;color:var(--faint);padding:0 6px;line-height:1.45}
+
+.main{min-width:0;padding-inline:clamp(16px,3vw,36px);padding-block:14px 56px}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.crumbs button{border:0;background:none;padding:0;color:var(--muted);cursor:pointer;font-weight:600}
+.crumbs button:hover{color:var(--accent)}
+.crumbs .sep{color:var(--faint)}
+.top-r{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:12.5px;color:var(--muted)}
+.cut{font-variant-numeric:tabular-nums}
+.cut b{color:var(--ink);font-weight:600}
+.peers{display:flex;align-items:center;gap:6px}
+.avs{display:flex}
+.avs img{width:24px;height:24px;border-radius:50%;border:2px solid var(--surface);margin-left:-6px;background:var(--idle-soft);object-fit:cover}
+.avs img:first-child{margin-left:0}
+
+/* ---------- tipografía de página ---------- */
+.page-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px}
+.page-head>div:first-child{min-width:0;max-width:760px}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+h1{font:600 32px/1.08 var(--f-display);letter-spacing:.005em}
+.lede{color:var(--muted);margin-top:6px;max-width:68ch}
+h2{font:600 19px/1.2 var(--f-display);letter-spacing:.01em}
+h3{font:600 16px/1.25 var(--f-display)}
+.note{font-size:12.5px;color:var(--muted);max-width:75ch}
+.head-actions{display:flex;flex-wrap:wrap;gap:8px}
+
+/* ---------- controles ---------- */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);padding:7px 12px;border-radius:5px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;line-height:1.2}
+.btn:hover{border-color:var(--faint)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--line)}
+.btn.danger{color:var(--crit)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.sm{padding:4px 9px;font-size:12px}
+.icon-btn{border:1px solid transparent;background:none;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.icon-btn:hover{border-color:var(--line);color:var(--ink);background:var(--surface)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--idle-soft);color:var(--idle)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)} .pill.data{background:var(--data-soft);color:var(--data)}
+.pill.accent{background:var(--accent-soft);color:var(--accent)}
+.pill .dot{width:7px;height:7px}
+select.inline{border:1px solid var(--line);background:var(--surface);border-radius:5px;padding:5px 8px;font-size:13px}
+
+/* ---------- paneles y grillas ---------- */
+.stack{display:flex;flex-direction:column;gap:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;min-width:0}
+.panel-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+.panel-head>div{min-width:0}
+.panel-head .note{margin-top:3px}
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px}
+.split.even{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;min-width:0}
+.k-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.k-val{font:600 32px/1.1 var(--f-display);font-variant-numeric:tabular-nums;margin-top:6px}
+.k-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.kpi.ok .k-val{color:var(--ok)} .kpi.warn .k-val{color:var(--warn)} .kpi.crit .k-val{color:var(--crit)}
+.domain-note{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:14px}
+.domain-note b{font:700 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+
+/* ---------- tarjetas de proyecto ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:14px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;display:flex;flex-direction:column;gap:11px;cursor:pointer;min-width:0;transition:border-color .15s,box-shadow .15s}
+.pcard:hover{border-color:var(--faint);box-shadow:var(--shadow)}
+.pcard-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.code-chip{font:600 12px var(--f-mono);color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:4px}
+.pcard h3{font-size:17px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0}
+.mini div{min-width:0}
+.mini dt{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700;line-height:1.25;min-height:2.5em}
+.mini dd{margin:0;font:600 18px/1.2 var(--f-display);font-variant-numeric:tabular-nums}
+.tone-ok{color:var(--ok)} .tone-warn{color:var(--warn)} .tone-crit{color:var(--crit)} .tone-idle{color:var(--faint)} .tone-data{color:var(--data)}
+.pfoot{font-size:12px;color:var(--muted);border-top:1px solid var(--line-2);padding-top:9px}
+.pbar{position:relative;height:8px;background:var(--line-2);border-radius:4px}
+.pbar>span{position:absolute;left:0;top:0;bottom:0;background:var(--data);border-radius:4px}
+.pbar>i{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);opacity:.75;border-radius:1px}
+.pbar-legend{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
+.stepper{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.step{border:0;background:none;padding:0;text-align:left;min-width:0;color:inherit}
+.step i{display:block;height:5px;border-radius:3px;background:var(--line)}
+.step.past i{background:var(--data-mid)} .step.now i{background:var(--accent)}
+.step span{display:block;font-size:10.5px;color:var(--faint);margin-top:4px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step.now span{color:var(--ink)}
+button.step{cursor:pointer}
+button.step:hover i{background:var(--accent-hover)}
+.stepper.big i{height:7px}
+.stepper.big span{font-size:12px}
+
+/* ---------- listas ---------- */
+.alerts,.feed{list-style:none;margin:0;padding:0}
+.alerts li,.feed li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:9px 0;border-top:1px solid var(--line-2)}
+.alerts li:first-child,.feed li:first-child{border-top:0;padding-top:2px}
+.sev{width:9px;height:9px;border-radius:50%;margin-top:6px;background:var(--data)}
+.sev.s2{background:var(--crit)} .sev.s1{background:var(--warn)} .sev.s0{background:var(--data)}
+.a-meta{font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:1px}
+.a-meta .mono{font-size:11.5px}
+.linkish{border:0;background:none;padding:0;color:var(--data);font-weight:600;cursor:pointer;font-size:11.5px}
+.linkish:hover{text-decoration:underline}
+.feed .who{font-weight:600}
+.feed time{font-size:11.5px;color:var(--faint)}
+.empty{border:1px dashed var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px}
+.empty p{max-width:62ch}
+
+/* ---------- tablas ---------- */
+.tbl{overflow-x:auto;margin:0 -4px;position:relative}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}
+tbody tr:hover td{background:var(--surface-2)}
+td.wrap{min-width:200px;max-width:420px}
+td.nowrap,th.nowrap{white-space:nowrap}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+.act-col{width:1%;white-space:nowrap;text-align:right}
+.quick{width:64px;border:1px solid var(--line);background:var(--surface-2);border-radius:4px;padding:3px 6px;font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+.sub{display:block;font-size:11.5px;color:var(--muted)}
+
+/* ---------- EDT ---------- */
+.wbs{list-style:none;margin:0;padding:0}
+.wbs li{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:12px;align-items:center;padding:7px 0;border-top:1px solid var(--line-2)}
+.wbs li:first-child{border-top:0}
+.wbs .w-name{display:flex;gap:8px;align-items:baseline;min-width:0}
+.wbs .w-name span:last-child{overflow:hidden;text-overflow:ellipsis}
+.wbs .lvl1 .w-name{font-weight:700}
+.wbs .w-code{font:500 12px var(--f-mono);color:var(--muted);flex:none}
+
+/* ---------- gráficos ---------- */
+.chart{width:100%;height:auto;display:block}
+.c-axis{stroke:var(--line)} .c-grid{stroke:var(--line-2)}
+.c-tick{fill:var(--muted);font:500 11px var(--f-body)}
+.c-plan{fill:none;stroke:var(--data);stroke-width:2.2}
+.c-area{fill:var(--data-soft)}
+.c-real{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.c-planpt{fill:var(--data);stroke:var(--surface);stroke-width:2}
+.c-today{stroke:var(--accent);stroke-width:1.4;stroke-dasharray:4 3}
+.c-lbl{fill:var(--ink);font:700 12px var(--f-body)}
+.c-lbl.acc{fill:var(--accent)} .c-lbl.dat{fill:var(--data)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;background:var(--data)}
+.legend i.acc{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.legend i.pt{width:9px;height:9px;border-radius:50%;background:var(--data)}
+.m-q-prior{fill:var(--q-prior)} .m-q-act{fill:var(--q-act)} .m-q-np{fill:var(--q-np)} .m-q-na{fill:var(--q-na)}
+.m-qlbl{fill:var(--muted);font:700 9.5px var(--f-body);letter-spacing:.05em}
+.m-dot{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.m-lbl{fill:var(--ink);font:600 12px var(--f-mono)}
+
+.gantt-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.gantt-wrap{display:grid;grid-template-columns:auto minmax(0,1fr);border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.gantt-wrap svg{display:block}
+.g-left{border-right:1px solid var(--line)}
+.g-scroll{overflow-x:auto;min-width:0}
+.g-zebra{fill:var(--surface-2)} .g-hit{fill:transparent}
+.g-row{cursor:pointer}
+.g-row:hover .g-hit{fill:var(--accent-soft)}
+.g-grid{stroke:var(--line-2)}
+.g-month{fill:var(--muted);font:600 11px var(--f-body)}
+.g-year{fill:var(--ink);font:700 11px var(--f-body)}
+.g-label{fill:var(--ink);font:400 12px var(--f-body)}
+.g-label.sum{font-weight:700}
+.g-code{fill:var(--muted);font:500 11px var(--f-mono)}
+.g-plan{fill:var(--data-soft);stroke:var(--data-mid)}
+.g-prog{fill:var(--data)} .g-prog.late{fill:var(--crit)} .g-prog.done{fill:var(--ok)} .g-prog.behind{fill:var(--warn)}
+.g-sum{fill:var(--ink);fill-opacity:.78}
+.g-ms{fill:var(--accent)} .g-ms.done{fill:var(--ok)}
+.g-today{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 3}
+.g-today-l{fill:var(--accent);font:700 11px var(--f-body)}
+.g-pct{fill:var(--muted);font:500 10.5px var(--f-mono)}
+.g-sep{stroke:var(--line)}
+
+.heat{display:grid;grid-template-columns:22px repeat(5,minmax(0,1fr));gap:4px;font-size:12px;align-items:stretch}
+.hcell{min-height:46px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-variant-numeric:tabular-nums;padding:4px;text-align:center}
+.hcell small{font:500 10px var(--f-mono);opacity:.85;font-weight:500;line-height:1.2}
+.hcell.lo{background:var(--ok-soft);color:var(--ok)} .hcell.mid{background:var(--warn-soft);color:var(--warn)} .hcell.hi{background:var(--crit-soft);color:var(--crit)}
+.hcell.zero{opacity:.55}
+.hax{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);font-weight:700}
+.hax.vert{writing-mode:vertical-rl;transform:rotate(180deg)}
+.heat-foot{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px;padding-left:26px}
+
+.quad{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.qbox{border-radius:5px;padding:10px 11px;min-height:96px;min-width:0}
+.qbox h4{font:700 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.qbox.q1{background:var(--q-prior)} .qbox.q2{background:var(--q-act)} .qbox.q3{background:var(--q-np)} .qbox.q4{background:var(--q-na)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-block;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:2px 7px;font-size:12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quad-axes{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+
+.hbars{display:flex;flex-direction:column;gap:8px}
+.hbar{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12.5px}
+.hbar .lab{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbar .trk{height:10px;background:var(--line-2);border-radius:3px;position:relative}
+.hbar .trk span{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--data)}
+.hbar .trk span.acc{background:var(--accent)} .hbar .trk span.ok{background:var(--ok)}
+
+.charter{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px;margin:0}
+.charter div{min-width:0}
+.charter dt{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;margin-bottom:2px}
+.charter dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.charter .wide{grid-column:1/-1}
+.facts{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin-top:8px}
+.facts b{color:var(--ink);font-weight:600}
+
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;margin:18px 0 18px;scrollbar-width:thin}
+.tab{padding:9px 13px;border:0;background:none;border-bottom:2px solid transparent;color:var(--muted);font-weight:600;white-space:nowrap;cursor:pointer;font-size:13.5px;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .cnt{font:600 11px var(--f-mono);color:var(--faint);margin-left:4px}
+.tab .cnt.hot{color:var(--crit)}
+
+.ai .ai-body{font-size:14px;line-height:1.6;max-width:80ch}
+.ai .ai-body h4{font:600 16px/1.3 var(--f-display);margin:14px 0 4px}
+.ai .ai-body h4:first-child{margin-top:0}
+.ai .ai-body ul{margin:4px 0 8px;padding-left:20px}
+.ai .ai-body p{margin:4px 0}
+
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.gcard{border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;background:var(--surface);min-width:0}
+.gcard h3{margin-bottom:4px}
+.gcard p{font-size:13px;color:var(--muted)}
+.gcard .where{font-size:12px;margin-top:8px;color:var(--ink)}
+.gcard .where b{color:var(--accent)}
+.gnum{font:700 12px var(--f-mono);color:var(--accent);margin-bottom:4px}
+.gl{display:grid;grid-template-columns:minmax(90px,max-content) minmax(0,1fr);gap:6px 16px;margin:0;font-size:13px}
+.gl dt{font:600 12.5px var(--f-mono);color:var(--accent)}
+.gl dd{margin:0;color:var(--muted)}
+
+/* ---------- modal y avisos ---------- */
+.overlay{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.dialog{background:var(--surface);border-radius:8px;width:min(780px,100%);max-height:calc(100% - 24px);overflow:auto;box-shadow:var(--shadow);border:1px solid var(--line)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 20px 10px;position:sticky;top:0;background:var(--surface);z-index:1;border-bottom:1px solid var(--line-2)}
+.dlg-body{padding:14px 20px 6px}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted);min-width:0}
+.f.wide{grid-column:1/-1}
+.f small{font-weight:400;color:var(--faint);font-size:11.5px}
+.req{color:var(--crit);font-weight:700}
+.f input,.f select,.f textarea{border:1px solid var(--line);background:var(--surface-2);border-radius:5px;padding:8px 10px;font-size:14px;color:var(--ink);font-weight:400;width:100%;min-width:0}
+.f textarea{resize:vertical;min-height:70px}
+.fgroup{grid-column:1/-1;font:700 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding-top:8px;border-top:1px solid var(--line-2);margin-top:4px}
+.form-err{color:var(--crit);font-size:13px;font-weight:600;padding:8px 20px 0}
+.dlg-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 20px 18px}
+.foot-r{display:flex;gap:8px;margin-left:auto}
+.del-zone{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--crit);font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;max-width:min(560px,calc(100% - 32px));transition:opacity .2s,transform .2s;z-index:80;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.crit{background:var(--crit);color:#fff}
+.toast.warn{background:var(--warn);color:#fff}
+.loading{padding:60px 0;color:var(--muted);display:flex;flex-direction:column;gap:8px;max-width:60ch}
+
+@media (max-width:1100px){.split,.split.even{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:12px 16px;gap:10px}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:2px}
+  .nav-label,.side-foot{display:none}
+  .nav-item{width:auto;flex:none;grid-template-columns:auto auto auto;white-space:nowrap}
+  .nav-item .nm{max-width:150px}
+}
+@media (max-width:640px){
+  h1{font-size:26px}
+  .fgrid,.charter{grid-template-columns:minmax(0,1fr)}
+  .mini{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wbs li{grid-template-columns:minmax(0,1fr) 90px}
+  .wbs li>:last-child{display:none}
+  .hbar{grid-template-columns:minmax(0,100px) minmax(0,1fr) auto}
+}
+</style>
+
+<div class="app">
+  <aside class="side" aria-label="Navegación">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="0.5" y="0.5" width="33" height="33" rx="6" fill="var(--accent)"/><rect x="7" y="9" width="12" height="3.2" rx="1.2" fill="var(--on-accent)"/><rect x="12" y="15.4" width="14" height="3.2" rx="1.2" fill="var(--on-accent)" fill-opacity=".8"/><rect x="18" y="21.8" width="9" height="3.2" rx="1.2" fill="var(--on-accent)" fill-opacity=".6"/><rect x="7" y="7" width="1.6" height="20" fill="var(--on-accent)" fill-opacity=".5"/></svg>
+      <div><b>Centro de Monitoreo</b><small>Dirección de la Gestión de Proyectos · OGPL-UNMSM</small></div>
+    </div>
+    <div class="status" id="side-status"></div>
+    <nav class="nav" id="side-nav"></nav>
+    <p class="side-foot">Basado en la Guía del PMBOK® 8.ª ed. (2025): 6 principios, 7 dominios de desempeño y 5 áreas de enfoque, con prácticas de la 5.ª, 6.ª y 7.ª edición.</p>
+  </aside>
+  <main class="main">
+    <div class="topbar" id="topbar"></div>
+    <div id="view"><div class="loading"><h2>Conectando con la base de datos del equipo…</h2><p>En unos segundos verás la cartera de proyectos, sus alertas y el avance actualizado.</p></div></div>
+  </main>
+</div>
+<div id="modal" hidden></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* =========================================================
+   Utilidades
+   ========================================================= */
+const DAY = 864e5;
+const $ = (s, r = document) => r.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = (v, d = 0) => { const n = Number(v); return v === '' || v == null || !Number.isFinite(n) ? d : n; };
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const parseD = s => { if (!s) return null; if (s instanceof Date) return s; const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s)); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+const isoD = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
+const fmtD = s => { const d = parseD(s); return d ? `${String(d.getDate()).padStart(2, '0')} ${MES[d.getMonth()]} ${d.getFullYear()}` : '—'; };
+const fmtDs = s => { const d = parseD(s); return d ? `${String(d.getDate()).padStart(2, '0')} ${MES[d.getMonth()]}` : '—'; };
+const money = n => 'S/ ' + Math.round(num(n)).toLocaleString('es-PE');
+const pct = n => n == null || !Number.isFinite(n) ? '—' : Math.round(n) + '%';
+const ix = n => n == null || !Number.isFinite(n) ? '—' : n.toFixed(2);
+const dBetween = (a, b) => Math.round((b - a) / DAY);
+const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+const ago = t => {
+  if (!t) return '';
+  const s = Math.max(0, Math.round((Date.now() - t) / 1000));
+  if (s < 15) return 'hace un momento';
+  if (s < 60) return `hace ${s} s`;
+  const m = Math.round(s / 60); if (m < 60) return `hace ${m} min`;
+  const h = Math.round(m / 60); if (h < 24) return `hace ${h} h`;
+  return `hace ${Math.round(h / 24)} d`;
+};
+const wbsParts = w => String(w || '').split('.').filter(Boolean).map(x => { const n = parseInt(x, 10); return Number.isFinite(n) ? n : 0; });
+const wbsCmp = (a, b) => { const A = wbsParts(a), B = wbsParts(b); for (let i = 0; i < Math.max(A.length, B.length); i++) { const x = A[i] ?? -1, y = B[i] ?? -1; if (x !== y) return x - y; } return 0; };
+const wbsDepth = w => wbsParts(w).length || 1;
+const isChildOf = (child, parent) => !!parent && String(child || '').startsWith(String(parent) + '.');
+const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+
+/* =========================================================
+   Modelo de datos (PMBOK 8: dominios de desempeño)
+   ========================================================= */
+const OPT = {
+  phase: ['Inicio', 'Planificación', 'Ejecución', 'Monitoreo y control', 'Cierre'],
+  approach: ['Predictivo', 'Adaptativo', 'Híbrido'],
+  taskType: ['Entregable', 'Actividad', 'Hito'],
+  scale: ['1', '2', '3', '4', '5'],
+  riskCat: ['Técnico', 'Organizacional', 'Personas', 'Normativo', 'Externo', 'Financiero', 'Gestión del proyecto'],
+  riskKind: ['Amenaza', 'Oportunidad'],
+  riskStrat: ['Evitar', 'Mitigar', 'Transferir', 'Escalar', 'Aceptar', 'Explotar', 'Mejorar', 'Compartir'],
+  riskStatus: ['Abierto', 'En tratamiento', 'Materializado', 'Cerrado'],
+  engagement: ['Desconocedor', 'Reticente', 'Neutral', 'De apoyo', 'Líder'],
+  reqPrio: ['Debe', 'Debería', 'Podría', 'No por ahora'],
+  reqStatus: ['Propuesto', 'Aprobado', 'Validado', 'Rechazado'],
+  changeArea: ['Alcance', 'Cronograma', 'Costo', 'Calidad', 'Recursos', 'Riesgo', 'Método'],
+  changeStatus: ['Registrada', 'En análisis', 'Aprobada', 'Rechazada', 'Implementada'],
+  issuePrio: ['Alta', 'Media', 'Baja'],
+  issueStatus: ['Abierto', 'En curso', 'Resuelto'],
+  agreeStatus: ['Pendiente', 'Cumplido', 'Cancelado'],
+  lessonCat: ['Gobernanza', 'Alcance', 'Cronograma', 'Finanzas', 'Interesados', 'Recursos', 'Riesgo', 'Calidad', 'Otro'],
+};
+const IMP = ['¿Se alinea a los objetivos estratégicos?', '¿El beneficio es inmediato?', '¿Facilita significativamente la tarea de los empleados aguas abajo?', '¿Genera un importante nivel de ahorro?'];
+const ESF = ['Complejidad técnica', 'Nivel de riesgos e incertidumbre', 'Tiempo de implementación', '¿Hace falta personal con conocimientos y habilidades especiales?'];
+
+const PROJECT_FIELDS = [
+  { k: 'code', l: 'Código', t: 'text', req: 1, ph: 'P05' },
+  { k: 'name', l: 'Nombre del proyecto', t: 'text', req: 1, wide: 1 },
+  { k: 'unit', l: 'Unidad responsable', t: 'text' },
+  { k: 'sponsor', l: 'Patrocinador', t: 'text' },
+  { k: 'manager', l: 'Director/a del proyecto', t: 'text' },
+  { k: 'phase', l: 'Área de enfoque actual', t: 'select', o: OPT.phase, d: 'Inicio', req: 1 },
+  { k: 'approach', l: 'Enfoque de desarrollo', t: 'select', o: OPT.approach, d: 'Predictivo' },
+  { k: 'budget', l: 'Presupuesto aprobado (S/)', t: 'number', min: 0, d: 0 },
+  { k: 'start', l: 'Fecha de inicio', t: 'date' },
+  { k: 'end', l: 'Fecha de fin prevista', t: 'date' },
+  { k: 'purpose', l: 'Propósito y justificación', t: 'textarea', wide: 1, group: 'Acta de constitución' },
+  { k: 'objective', l: 'Objetivo SMART', t: 'textarea', wide: 1 },
+  { k: 'success', l: 'Criterios de éxito', t: 'textarea', wide: 1 },
+  { k: 'scopeIn', l: 'El alcance incluye', t: 'textarea', wide: 1 },
+  { k: 'scopeOut', l: 'El alcance excluye', t: 'textarea', wide: 1 },
+  { k: 'assumptions', l: 'Supuestos', t: 'textarea' },
+  { k: 'constraints', l: 'Restricciones', t: 'textarea' },
+  { k: 'notes', l: 'Notas', t: 'textarea', wide: 1 },
+  ...IMP.map((l, i) => ({ k: 'imp' + (i + 1), l, t: 'select', o: OPT.scale, num: 1, group: i === 0 ? 'Priorización · Impacto (1 = mínimo, 5 = máximo)' : undefined })),
+  ...ESF.map((l, i) => ({ k: 'esf' + (i + 1), l, t: 'select', o: OPT.scale, num: 1, group: i === 0 ? 'Priorización · Esfuerzo (1 = mínimo, 5 = máximo)' : undefined })),
+];
+
+const COLL = {
+  tasks: { title: 'EDT y cronograma', one: 'elemento de la EDT', fields: [
+    { k: 'wbs', l: 'Código EDT', t: 'text', req: 1, ph: '1.2.1', hint: 'Define la jerarquía: 1 → 1.1 → 1.1.1' },
+    { k: 'type', l: 'Tipo', t: 'select', o: OPT.taskType, d: 'Actividad', req: 1, hint: 'Entregable = paquete que agrupa actividades' },
+    { k: 'name', l: 'Nombre', t: 'text', req: 1, wide: 1 },
+    { k: 'owner', l: 'Responsable', t: 'text', dl: 1 },
+    { k: 'progress', l: 'Avance físico (%)', t: 'number', min: 0, max: 100, d: 0 },
+    { k: 'start', l: 'Inicio planificado', t: 'date' },
+    { k: 'end', l: 'Fin planificado', t: 'date' },
+    { k: 'plannedCost', l: 'Costo planificado (S/)', t: 'number', min: 0, d: 0 },
+    { k: 'actualCost', l: 'Costo real a la fecha (S/)', t: 'number', min: 0, d: 0 },
+    { k: 'notes', l: 'Notas', t: 'textarea', wide: 1 },
+  ] },
+  requirements: { title: 'Matriz de trazabilidad de requisitos', one: 'requisito', fields: [
+    { k: 'code', l: 'Código', t: 'text', auto: 'RQ' },
+    { k: 'priority', l: 'Prioridad (MoSCoW)', t: 'select', o: OPT.reqPrio, d: 'Debe' },
+    { k: 'description', l: 'Requisito', t: 'textarea', req: 1, wide: 1 },
+    { k: 'source', l: 'Origen (interesado, norma, decisión)', t: 'text' },
+    { k: 'wbs', l: 'Elemento EDT que lo cumple', t: 'text', ph: '2.1' },
+    { k: 'criteria', l: 'Criterio de aceptación', t: 'textarea', wide: 1 },
+    { k: 'status', l: 'Estado', t: 'select', o: OPT.reqStatus, d: 'Propuesto' },
+  ] },
+  changes: { title: 'Control integrado de cambios', one: 'solicitud de cambio', fields: [
+    { k: 'code', l: 'Código', t: 'text', auto: 'SC' },
+    { k: 'date', l: 'Fecha de solicitud', t: 'date', d: 'today' },
+    { k: 'title', l: 'Cambio solicitado', t: 'text', req: 1, wide: 1 },
+    { k: 'description', l: 'Descripción y motivo', t: 'textarea', wide: 1 },
+    { k: 'area', l: 'Afecta principalmente a', t: 'select', o: OPT.changeArea },
+    { k: 'requestedBy', l: 'Solicitado por', t: 'text', dl: 1 },
+    { k: 'impactDays', l: 'Impacto en plazo (días)', t: 'number', d: 0 },
+    { k: 'impactCost', l: 'Impacto en costo (S/)', t: 'number', d: 0 },
+    { k: 'status', l: 'Estado', t: 'select', o: OPT.changeStatus, d: 'Registrada', req: 1 },
+    { k: 'decisionDate', l: 'Fecha de decisión', t: 'date' },
+    { k: 'decision', l: 'Decisión y justificación', t: 'textarea', wide: 1 },
+  ] },
+  agreements: { title: 'Acuerdos y compromisos', one: 'acuerdo', fields: [
+    { k: 'meetingDate', l: 'Fecha de la reunión', t: 'date', d: 'today' },
+    { k: 'meeting', l: 'Reunión o acta', t: 'text' },
+    { k: 'text', l: 'Acuerdo o compromiso', t: 'textarea', req: 1, wide: 1 },
+    { k: 'owner', l: 'Responsable', t: 'text', dl: 1 },
+    { k: 'due', l: 'Fecha límite', t: 'date' },
+    { k: 'status', l: 'Estado', t: 'select', o: OPT.agreeStatus, d: 'Pendiente', req: 1 },
+  ] },
+  stakeholders: { title: 'Registro de interesados', one: 'interesado', fields: [
+    { k: 'name', l: 'Interesado (persona o grupo)', t: 'text', req: 1 },
+    { k: 'role', l: 'Rol o cargo', t: 'text' },
+    { k: 'org', l: 'Unidad u organización', t: 'text' },
+    { k: 'contact', l: 'Contacto', t: 'text' },
+    { k: 'power', l: 'Poder / influencia (1–5)', t: 'select', o: OPT.scale, d: '3', num: 1, req: 1 },
+    { k: 'interest', l: 'Interés (1–5)', t: 'select', o: OPT.scale, d: '3', num: 1, req: 1 },
+    { k: 'current', l: 'Nivel de compromiso actual', t: 'select', o: OPT.engagement, d: 'Neutral' },
+    { k: 'desired', l: 'Nivel de compromiso deseado', t: 'select', o: OPT.engagement, d: 'De apoyo' },
+    { k: 'strategy', l: 'Estrategia de involucramiento y comunicación', t: 'textarea', wide: 1 },
+  ] },
+  team: { title: 'Equipo del proyecto', one: 'integrante', fields: [
+    { k: 'name', l: 'Nombre', t: 'text', req: 1 },
+    { k: 'role', l: 'Rol en el proyecto', t: 'text' },
+    { k: 'dedication', l: 'Dedicación (%)', t: 'number', min: 0, max: 100, d: 0 },
+    { k: 'contact', l: 'Contacto', t: 'text' },
+    { k: 'skills', l: 'Competencias', t: 'textarea', wide: 1 },
+  ] },
+  risks: { title: 'Registro de riesgos', one: 'riesgo', fields: [
+    { k: 'code', l: 'Código', t: 'text', auto: 'R' },
+    { k: 'kind', l: 'Tipo', t: 'select', o: OPT.riskKind, d: 'Amenaza', req: 1 },
+    { k: 'title', l: 'Riesgo (si ocurre…, entonces…)', t: 'textarea', req: 1, wide: 1 },
+    { k: 'category', l: 'Categoría', t: 'select', o: OPT.riskCat },
+    { k: 'owner', l: 'Dueño del riesgo', t: 'text', dl: 1 },
+    { k: 'probability', l: 'Probabilidad (1–5)', t: 'select', o: OPT.scale, d: '3', num: 1, req: 1 },
+    { k: 'impact', l: 'Impacto (1–5)', t: 'select', o: OPT.scale, d: '3', num: 1, req: 1 },
+    { k: 'strategy', l: 'Estrategia de respuesta', t: 'select', o: OPT.riskStrat },
+    { k: 'status', l: 'Estado', t: 'select', o: OPT.riskStatus, d: 'Abierto', req: 1 },
+    { k: 'response', l: 'Acción de respuesta', t: 'textarea', wide: 1 },
+    { k: 'trigger', l: 'Disparador o señal de alerta', t: 'text', wide: 1 },
+    { k: 'due', l: 'Próxima revisión', t: 'date' },
+  ] },
+  issues: { title: 'Registro de incidentes', one: 'incidente', fields: [
+    { k: 'code', l: 'Código', t: 'text', auto: 'IN' },
+    { k: 'priority', l: 'Prioridad', t: 'select', o: OPT.issuePrio, d: 'Media', req: 1 },
+    { k: 'title', l: 'Incidente', t: 'text', req: 1, wide: 1 },
+    { k: 'description', l: 'Descripción', t: 'textarea', wide: 1 },
+    { k: 'owner', l: 'Responsable', t: 'text', dl: 1 },
+    { k: 'due', l: 'Fecha objetivo', t: 'date' },
+    { k: 'status', l: 'Estado', t: 'select', o: OPT.issueStatus, d: 'Abierto', req: 1 },
+    { k: 'resolution', l: 'Resolución', t: 'textarea', wide: 1 },
+  ] },
+  logbook: { title: 'Bitácora diaria', one: 'registro de bitácora', fields: [
+    { k: 'date', l: 'Fecha', t: 'date', d: 'today', req: 1 },
+    { k: 'person', l: 'Persona', t: 'text', dl: 1, req: 1 },
+    { k: 'hours', l: 'Horas dedicadas', t: 'number', min: 0, max: 24, d: 0 },
+    { k: 'wbs', l: 'Elemento EDT', t: 'text', ph: '2.1' },
+    { k: 'activity', l: 'Qué se hizo', t: 'textarea', req: 1, wide: 1 },
+    { k: 'blockers', l: 'Bloqueos o pendientes', t: 'textarea', wide: 1 },
+  ] },
+  lessons: { title: 'Lecciones aprendidas', one: 'lección aprendida', fields: [
+    { k: 'date', l: 'Fecha', t: 'date', d: 'today' },
+    { k: 'category', l: 'Dominio', t: 'select', o: OPT.lessonCat },
+    { k: 'situation', l: 'Qué pasó', t: 'textarea', req: 1, wide: 1 },
+    { k: 'lesson', l: 'Lección', t: 'textarea', req: 1, wide: 1 },
+    { k: 'action', l: 'Recomendación para próximos proyectos', t: 'textarea', wide: 1 },
+  ] },
+};
+const LISTS = ['projects', ...Object.keys(COLL)];
+
+/* =========================================================
+   Estado
+   ========================================================= */
+const S = { mode: 'connecting', err: null, loaded: new Set(), lastSync: 0, me: null, canWrite: null, readOnly: false, peers: [], profiles: {}, feed: [] };
+LISTS.forEach(k => { S[k] = []; });
+const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true };
+try {
+  const saved = JSON.parse(localStorage.getItem('dgp-ui') || 'null');
+  if (saved && typeof saved === 'object') { UI.view = saved.view || 'portfolio'; UI.pid = saved.pid || null; UI.tab = saved.tab || 'resumen'; UI.depth = saved.depth || 9; }
+} catch (e) { /* almacenamiento no disponible */ }
+if (location.hash === '#guia') UI.view = 'guide';
+const persistUI = () => { try { localStorage.setItem('dgp-ui', JSON.stringify({ view: UI.view, pid: UI.pid, tab: UI.tab, depth: UI.depth })); } catch (e) { /* sin almacenamiento */ } };
+
+let db = null, user = null, room = null, sample = null, downloads = null;
+const C = window.claude;
+const use = name => (C && typeof C.use === 'function') ? Promise.resolve(C.use(name)).catch(() => null) : Promise.resolve(null);
+
+let raf = 0;
+const schedule = () => { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; render(); }); };
+
+/* =========================================================
+   Conexión en tiempo real
+   ========================================================= */
+async function boot() {
+  render();
+  const [d, u] = await Promise.all([use('db'), use('user')]);
+  db = d; user = u;
+  if (!db) { S.mode = 'offline'; render(); return; }
+  if (user) {
+    try { S.me = await user.me(); } catch (e) { S.me = null; }
+    try { S.canWrite = await user.can('data.write'); } catch (e) { S.canWrite = null; }
+  }
+  LISTS.forEach(subscribe);
+  db.collection('feed').orderBy('at', 'desc').limit(40).onSnapshot(snap => {
+    S.feed = snap.docs.map(x => Object.assign({ id: x.id }, x.data()));
+    schedule();
+  }, () => {});
+  use('room').then(r => { room = r; if (r) initPresence(); });
+  use('sample').then(s => { sample = s; schedule(); });
+  use('downloads').then(x => { downloads = x; schedule(); });
+}
+function subscribe(name) {
+  db.collection(name).onSnapshot(snap => {
+    S[name] = snap.docs.map(x => Object.assign({ id: x.id }, x.data()));
+    S.loaded.add(name); S.lastSync = Date.now();
+    if (S.mode !== 'error') S.mode = 'live';
+    schedule();
+  }, err => { S.mode = 'error'; S.err = err && err.code; schedule(); });
+}
+
+/* Presencia: quién está mirando el sistema ahora mismo */
+function initPresence() {
+  try {
+    room.onPeers(ch => { S.peers = (ch && ch.peers ? ch.peers.slice() : []); schedule(); }, () => {});
+    S.peers = typeof room.peers === 'function' ? room.peers().slice() : [];
+  } catch (e) { /* sin presencia */ }
+  lastWhere = ''; pushPresence();
+}
+let lastWhere = '';
+function pushPresence() {
+  if (!room) return;
+  const p = UI.view === 'project' ? projectById(UI.pid) : null;
+  const where = p ? (p.code || 'Proyecto') : UI.view === 'guide' ? 'Guía PMBOK' : 'Portafolio';
+  if (where === lastWhere) return;
+  lastWhere = where;
+  Promise.resolve(room.presence({ where })).catch(() => {});
+}
+
+/* Nombres de personas (se guardan solo ids) */
+const pendingIds = new Set(); let profT = 0;
+function profileOf(id) {
+  if (!id) return null;
+  if (S.profiles[id]) return S.profiles[id];
+  if (user) { pendingIds.add(id); if (!profT) profT = setTimeout(loadProfiles, 60); }
+  return null;
+}
+async function loadProfiles() {
+  profT = 0; const ids = [...pendingIds]; pendingIds.clear();
+  if (!ids.length || !user) return;
+  try { const ps = await user.profiles(ids); ids.forEach(i => { S.profiles[i] = ps[i] || { name: '' }; }); } catch (e) { ids.forEach(i => { S.profiles[i] = { name: '' }; }); }
+  schedule();
+}
+const nameOf = id => { const p = profileOf(id); if (!p) return 'Alguien'; return p.name || (S.me && id === S.me.id ? 'Tú' : 'Alguien'); };
+
+/* =========================================================
+   Escritura
+   ========================================================= */
+const canEdit = () => S.mode === 'live' && !S.readOnly && S.canWrite !== false;
+const stamp = () => ({ updatedAt: new Date().toISOString(), updatedBy: (S.me && S.me.id) || null });
+function writeErr(e) {
+  const code = e && e.code;
+  if (code === 'invalid_argument') { S.readOnly = true; toast('Tu acceso es de solo lectura. Pide al propietario que te comparta el sistema como Colaborador.', 'crit'); schedule(); }
+  else if (code === 'quota_exceeded') toast('La base de datos llegó a su límite. Elimina registros antiguos (por ejemplo, de la bitácora) para seguir.', 'crit');
+  else if (code === 'resource_exhausted') toast('Demasiadas operaciones seguidas. Espera unos segundos y vuelve a intentarlo.', 'warn');
+  else toast('No se pudo guardar. Revisa tu conexión y vuelve a intentarlo.', 'crit');
+}
+async function createRec(coll, data) { const now = new Date().toISOString(); return db.collection(coll).add(Object.assign({}, data, stamp(), { createdAt: now, createdBy: (S.me && S.me.id) || null })); }
+async function updateRec(coll, id, data) { return db.doc(`${coll}/${id}`).update(Object.assign({}, data, stamp())); }
+let feedWrites = 0;
+async function logFeed(pid, text) {
+  if (!db) return;
+  try {
+    await db.collection('feed').add({ pid: pid || null, text: String(text).slice(0, 220), by: (S.me && S.me.id) || null, at: new Date().toISOString() });
+    feedWrites++;
+    if (feedWrites % 15 === 0) pruneFeed();
+  } catch (e) { /* el registro de actividad es opcional */ }
+}
+async function pruneFeed() {
+  try { const snap = await db.collection('feed').orderBy('at', 'desc').get(); for (const d of snap.docs.slice(200)) await db.doc('feed/' + d.id).delete(); } catch (e) { /* sin poda */ }
+}
+
+/* =========================================================
+   Cálculos de gestión
+   ========================================================= */
+const projectById = id => S.projects.find(p => p.id === id) || null;
+const projectsSorted = () => S.projects.slice().sort((a, b) => String(a.code || '').localeCompare(String(b.code || ''), 'es', { numeric: true }));
+const of = (coll, pid) => S[coll].filter(r => r.pid === pid);
+let MC = new Map();
+
+function plannedFrac(s, e, td) {
+  if (!s) return 0;
+  const end = e && e >= s ? e : s;
+  if (td < s) return 0;
+  return clamp((dBetween(s, td) + 1) / (dBetween(s, end) + 1), 0, 1);
+}
+function taskState(t, td) {
+  const p = clamp(num(t.progress), 0, 100), s = parseD(t.start), e = parseD(t.end) || s;
+  if (p >= 100) return { k: 'done', label: 'Completada', tone: 'ok' };
+  if (e && td > e) return { k: 'late', label: 'Vencida', tone: 'crit', days: dBetween(e, td) };
+  if (s && td >= s) { const pf = plannedFrac(s, e, td) * 100; return pf - p > 20 ? { k: 'behind', label: 'Retrasada', tone: 'warn', gap: pf - p } : { k: 'run', label: 'En curso', tone: 'data' }; }
+  return { k: 'todo', label: 'Por iniciar', tone: 'idle' };
+}
+function rollup(pid) {
+  const T = of('tasks', pid).slice().sort((a, b) => wbsCmp(a.wbs, b.wbs));
+  const leaves = T.filter(t => t.type !== 'Entregable');
+  const sum = new Map();
+  for (const t of T) {
+    if (t.type !== 'Entregable') continue;
+    const kids = leaves.filter(l => isChildOf(l.wbs, t.wbs));
+    let s = null, e = null, w = 0, ev = 0, pc = 0, ac = 0;
+    for (const k of kids) {
+      const ks = parseD(k.start), ke = parseD(k.end) || ks;
+      if (ks && (!s || ks < s)) s = ks;
+      if (ke && (!e || ke > e)) e = ke;
+      const kw = ks && ke ? Math.max(1, dBetween(ks, ke) + 1) : 1;
+      w += kw; ev += kw * clamp(num(k.progress), 0, 100); pc += num(k.plannedCost); ac += num(k.actualCost);
+    }
+    sum.set(t.id, { start: s || parseD(t.start), end: e || parseD(t.end), progress: kids.length ? ev / w : clamp(num(t.progress), 0, 100), count: kids.length, plannedCost: pc || num(t.plannedCost), actualCost: ac || num(t.actualCost) });
+  }
+  return { T, leaves, sum };
+}
+const riskScore = r => num(r.probability) * num(r.impact);
+function metrics(p) {
+  if (MC.has(p.id)) return MC.get(p.id);
+  const td = today();
+  const { T, leaves, sum } = rollup(p.id);
+  const costMode = leaves.some(t => num(t.plannedCost) > 0);
+  let W = 0, PVw = 0, EVw = 0, BAC = 0, PV = 0, EV = 0, AC = 0;
+  for (const t of leaves) {
+    const s = parseD(t.start), e = parseD(t.end) || s;
+    const dur = s && e ? Math.max(1, dBetween(s, e) + 1) : 1;
+    const pf = plannedFrac(s, e, td), pr = clamp(num(t.progress), 0, 100) / 100;
+    const w = costMode ? num(t.plannedCost) : dur;
+    W += w; PVw += w * pf; EVw += w * pr;
+    BAC += num(t.plannedCost); PV += num(t.plannedCost) * pf; EV += num(t.plannedCost) * pr; AC += num(t.actualCost);
+  }
+  const planPct = W ? PVw / W * 100 : null, realPct = W ? EVw / W * 100 : null;
+  const SPI = PVw > 0 ? EVw / PVw : null;
+  const CPI = costMode && AC > 0 ? EV / AC : null;
+  const budget = num(p.budget) || BAC;
+  const EAC = CPI ? budget / CPI : null;
+  const VAC = EAC != null ? budget - EAC : null;
+  const TCPI = costMode && budget - AC > 0 ? (budget - EV) / (budget - AC) : null;
+  const states = leaves.map(t => ({ t, st: taskState(t, td) }));
+  const late = states.filter(x => x.st.k === 'late');
+  const behind = states.filter(x => x.st.k === 'behind');
+  const done = states.filter(x => x.st.k === 'done').length;
+  const R = of('risks', p.id), openR = R.filter(r => r.status !== 'Cerrado');
+  const threats = openR.filter(r => r.kind !== 'Oportunidad');
+  const highR = threats.filter(r => riskScore(r) >= 15);
+  const pendA = of('agreements', p.id).filter(a => a.status === 'Pendiente');
+  const lateA = pendA.filter(a => { const d = parseD(a.due); return d && d < td; });
+  const soonA = pendA.filter(a => { const d = parseD(a.due); return d && d >= td && dBetween(td, d) <= 3; });
+  const pendC = of('changes', p.id).filter(c => c.status === 'Registrada' || c.status === 'En análisis');
+  const openI = of('issues', p.id).filter(i => i.status !== 'Resuelto');
+  let lvl = 0; const why = [];
+  const bump = (n, msg) => { lvl = Math.max(lvl, n); why.push(msg); };
+  if (SPI != null) { if (SPI < 0.8) bump(2, `SPI ${ix(SPI)}: el avance va muy por detrás de la línea base`); else if (SPI < 0.95) bump(1, `SPI ${ix(SPI)}: avance algo por detrás de la línea base`); }
+  if (CPI != null) { if (CPI < 0.8) bump(2, `CPI ${ix(CPI)}: sobrecosto importante`); else if (CPI < 0.95) bump(1, `CPI ${ix(CPI)}: ligero sobrecosto`); }
+  if (late.length >= 3) bump(2, `${plural(late.length, 'actividad vencida', 'actividades vencidas')}`); else if (late.length) bump(1, `${plural(late.length, 'actividad vencida', 'actividades vencidas')}`);
+  if (highR.some(r => riskScore(r) >= 20 || r.status === 'Materializado')) bump(2, 'Riesgo crítico activo'); else if (highR.length) bump(1, `${plural(highR.length, 'riesgo alto abierto', 'riesgos altos abiertos')}`);
+  if (lateA.length >= 3) bump(2, `${plural(lateA.length, 'acuerdo vencido', 'acuerdos vencidos')}`); else if (lateA.length) bump(1, `${plural(lateA.length, 'acuerdo vencido', 'acuerdos vencidos')}`);
+  const noBase = !leaves.length;
+  const health = noBase && !R.length ? { tone: 'idle', label: 'Sin línea base' } : [{ tone: 'ok', label: 'En control' }, { tone: 'warn', label: 'En observación' }, { tone: 'crit', label: 'Crítico' }][lvl];
+  const out = { T, leaves, sum, costMode, W, planPct, realPct, SPI, CPI, BAC, PV, EV, AC, budget, EAC, VAC, TCPI, states, late, behind, done, R, openR, threats, highR, pendA, lateA, soonA, pendC, openI, health, why, noBase };
+  MC.set(p.id, out);
+  return out;
+}
+function prio(p) {
+  const I = [1, 2, 3, 4].map(i => num(p['imp' + i], NaN)).filter(Number.isFinite);
+  const E = [1, 2, 3, 4].map(i => num(p['esf' + i], NaN)).filter(Number.isFinite);
+  if (I.length < 4 || E.length < 4) return null;
+  const i = avg(I), e = avg(E);
+  const quad = i >= 3 ? (e < 3 ? { k: 'prior', label: 'Priorizar acciones de mejora', tone: 'warn' } : { k: 'act', label: 'Acciones a realizar', tone: 'ok' }) : (e < 3 ? { k: 'np', label: 'Área no prioritaria', tone: 'data' } : { k: 'na', label: 'No atender', tone: 'idle' });
+  return { i, e, quad };
+}
+function alertsFor(p) {
+  const m = metrics(p), td = today(), out = [];
+  const add = (sev, kind, tab, text, code) => out.push({ sev, kind, tab, text, code, pid: p.id, pcode: p.code });
+  m.late.forEach(({ t, st }) => add(2, 'Cronograma', 'cronograma', `«${t.name}» venció hace ${plural(st.days, 'día', 'días')} con ${Math.round(num(t.progress))}% de avance.`, t.wbs));
+  m.behind.forEach(({ t, st }) => add(1, 'Cronograma', 'cronograma', `«${t.name}» lleva ${Math.round(st.gap)} puntos de avance por debajo de lo planificado.`, t.wbs));
+  m.highR.forEach(r => add(riskScore(r) >= 20 || r.status === 'Materializado' ? 2 : 1, 'Riesgo', 'riesgo', `${r.title} (P×I = ${riskScore(r)})${r.response ? '' : '. Sin acción de respuesta definida.'}`, r.code));
+  m.threats.forEach(r => { const d = parseD(r.due); if (d && d < td && riskScore(r) < 15) add(1, 'Riesgo', 'riesgo', `Revisión vencida el ${fmtD(r.due)}: ${r.title}`, r.code); });
+  m.lateA.forEach(a => add(2, 'Acuerdo', 'gobernanza', `Acuerdo vencido el ${fmtD(a.due)}${a.owner ? ` (${a.owner})` : ''}: ${a.text}`, ''));
+  m.soonA.forEach(a => { const d = dBetween(td, parseD(a.due)); add(1, 'Acuerdo', 'gobernanza', `${d === 0 ? 'Vence hoy' : `Vence en ${plural(d, 'día', 'días')}`}${a.owner ? ` (${a.owner})` : ''}: ${a.text}`, ''); });
+  m.pendC.forEach(c => { const d = parseD(c.date); const age = d ? dBetween(d, td) : 0; if (age > 7) add(1, 'Cambio', 'gobernanza', `Solicitud sin decisión desde hace ${age} días: ${c.title}`, c.code); });
+  m.openI.filter(i => i.priority === 'Alta').forEach(i => add(1, 'Incidente', 'riesgo', `Incidente de prioridad alta abierto: ${i.title}`, i.code));
+  m.leaves.filter(t => t.type === 'Hito' && num(t.progress) < 100).forEach(t => { const d = parseD(t.end || t.start); if (d && d >= td && dBetween(td, d) <= 7) add(0, 'Hito', 'cronograma', `Hito en ${plural(dBetween(td, d), 'día', 'días')}: ${t.name}`, t.wbs); });
+  return out;
+}
+function nextCode(coll, pid, prefix) {
+  let max = 0; const re = new RegExp('^' + prefix + '-(\\d+)$');
+  of(coll, pid).forEach(r => { const m = re.exec(String(r.code || '')); if (m) max = Math.max(max, +m[1]); });
+  return `${prefix}-${String(max + 1).padStart(2, '0')}`;
+}
+function teamNames(pid) {
+  const set = new Set();
+  if (pid) { of('team', pid).forEach(t => t.name && set.add(t.name)); const p = projectById(pid); if (p && p.manager) set.add(p.manager); }
+  return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+}
+
+/* =========================================================
+   Render principal
+   ========================================================= */
+function render() {
+  MC = new Map();
+  renderSide(); renderTop();
+  const v = $('#view');
+  if (UI.view === 'guide') { v.innerHTML = viewGuide(); pushPresence(); return; }
+  if (S.mode === 'offline') { v.innerHTML = viewOffline(); return; }
+  if (S.mode === 'connecting' || !S.loaded.has('projects')) {
+    if (S.mode === 'error') { v.innerHTML = viewError(); return; }
+    v.innerHTML = `<div class="loading"><h2>Conectando con la base de datos del equipo…</h2><p>En unos segundos verás la cartera de proyectos, sus alertas y el avance actualizado.</p></div>`;
+    return;
+  }
+  if (S.mode === 'error') { v.innerHTML = viewError(); return; }
+  if (UI.view === 'project' && !projectById(UI.pid)) UI.view = 'portfolio';
+  v.innerHTML = UI.view === 'project' ? viewProject(projectById(UI.pid)) : viewPortfolio();
+  if (UI.scrollGantt) { const gs = $('.g-scroll'); if (gs) { if (gs.dataset.todayX) gs.scrollLeft = Math.max(0, +gs.dataset.todayX - gs.clientWidth * 0.35); UI.scrollGantt = false; } }
+  pushPresence();
+}
+function renderSide() {
+  const st = $('#side-status');
+  st.innerHTML = S.mode === 'live'
+    ? `<span class="live"><i></i>En vivo</span><span>${S.lastSync ? 'Sincronizado ' + ago(S.lastSync) : ''}</span>`
+    : S.mode === 'offline' ? `<span class="live off"><i></i>Sin conexión</span>`
+    : S.mode === 'error' ? `<span class="live err"><i></i>Conexión interrumpida</span>`
+    : `<span class="live wait"><i></i>Conectando…</span>`;
+  const P = projectsSorted();
+  const cur = (v, id) => (UI.view === v && (!id || UI.pid === id)) ? 'true' : 'false';
+  let h = `<button class="nav-item" data-act="go-portfolio" aria-current="${cur('portfolio')}"><span class="glyph"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1" fill="currentColor" opacity=".55"/><rect x="1" y="9" width="6" height="6" rx="1" fill="currentColor" opacity=".55"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/></svg></span><span class="nm">Portafolio</span><span></span></button>`;
+  h += `<p class="nav-label">Proyectos</p>`;
+  h += P.length ? P.map(p => { const m = S.loaded.has('tasks') ? metrics(p) : null; return `<button class="nav-item" data-act="go-project" data-id="${esc(p.id)}" aria-current="${cur('project', p.id)}" title="${esc(p.name)}"><span class="code">${esc(p.code || '—')}</span><span class="nm">${esc(p.name || 'Sin nombre')}</span><span class="dot ${m ? m.health.tone : 'idle'}" aria-label="${m ? esc(m.health.label) : ''}"></span></button>`; }).join('')
+    : `<p class="note" style="padding:0 8px">${S.mode === 'live' ? 'Aún no hay proyectos.' : '—'}</p>`;
+  h += `<p class="nav-label">Referencia</p><button class="nav-item" data-act="go-guide" aria-current="${cur('guide')}"><span class="glyph"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2.5h5a2 2 0 0 1 2 2V14a1.6 1.6 0 0 0-1.6-1.6H2z" fill="currentColor" opacity=".55"/><path d="M14 2.5H9.6A1.6 1.6 0 0 0 8 4.1V14a1.6 1.6 0 0 1 1.6-1.6H14z" fill="currentColor"/></svg></span><span class="nm">Guía PMBOK</span><span></span></button>`;
+  $('#side-nav').innerHTML = h;
+}
+function renderTop() {
+  const p = UI.view === 'project' ? projectById(UI.pid) : null;
+  const crumbs = UI.view === 'guide' ? `<button data-act="go-portfolio">Portafolio</button><span class="sep">/</span><span>Guía PMBOK</span>`
+    : p ? `<button data-act="go-portfolio">Portafolio</button><span class="sep">/</span><span>${esc(p.code)} · ${esc(p.name)}</span>` : `<span>Portafolio de proyectos</span>`;
+  const peers = S.peers || [];
+  const ids = [...new Set(peers.map(x => x.by).filter(Boolean))];
+  const avs = ids.slice(0, 5).map(id => { const pr = profileOf(id); const nm = pr ? (pr.name || (S.me && id === S.me.id ? 'Tú' : 'Alguien')) : '…'; const where = (peers.find(x => x.by === id) || {}).presence; return pr && pr.avatarUrl ? `<img src="${esc(pr.avatarUrl)}" alt="${esc(nm)}" title="${esc(nm)}${where && where.where ? ' · ' + esc(where.where) : ''}">` : ''; }).join('');
+  const nPeers = peers.length;
+  $('#topbar').innerHTML = `<div class="crumbs">${crumbs}</div><div class="top-r">${nPeers ? `<span class="peers"><span class="avs">${avs}</span><span>${plural(nPeers, 'persona conectada', 'personas conectadas')}</span></span>` : ''}${S.mode === 'live' && !canEdit() ? '<span class="pill">Solo lectura</span>' : ''}<span class="cut">Fecha de corte: <b>${fmtD(today())}</b></span></div>`;
+}
+
+/* ---------- piezas reutilizables ---------- */
+const pill = (tone, label, dot) => `<span class="pill ${tone}">${dot ? `<span class="dot ${tone}"></span>` : ''}${esc(label)}</span>`;
+const kpi = (label, val, sub, tone) => `<div class="kpi ${tone || ''}"><div class="k-label">${esc(label)}</div><div class="k-val">${val}</div>${sub ? `<div class="k-sub">${sub}</div>` : ''}</div>`;
+const idxTone = v => v == null ? 'idle' : v < 0.8 ? 'crit' : v < 0.95 ? 'warn' : 'ok';
+function stepper(p, big, clickable) {
+  const cur = Math.max(0, OPT.phase.indexOf(p.phase || 'Inicio'));
+  return `<div class="stepper${big ? ' big' : ''}" role="list" aria-label="Área de enfoque">${OPT.phase.map((ph, i) => {
+    const cls = i < cur ? 'past' : i === cur ? 'now' : '';
+    return clickable ? `<button class="step ${cls}" role="listitem" data-act="set-phase" data-phase="${esc(ph)}" title="Mover a ${esc(ph)}" aria-current="${i === cur}"><i></i><span>${esc(ph)}</span></button>` : `<div class="step ${cls}" role="listitem"><i></i><span>${esc(ph)}</span></div>`;
+  }).join('')}</div>`;
+}
+function progressBar(real, plan) {
+  if (real == null) return `<div class="pbar" aria-hidden="true"></div><div class="pbar-legend"><span>Sin actividades con fechas</span></div>`;
+  return `<div class="pbar" role="img" aria-label="Avance real ${pct(real)} frente a ${pct(plan)} planificado"><span style="width:${clamp(real, 0, 100).toFixed(1)}%"></span>${plan != null ? `<i style="left:calc(${clamp(plan, 0, 100).toFixed(1)}% - 1px)"></i>` : ''}</div><div class="pbar-legend"><span>Real <b>${pct(real)}</b></span><span>Planificado a hoy <b>${pct(plan)}</b></span></div>`;
+}
+function addBtn(coll, label) { return canEdit() ? `<button class="btn" data-act="add" data-coll="${coll}">${esc(label || 'Agregar ' + COLL[coll].one)}</button>` : ''; }
+function panel(title, note, body, actions) {
+  return `<section class="panel"><div class="panel-head"><div><h2>${esc(title)}</h2>${note ? `<p class="note">${note}</p>` : ''}</div>${actions ? `<div class="head-actions">${actions}</div>` : ''}</div>${body}</section>`;
+}
+function regTable(coll, rows, cols, opts = {}) {
+  if (!rows.length) return `<div class="empty"><p>${esc(opts.empty || 'Todavía no hay registros.')}</p>${addBtn(coll)}</div>`;
+  const ed = canEdit();
+  return `<div class="tbl"><table><thead><tr>${cols.map(c => `<th class="${c.cls || ''}">${esc(c.h)}</th>`).join('')}${ed || opts.extra ? '<th class="act-col"><span class="sr">Acciones</span></th>' : ''}</tr></thead><tbody>${rows.map(r => `<tr>${cols.map(c => `<td class="${c.cls || ''}">${c.v(r)}</td>`).join('')}${ed || opts.extra ? `<td class="act-col">${opts.extra && ed ? opts.extra(r) : ''}${ed ? `<button class="icon-btn" data-act="edit" data-coll="${coll}" data-id="${esc(r.id)}">Editar</button>` : ''}</td>` : ''}</tr>`).join('')}</tbody></table></div>`;
+}
+const T_ = v => esc(v || '—');
+const wrapTxt = v => v ? esc(v) : '<span class="tone-idle">—</span>';
+
+/* =========================================================
+   Vista: portafolio
+   ========================================================= */
+function viewPortfolio() {
+  const P = projectsSorted();
+  const actions = `${sample && P.length ? `<button class="btn" data-act="ai" data-scope="portfolio">Informe de portafolio con IA</button>` : ''}${canEdit() ? '<button class="btn primary" data-act="new-project">Nuevo proyecto</button>' : ''}`;
+  const head = `<header class="page-head"><div><p class="eyebrow">Cartera de proyectos · OGPL-UNMSM</p><h1>Portafolio</h1><p class="lede">Estado consolidado al ${fmtD(today())}. Los indicadores se recalculan al instante cada vez que alguien del equipo registra un avance, un riesgo o un acuerdo.</p></div><div class="head-actions">${actions}</div></header>`;
+  if (!P.length) return head + `<div class="empty"><p>Aún no hay proyectos en la cartera. Crea el primero con «Nuevo proyecto»: empezarás por el acta de constitución, como indica el área de enfoque de Inicio del PMBOK.</p>${canEdit() ? '<button class="btn primary" data-act="new-project">Nuevo proyecto</button>' : ''}</div>`;
+  const all = P.map(p => ({ p, m: metrics(p), pr: prio(p) }));
+  const alerts = P.flatMap(alertsFor).sort((a, b) => b.sev - a.sev);
+  const crit = alerts.filter(a => a.sev === 2).length;
+  const highR = all.reduce((s, x) => s + x.m.highR.length, 0);
+  const lateA = all.reduce((s, x) => s + x.m.lateA.length, 0);
+  const late = all.reduce((s, x) => s + x.m.late.length, 0);
+  const byPhase = OPT.phase.map(ph => [ph, P.filter(p => (p.phase || 'Inicio') === ph).length]).filter(x => x[1]).map(x => `${x[1]} en ${x[0].toLowerCase()}`).join(' · ');
+  return head + `<div class="stack">
+    <section class="kpis">
+      ${kpi('Proyectos en cartera', P.length, esc(byPhase))}
+      ${kpi('Alertas críticas', crit, crit ? 'Requieren acción esta semana' : 'Nada urgente', crit ? 'crit' : 'ok')}
+      ${kpi('Actividades vencidas', late, 'Fin planificado ya pasó', late ? 'warn' : '')}
+      ${kpi('Riesgos altos abiertos', highR, 'P×I ≥ 15', highR ? 'warn' : '')}
+      ${kpi('Acuerdos vencidos', lateA, 'Compromisos de reuniones', lateA ? 'crit' : '')}
+    </section>
+    ${aiPanel('portfolio')}
+    <section class="cards">${all.map(cardProject).join('')}</section>
+    <div class="split">
+      ${panel('Alertas en tiempo real', 'Ordenadas por severidad. Se generan solas a partir del cronograma, los riesgos, los acuerdos y los cambios.', alertList(alerts, true))}
+      ${panel('Matriz impacto–esfuerzo', 'Priorización de la cartera con los 8 criterios de la matriz DGP. Corte en 3 (punto medio de la escala).', matrixSVG(all))}
+    </div>
+    ${panel('Actividad reciente', 'Lo último que registró el equipo en el sistema.', feedList())}
+  </div>`;
+}
+function cardProject({ p, m }) {
+  const lateA = m.lateA.length;
+  return `<article class="pcard" tabindex="0" role="link" data-act="go-project" data-id="${esc(p.id)}" aria-label="Abrir ${esc(p.code)} ${esc(p.name)}">
+    <div class="pcard-top"><span class="code-chip">${esc(p.code || '—')}</span>${pill(m.health.tone, m.health.label, true)}</div>
+    <h3>${esc(p.name || 'Sin nombre')}</h3>
+    ${stepper(p)}
+    <div>${progressBar(m.realPct, m.planPct)}</div>
+    <dl class="mini">
+      <div><dt>SPI<br>cronograma</dt><dd class="tone-${idxTone(m.SPI)}">${ix(m.SPI)}</dd></div>
+      <div><dt>CPI<br>costo</dt><dd class="tone-${idxTone(m.CPI)}">${ix(m.CPI)}</dd></div>
+      <div><dt>Riesgos altos</dt><dd class="${m.highR.length ? 'tone-warn' : ''}">${m.highR.length}</dd></div>
+      <div><dt>Acuerdos vencidos</dt><dd class="${lateA ? 'tone-crit' : ''}">${lateA}</dd></div>
+    </dl>
+    <p class="pfoot">${p.end ? `Fin previsto ${fmtD(p.end)}` : 'Sin fecha de fin'}${p.manager ? ` · Dirige ${esc(p.manager)}` : ''}</p>
+  </article>`;
+}
+function alertList(alerts, withProject) {
+  if (!alerts.length) return `<div class="empty"><p>Sin alertas: no hay actividades vencidas, riesgos altos ni acuerdos atrasados.</p></div>`;
+  const shown = alerts.slice(0, 14);
+  return `<ul class="alerts">${shown.map(a => `<li><span class="sev s${a.sev}" aria-label="${['Aviso', 'Atención', 'Crítico'][a.sev]}"></span><div><div>${esc(a.text)}</div><div class="a-meta">${withProject ? `<span class="mono">${esc(a.pcode)}</span>` : ''}<span>${esc(a.kind)}${a.code ? ` · <span class="mono">${esc(a.code)}</span>` : ''}</span><button class="linkish" data-act="go-project" data-id="${esc(a.pid)}" data-tab="${a.tab}">Ver en ${esc(tabLabel(a.tab))}</button></div></div></li>`).join('')}</ul>${alerts.length > shown.length ? `<p class="note" style="margin-top:8px">Y ${alerts.length - shown.length} alertas más dentro de cada proyecto.</p>` : ''}`;
+}
+function feedList(pid) {
+  const items = S.feed.filter(f => !pid || f.pid === pid).slice(0, pid ? 8 : 12);
+  if (!items.length) return `<div class="empty"><p>Todavía no hay actividad registrada. Cada vez que alguien guarde un cambio aparecerá aquí al instante.</p></div>`;
+  return `<ul class="feed">${items.map(f => { const p = projectById(f.pid); return `<li><span class="sev s0"></span><div><span class="who">${esc(nameOf(f.by))}</span> ${esc(f.text)}<div class="a-meta">${p ? `<span class="mono">${esc(p.code)}</span>` : ''}<time datetime="${esc(f.at)}">${esc(ago(Date.parse(f.at)))}</time></div></div></li>`; }).join('')}</ul>`;
+}
+function matrixSVG(all) {
+  const pts = all.filter(x => x.pr);
+  if (!pts.length) return `<div class="empty"><p>Completa los 8 criterios de priorización en el acta de cada proyecto para ubicarlo en la matriz.</p></div>`;
+  const W = 380, H = 300, L = 46, R = 366, Tp = 14, B = 252;
+  const X = e => L + (e - 1) / 4 * (R - L), Y = i => B - (i - 1) / 4 * (B - Tp);
+  let g = `<rect x="${L}" y="${Tp}" width="${X(3) - L}" height="${Y(3) - Tp}" class="m-q-prior"/><rect x="${X(3)}" y="${Tp}" width="${R - X(3)}" height="${Y(3) - Tp}" class="m-q-act"/><rect x="${L}" y="${Y(3)}" width="${X(3) - L}" height="${B - Y(3)}" class="m-q-np"/><rect x="${X(3)}" y="${Y(3)}" width="${R - X(3)}" height="${B - Y(3)}" class="m-q-na"/>`;
+  g += `<text x="${L + 6}" y="${Tp + 14}" class="m-qlbl">PRIORIZAR ACCIONES</text><text x="${X(3) + 6}" y="${Tp + 14}" class="m-qlbl">ACCIONES A REALIZAR</text><text x="${L + 6}" y="${B - 7}" class="m-qlbl">ÁREA NO PRIORITARIA</text><text x="${X(3) + 6}" y="${B - 7}" class="m-qlbl">NO ATENDER</text>`;
+  for (let v = 1; v <= 5; v++) { g += `<text x="${X(v)}" y="${B + 16}" text-anchor="middle" class="c-tick">${v}</text><text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end" class="c-tick">${v}</text>`; }
+  g += `<text x="${(L + R) / 2}" y="${H - 6}" text-anchor="middle" class="c-tick">Esfuerzo →</text><text transform="translate(13 ${(Tp + B) / 2}) rotate(-90)" text-anchor="middle" class="c-tick">Impacto →</text>`;
+  const seen = {};
+  pts.forEach(({ p, pr }) => {
+    const key = pr.i.toFixed(2) + '|' + pr.e.toFixed(2); const k = seen[key] = (seen[key] || 0) + 1;
+    const x = X(pr.e) + (k - 1) * 10, y = Y(pr.i) - (k - 1) * 10;
+    g += `<g class="g-row" data-act="go-project" data-id="${esc(p.id)}"><title>${esc(p.code)} · ${esc(p.name)} — impacto ${pr.i.toFixed(2)}, esfuerzo ${pr.e.toFixed(2)}: ${esc(pr.quad.label)}</title><circle cx="${x}" cy="${y}" r="7" class="m-dot"/><text x="${x + 11}" y="${y + 4}" class="m-lbl">${esc(p.code)}</text></g>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Matriz impacto esfuerzo de la cartera">${g}</svg>`;
+}
+
+/* =========================================================
+   Vista: proyecto
+   ========================================================= */
+const TABS = [['resumen', 'Resumen'], ['gobernanza', 'Gobernanza'], ['alcance', 'Alcance'], ['cronograma', 'Cronograma'], ['finanzas', 'Finanzas'], ['interesados', 'Interesados'], ['recursos', 'Recursos'], ['riesgo', 'Riesgo'], ['bitacora', 'Bitácora y lecciones']];
+const tabLabel = k => (TABS.find(t => t[0] === k) || ['', k])[1];
+const DOMAIN = {
+  gobernanza: ['Dominio de Gobernanza', 'Quién decide y cómo: acta de constitución, priorización, control integrado de cambios y seguimiento de acuerdos.'],
+  alcance: ['Dominio de Alcance', 'Qué se entrega: estructura de desglose del trabajo (EDT) y requisitos trazados hasta su entregable.'],
+  cronograma: ['Dominio de Cronograma', 'Cuándo se entrega: línea base de fechas, avance físico y desviaciones frente al plan.'],
+  finanzas: ['Dominio de Finanzas', 'Cuánto cuesta: presupuesto, costo real y gestión del valor ganado (PV, EV, AC).'],
+  interesados: ['Dominio de Interesados', 'Con quién: análisis de poder e interés y brechas entre el compromiso actual y el deseado.'],
+  recursos: ['Dominio de Recursos', 'Con qué y con quiénes: equipo, roles, dedicación y horas reales registradas en la bitácora.'],
+  riesgo: ['Dominio de Riesgo', 'Qué puede pasar: amenazas y oportunidades, su respuesta, y los incidentes que ya ocurrieron.'],
+  bitacora: ['Trabajo diario y mejora continua', 'Registro diario del equipo (bitácora) y lecciones aprendidas para los próximos proyectos.'],
+};
+function viewProject(p) {
+  const m = metrics(p);
+  const tabCount = { cronograma: m.late.length, riesgo: m.highR.length, gobernanza: m.lateA.length + m.pendC.length };
+  const actions = [
+    sample ? `<button class="btn" data-act="ai" data-scope="${esc(p.id)}">Informe de estado con IA</button>` : '',
+    downloads ? `<button class="btn" data-act="export" data-id="${esc(p.id)}">Exportar datos</button>` : '',
+    canEdit() ? `<button class="btn primary" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '',
+  ].join('');
+  const head = `<header class="page-head"><div><p class="eyebrow">${esc(p.code || '')}${p.unit ? ' · ' + esc(p.unit) : ''}</p><h1>${esc(p.name || 'Sin nombre')}</h1>
+    <div class="facts">${pill(m.health.tone, m.health.label, true)}${p.manager ? `<span>Dirige <b>${esc(p.manager)}</b></span>` : ''}${p.sponsor ? `<span>Patrocina <b>${esc(p.sponsor)}</b></span>` : ''}${p.start || p.end ? `<span>${fmtD(p.start)} → <b>${fmtD(p.end)}</b></span>` : ''}${p.approach ? `<span>Enfoque <b>${esc(p.approach)}</b></span>` : ''}</div></div><div class="head-actions">${actions}</div></header>
+    <div class="panel" style="padding:12px 16px"><div class="k-label" style="margin-bottom:8px">Área de enfoque actual${canEdit() ? ' · toca una etapa para cambiarla' : ''}</div>${stepper(p, true, canEdit())}</div>`;
+  const tabs = `<div class="tabs" role="tablist">${TABS.map(([k, l]) => `<button class="tab" role="tab" aria-selected="${UI.tab === k}" data-act="tab" data-tab="${k}">${l}${tabCount[k] ? `<span class="cnt hot">${tabCount[k]}</span>` : ''}</button>`).join('')}</div>`;
+  const dn = DOMAIN[UI.tab] ? `<p class="domain-note"><b>${DOMAIN[UI.tab][0]}</b><span>${DOMAIN[UI.tab][1]}</span></p>` : '';
+  const body = { resumen: tabResumen, gobernanza: tabGobernanza, alcance: tabAlcance, cronograma: tabCronograma, finanzas: tabFinanzas, interesados: tabInteresados, recursos: tabRecursos, riesgo: tabRiesgo, bitacora: tabBitacora }[UI.tab] || tabResumen;
+  return head + tabs + dn + `<div class="stack">${body(p, m)}</div>`;
+}
+
+function tabResumen(p, m) {
+  const td = today();
+  const up = [];
+  m.leaves.forEach(t => { const d = parseD(t.end); if (d && d >= td && dBetween(td, d) <= 21 && num(t.progress) < 100) up.push({ d, kind: t.type === 'Hito' ? 'Hito' : 'Fin de actividad', text: t.name, code: t.wbs }); });
+  m.pendA.forEach(a => { const d = parseD(a.due); if (d && d >= td && dBetween(td, d) <= 21) up.push({ d, kind: 'Acuerdo', text: a.text + (a.owner ? ` (${a.owner})` : '') }); });
+  m.openR.forEach(r => { const d = parseD(r.due); if (d && d >= td && dBetween(td, d) <= 21) up.push({ d, kind: 'Revisión de riesgo', text: r.title, code: r.code }); });
+  up.sort((a, b) => a.d - b.d);
+  const upHtml = up.length ? `<div class="tbl"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th></tr></thead><tbody>${up.slice(0, 12).map(u => `<tr><td class="nowrap num">${fmtDs(u.d)} <span class="sub">${dBetween(td, u.d) === 0 ? 'hoy' : 'en ' + plural(dBetween(td, u.d), 'día', 'días')}</span></td><td class="nowrap">${esc(u.kind)}${u.code ? ` <span class="mono tone-idle">${esc(u.code)}</span>` : ''}</td><td class="wrap">${esc(u.text)}</td></tr>`).join('')}</tbody></table></div>` : `<div class="empty"><p>Nada vence en las próximas 3 semanas.</p></div>`;
+  const kp = `<section class="kpis">
+    ${kpi('Avance real', pct(m.realPct), m.planPct != null ? `Planificado a hoy: ${pct(m.planPct)}` : 'Sin cronograma', m.realPct != null && m.planPct != null ? (m.realPct + 5 >= m.planPct ? 'ok' : m.realPct + 20 >= m.planPct ? 'warn' : 'crit') : '')}
+    ${kpi('SPI', ix(m.SPI), 'Desempeño del cronograma (EV/PV)', m.SPI != null ? idxTone(m.SPI) : '')}
+    ${kpi('CPI', ix(m.CPI), m.costMode ? 'Desempeño del costo (EV/AC)' : 'Registra costos para calcularlo', m.CPI != null ? idxTone(m.CPI) : '')}
+    ${kpi('Actividades', `${m.done}/${m.leaves.length}`, `${plural(m.late.length, 'vencida', 'vencidas')} · ${plural(m.behind.length, 'retrasada', 'retrasadas')}`, m.late.length ? 'crit' : '')}
+    ${kpi('Riesgos abiertos', m.threats.length, `${plural(m.highR.length, 'alto', 'altos')} (P×I ≥ 15)`, m.highR.length ? 'warn' : '')}
+  </section>`;
+  const healthWhy = m.why.length ? `<ul style="margin:6px 0 0;padding-left:18px">${m.why.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : '<p class="note" style="margin-top:4px">Ningún indicador fuera de rango.</p>';
+  return kp + aiPanel(p.id) + `<div class="split">
+    ${panel('Curva S del proyecto', 'Avance acumulado planificado según la línea base, comparado con el avance real a la fecha de corte.', sCurve(p, m))}
+    ${panel('Alertas del proyecto', `Semáforo: <b>${esc(m.health.label)}</b>.`, healthWhy + `<div style="margin-top:12px">${alertList(alertsFor(p).sort((a, b) => b.sev - a.sev), false)}</div>`)}
+  </div>
+  <div class="split even">
+    ${panel('Próximos vencimientos', 'Actividades, hitos, acuerdos y revisiones de riesgo de las próximas 3 semanas.', upHtml)}
+    ${panel('Actividad reciente del proyecto', '', feedList(p.id))}
+  </div>`;
+}
+function sCurve(p, m) {
+  const td = today();
+  const L = m.leaves.map(t => ({ s: parseD(t.start), e: parseD(t.end) || parseD(t.start), w: m.costMode ? num(t.plannedCost) : null })).filter(x => x.s);
+  if (!L.length) return `<div class="empty"><p>Agrega actividades con fechas en la pestaña Cronograma para dibujar la curva S.</p></div>`;
+  L.forEach(x => { if (x.w == null) x.w = Math.max(1, dBetween(x.s, x.e) + 1); });
+  const W = L.reduce((s, x) => s + x.w, 0) || 1;
+  let min = L.reduce((a, x) => x.s < a ? x.s : a, L[0].s), max = L.reduce((a, x) => x.e > a ? x.e : a, L[0].e);
+  if (+max === +min) max = new Date(min.getTime() + DAY);
+  const at = d => L.reduce((s, x) => s + x.w * plannedFrac(x.s, x.e, d), 0) / W * 100;
+  const VW = 560, VH = 230, Lx = 44, Rx = 546, Ty = 14, By = 192;
+  const X = d => Lx + (d - min) / (max - min) * (Rx - Lx), Y = v => By - v / 100 * (By - Ty);
+  const N = 48; let path = '', area = '';
+  for (let i = 0; i <= N; i++) { const d = new Date(min.getTime() + (max - min) * i / N); const x = X(d).toFixed(1), y = Y(at(d)).toFixed(1); path += (i ? 'L' : 'M') + x + ' ' + y; area += (i ? 'L' : `M${x} ${By}L`) + x + ' ' + y; }
+  area += `L${Rx} ${By}Z`;
+  let g = `<path d="${area}" class="c-area" opacity=".7"/>`;
+  [0, 25, 50, 75, 100].forEach(v => { g += `<line x1="${Lx}" x2="${Rx}" y1="${Y(v)}" y2="${Y(v)}" class="c-grid"/><text x="${Lx - 8}" y="${Y(v) + 4}" text-anchor="end" class="c-tick">${v}%</text>`; });
+  const ticks = 5; for (let i = 0; i <= ticks; i++) { const d = new Date(min.getTime() + (max - min) * i / ticks); g += `<text x="${X(d)}" y="${By + 17}" text-anchor="${i === 0 ? 'start' : i === ticks ? 'end' : 'middle'}" class="c-tick">${MES[d.getMonth()]} ${String(d.getFullYear()).slice(2)}</text>`; }
+  g += `<path d="${path}" class="c-plan"/>`;
+  if (td >= min && td <= max) {
+    const x = X(td), yp = Y(m.planPct || 0), yr = Y(m.realPct || 0);
+    g += `<line x1="${x}" x2="${x}" y1="${Ty}" y2="${By}" class="c-today"/>`;
+    g += `<circle cx="${x}" cy="${yp}" r="5" class="c-planpt"/><circle cx="${x}" cy="${yr}" r="6" class="c-real"/>`;
+    const right = x > (Lx + Rx) / 2;
+    const ax = right ? x - 10 : x + 10, anchor = right ? 'end' : 'start';
+    const sep = Math.abs(yp - yr) < 16 ? 9 : 0;
+    g += `<text x="${ax}" y="${yp - 6 - sep}" text-anchor="${anchor}" class="c-lbl dat">Plan ${pct(m.planPct)}</text><text x="${ax}" y="${yr + 16 + sep}" text-anchor="${anchor}" class="c-lbl acc">Real ${pct(m.realPct)}</text>`;
+  }
+  return `<svg class="chart" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Curva S: plan ${pct(m.planPct)}, real ${pct(m.realPct)} a la fecha de corte">${g}</svg><div class="legend"><span><i></i>Línea base (avance planificado acumulado)</span><span><i class="pt"></i>Planificado a hoy</span><span><i class="acc"></i>Avance real a hoy</span></div>`;
+}
+
+function tabGobernanza(p, m) {
+  const pr = prio(p);
+  const f = (k, l, wide) => `<div class="${wide ? 'wide' : ''}"><dt>${esc(l)}</dt><dd>${p[k] ? esc(p[k]) : '<span class="tone-idle">Sin registrar</span>'}</dd></div>`;
+  const charter = `<dl class="charter">${f('purpose', 'Propósito y justificación', 1)}${f('objective', 'Objetivo SMART', 1)}${f('success', 'Criterios de éxito', 1)}${f('scopeIn', 'Incluye')}${f('scopeOut', 'Excluye')}${f('assumptions', 'Supuestos')}${f('constraints', 'Restricciones')}<div><dt>Presupuesto aprobado</dt><dd class="num">${num(p.budget) ? money(p.budget) : '<span class="tone-idle">Sin registrar</span>'}</dd></div><div><dt>Priorización</dt><dd>${pr ? `Impacto <b class="num">${pr.i.toFixed(2)}</b> · Esfuerzo <b class="num">${pr.e.toFixed(2)}</b><br>${pill(pr.quad.tone, pr.quad.label)}` : '<span class="tone-idle">Completa los 8 criterios</span>'}</dd></div>${p.notes ? f('notes', 'Notas', 1) : ''}</dl>`;
+  const td = today();
+  const agreements = of('agreements', p.id).slice().sort((a, b) => { const sa = a.status === 'Pendiente' ? 0 : 1, sb = b.status === 'Pendiente' ? 0 : 1; if (sa !== sb) return sa - sb; return String(a.due || '9999').localeCompare(String(b.due || '9999')); });
+  const aState = a => { if (a.status !== 'Pendiente') return pill(a.status === 'Cumplido' ? 'ok' : '', a.status); const d = parseD(a.due); if (d && d < td) return pill('crit', 'Vencido'); if (d && dBetween(td, d) <= 3) return pill('warn', 'Por vencer'); return pill('data', 'Pendiente'); };
+  const changes = of('changes', p.id).slice().sort((a, b) => String(b.code || '').localeCompare(String(a.code || ''), 'es', { numeric: true }));
+  const cTone = { Registrada: 'data', 'En análisis': 'warn', Aprobada: 'ok', Rechazada: 'crit', Implementada: 'ok' };
+  return panel('Acta de constitución', 'Autoriza el proyecto y fija su propósito, objetivos y límites. Edítala con «Editar acta».', charter, canEdit() ? `<button class="btn" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '')
+    + panel('Acuerdos y compromisos de reuniones', `${plural(m.pendA.length, 'pendiente', 'pendientes')} · ${plural(m.lateA.length, 'vencido', 'vencidos')}. Marca «Cumplido» en cuanto se cierre un compromiso.`,
+      regTable('agreements', agreements, [
+        { h: 'Estado', v: aState, cls: 'nowrap' },
+        { h: 'Acuerdo', v: a => esc(a.text), cls: 'wrap' },
+        { h: 'Responsable', v: a => T_(a.owner), cls: 'nowrap' },
+        { h: 'Límite', v: a => fmtDs(a.due), cls: 'nowrap num' },
+        { h: 'Reunión', v: a => `${esc(a.meeting || '')}<span class="sub">${fmtD(a.meetingDate)}</span>`, cls: 'wrap' },
+      ], { empty: 'Aún no hay acuerdos registrados. Anota aquí los compromisos de cada reunión con su responsable y fecha límite.', extra: a => a.status === 'Pendiente' ? `<button class="icon-btn" data-act="agree-done" data-id="${esc(a.id)}">Cumplido</button>` : '' }), addBtn('agreements'))
+    + panel('Control integrado de cambios', 'Toda modificación a la línea base de alcance, cronograma o costo pasa por aquí antes de aplicarse.',
+      regTable('changes', changes, [
+        { h: 'Código', v: c => `<span class="mono">${T_(c.code)}</span>`, cls: 'nowrap' },
+        { h: 'Cambio', v: c => `${esc(c.title)}${c.description ? `<span class="sub">${esc(c.description)}</span>` : ''}`, cls: 'wrap' },
+        { h: 'Área', v: c => T_(c.area), cls: 'nowrap' },
+        { h: 'Impacto', v: c => `${num(c.impactDays) ? `${num(c.impactDays) > 0 ? '+' : ''}${num(c.impactDays)} d` : '—'}${num(c.impactCost) ? `<span class="sub">${money(c.impactCost)}</span>` : ''}`, cls: 'nowrap num' },
+        { h: 'Estado', v: c => pill(cTone[c.status] || '', c.status || '—'), cls: 'nowrap' },
+        { h: 'Decisión', v: c => `${wrapTxt(c.decision)}${c.decisionDate ? `<span class="sub">${fmtD(c.decisionDate)}</span>` : ''}`, cls: 'wrap' },
+      ], { empty: 'Sin solicitudes de cambio. Registra aquí cualquier ajuste al alcance, plazos, costos o método.' }), addBtn('changes'));
+}
+
+function tabAlcance(p, m) {
+  const tree = m.T.length ? `<ul class="wbs">${m.T.map(t => {
+    const d = wbsDepth(t.wbs), s = t.type === 'Entregable' ? m.sum.get(t.id) : null;
+    const prog = s ? s.progress : clamp(num(t.progress), 0, 100);
+    const st = t.type === 'Entregable' ? null : taskState(t, today());
+    return `<li class="lvl${d}"><div class="w-name" style="padding-left:${(d - 1) * 18}px"><span class="w-code">${esc(t.wbs)}</span><span>${esc(t.name)}${t.type === 'Hito' ? ' <span class="pill accent">Hito</span>' : ''}</span></div><div>${progressMini(prog, st)}</div><div class="nowrap" style="font-size:12px;color:var(--muted)">${esc(t.owner || '')}</div></li>`;
+  }).join('')}</ul>` : `<div class="empty"><p>La EDT está vacía. Agrega los entregables principales (1, 2, 3…) y luego las actividades de cada uno (1.1, 1.2…) desde la pestaña Cronograma.</p>${addBtn('tasks', 'Agregar elemento de la EDT')}</div>`;
+  const reqs = of('requirements', p.id).slice().sort((a, b) => String(a.code || '').localeCompare(String(b.code || ''), 'es', { numeric: true }));
+  const rTone = { Propuesto: 'data', Aprobado: 'ok', Validado: 'ok', Rechazado: 'crit' };
+  const wbsName = w => { const t = m.T.find(x => String(x.wbs) === String(w)); return t ? t.name : ''; };
+  return panel('Estructura de desglose del trabajo (EDT)', 'Avance de cada entregable calculado a partir de sus actividades (ponderado por duración).', tree, addBtn('tasks', 'Agregar elemento'))
+    + panel('Matriz de trazabilidad de requisitos', 'Cada requisito enlazado al entregable que lo satisface y con su criterio de aceptación.',
+      regTable('requirements', reqs, [
+        { h: 'Código', v: r => `<span class="mono">${T_(r.code)}</span>`, cls: 'nowrap' },
+        { h: 'Requisito', v: r => `${esc(r.description)}${r.source ? `<span class="sub">Origen: ${esc(r.source)}</span>` : ''}`, cls: 'wrap' },
+        { h: 'Prioridad', v: r => T_(r.priority), cls: 'nowrap' },
+        { h: 'Entregable', v: r => r.wbs ? `<span class="mono">${esc(r.wbs)}</span><span class="sub">${esc(wbsName(r.wbs))}</span>` : '—', cls: 'wrap' },
+        { h: 'Criterio de aceptación', v: r => wrapTxt(r.criteria), cls: 'wrap' },
+        { h: 'Estado', v: r => pill(rTone[r.status] || '', r.status || '—'), cls: 'nowrap' },
+      ], { empty: 'Sin requisitos registrados. Anota qué debe cumplir cada entregable para ser aceptado.' }), addBtn('requirements'));
+}
+function progressMini(prog, st) {
+  const tone = st ? (st.k === 'late' ? 'var(--crit)' : st.k === 'behind' ? 'var(--warn)' : st.k === 'done' ? 'var(--ok)' : 'var(--data)') : 'var(--data)';
+  return `<div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="flex:1;height:6px"><span style="width:${clamp(prog, 0, 100).toFixed(1)}%;background:${tone}"></span></div><span class="num" style="font-size:12px;min-width:34px;text-align:right">${pct(prog)}</span></div>`;
+}
+
+function tabCronograma(p, m) {
+  const td = today();
+  const depthOpts = [[9, 'Todo el detalle'], [1, 'Nivel 1'], [2, 'Hasta nivel 2'], [3, 'Hasta nivel 3']].map(([v, l]) => `<option value="${v}"${UI.depth === v ? ' selected' : ''}>${l}</option>`).join('');
+  const tools = `<div class="gantt-tools"><label class="note" for="depth-sel">Mostrar <select id="depth-sel" class="inline" data-change="depth">${depthOpts}</select></label><div class="legend" style="margin:0"><span><i style="background:var(--data)"></i>En curso</span><span><i style="background:var(--ok)"></i>Completada</span><span><i style="background:var(--warn)"></i>Retrasada</span><span><i style="background:var(--crit)"></i>Vencida</span><span><i style="background:var(--accent);height:2px"></i>Hoy</span></div></div>`;
+  const rows = m.T;
+  const ed = canEdit();
+  const table = regTable('tasks', rows, [
+    { h: 'EDT', v: t => `<span class="mono">${esc(t.wbs)}</span>`, cls: 'nowrap' },
+    { h: 'Nombre', v: t => `<span style="padding-left:${(wbsDepth(t.wbs) - 1) * 12}px;display:inline-block;${t.type === 'Entregable' ? 'font-weight:700' : ''}">${esc(t.name)}</span>${t.type === 'Hito' ? ' <span class="pill accent">Hito</span>' : ''}`, cls: 'wrap' },
+    { h: 'Responsable', v: t => T_(t.owner), cls: 'nowrap' },
+    { h: 'Inicio', v: t => { const s = t.type === 'Entregable' ? (m.sum.get(t.id) || {}).start : t.start; return fmtDs(s); }, cls: 'nowrap num' },
+    { h: 'Fin', v: t => { const e = t.type === 'Entregable' ? (m.sum.get(t.id) || {}).end : t.end; return fmtDs(e); }, cls: 'nowrap num' },
+    { h: 'Avance', v: t => t.type === 'Entregable' ? `<span class="num">${pct((m.sum.get(t.id) || {}).progress)}</span>` : ed ? `<input class="quick" type="number" min="0" max="100" step="5" value="${num(t.progress)}" data-quick="progress" data-id="${esc(t.id)}" aria-label="Avance de ${esc(t.name)}">` : `<span class="num">${pct(num(t.progress))}</span>`, cls: 'nowrap r' },
+    { h: 'Estado', v: t => { if (t.type === 'Entregable') return ''; const st = taskState(t, td); return pill(st.tone, st.label + (st.k === 'late' ? ` · ${st.days} d` : '')); }, cls: 'nowrap' },
+  ], { empty: 'El cronograma está vacío. Empieza por los entregables de la EDT y luego agrega sus actividades con fechas y responsable.' });
+  return panel('Diagrama de Gantt', 'Barras claras: plan. Relleno: avance físico. Toca una barra para editarla.', m.T.length ? tools + gantt(p, m) : '', addBtn('tasks', 'Agregar actividad'))
+    + panel('Actividades', ed ? 'Actualiza el avance directamente en la columna «Avance»: todos los tableros se recalculan al instante.' : '', table);
+}
+function gantt(p, m) {
+  const td = today();
+  const rows = m.T.filter(t => wbsDepth(t.wbs) <= UI.depth);
+  let min = null, max = null;
+  for (const t of m.T) {
+    const s = t.type === 'Entregable' ? (m.sum.get(t.id) || {}).start : parseD(t.start);
+    const e = t.type === 'Entregable' ? (m.sum.get(t.id) || {}).end : (parseD(t.end) || parseD(t.start));
+    if (s && (!min || s < min)) min = s; if (e && (!max || e > max)) max = e;
+  }
+  if (!min || !rows.length) return `<div class="empty"><p>Agrega fechas de inicio y fin a las actividades para dibujar el diagrama.</p></div>`;
+  min = new Date(min.getFullYear(), min.getMonth(), 1); max = new Date(max.getFullYear(), max.getMonth() + 1, 0);
+  const narrow = window.innerWidth < 640;
+  const days = dBetween(min, max) + 1, LW = narrow ? 168 : 310, RH = 26, HH = 42;
+  const avail = Math.max(260, Math.min(window.innerWidth, 1500) - (window.innerWidth > 900 ? 272 : 0) - 90 - LW);
+  const pxd = clamp(avail / days, 1.1, 16);
+  const BW = Math.ceil(days * pxd + 46), H = HH + rows.length * RH + 6;
+  const X = d => 4 + dBetween(min, d) * pxd;
+  const ed = canEdit();
+  const rowAttr = t => ed ? ` data-act="edit" data-coll="tasks" data-id="${esc(t.id)}"` : '';
+  let left = '', right = '';
+  rows.forEach((t, i) => { if (i % 2) { left += `<rect x="0" y="${HH + i * RH}" width="${LW}" height="${RH}" class="g-zebra"/>`; right += `<rect x="0" y="${HH + i * RH}" width="${BW}" height="${RH}" class="g-zebra"/>`; } });
+  for (let d = new Date(min); d <= max; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+    const x = X(d), nxt = new Date(d.getFullYear(), d.getMonth() + 1, 1), w = dBetween(d, nxt) * pxd;
+    right += `<line x1="${x}" y1="${HH - 18}" x2="${x}" y2="${H}" class="g-grid"/>`;
+    if (w >= 22) right += `<text x="${x + 4}" y="${HH - 8}" class="g-month">${MES[d.getMonth()]}</text>`;
+    if (d.getMonth() === 0 || +d === +min) right += `<text x="${x + 4}" y="${HH - 24}" class="g-year">${d.getFullYear()}</text>`;
+  }
+  left += `<line x1="0" y1="${HH}" x2="${LW}" y2="${HH}" class="g-sep"/><text x="8" y="${HH - 8}" class="g-month">Elemento de la EDT</text>`;
+  right += `<line x1="0" y1="${HH}" x2="${BW}" y2="${HH}" class="g-sep"/>`;
+  rows.forEach((t, i) => {
+    const y = HH + i * RH, d = wbsDepth(t.wbs), indent = 8 + (d - 1) * (narrow ? 8 : 12);
+    const codeW = String(t.wbs).length * 7 + 8;
+    const maxChars = Math.max(5, Math.floor((LW - indent - codeW - 8) / 6.4));
+    const label = String(t.name || '').length > maxChars ? String(t.name).slice(0, maxChars - 1) + '…' : String(t.name || '');
+    const tip = `<title>${esc(t.wbs)} ${esc(t.name)}${t.owner ? ' · ' + esc(t.owner) : ''}</title>`;
+    left += `<g class="g-row"${rowAttr(t)}>${tip}<rect x="0" y="${y}" width="${LW}" height="${RH}" class="g-hit"/><text x="${indent}" y="${y + 17}" class="g-code">${esc(t.wbs)}</text><text x="${indent + codeW}" y="${y + 17}" class="g-label${t.type === 'Entregable' ? ' sum' : ''}">${esc(label)}</text></g>`;
+    let bar = '';
+    if (t.type === 'Entregable') {
+      const s = m.sum.get(t.id) || {};
+      if (s.start && s.end) { const x1 = X(s.start), x2 = X(s.end) + pxd; bar = `<rect x="${x1}" y="${y + 10}" width="${Math.max(3, x2 - x1)}" height="6" rx="2" class="g-sum"/><text x="${x2 + 6}" y="${y + 17}" class="g-pct">${pct(s.progress)}</text>`; }
+    } else {
+      const s = parseD(t.start), e = parseD(t.end) || s, st = taskState(t, td);
+      if (s) {
+        if (t.type === 'Hito') { const cx = X(e || s) + pxd / 2, cy = y + RH / 2; bar = `<path d="M${cx} ${cy - 7}L${cx + 7} ${cy}L${cx} ${cy + 7}L${cx - 7} ${cy}Z" class="g-ms${st.k === 'done' ? ' done' : ''}"/>`; }
+        else { const x1 = X(s), w = Math.max(3, (dBetween(s, e) + 1) * pxd), pw = w * clamp(num(t.progress), 0, 100) / 100; bar = `<rect x="${x1}" y="${y + 6}" width="${w}" height="14" rx="3" class="g-plan"/>${pw > 0 ? `<rect x="${x1}" y="${y + 6}" width="${pw}" height="14" rx="3" class="g-prog ${st.k}"/>` : ''}<text x="${x1 + w + 6}" y="${y + 17}" class="g-pct">${pct(num(t.progress))}</text>`; }
+      }
+    }
+    right += `<g class="g-row"${rowAttr(t)}>${tip}<rect x="0" y="${y}" width="${BW}" height="${RH}" class="g-hit"/>${bar}</g>`;
+  });
+  let todayX = '';
+  if (td >= min && td <= max) { const x = X(td) + pxd / 2; todayX = x.toFixed(0); right += `<line x1="${x}" y1="${HH - 4}" x2="${x}" y2="${H}" class="g-today"/><text x="${x + 4}" y="${HH - 30}" class="g-today-l">Hoy</text>`; }
+  return `<div class="gantt-wrap"><svg class="g-left" width="${LW}" height="${H}" viewBox="0 0 ${LW} ${H}" aria-hidden="true">${left}</svg><div class="g-scroll" data-today-x="${todayX}"><svg width="${BW}" height="${H}" viewBox="0 0 ${BW} ${H}" role="img" aria-label="Diagrama de Gantt de ${esc(p.code)}">${right}</svg></div></div>`;
+}
+
+function tabFinanzas(p, m) {
+  const cv = m.EV - m.AC, sv = m.EV - m.PV, etc = m.EAC != null ? m.EAC - m.AC : null;
+  const intro = m.costMode ? '' : `<div class="empty"><p>Aún no hay costos planificados en las actividades. Registra el <b>costo planificado</b> y el <b>costo real</b> de cada actividad (pestaña Cronograma → Editar) para activar el análisis de valor ganado. Mientras tanto, el SPI se calcula ponderando por duración.</p></div>`;
+  const k = `<section class="kpis">
+    ${kpi('Presupuesto (BAC)', money(m.budget), num(p.budget) ? 'Aprobado en el acta' : 'Suma de costos planificados')}
+    ${kpi('Valor planificado (PV)', money(m.PV), 'Lo que debió ejecutarse a hoy')}
+    ${kpi('Valor ganado (EV)', money(m.EV), 'Lo realmente logrado, valorizado')}
+    ${kpi('Costo real (AC)', money(m.AC), 'Lo efectivamente gastado')}
+    ${kpi('Estimación a la conclusión (EAC)', m.EAC != null ? money(m.EAC) : '—', m.VAC != null ? `VAC ${money(m.VAC)}` : 'BAC ÷ CPI', m.VAC != null ? (m.VAC >= 0 ? 'ok' : 'crit') : '')}
+  </section>`;
+  const gl = `<dl class="gl"><dt>CV = EV − AC</dt><dd>${m.costMode ? `<b class="num ${cv >= 0 ? 'tone-ok' : 'tone-crit'}">${money(cv)}</b> · ${cv >= 0 ? 'dentro del presupuesto' : 'sobrecosto'}` : '—'}</dd><dt>SV = EV − PV</dt><dd>${m.costMode ? `<b class="num ${sv >= 0 ? 'tone-ok' : 'tone-crit'}">${money(sv)}</b> · ${sv >= 0 ? 'adelantado' : 'atrasado'} en valor` : '—'}</dd><dt>CPI = EV / AC</dt><dd><b class="num tone-${idxTone(m.CPI)}">${ix(m.CPI)}</b> · cada S/ 1 gastado produce S/ ${ix(m.CPI)} de valor</dd><dt>SPI = EV / PV</dt><dd><b class="num tone-${idxTone(m.SPI)}">${ix(m.SPI)}</b> · ritmo de avance frente al plan</dd><dt>ETC = EAC − AC</dt><dd>${etc != null ? money(etc) : '—'} · lo que falta gastar</dd><dt>TCPI</dt><dd>${ix(m.TCPI)} · eficiencia necesaria para terminar dentro del BAC</dd></dl>`;
+  const groups = m.T.filter(t => t.type === 'Entregable' && wbsDepth(t.wbs) === 1);
+  const td = today();
+  const gRows = groups.map(g => {
+    const kids = m.leaves.filter(l => isChildOf(l.wbs, g.wbs));
+    let bac = 0, pv = 0, ev = 0, ac = 0;
+    kids.forEach(t => { const s = parseD(t.start), e = parseD(t.end) || s; bac += num(t.plannedCost); pv += num(t.plannedCost) * plannedFrac(s, e, td); ev += num(t.plannedCost) * clamp(num(t.progress), 0, 100) / 100; ac += num(t.actualCost); });
+    return { g, bac, pv, ev, ac };
+  });
+  const tbl = m.costMode && gRows.length ? `<div class="tbl"><table><thead><tr><th>Entregable</th><th class="r">BAC</th><th class="r">PV</th><th class="r">EV</th><th class="r">AC</th><th class="r">CPI</th><th class="r">SPI</th></tr></thead><tbody>${gRows.map(r => `<tr><td><span class="mono">${esc(r.g.wbs)}</span> ${esc(r.g.name)}</td><td class="r">${money(r.bac)}</td><td class="r">${money(r.pv)}</td><td class="r">${money(r.ev)}</td><td class="r">${money(r.ac)}</td><td class="r tone-${idxTone(r.ac ? r.ev / r.ac : null)}">${ix(r.ac ? r.ev / r.ac : null)}</td><td class="r tone-${idxTone(r.pv ? r.ev / r.pv : null)}">${ix(r.pv ? r.ev / r.pv : null)}</td></tr>`).join('')}</tbody></table></div>` : '';
+  const maxV = Math.max(m.budget, m.PV, m.EV, m.AC, 1);
+  const bars = m.costMode ? `<div class="hbars">${[['Presupuesto (BAC)', m.budget, ''], ['Planificado a hoy (PV)', m.PV, ''], ['Valor ganado (EV)', m.EV, 'ok'], ['Costo real (AC)', m.AC, 'acc']].map(([l, v, c]) => `<div class="hbar"><span class="lab">${l}</span><div class="trk"><span class="${c}" style="width:${(v / maxV * 100).toFixed(1)}%"></span></div><span class="num">${money(v)}</span></div>`).join('')}</div>` : '';
+  return intro + k + `<div class="split">${panel('Indicadores de valor ganado', 'Fórmulas de la gestión del valor ganado (EVM) aplicadas a la fecha de corte.', gl)}${panel('Comparación de montos', '', bars || '<p class="note">Se mostrará al registrar costos.</p>')}</div>` + (tbl ? panel('Valor ganado por entregable', '', tbl) : '');
+}
+
+function tabInteresados(p, m) {
+  const SH = of('stakeholders', p.id).slice().sort((a, b) => (num(b.power) * num(b.interest)) - (num(a.power) * num(a.interest)));
+  const q = (pw, it) => SH.filter(s => (num(s.power) >= 3) === pw && (num(s.interest) >= 3) === it);
+  const box = (cls, title, list) => `<div class="qbox ${cls}"><h4>${title}</h4><div class="chips">${list.length ? list.map(s => `<span class="chip" title="${esc(s.role || '')}">${esc(s.name)}</span>`).join('') : '<span class="note">—</span>'}</div></div>`;
+  const grid = `<div class="quad">${box('q4', 'Mantener satisfecho', q(true, false))}${box('q2', 'Gestionar de cerca', q(true, true))}${box('q3', 'Monitorear', q(false, false))}${box('q1', 'Mantener informado', q(false, true))}</div><div class="quad-axes"><span>↑ Más poder</span><span>Más interés →</span></div>`;
+  const gap = s => { const c = OPT.engagement.indexOf(s.current), d = OPT.engagement.indexOf(s.desired); if (c < 0 || d < 0) return T_(s.current); return c < d ? `${pill('warn', s.current)} <span class="sub">→ ${esc(s.desired)}</span>` : pill('ok', s.current); };
+  const gaps = SH.filter(s => OPT.engagement.indexOf(s.current) >= 0 && OPT.engagement.indexOf(s.current) < OPT.engagement.indexOf(s.desired)).length;
+  return `<div class="split">${panel('Matriz poder–interés', 'Indica cuánta atención necesita cada interesado.', SH.length ? grid : `<div class="empty"><p>Registra a los interesados para ubicarlos en la matriz.</p></div>`)}${panel('Brechas de compromiso', `${plural(gaps, 'interesado está', 'interesados están')} por debajo del compromiso que el proyecto necesita.`, SH.length ? `<ul class="alerts">${SH.filter(s => OPT.engagement.indexOf(s.current) < OPT.engagement.indexOf(s.desired)).slice(0, 8).map(s => `<li><span class="sev s1"></span><div><b>${esc(s.name)}</b>: de ${esc(s.current)} a ${esc(s.desired)}<div class="a-meta">${esc(s.strategy || 'Sin estrategia definida')}</div></div></li>`).join('') || '<li><span class="sev s0"></span><div>Sin brechas: todos tienen el compromiso deseado.</div></li>'}</ul>` : '')}</div>`
+    + panel('Registro de interesados', 'Ordenado por poder × interés.', regTable('stakeholders', SH, [
+      { h: 'Interesado', v: s => `<b>${esc(s.name)}</b><span class="sub">${esc([s.role, s.org].filter(Boolean).join(' · '))}</span>`, cls: 'wrap' },
+      { h: 'Poder', v: s => `<span class="num">${num(s.power) || '—'}</span>`, cls: 'r' },
+      { h: 'Interés', v: s => `<span class="num">${num(s.interest) || '—'}</span>`, cls: 'r' },
+      { h: 'Compromiso', v: gap, cls: 'nowrap' },
+      { h: 'Estrategia', v: s => wrapTxt(s.strategy), cls: 'wrap' },
+      { h: 'Contacto', v: s => T_(s.contact), cls: 'nowrap' },
+    ], { empty: 'Sin interesados registrados. Empieza por el patrocinador, los usuarios y quienes aprueban los entregables.' }), addBtn('stakeholders'));
+}
+
+function tabRecursos(p, m) {
+  const team = of('team', p.id).slice().sort((a, b) => num(b.dedication) - num(a.dedication));
+  const td = today();
+  const recent = of('logbook', p.id).filter(l => { const d = parseD(l.date); return d && dBetween(d, td) <= 30 && dBetween(d, td) >= 0; });
+  const hrs = {}; recent.forEach(l => { const k = l.person || 'Sin nombre'; hrs[k] = (hrs[k] || 0) + num(l.hours); });
+  const hList = Object.entries(hrs).sort((a, b) => b[1] - a[1]);
+  const maxH = Math.max(1, ...hList.map(x => x[1]));
+  const load = {}; m.leaves.forEach(t => { if (num(t.progress) < 100 && t.owner) load[t.owner] = (load[t.owner] || 0) + 1; });
+  const hBars = hList.length ? `<div class="hbars">${hList.map(([n, h]) => `<div class="hbar"><span class="lab" title="${esc(n)}">${esc(n)}</span><div class="trk"><span style="width:${(h / maxH * 100).toFixed(1)}%"></span></div><span class="num">${h.toFixed(1)} h</span></div>`).join('')}</div>` : `<div class="empty"><p>Sin horas registradas en los últimos 30 días. El equipo las registra en la pestaña «Bitácora y lecciones».</p></div>`;
+  return `<div class="split">${panel('Equipo del proyecto', 'Roles, dedicación y actividades abiertas a su cargo.', regTable('team', team, [
+      { h: 'Integrante', v: t => `<b>${esc(t.name)}</b><span class="sub">${esc(t.role || '')}</span>`, cls: 'wrap' },
+      { h: 'Dedicación', v: t => `<span class="num">${num(t.dedication) ? num(t.dedication) + '%' : '—'}</span>`, cls: 'r' },
+      { h: 'Act. abiertas', v: t => `<span class="num">${load[t.name] || 0}</span>`, cls: 'r' },
+      { h: 'Competencias', v: t => wrapTxt(t.skills), cls: 'wrap' },
+    ], { empty: 'Sin integrantes. Agrega a las personas del equipo para asignarles actividades, riesgos y acuerdos.' }), addBtn('team'))}
+    ${panel('Horas reales (últimos 30 días)', 'Suma de horas registradas en la bitácora por persona.', hBars)}</div>`;
+}
+
+function tabRiesgo(p, m) {
+  const td = today();
+  const threats = m.threats;
+  const cells = []; for (let pr = 5; pr >= 1; pr--) { cells.push(`<div class="hax">${pr}</div>`); for (let im = 1; im <= 5; im++) { const sc = pr * im, list = threats.filter(r => num(r.probability) === pr && num(r.impact) === im); const cls = sc >= 15 ? 'hi' : sc >= 8 ? 'mid' : 'lo'; cells.push(`<div class="hcell ${cls}${list.length ? '' : ' zero'}" title="P${pr} × I${im} = ${sc}">${list.length || ''}${list.length ? `<small>${list.slice(0, 3).map(r => esc(r.code || '')).join(' ')}</small>` : ''}</div>`); } }
+  const heat = `<div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:center"><div class="hax vert">Probabilidad</div><div><div class="heat">${cells.join('')}<div></div>${[1, 2, 3, 4, 5].map(i => `<div class="hax">${i}</div>`).join('')}</div><div class="heat-foot"><span>Impacto →</span><span>Alto ≥ 15 · Medio 8–14 · Bajo ≤ 7</span></div></div></div>`;
+  const opps = m.openR.filter(r => r.kind === 'Oportunidad');
+  const R = m.R.slice().sort((a, b) => { const ca = a.status === 'Cerrado' ? 1 : 0, cb = b.status === 'Cerrado' ? 1 : 0; if (ca !== cb) return ca - cb; return riskScore(b) - riskScore(a); });
+  const sTone = { Abierto: 'warn', 'En tratamiento': 'data', Materializado: 'crit', Cerrado: 'ok' };
+  const I = of('issues', p.id).slice().sort((a, b) => (a.status === 'Resuelto') - (b.status === 'Resuelto') || ['Alta', 'Media', 'Baja'].indexOf(a.priority) - ['Alta', 'Media', 'Baja'].indexOf(b.priority));
+  return `<div class="split">${panel('Mapa de calor de amenazas abiertas', `${plural(threats.length, 'amenaza abierta', 'amenazas abiertas')} · ${plural(opps.length, 'oportunidad', 'oportunidades')}. Cada celda muestra cuántos riesgos tienen esa probabilidad e impacto.`, heat)}
+    ${panel('Riesgos que exigen atención', 'Puntaje alto, sin respuesta o con revisión vencida.', (() => { const list = threats.filter(r => riskScore(r) >= 15 || !r.response || (parseD(r.due) && parseD(r.due) < td)).sort((a, b) => riskScore(b) - riskScore(a)); return list.length ? `<ul class="alerts">${list.slice(0, 8).map(r => `<li><span class="sev ${riskScore(r) >= 15 ? 's2' : 's1'}"></span><div>${esc(r.title)}<div class="a-meta"><span class="mono">${esc(r.code || '')}</span><span>P×I ${riskScore(r)}</span><span>${esc(r.strategy || 'Sin estrategia')}</span>${r.owner ? `<span>${esc(r.owner)}</span>` : ''}</div></div></li>`).join('')}</ul>` : '<div class="empty"><p>Todas las amenazas tienen respuesta y están dentro de rango.</p></div>'; })())}</div>`
+    + panel('Registro de riesgos', 'Probabilidad × impacto en escala 1–5. Las oportunidades usan estrategias de explotar, mejorar o compartir.', regTable('risks', R, [
+      { h: 'Código', v: r => `<span class="mono">${T_(r.code)}</span><span class="sub">${esc(r.kind || '')}</span>`, cls: 'nowrap' },
+      { h: 'Riesgo', v: r => `${esc(r.title)}${r.trigger ? `<span class="sub">Señal: ${esc(r.trigger)}</span>` : ''}`, cls: 'wrap' },
+      { h: 'P×I', v: r => { const sc = riskScore(r); return `<span class="pill ${r.kind === 'Oportunidad' ? 'data' : sc >= 15 ? 'crit' : sc >= 8 ? 'warn' : 'ok'}">${sc}</span><span class="sub">${num(r.probability)}×${num(r.impact)}</span>`; }, cls: 'nowrap' },
+      { h: 'Respuesta', v: r => `${r.strategy ? `<b>${esc(r.strategy)}</b>: ` : ''}${wrapTxt(r.response)}`, cls: 'wrap' },
+      { h: 'Dueño', v: r => T_(r.owner), cls: 'nowrap' },
+      { h: 'Estado', v: r => `${pill(sTone[r.status] || '', r.status || '—')}${r.due ? `<span class="sub">Revisión ${fmtDs(r.due)}</span>` : ''}`, cls: 'nowrap' },
+    ], { empty: 'Sin riesgos registrados. Identifícalos con lluvia de ideas, revisión de supuestos o lecciones de proyectos anteriores.' }), addBtn('risks'))
+    + panel('Registro de incidentes', 'Problemas que ya ocurrieron y deben resolverse (a diferencia de los riesgos, que aún son inciertos).', regTable('issues', I, [
+      { h: 'Código', v: i => `<span class="mono">${T_(i.code)}</span>`, cls: 'nowrap' },
+      { h: 'Incidente', v: i => `${esc(i.title)}${i.description ? `<span class="sub">${esc(i.description)}</span>` : ''}`, cls: 'wrap' },
+      { h: 'Prioridad', v: i => pill(i.priority === 'Alta' ? 'crit' : i.priority === 'Media' ? 'warn' : '', i.priority || '—'), cls: 'nowrap' },
+      { h: 'Responsable', v: i => T_(i.owner), cls: 'nowrap' },
+      { h: 'Objetivo', v: i => fmtDs(i.due), cls: 'nowrap num' },
+      { h: 'Estado', v: i => pill(i.status === 'Resuelto' ? 'ok' : i.status === 'En curso' ? 'data' : 'warn', i.status || '—'), cls: 'nowrap' },
+    ], { empty: 'Sin incidentes abiertos.' }), addBtn('issues'));
+}
+
+function tabBitacora(p) {
+  const L = of('logbook', p.id).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+  const LS = of('lessons', p.id).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+  return panel('Bitácora diaria', 'Cada integrante registra al final del día qué hizo, cuántas horas y qué lo bloquea.', regTable('logbook', L.slice(0, 120), [
+      { h: 'Fecha', v: l => fmtDs(l.date), cls: 'nowrap num' },
+      { h: 'Persona', v: l => T_(l.person), cls: 'nowrap' },
+      { h: 'Horas', v: l => `<span class="num">${num(l.hours) || '—'}</span>`, cls: 'r' },
+      { h: 'Qué se hizo', v: l => `${l.wbs ? `<span class="mono tone-idle">${esc(l.wbs)}</span> ` : ''}${esc(l.activity)}`, cls: 'wrap' },
+      { h: 'Bloqueos', v: l => l.blockers ? `<span class="tone-warn">${esc(l.blockers)}</span>` : '—', cls: 'wrap' },
+    ], { empty: 'La bitácora está vacía. Registra la primera entrada del día con «Agregar registro de bitácora».' }), addBtn('logbook', 'Registrar en la bitácora'))
+    + panel('Lecciones aprendidas', 'Lo que conviene repetir o evitar. Alimenta los activos de la organización para los próximos proyectos.', regTable('lessons', LS, [
+      { h: 'Fecha', v: l => fmtDs(l.date), cls: 'nowrap num' },
+      { h: 'Dominio', v: l => T_(l.category), cls: 'nowrap' },
+      { h: 'Qué pasó', v: l => esc(l.situation), cls: 'wrap' },
+      { h: 'Lección', v: l => esc(l.lesson), cls: 'wrap' },
+      { h: 'Recomendación', v: l => wrapTxt(l.action), cls: 'wrap' },
+    ], { empty: 'Sin lecciones registradas todavía.' }), addBtn('lessons'));
+}
+
+/* =========================================================
+   Asesor PMBOK con IA (capacidad sample)
+   ========================================================= */
+let aiCtl = null;
+function aiPanel(scope) {
+  const st = UI.ai[scope]; if (!st) return '';
+  return `<section class="panel ai"><div class="panel-head"><div><p class="eyebrow">Asesor PMBOK · redactado por Claude</p><h2>${scope === 'portfolio' ? 'Informe de portafolio' : 'Informe de estado del proyecto'}</h2></div><div class="head-actions">${st.busy ? '<button class="btn" data-act="ai-stop">Detener</button>' : `<button class="btn" data-act="ai" data-scope="${esc(scope)}">Regenerar</button>`}<button class="btn ghost" data-act="ai-close" data-scope="${esc(scope)}">Cerrar</button></div></div><div class="ai-body">${st.text ? mdLite(st.text) : '<p class="note">Analizando los datos del sistema… puede tardar unos segundos.</p>'}</div>${st.error ? `<p class="note tone-crit" style="margin-top:8px">${esc(st.error)}</p>` : ''}<p class="note" style="margin-top:10px">Revísalo antes de usarlo: se basa solo en lo registrado en este sistema al ${fmtD(today())}.</p></section>`;
+}
+function mdLite(t) {
+  const lines = String(t).split('\n'); let html = '', inList = false;
+  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  for (const raw of lines) {
+    const l = raw.trim();
+    if (/^[-*•] /.test(l)) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${inline(l.replace(/^[-*•] /, ''))}</li>`; continue; }
+    if (inList) { html += '</ul>'; inList = false; }
+    if (/^#{1,4} /.test(l)) html += `<h4>${inline(l.replace(/^#{1,4} /, ''))}</h4>`;
+    else if (l) html += `<p>${inline(l)}</p>`;
+  }
+  if (inList) html += '</ul>';
+  return html;
+}
+function projectPayload(p) {
+  const m = metrics(p), td = today();
+  const pick = (o, ks) => Object.fromEntries(ks.filter(k => o[k] !== undefined && o[k] !== '').map(k => [k, o[k]]));
+  return {
+    proyecto: pick(p, ['code', 'name', 'unit', 'sponsor', 'manager', 'phase', 'approach', 'start', 'end', 'budget', 'purpose', 'objective', 'success', 'scopeIn', 'scopeOut', 'assumptions', 'constraints']),
+    salud: { semaforo: m.health.label, motivos: m.why },
+    indicadores: { avancePlanificadoPct: m.planPct && +m.planPct.toFixed(1), avanceRealPct: m.realPct && +m.realPct.toFixed(1), SPI: m.SPI && +m.SPI.toFixed(2), CPI: m.CPI && +m.CPI.toFixed(2), BAC: m.budget, PV: Math.round(m.PV), EV: Math.round(m.EV), AC: Math.round(m.AC), EAC: m.EAC && Math.round(m.EAC), actividades: m.leaves.length, completadas: m.done },
+    actividadesVencidas: m.late.slice(0, 12).map(({ t, st }) => ({ edt: t.wbs, nombre: t.name, responsable: t.owner, fin: t.end, avance: num(t.progress), diasVencida: st.days })),
+    actividadesRetrasadas: m.behind.slice(0, 8).map(({ t }) => ({ edt: t.wbs, nombre: t.name, avance: num(t.progress), fin: t.end })),
+    riesgosAbiertos: m.openR.slice(0, 15).map(r => pick(r, ['code', 'kind', 'title', 'probability', 'impact', 'strategy', 'response', 'owner', 'status'])),
+    incidentesAbiertos: m.openI.slice(0, 8).map(i => pick(i, ['code', 'title', 'priority', 'owner', 'due'])),
+    cambiosPendientes: m.pendC.map(c => pick(c, ['code', 'title', 'area', 'status', 'date'])),
+    acuerdosPendientes: m.pendA.slice(0, 15).map(a => Object.assign(pick(a, ['text', 'owner', 'due']), { vencido: !!(parseD(a.due) && parseD(a.due) < td) })),
+    interesados: of('stakeholders', p.id).slice(0, 12).map(s => pick(s, ['name', 'role', 'power', 'interest', 'current', 'desired'])),
+    bitacoraReciente: of('logbook', p.id).slice().sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 10).map(l => pick(l, ['date', 'person', 'hours', 'activity', 'blockers'])),
+  };
+}
+async function runAI(scope) {
+  if (!sample) return;
+  if (aiCtl) aiCtl.abort();
+  const ctl = new AbortController(); aiCtl = ctl;
+  const td = isoD(today());
+  let prompt;
+  if (scope === 'portfolio') {
+    const data = projectsSorted().map(p => { const m = metrics(p), pr = prio(p); return { codigo: p.code, nombre: p.name, fase: p.phase, fin: p.end, semaforo: m.health.label, motivos: m.why, avancePlanPct: m.planPct && Math.round(m.planPct), avanceRealPct: m.realPct && Math.round(m.realPct), SPI: m.SPI && +m.SPI.toFixed(2), CPI: m.CPI && +m.CPI.toFixed(2), riesgosAltos: m.highR.map(r => r.title), acuerdosVencidos: m.lateA.length, actividadesVencidas: m.late.length, priorizacion: pr ? { impacto: +pr.i.toFixed(2), esfuerzo: +pr.e.toFixed(2), cuadrante: pr.quad.label } : null }; });
+    prompt = `Eres director de una oficina de gestión de proyectos (PMO) y dominas la Guía del PMBOK 8.ª edición (6 principios; 7 dominios de desempeño: Gobernanza, Alcance, Cronograma, Finanzas, Interesados, Recursos y Riesgo; 5 áreas de enfoque: Inicio, Planificación, Ejecución, Monitoreo y control, Cierre).
+Redacta en español un informe ejecutivo de la cartera de proyectos de la Oficina General de Planificación de la UNMSM con fecha de corte ${td}. Secciones: "## Estado de la cartera" (2-3 frases), "## Proyecto por proyecto" (una viñeta por proyecto con semáforo e interpretación de SPI/CPI), "## Decisiones que necesita la dirección" (máximo 4, concretas), "## Prioridad recomendada" (orden de atención justificado con la matriz impacto-esfuerzo y el estado actual).
+Usa solo los datos dados; si falta información, dilo. Formato: títulos con "## ", viñetas con "- ", negritas con **. Máximo 380 palabras.
+DATOS: ${JSON.stringify(data)}`;
+  } else {
+    const p = projectById(scope); if (!p) return;
+    prompt = `Eres director de proyectos certificado PMP y dominas la Guía del PMBOK 8.ª edición (6 principios; 7 dominios de desempeño: Gobernanza, Alcance, Cronograma, Finanzas, Interesados, Recursos y Riesgo; 5 áreas de enfoque).
+Redacta en español el informe de estado del proyecto con fecha de corte ${td}. Secciones: "## Estado general" (semáforo y por qué, 2-3 frases), "## Cronograma y costos" (interpreta SPI, CPI y avance real vs planificado; nombra las actividades vencidas más importantes), "## Riesgos, incidentes y cambios", "## Interesados", "## Recomendaciones por dominio" (máximo 6 viñetas, cada una empieza con el dominio en negrita), "## Próximos pasos (2 semanas)" (acciones concretas con responsable si se conoce).
+Usa solo los datos dados; si falta información, dilo con claridad y sugiere registrarla. Formato: títulos con "## ", viñetas con "- ", negritas con **. Máximo 450 palabras.
+DATOS: ${JSON.stringify(projectPayload(p))}`;
+  }
+  UI.ai[scope] = { text: '', busy: true }; schedule();
+  try {
+    const res = await sample(prompt, { signal: ctl.signal, cache: false, onText: ({ text }) => { if (UI.ai[scope]) { UI.ai[scope].text = text; schedule(); } } });
+    if (UI.ai[scope]) { UI.ai[scope].text = (res && res.text) || UI.ai[scope].text; UI.ai[scope].busy = false; }
+  } catch (e) {
+    const code = e && e.code;
+    if (UI.ai[scope]) { UI.ai[scope].busy = false; if (e && e.text) UI.ai[scope].text = e.text; }
+    if (code === 'not_granted') { sample = null; delete UI.ai[scope]; toast('El asesor con IA no está disponible para tu cuenta en esta página.', 'warn'); }
+    else if (code === 'rate_limited') { if (UI.ai[scope]) UI.ai[scope].error = 'Se alcanzó el límite de consultas. Inténtalo de nuevo en unos minutos.'; }
+    else if (code !== 'cancelled' && UI.ai[scope]) UI.ai[scope].error = 'No se pudo completar el informe. Inténtalo de nuevo.';
+  }
+  if (aiCtl === ctl) aiCtl = null;
+  schedule();
+}
+
+/* =========================================================
+   Exportación
+   ========================================================= */
+async function exportProject(p) {
+  if (!downloads || !p) return;
+  const strip = r => { const o = Object.assign({}, r); delete o.updatedBy; delete o.createdBy; return o; };
+  const data = { exportado: new Date().toISOString(), fuente: 'Centro de Monitoreo DGP', proyecto: strip(p), metricas: (() => { const m = metrics(p); return { avancePlanificadoPct: m.planPct, avanceRealPct: m.realPct, SPI: m.SPI, CPI: m.CPI, BAC: m.budget, PV: m.PV, EV: m.EV, AC: m.AC, EAC: m.EAC, semaforo: m.health.label }; })() };
+  Object.keys(COLL).forEach(c => { data[c] = of(c, p.id).map(strip); });
+  try { await downloads.save({ filename: `${(p.code || 'proyecto').replace(/[^\w.-]+/g, '_')}_centro-monitoreo_${isoD(today())}.json`, data: JSON.stringify(data, null, 2) }); }
+  catch (e) { const c = e && e.code; if (c && !/cancel|declin|denied|dismiss/i.test(c)) toast('No se pudo preparar el archivo.', 'warn'); }
+}
+
+/* =========================================================
+   Formularios
+   ========================================================= */
+function openForm(coll, id) {
+  const isP = coll === 'projects';
+  const fields = isP ? PROJECT_FIELDS : COLL[coll].fields;
+  const rec = id ? (S[coll].find(r => r.id === id) || {}) : {};
+  const pid = isP ? (id || null) : UI.pid;
+  const title = id ? (isP ? 'Editar acta del proyecto' : `Editar ${COLL[coll].one}`) : (isP ? 'Nuevo proyecto' : `Agregar ${COLL[coll].one}`);
+  let html = `<div class="overlay" data-act="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title"><form id="rec-form" novalidate data-coll="${coll}" data-id="${esc(id || '')}"><header class="dlg-head"><h2 id="dlg-title">${esc(title)}</h2><button type="button" class="icon-btn" data-act="close-modal" aria-label="Cerrar">Cerrar</button></header><div class="dlg-body"><div class="fgrid">`;
+  for (const f of fields) {
+    if (f.group) html += `<h3 class="fgroup">${esc(f.group)}</h3>`;
+    let v = rec[f.k];
+    if (v === undefined || v === null || (v === '' && !id)) v = id ? '' : f.auto ? nextCode(coll, pid, f.auto) : f.d === 'today' ? isoD(today()) : (f.d ?? '');
+    const fid = `f-${coll}-${f.k}`;
+    let ctl;
+    if (f.t === 'textarea') ctl = `<textarea id="${fid}" name="${f.k}" rows="3">${esc(v)}</textarea>`;
+    else if (f.t === 'select') ctl = `<select id="${fid}" name="${f.k}">${f.req ? '' : '<option value="">—</option>'}${f.o.map(o => `<option value="${esc(o)}"${String(o) === String(v) ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+    else ctl = `<input id="${fid}" name="${f.k}" type="${f.t === 'number' ? 'number' : f.t === 'date' ? 'date' : 'text'}" value="${esc(v)}"${f.min != null ? ` min="${f.min}"` : ''}${f.max != null ? ` max="${f.max}"` : ''}${f.t === 'number' ? ' step="any" inputmode="decimal"' : ''}${f.ph ? ` placeholder="${esc(f.ph)}"` : ''}${f.dl ? ' list="dl-team" autocomplete="off"' : ''}>`;
+    html += `<label class="f${f.wide ? ' wide' : ''}" for="${fid}"><span>${esc(f.l)}${f.req ? ' <b class="req" aria-hidden="true">*</b>' : ''}</span>${ctl}${f.hint ? `<small>${esc(f.hint)}</small>` : ''}</label>`;
+  }
+  html += `</div><datalist id="dl-team">${teamNames(pid).map(n => `<option value="${esc(n)}"></option>`).join('')}</datalist></div><p class="form-err" id="form-err" hidden></p><footer class="dlg-foot">${id ? `<div class="del-zone" id="del-zone"><button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button></div>` : ''}<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Guardar</button></div></footer></form></div></div>`;
+  const mdl = $('#modal'); mdl.innerHTML = html; mdl.hidden = false;
+  setTimeout(() => { const first = mdl.querySelector('input:not([type=hidden]),select,textarea'); if (first) first.focus(); }, 30);
+}
+function closeModal() { const mdl = $('#modal'); mdl.hidden = true; mdl.innerHTML = ''; }
+function formErr(msg) { const e = $('#form-err'); if (e) { e.textContent = msg; e.hidden = false; } }
+
+async function submitForm(form) {
+  const coll = form.dataset.coll, id = form.dataset.id || null, isP = coll === 'projects';
+  const fields = isP ? PROJECT_FIELDS : COLL[coll].fields;
+  const data = {}, missing = [];
+  for (const f of fields) {
+    const el = form.elements[f.k]; if (!el) continue;
+    let v = String(el.value).trim();
+    if (f.t === 'number') { v = v === '' ? 0 : Number(v); if (!Number.isFinite(v)) v = 0; if (f.min != null) v = Math.max(f.min, v); if (f.max != null) v = Math.min(f.max, v); }
+    else if (f.num) v = v === '' ? null : Number(v);
+    if (f.req && (v === '' || v == null)) missing.push(f.l);
+    data[f.k] = v;
+  }
+  if (missing.length) { formErr('Completa los campos obligatorios: ' + missing.join(', ') + '.'); return; }
+  if (data.start && data.end && data.end < data.start) { formErr('La fecha de fin no puede ser anterior a la de inicio.'); return; }
+  if (coll === 'tasks' && !/^\d+(\.\d+)*$/.test(data.wbs)) { formErr('El código EDT debe tener el formato 1, 1.2 o 1.2.3 (solo números separados por puntos).'); return; }
+  if (isP && S.projects.some(p => p.id !== id && String(p.code).toLowerCase() === String(data.code).toLowerCase())) { formErr(`Ya existe un proyecto con el código ${data.code}.`); return; }
+  if (!isP) data.pid = UI.pid;
+  const btn = form.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    let newId = id;
+    if (id) await updateRec(coll, id, data);
+    else { const ref = await createRec(coll, data); newId = ref && ref.id; }
+    closeModal();
+    toast(id ? 'Cambios guardados' : 'Registro creado', 'ok');
+    const label = data.name || data.title || data.text || data.description || data.activity || data.situation || data.code || '';
+    if (isP && !id && newId) { UI.view = 'project'; UI.pid = newId; UI.tab = 'resumen'; persistUI(); }
+    logFeed(isP ? newId : UI.pid, `${id ? 'actualizó' : 'registró'} ${isP ? (id ? 'el acta del proyecto' : 'el proyecto') : COLL[coll].one} «${String(label).slice(0, 90)}»`);
+    schedule();
+  } catch (e) { btn.disabled = false; writeErr(e); }
+}
+async function deleteFromForm(form) {
+  const coll = form.dataset.coll, id = form.dataset.id;
+  const rec = S[coll].find(r => r.id === id) || {};
+  const zone = $('#del-zone'); if (zone) zone.innerHTML = '<span>Eliminando…</span>';
+  try {
+    await db.doc(`${coll}/${id}`).delete();
+    if (coll === 'projects') {
+      for (const c of Object.keys(COLL)) for (const r of of(c, id)) await db.doc(`${c}/${r.id}`).delete();
+      UI.view = 'portfolio'; UI.pid = null; persistUI();
+    }
+    closeModal(); toast('Registro eliminado', 'ok');
+    logFeed(coll === 'projects' ? null : UI.pid, `eliminó ${coll === 'projects' ? 'el proyecto' : COLL[coll].one} «${String(rec.name || rec.title || rec.text || rec.description || rec.activity || rec.code || '').slice(0, 90)}»`);
+    schedule();
+  } catch (e) { writeErr(e); if (zone) zone.innerHTML = '<button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button>'; }
+}
+
+/* =========================================================
+   Eventos
+   ========================================================= */
+function go(view, pid, tab) {
+  UI.view = view; if (pid !== undefined) UI.pid = pid; if (tab) UI.tab = tab; UI.scrollGantt = true;
+  persistUI(); render(); window.scrollTo(0, 0);
+}
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const act = el.dataset.act;
+  if (act === 'overlay') { if (e.target === el) closeModal(); return; }
+  switch (act) {
+    case 'go-portfolio': go('portfolio'); break;
+    case 'go-guide': go('guide'); break;
+    case 'go-project': go('project', el.dataset.id, el.dataset.tab || (UI.pid === el.dataset.id ? UI.tab : 'resumen')); break;
+    case 'tab': UI.tab = el.dataset.tab; UI.scrollGantt = true; persistUI(); render(); break;
+    case 'new-project': openForm('projects', null); break;
+    case 'edit-project': openForm('projects', el.dataset.id); break;
+    case 'add': openForm(el.dataset.coll, null); break;
+    case 'edit': if (canEdit()) openForm(el.dataset.coll, el.dataset.id); break;
+    case 'close-modal': closeModal(); break;
+    case 'ask-delete': { const z = $('#del-zone'); if (z) z.innerHTML = `<span>¿Eliminar definitivamente?${$('#rec-form').dataset.coll === 'projects' ? ' Se borrarán también todos sus registros.' : ''}</span><button type="button" class="btn sm danger" data-act="confirm-delete">Sí, eliminar</button><button type="button" class="btn sm" data-act="cancel-delete">No</button>`; break; }
+    case 'cancel-delete': { const z = $('#del-zone'); if (z) z.innerHTML = '<button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button>'; break; }
+    case 'confirm-delete': deleteFromForm($('#rec-form')); break;
+    case 'set-phase': {
+      const p = projectById(UI.pid), ph = el.dataset.phase;
+      if (!p || !canEdit() || p.phase === ph) break;
+      updateRec('projects', p.id, { phase: ph }).then(() => { toast(`Área de enfoque: ${ph}`, 'ok'); logFeed(p.id, `movió el proyecto al área de enfoque «${ph}»`); }).catch(writeErr);
+      break;
+    }
+    case 'agree-done': {
+      const a = S.agreements.find(x => x.id === el.dataset.id); if (!a) break;
+      el.disabled = true;
+      updateRec('agreements', a.id, { status: 'Cumplido', doneAt: isoD(today()) }).then(() => { toast('Acuerdo marcado como cumplido', 'ok'); logFeed(a.pid, `cerró el acuerdo «${String(a.text).slice(0, 80)}»`); }).catch(err => { el.disabled = false; writeErr(err); });
+      break;
+    }
+    case 'ai': runAI(el.dataset.scope); break;
+    case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
+    case 'ai-close': if (aiCtl) aiCtl.abort(); delete UI.ai[el.dataset.scope]; render(); break;
+    case 'export': exportProject(projectById(el.dataset.id)); break;
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('#modal').hidden) { closeModal(); return; }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('article.pcard')) { e.preventDefault(); e.target.click(); }
+});
+document.addEventListener('submit', e => { const form = e.target.closest('#rec-form'); if (!form) return; e.preventDefault(); submitForm(form); });
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.change === 'depth') { UI.depth = Number(t.value) || 9; UI.scrollGantt = true; persistUI(); render(); return; }
+  if (t.dataset && t.dataset.quick === 'progress') {
+    const task = S.tasks.find(x => x.id === t.dataset.id); if (!task) return;
+    const v = clamp(Math.round(num(t.value)), 0, 100);
+    if (v === num(task.progress)) return;
+    t.disabled = true;
+    updateRec('tasks', task.id, { progress: v }).then(() => { toast(`Avance actualizado a ${v}%`, 'ok'); logFeed(task.pid, `actualizó el avance de «${String(task.name).slice(0, 70)}» a ${v}%`); }).catch(err => { t.disabled = false; writeErr(err); });
+  }
+});
+let toastT = 0;
+function toast(msg, tone) { const t = $('#toast'); t.textContent = msg; t.className = 'toast show ' + (tone === 'ok' ? '' : tone || ''); clearTimeout(toastT); toastT = setTimeout(() => { t.className = 'toast'; }, 4200); }
+
+/* Reloj: refresca "hace X" y recalcula al cambiar el día */
+let lastDay = isoD(today());
+setInterval(() => { const d = isoD(today()); if (d !== lastDay) { lastDay = d; render(); } else renderSide(); }, 30000);
+
+/* =========================================================
+   Vistas auxiliares
+   ========================================================= */
+function viewOffline() {
+  return `<header class="page-head"><div><p class="eyebrow">Sin conexión a la base compartida</p><h1>Centro de Monitoreo DGP</h1><p class="lede">Este sistema guarda los proyectos en una base de datos compartida de claude.ai para que todo el equipo vea los mismos datos en tiempo real. Ábrelo desde claude.ai con tu cuenta iniciada para consultar y registrar información.</p></div><div class="head-actions"><button class="btn" data-act="go-guide">Ver la guía PMBOK</button></div></header>
+  <div class="split even">${panel('Qué podrás hacer al conectarte', '', `<ul style="margin:0;padding-left:18px;line-height:1.8"><li>Ver la cartera con semáforos, SPI, CPI y alertas automáticas.</li><li>Gestionar cada proyecto por los 7 dominios del PMBOK 8.</li><li>Actualizar avances, riesgos, acuerdos y la bitácora diaria en tiempo real.</li><li>Pedir a Claude un informe de estado basado en los datos.</li></ul>`)}${panel('Áreas de enfoque', '', stepper({ phase: 'Ejecución' }, true, false))}</div>`;
+}
+function viewError() {
+  return `<header class="page-head"><div><p class="eyebrow">Conexión interrumpida</p><h1>No se pudo leer la base de datos</h1><p class="lede">Puede que tu acceso haya cambiado o que la conexión se haya cortado. Recarga la página; si el problema sigue, pide al propietario que revise cómo te compartió el sistema.</p></div></header>`;
+}
+function viewGuide() {
+  const principles = [
+    ['Adoptar una visión holística', 'Mira el proyecto como un sistema: una decisión de alcance mueve el cronograma, el costo y el riesgo. Decide pensando en el conjunto.', 'Resumen y alertas cruzan todos los dominios en un solo semáforo.'],
+    ['Enfocarse en el valor', 'El éxito se mide por los beneficios que recibe la organización, no solo por entregar a tiempo.', 'Acta (propósito, objetivo SMART, criterios de éxito) y matriz impacto–esfuerzo.'],
+    ['Integrar la calidad en procesos y entregables', 'Prevenir antes que inspeccionar: define desde el inicio qué hace aceptable cada entregable.', 'Matriz de trazabilidad con criterios de aceptación.'],
+    ['Ser un líder responsable', 'Rendir cuentas con transparencia, ética y cuidado de las personas y los recursos.', 'Acuerdos con responsable y fecha; registro de quién cambió qué.'],
+    ['Integrar la sostenibilidad', 'Considerar los impactos sociales, ambientales y económicos a lo largo de todo el ciclo de vida.', 'Supuestos, restricciones y riesgos externos o normativos.'],
+    ['Construir una cultura de empoderamiento', 'Equipos con autonomía y seguridad para decidir, aprender y señalar problemas a tiempo.', 'Bitácora diaria, bloqueos visibles y lecciones aprendidas.'],
+  ];
+  const domains = [
+    ['Gobernanza', 'Cómo se autoriza, prioriza y controla el proyecto: acta, roles, cambios y decisiones.', 'Gobernanza', 'Integración', 'Planificación · Trabajo del proyecto'],
+    ['Alcance', 'Qué se entrega y cómo se acepta: requisitos, EDT y validación.', 'Alcance', 'Alcance', 'Entrega'],
+    ['Cronograma', 'Cuándo: actividades, duraciones, línea base y control del avance.', 'Cronograma', 'Cronograma (antes «Tiempo»)', 'Planificación · Medición'],
+    ['Finanzas', 'Cuánto: presupuesto, costos reales y valor ganado.', 'Finanzas', 'Costos', 'Planificación · Medición'],
+    ['Interesados', 'Con quién: identificar, analizar e involucrar, y comunicar.', 'Interesados', 'Interesados + Comunicaciones', 'Interesados'],
+    ['Recursos', 'Con qué y con quiénes: equipo, materiales y adquisiciones.', 'Recursos', 'Recursos + Adquisiciones', 'Equipo · Trabajo del proyecto'],
+    ['Riesgo', 'Qué puede pasar: amenazas, oportunidades, respuestas e incidentes.', 'Riesgo', 'Riesgos', 'Incertidumbre'],
+  ];
+  const focus = [
+    ['Inicio', 'Autorizar el proyecto y conocer a los interesados.', 'Acta de constitución, registro de interesados, priorización.'],
+    ['Planificación', 'Definir cómo se logrará el objetivo.', 'EDT, cronograma con línea base, presupuesto, requisitos, riesgos.'],
+    ['Ejecución', 'Hacer el trabajo y coordinar al equipo.', 'Bitácora diaria, acuerdos, actualización de avances.'],
+    ['Monitoreo y control', 'Medir, comparar con la línea base y corregir.', 'Curva S, SPI/CPI, alertas, control de cambios, incidentes.'],
+    ['Cierre', 'Aceptar entregables y transferir lo aprendido.', 'Requisitos validados, lecciones aprendidas, exportación de datos.'],
+  ];
+  return `<header class="page-head"><div><p class="eyebrow">Marco de referencia</p><h1>Guía PMBOK en el sistema</h1><p class="lede">Cómo se traduce la Guía del PMBOK® 8.ª edición (2025) en cada pantalla, con su equivalencia en la 6.ª (2017) y la 7.ª (2021). Las explicaciones son una síntesis propia, no texto de la guía.</p></div></header>
+  <div class="stack">
+  ${panel('Los 6 principios (8.ª edición)', 'La 7.ª edición tenía 12 principios; la 8.ª los consolida en seis.', `<div class="guide-grid">${principles.map((x, i) => `<div class="gcard"><p class="gnum">Principio ${i + 1}</p><h3>${x[0]}</h3><p>${x[1]}</p><p class="where"><b>En el sistema:</b> ${x[2]}</p></div>`).join('')}</div>`)}
+  ${panel('Los 7 dominios de desempeño', 'Cada dominio es una pestaña del proyecto. Así se relacionan con las ediciones anteriores:', `<div class="tbl"><table><thead><tr><th>Dominio (8.ª)</th><th>Qué gestiona</th><th>Pestaña</th><th>Área de conocimiento (6.ª)</th><th>Dominio (7.ª)</th></tr></thead><tbody>${domains.map(d => `<tr><td class="nowrap"><b>${d[0]}</b></td><td class="wrap">${d[1]}</td><td class="nowrap">${d[2]}</td><td class="wrap">${d[3]}</td><td class="wrap">${d[4]}</td></tr>`).join('')}</tbody></table></div><p class="note" style="margin-top:10px">La Calidad (área de conocimiento en la 6.ª) quedó integrada en el principio «Integrar la calidad» y en los criterios de aceptación de Alcance.</p>`)}
+  ${panel('Las 5 áreas de enfoque', 'Vuelven los antiguos grupos de procesos, ahora como áreas de enfoque flexibles: un proyecto puede tener actividades de varias a la vez. El indicador de cada proyecto marca dónde está el esfuerzo principal.', `<div class="tbl"><table><thead><tr><th>Área de enfoque</th><th>Propósito</th><th>Dónde se registra</th></tr></thead><tbody>${focus.map(f => `<tr><td class="nowrap"><b>${f[0]}</b></td><td class="wrap">${f[1]}</td><td class="wrap">${f[2]}</td></tr>`).join('')}</tbody></table></div>`)}
+  <div class="split even">
+  ${panel('Indicadores que calcula el sistema', '', `<dl class="gl"><dt>PV</dt><dd>Valor planificado: trabajo que debía estar hecho a la fecha de corte, según la línea base.</dd><dt>EV</dt><dd>Valor ganado: trabajo realmente hecho (avance físico × costo planificado).</dd><dt>AC</dt><dd>Costo real de lo ejecutado.</dd><dt>SPI = EV/PV</dt><dd>Menor a 1: atraso. Semáforo: ≥ 0.95 verde, 0.80–0.95 ámbar, &lt; 0.80 rojo.</dd><dt>CPI = EV/AC</dt><dd>Menor a 1: sobrecosto. Mismos umbrales que el SPI.</dd><dt>EAC = BAC/CPI</dt><dd>Costo final estimado si se mantiene la eficiencia actual.</dd><dt>VAC = BAC − EAC</dt><dd>Desviación esperada al terminar.</dd><dt>P × I</dt><dd>Puntaje del riesgo (1–25): alto ≥ 15, medio 8–14, bajo ≤ 7.</dd><dt>Sin costos</dt><dd>Si no hay costos registrados, el avance y el SPI se ponderan por duración de las actividades.</dd></dl>`)}
+  ${panel('Fuentes', 'Documentos de tu repositorio «Dirección de la Gestión de Proyectos» en los que se basa el diseño.', `<ul style="margin:0;padding-left:18px;line-height:1.75;font-size:13px"><li>PMI, <i>Guía del PMBOK®</i>, 8.ª ed. (2025): principios, dominios, áreas de enfoque.</li><li>PMI, <i>Guía del PMBOK®</i>, 7.ª ed. (2021): dominios de desempeño, adaptación, modelos y artefactos.</li><li>PMI, <i>Guía del PMBOK®</i>, 6.ª y 5.ª ed.: áreas de conocimiento, EDT, valor ganado, registros.</li><li>J. K. Pinto, <i>Gerencia de proyectos</i>, 3.ª ed.: selección de proyectos y modelos de puntuación.</li><li>C. L. Pritchard, <i>Gestión de riesgos</i>, 5.ª ed.: matriz P×I, registro y respuesta a riesgos.</li><li>Sokowski, <i>Mastering Project Management Integration and Scope</i>: acta de constitución y control de cambios.</li><li>Matriz de priorización DGP-UNMSM y plantilla de plan de gestión de riesgos del equipo.</li></ul>`)}
+  </div></div>`;
+}
+
+boot();
+})();
+</script>
