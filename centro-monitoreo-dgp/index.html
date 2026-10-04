@@ -90,6 +90,7 @@ p{margin:0}
 .avs img:first-child{margin-left:0}
 
 /* ---------- botones y píldoras ---------- */
+a.btn{text-decoration:none}
 .btn{display:inline-flex;align-items:center;gap:8px;font:600 14px/1 var(--font-body);padding:11px 18px;border-radius:var(--radius-md);border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap;transition:background-color .15s ease-out,border-color .15s ease-out,color .15s ease-out}
 .btn:hover{border-color:var(--teal-700);color:var(--teal-700)}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
@@ -272,6 +273,23 @@ td.wrap{min-width:200px;max-width:440px;padding-inline:10px;margin:0}
 td.nowrap,th.nowrap{white-space:nowrap}
 td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 .act-col{width:1%;white-space:nowrap;text-align:right}
+.tfilter{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.tf{border:1px solid var(--line);background:var(--surface);color:var(--ink-muted);border-radius:999px;padding:7px 13px;font:700 12.5px/1 var(--font-body);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tf b{font:600 11.5px/1 var(--font-mono);color:var(--ink-faint)}
+.tf:hover{color:var(--ink);border-color:var(--ink-faint)}
+.tf.on{background:var(--navy-900);border-color:var(--navy-900);color:var(--on-navy)}
+.tf.on b{color:var(--on-navy-muted)}
+.tf.late b{color:var(--crit)} .tf.late.on b{color:#FFB4AC}
+td.c,th.c{text-align:center}
+.done-chk{display:inline-grid;place-items:center;cursor:pointer;position:relative;width:26px;height:26px}
+.done-chk input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.done-chk span{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;transition:background .15s,border-color .15s}
+.done-chk:hover span{border-color:var(--ok)}
+.done-chk input:checked+span{background:var(--ok);border-color:var(--ok)}
+.done-chk input:checked+span::after{content:"";width:6px;height:11px;border:solid var(--ok-soft);border-width:0 2.5px 2.5px 0;transform:translate(0,-1px) rotate(45deg)}
+.done-chk input:focus-visible+span{box-shadow:var(--focus-ring)}
+.done-chk input:disabled+span{opacity:.5}
+.done-mark{color:var(--ok);font-weight:700}
 .quick{width:68px;border:1px solid var(--line);background:var(--surface-alt);border-radius:var(--radius-sm);padding:4px 7px;font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums}
 .sub{display:block;font-size:12.5px;color:var(--ink-muted)}
 
@@ -591,6 +609,7 @@ const PROJECT_FIELDS = [
   { k: 'assumptions', l: 'Supuestos', t: 'textarea' },
   { k: 'constraints', l: 'Restricciones', t: 'textarea' },
   { k: 'notes', l: 'Notas', t: 'textarea', wide: 1 },
+  { k: 'drive', l: 'Carpeta del proyecto en Google Drive (enlace)', t: 'text', wide: 1, ph: 'https://drive.google.com/drive/folders/…' },
   ...IMP.map((l, i) => ({ k: 'imp' + (i + 1), l, t: 'select', o: OPT.scale, num: 1, group: i === 0 ? 'Priorización · Impacto (1 = mínimo, 5 = máximo)' : undefined })),
   ...ESF.map((l, i) => ({ k: 'esf' + (i + 1), l, t: 'select', o: OPT.scale, num: 1, group: i === 0 ? 'Priorización · Esfuerzo (1 = mínimo, 5 = máximo)' : undefined })),
 ];
@@ -604,6 +623,7 @@ const COLL = {
     { k: 'progress', l: 'Avance físico (%)', t: 'number', min: 0, max: 100, d: 0 },
     { k: 'start', l: 'Inicio planificado', t: 'date' },
     { k: 'end', l: 'Fin planificado', t: 'date' },
+    { k: 'doneAt', l: 'Fin real (fecha de término)', t: 'date', hint: 'Se llena sola al marcar «Hecha»; corrígela si terminaste antes' },
     { k: 'plannedCost', l: 'Costo planificado (S/)', t: 'number', min: 0, d: 0 },
     { k: 'actualCost', l: 'Costo real a la fecha (S/)', t: 'number', min: 0, d: 0 },
     { k: 'notes', l: 'Notas', t: 'textarea', wide: 1 },
@@ -703,7 +723,7 @@ const LISTS = ['projects', ...Object.keys(COLL)];
    ========================================================= */
 const S = { mode: 'connecting', err: null, loaded: new Set(), lastSync: 0, me: null, canWrite: null, readOnly: false, peers: [], profiles: {}, feed: [] };
 LISTS.forEach(k => { S[k] = []; });
-const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true };
+const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true, tfilter: 'all' };
 try {
   const saved = JSON.parse(localStorage.getItem('dgp-ui') || 'null');
   if (saved && typeof saved === 'object') { UI.view = saved.view || 'portfolio'; UI.pid = saved.pid || null; UI.tab = saved.tab || 'resumen'; UI.depth = saved.depth || 9; }
@@ -1155,6 +1175,8 @@ const DOMAIN = {
   riesgo: ['Dominio de Riesgo', 'Qué puede pasar: amenazas y oportunidades, su respuesta, y los incidentes que ya ocurrieron.'],
   bitacora: ['Trabajo diario y mejora continua', 'Registro diario del equipo (bitácora) y lecciones aprendidas para los próximos proyectos.'],
 };
+// solo enlaces de Google Drive o Docs: el campo lo llena cualquier editor
+const driveUrl = u => { try { const x = new URL(String(u || '').trim()); return x.protocol === 'https:' && /^(drive|docs)\.google\.com$/.test(x.hostname) ? x.href : ''; } catch (e) { return ''; } };
 function viewProject(p) {
   const m = metrics(p);
   const tabCount = { cronograma: m.late.length, riesgo: m.highR.length, gobernanza: m.lateA.length + m.pendC.length };
@@ -1162,6 +1184,7 @@ function viewProject(p) {
     sample ? `<button class="round-wrap" data-act="ai" data-scope="${esc(p.id)}"><span class="round">${icon('asesor', 24)}</span><span>Informe de estado<br>con IA</span></button>` : '',
     canEdit() ? `<button class="btn primary" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '',
     downloads ? `<button class="btn" data-act="export" data-id="${esc(p.id)}">Exportar datos</button>` : '',
+    driveUrl(p.drive) ? `<a class="btn" href="${esc(driveUrl(p.drive))}" target="_blank" rel="noopener noreferrer">Carpeta en Drive ↗</a>` : '',
   ].join('');
   const tg = nextTarget(p);
   const right = tg ? countdownHTML(tg.date, tg.title, `${fmtD(tg.date)} · ${esc(p.code)}`, tg.kind) : `<section class="cd"><p class="cd-eyebrow">Próximo hito</p><p class="cd-title">Sin hitos pendientes</p><p class="cd-sub">Marca actividades como «Hito» en el cronograma para ver aquí la cuenta regresiva.</p></section>`;
@@ -1311,17 +1334,30 @@ function tabCronograma(p, m) {
   const depthOpts = [[9, 'Todo el detalle'], [1, 'Nivel 1'], [2, 'Hasta nivel 2'], [3, 'Hasta nivel 3']].map(([v, l]) => `<option value="${v}"${UI.depth === v ? ' selected' : ''}>${l}</option>`).join('');
   const tools = `<div class="gantt-tools"><label class="note" for="depth-sel">Mostrar <select id="depth-sel" class="inline" data-change="depth">${depthOpts}</select></label><div class="legend" style="margin:0"><span><i style="background:var(--teal-600)"></i>En curso</span><span><i style="background:var(--ok)"></i>Completada</span><span><i style="background:var(--warn)"></i>Retrasada</span><span><i style="background:var(--crit)"></i>Vencida</span><span><i style="background:var(--series-2)"></i>Entregable</span></div></div>`;
   const ed = canEdit();
-  const table = regTable('tasks', m.T, [
+  const leaves = m.T.filter(t => t.type !== 'Entregable');
+  const stOf = t => taskState(t, td).k;
+  const FILTERS = [['all', 'Todas', null], ['open', 'Pendientes', t => stOf(t) !== 'done'], ['late', 'Vencidas', t => stOf(t) === 'late'], ['done', 'Completadas', t => stOf(t) === 'done']];
+  const fl = FILTERS.find(f => f[0] === UI.tfilter) || FILTERS[0];
+  const rows = fl[2] ? leaves.filter(fl[2]) : m.T;
+  const filterBar = leaves.length ? `<div class="tfilter" role="group" aria-label="Filtrar actividades">${FILTERS.map(([k, l, fn]) => `<button class="tf${k === fl[0] ? ' on' : ''}${k === 'late' ? ' late' : ''}" data-act="tfilter" data-v="${k}" aria-pressed="${k === fl[0]}">${l} <b class="num">${fn ? leaves.filter(fn).length : leaves.length}</b></button>`).join('')}</div>` : '';
+  const doneCell = t => {
+    if (t.type === 'Entregable') return '';
+    const done = num(t.progress) >= 100;
+    if (!ed) return done ? '<span class="done-mark" aria-label="Completada">✓</span>' : '';
+    return `<label class="done-chk"><input type="checkbox" data-quick="done" data-id="${esc(t.id)}"${done ? ' checked' : ''} aria-label="Marcar «${esc(t.name)}» como completada"><span aria-hidden="true"></span></label>`;
+  };
+  const table = filterBar + (fl[2] && !rows.length ? `<div class="empty"><p>${fl[0] === 'late' ? 'No hay actividades vencidas.' : fl[0] === 'done' ? 'Todavía no hay actividades completadas.' : 'No quedan actividades pendientes.'}</p></div>` : regTable('tasks', rows, [
+    { h: 'Hecha', v: doneCell, cls: 'nowrap c' },
     { h: 'EDT', v: t => `<span class="mono">${esc(t.wbs)}</span>`, cls: 'nowrap' },
     { h: 'Nombre', v: t => `<span style="padding-left:${(wbsDepth(t.wbs) - 1) * 12}px;display:inline-block;${t.type === 'Entregable' ? 'font-weight:700' : ''}">${esc(t.name)}</span>${t.type === 'Hito' ? ' <span class="pill accent">Hito</span>' : ''}`, cls: 'wrap' },
     { h: 'Responsable', v: t => T_(t.owner), cls: 'nowrap' },
     { h: 'Inicio', v: t => { const s = t.type === 'Entregable' ? (m.sum.get(t.id) || {}).start : t.start; return fmtDs(s); }, cls: 'nowrap num' },
     { h: 'Fin', v: t => { const e = t.type === 'Entregable' ? (m.sum.get(t.id) || {}).end : t.end; return fmtDs(e); }, cls: 'nowrap num' },
     { h: 'Avance', v: t => t.type === 'Entregable' ? `<span class="num">${pct((m.sum.get(t.id) || {}).progress)}</span>` : ed ? `<input class="quick" type="number" min="0" max="100" step="5" value="${num(t.progress)}" data-quick="progress" data-id="${esc(t.id)}" aria-label="Avance de ${esc(t.name)}">` : `<span class="num">${pct(num(t.progress))}</span>`, cls: 'nowrap r' },
-    { h: 'Estado', v: t => { if (t.type === 'Entregable') return ''; const st = taskState(t, td); return pill(st.tone, st.label + (st.k === 'late' ? ` · ${st.days} d` : '')); }, cls: 'nowrap' },
-  ], { empty: 'El cronograma está vacío. Empieza por los entregables de la EDT y luego agrega sus actividades con fechas y responsable.' });
+    { h: 'Estado', v: t => { if (t.type === 'Entregable') return ''; const st = taskState(t, td); return pill(st.tone, st.label + (st.k === 'late' ? ` · ${st.days} d` : '')) + (st.k === 'done' && t.doneAt ? `<span class="sub">el ${fmtDs(t.doneAt)}</span>` : ''); }, cls: 'nowrap' },
+  ], { empty: 'El cronograma está vacío. Empieza por los entregables de la EDT y luego agrega sus actividades con fechas y responsable.' }));
   return panel('Diagrama de Gantt', 'Barra clara: plan. Relleno: avance físico. Rombo: hito. Toca una fila para editarla.', m.T.length ? tools + gantt(p, m) : '', addBtn('tasks', 'Agregar actividad'))
-    + panel('Actividades', ed ? 'Actualiza el avance directamente en la columna «Avance»: todos los tableros se recalculan al instante.' : '', table);
+    + panel('Actividades', ed ? 'Marca «Hecha» al terminar una actividad, o escribe un avance parcial en «Avance». Todos los tableros se recalculan al instante.' : '', table);
 }
 function gantt(p, m) {
   const td = today();
@@ -1660,6 +1696,7 @@ document.addEventListener('click', e => {
     case 'edit': if (canEdit()) openForm(el.dataset.coll, el.dataset.id); break;
     case 'close-modal': closeModal(); break;
     case 'top': window.scrollTo(0, 0); break;
+    case 'tfilter': UI.tfilter = el.dataset.v || 'all'; render(); break;
     case 'ask-delete': { const z = $('#del-zone'); if (z) z.innerHTML = `<span>¿Eliminar definitivamente?${$('#rec-form').dataset.coll === 'projects' ? ' Se borrarán también todos sus registros.' : ''}</span><button type="button" class="btn sm danger" data-act="confirm-delete">Sí, eliminar</button><button type="button" class="btn sm" data-act="cancel-delete">No</button>`; break; }
     case 'cancel-delete': { const z = $('#del-zone'); if (z) z.innerHTML = '<button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button>'; break; }
     case 'confirm-delete': deleteFromForm($('#rec-form')); break;
@@ -1689,12 +1726,26 @@ document.addEventListener('submit', e => { const form = e.target.closest('#rec-f
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset && t.dataset.change === 'depth') { UI.depth = Number(t.value) || 9; UI.scrollGantt = true; persistUI(); render(); return; }
+  if (t.dataset && t.dataset.quick === 'done') {
+    const task = S.tasks.find(x => x.id === t.dataset.id); if (!task) return;
+    const now = num(task.progress), name = String(task.name).slice(0, 70);
+    const data = t.checked
+      ? { progress: 100, doneAt: isoD(today()), prevProgress: now < 100 ? now : num(task.prevProgress) }
+      : { progress: num(task.prevProgress) < 100 ? num(task.prevProgress) : 0, doneAt: '' };
+    t.disabled = true;
+    updateRec('tasks', task.id, data).then(() => {
+      toast(t.checked ? `«${name}» quedó completada` : `«${name}» volvió a ${data.progress}%`, 'ok');
+      logFeed(task.pid, t.checked ? `marcó como completada «${name}»` : `reabrió «${name}» (${data.progress}%)`);
+    }).catch(err => { t.disabled = false; t.checked = !t.checked; writeErr(err); });
+    return;
+  }
   if (t.dataset && t.dataset.quick === 'progress') {
     const task = S.tasks.find(x => x.id === t.dataset.id); if (!task) return;
     const v = clamp(Math.round(num(t.value)), 0, 100);
     if (v === num(task.progress)) return;
     t.disabled = true;
-    updateRec('tasks', task.id, { progress: v }).then(() => { toast(`Avance actualizado a ${v}%`, 'ok'); logFeed(task.pid, `actualizó el avance de «${String(task.name).slice(0, 70)}» a ${v}%`); }).catch(err => { t.disabled = false; writeErr(err); });
+    const extra = v >= 100 ? (task.doneAt ? {} : { doneAt: isoD(today()) }) : (task.doneAt ? { doneAt: '' } : {});
+    updateRec('tasks', task.id, Object.assign({ progress: v }, extra)).then(() => { toast(`Avance actualizado a ${v}%`, 'ok'); logFeed(task.pid, `actualizó el avance de «${String(task.name).slice(0, 70)}» a ${v}%`); }).catch(err => { t.disabled = false; writeErr(err); });
   }
 });
 let toastT = 0;
