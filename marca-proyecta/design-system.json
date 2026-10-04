@@ -1,0 +1,145 @@
+{
+ "v": 3,
+ "layout": "files",
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-04T10:09:23Z"
+ },
+ "title": "Proyecta",
+ "namespace": "Proyecta",
+ "libraries": [
+  {
+   "name": "react",
+   "version": "18"
+  },
+  {
+   "name": "react-dom",
+   "version": "18"
+  }
+ ],
+ "sections": {},
+ "groups": [
+  "Logos",
+  "Icons"
+ ],
+ "assetGroups": {
+  "Logos": {
+   "name": "Logos",
+   "tile": "l",
+   "order": [
+    "proyecta-mark.svg",
+    "proyecta-lockup.svg",
+    "proyecta-lockup-inverse.svg"
+   ],
+   "files": {
+    "proyecta-mark.svg": {
+     "name": "proyecta-mark.svg",
+     "blob": "320e3931bf14760cfcb900c669daffed",
+     "size": 469,
+     "type": "image/svg+xml"
+    },
+    "proyecta-lockup.svg": {
+     "name": "proyecta-lockup.svg",
+     "blob": "8d0690529899a77928b814506ec1c846",
+     "size": 11096,
+     "type": "image/svg+xml"
+    },
+    "proyecta-lockup-inverse.svg": {
+     "name": "proyecta-lockup-inverse.svg",
+     "blob": "30b4edf78739b95193e7a1bad502ec96",
+     "size": 11096,
+     "type": "image/svg+xml"
+    }
+   }
+  },
+  "Icons": {
+   "name": "Icons",
+   "tile": "s",
+   "order": [
+    "portafolio.svg",
+    "alerta.svg",
+    "cronograma.svg",
+    "riesgo.svg",
+    "acuerdo.svg",
+    "equipo.svg",
+    "hito.svg",
+    "curva.svg",
+    "cambio.svg",
+    "asesor.svg"
+   ],
+   "files": {
+    "portafolio.svg": {
+     "name": "portafolio.svg",
+     "blob": "5d1ad707ba7e8c2f2c5129950e1d1319",
+     "size": 450,
+     "type": "image/svg+xml"
+    },
+    "alerta.svg": {
+     "name": "alerta.svg",
+     "blob": "92d9f5fe7ef85a307a2b200761883160",
+     "size": 300,
+     "type": "image/svg+xml"
+    },
+    "cronograma.svg": {
+     "name": "cronograma.svg",
+     "blob": "5ca423cc8226e125778b9d75f72a2019",
+     "size": 389,
+     "type": "image/svg+xml"
+    },
+    "riesgo.svg": {
+     "name": "riesgo.svg",
+     "blob": "36e365e9666c91797876449a1ba995aa",
+     "size": 330,
+     "type": "image/svg+xml"
+    },
+    "acuerdo.svg": {
+     "name": "acuerdo.svg",
+     "blob": "3cb63972f154c74a4a988077a043fe9a",
+     "size": 343,
+     "type": "image/svg+xml"
+    },
+    "equipo.svg": {
+     "name": "equipo.svg",
+     "blob": "20d35392f92d2f05ea9786be17683c32",
+     "size": 403,
+     "type": "image/svg+xml"
+    },
+    "hito.svg": {
+     "name": "hito.svg",
+     "blob": "372e71a8c2b830347a34ce83a7b1ca93",
+     "size": 266,
+     "type": "image/svg+xml"
+    },
+    "curva.svg": {
+     "name": "curva.svg",
+     "blob": "08ecd2e56db91f277a36eb195c7bf104",
+     "size": 278,
+     "type": "image/svg+xml"
+    },
+    "cambio.svg": {
+     "name": "cambio.svg",
+     "blob": "8ac9b4358bd4bf581a557b10d808992d",
+     "size": 341,
+     "type": "image/svg+xml"
+    },
+    "asesor.svg": {
+     "name": "asesor.svg",
+     "blob": "55d6cb1f0754b888fda5f6dfc8821efc",
+     "size": 352,
+     "type": "image/svg+xml"
+    }
+   }
+  }
+ },
+ "blobs": {},
+ "docs": {
+  "readme": "project/README.md",
+  "sections": []
+ },
+ "lastChange": {
+  "by": "Alvaro Rojas",
+  "at": "2026-10-04T10:09:23Z",
+  "via": "Claude Code",
+  "note": "Primera versión de la marca Proyecta para el sistema de dirección de proyectos"
+ }
+}

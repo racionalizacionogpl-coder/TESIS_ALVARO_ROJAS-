@@ -1,0 +1,12 @@
+<!-- @dsCard group="Estado" height=80 subtitle="El estado siempre con palabra y color" -->
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>StatusPill</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" class="py-row"></div>
+<script>
+  var P = window.Proyecta, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, h(P.StatusPill, { tone: 'ok' }), h(P.StatusPill, { tone: 'warn' }), h(P.StatusPill, { tone: 'crit' }), h(P.StatusPill, { tone: 'idle' }), h(P.StatusPill, { tone: 'info' }, 'En curso')));
+</script>
+</body>
+</html>

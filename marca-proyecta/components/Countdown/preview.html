@@ -1,0 +1,13 @@
+<!-- @dsCard group="Indicadores" height=200 subtitle="Cuenta regresiva en vivo al próximo hito" -->
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Countdown</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" style="padding:var(--space-6);max-width:420px"></div>
+<script>
+  var P = window.Proyecta, h = React.createElement;
+  var t = Date.now() + 3 * 864e5 + 7 * 36e5 + 25 * 6e4;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(P.Countdown, { target: t, title: 'Validación del plan de acreditación' }));
+</script>
+</body>
+</html>

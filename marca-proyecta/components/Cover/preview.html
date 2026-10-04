@@ -1,0 +1,58 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Proyecta</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Source+Sans+3:wght@400&display=swap">
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--canvas); color:var(--ink); font-family:var(--font-body); overflow:hidden; }
+  .cover { position:relative; width:960px; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:288px; }
+  .navy { fill:var(--navy-700); }
+  .teal { fill:var(--teal-500); }
+  .teal6 { fill:var(--teal-600); }
+  .bar { fill:var(--teal-500); }
+  .bar.mute { fill:var(--on-navy-muted); }
+  .slab { rx:var(--radius-lg); }
+  .tile { rx:var(--radius-md); }
+  .pill { rx:4px; }
+  .words { position:absolute; left:var(--space-6); bottom:var(--space-6); max-width:440px; }
+  .name { margin:0; font-family:var(--font-display); font-size:72px; line-height:.95; font-weight:800; letter-spacing:.01em; color:var(--ink); }
+  .tag { margin:var(--space-2) 0 0 3px; font-size:14px; line-height:20px; color:var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      navy-700 slab 272×272 bled off the top (the identity navy, largest) · teal-500 192×208 bled off the right (the brand turquoise) · teal-600 112×48 bled off the top (the fill turquoise) — ≈ 45% of 960×288
+  arrangement one tall navy slab with two turquoise satellites, bottoms on one line space-6 (24) above the edge, space-4 (16) gutters
+  pattern     literal motif: a Gantt cascade — space-2 tall pills at a space-6 pitch stepping right across the slab in teal-500 and on-navy-muted, ending in the milestone diamond of the logo; one large diamond cut in navy-700 on the teal block
+  scales      sides in space-4 multiples; gutters space-4; pitch space-6; corners radius-lg (slab, teal block), radius-md (small tile), pills rx = half of space-2
+-->
+<rect class="navy slab" x="16" y="-18" width="272" height="282" rx="18"/>
+<rect class="teal6 tile" x="304" y="-18" width="112" height="50" rx="10"/>
+<rect class="teal slab" x="304" y="48" width="192" height="216" rx="18"/>
+<rect class="bar pill" x="40" y="32" width="96" height="8" rx="4"/>
+<rect class="bar mute pill" x="72" y="56" width="128" height="8" rx="4"/>
+<rect class="bar pill" x="104" y="80" width="80" height="8" rx="4"/>
+<rect class="bar mute pill" x="136" y="104" width="112" height="8" rx="4"/>
+<rect class="bar pill" x="88" y="128" width="64" height="8" rx="4"/>
+<rect class="bar mute pill" x="152" y="152" width="96" height="8" rx="4"/>
+<rect class="bar pill" x="184" y="176" width="72" height="8" rx="4"/>
+<rect class="bar mute pill" x="120" y="200" width="56" height="8" rx="4"/>
+<path class="bar" d="M256 216 L264 224 L256 232 L248 224 Z"/>
+<path class="navy" d="M400 112 L440 152 L400 192 L360 152 Z"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Proyecta</h1>
+<p class="tag">Dirección de proyectos en tiempo real.</p>
+</div>
+</div>
+</body>
+</html>

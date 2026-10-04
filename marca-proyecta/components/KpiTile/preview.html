@@ -1,0 +1,12 @@
+<!-- @dsCard group="Indicadores" height=220 subtitle="Banda de indicadores en turquesa con íconos de línea" -->
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>KpiTile</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" class="py-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div>
+<script>
+  var P = window.Proyecta, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, h(P.KpiTile, { icon: 'portafolio', label: 'Proyectos', value: '4', sub: '2 en ejecución' }), h(P.KpiTile, { icon: 'alerta', label: 'Alertas críticas', value: '7', sub: 'Requieren acción' }), h(P.KpiTile, { icon: 'riesgo', label: 'Riesgos altos', value: '5', sub: 'P×I ≥ 15' }), h(P.KpiTile, { icon: 'acuerdo', label: 'Acuerdos vencidos', value: '2', sub: 'De reuniones' })));
+</script>
+</body>
+</html>

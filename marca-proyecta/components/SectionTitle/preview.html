@@ -1,0 +1,12 @@
+<!-- @dsCard group="Estructura" height=200 subtitle="Centrado en secciones de página, a la izquierda en paneles" -->
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>SectionTitle</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" style="padding:var(--space-6)"></div>
+<script>
+  var P = window.Proyecta, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, h(P.SectionTitle, { eyebrow: 'Cartera', title: 'Proyectos en cartera' }), h(P.SectionTitle, { align: 'left', title: 'Curva S del proyecto' })));
+</script>
+</body>
+</html>

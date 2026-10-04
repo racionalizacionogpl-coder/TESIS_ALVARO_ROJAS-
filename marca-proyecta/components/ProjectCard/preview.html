@@ -1,0 +1,16 @@
+<!-- @dsCard group="Indicadores" height=260 subtitle="Una sola tarjeta destacada por grilla: la que exige atención" -->
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>ProjectCard</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></head>
+<body>
+<div id="root" class="py-grid"></div>
+<script>
+  var P = window.Proyecta, h = React.createElement;
+  var noop = function () {};
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(P.ProjectCard, { featured: true, code: 'P01', name: 'Implementación de la Gestión por Procesos en la UNMSM', tone: 'crit', status: 'Crítico', real: 48, plan: 63, spi: 0.76, onOpen: noop }),
+    h(P.ProjectCard, { code: 'P02', name: 'Reducción de tiempos en la Oficina de Presupuesto', tone: 'ok', status: 'En control', real: 44, plan: 42, spi: 1.05, onOpen: noop }),
+    h(P.ProjectCard, { code: 'P04', name: 'Certificación y acreditación de la FCM', tone: 'warn', status: 'En observación', real: 3, plan: 6, spi: 0.88, onOpen: noop })));
+</script>
+</body>
+</html>

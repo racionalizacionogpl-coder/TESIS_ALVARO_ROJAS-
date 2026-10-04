@@ -1,0 +1,55 @@
+.py-icon { flex: none; }
+.py-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; padding: var(--space-6); }
+.py-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-6); padding: var(--space-6); }
+.py-btn { display: inline-flex; align-items: center; gap: var(--space-2); font: 600 14px/1 var(--font-body); padding: 11px 18px; border-radius: var(--radius-md); border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: background-color .15s ease-out, border-color .15s ease-out, box-shadow .15s ease-out; }
+.py-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.py-btn--primary { background: var(--primary); color: var(--on-primary); }
+.py-btn--accent { background: var(--teal-600); color: var(--on-navy); }
+.py-btn--outline { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.py-btn--outline:hover { border-color: var(--teal-700); color: var(--teal-700); }
+.py-btn--pill { background: var(--on-navy); color: var(--navy-900); border-radius: var(--radius-full); font: 700 12px/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase; padding: 9px 16px; }
+.py-btn--sm { padding: 7px 12px; font-size: 13px; }
+.py-btn--pill.py-btn--sm { padding: 7px 13px; font-size: 11px; }
+.py-pill { display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-full); padding: 3px 10px; font: 700 12px/1.35 var(--font-body); white-space: nowrap; }
+.py-pill i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.py-pill--ok { background: var(--ok-soft); color: var(--ok); }
+.py-pill--warn { background: var(--warn-soft); color: var(--warn); }
+.py-pill--crit { background: var(--crit-soft); color: var(--crit); }
+.py-pill--idle { background: var(--idle-soft); color: var(--idle); }
+.py-pill--info { background: var(--teal-100); color: var(--teal-700); }
+.py-st { padding: var(--space-4) 0; }
+.py-st--center { text-align: center; }
+.py-st-eyebrow { margin: 0 0 6px; font: 700 11px/16px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--teal-700); }
+.py-st h2 { margin: 0; font: 700 22px/28px var(--font-display); color: var(--ink); }
+.py-bars { display: flex; gap: 6px; margin-top: 10px; }
+.py-st--center .py-bars { justify-content: center; }
+.py-bars span { height: 4px; width: 28px; border-radius: 2px; background: var(--teal-500); }
+.py-bars span + span { width: 8px; }
+.py-kpi { background: var(--teal-600); color: var(--on-navy); border-radius: var(--radius-md); padding: var(--space-6) var(--space-4); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; min-width: 0; }
+.py-kpi-label { font: 700 11px/16px var(--font-body); letter-spacing: .08em; text-transform: uppercase; }
+.py-kpi-value { font: 700 34px/40px var(--font-display); font-variant-numeric: tabular-nums; }
+.py-kpi-sub { font: 400 13px/18px var(--font-body); }
+.py-card { background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-card); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; transition: box-shadow .2s ease-out; }
+.py-card:hover { box-shadow: var(--shadow-float); }
+.py-card--featured { background: var(--teal-600); border-color: var(--teal-600); color: var(--on-navy); }
+.py-card-top { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+.py-code { font: 500 12.5px/18px var(--font-mono); background: var(--teal-100); color: var(--teal-700); padding: 2px 8px; border-radius: var(--radius-sm); }
+.py-card--featured .py-code { background: var(--navy-900); color: var(--on-navy); }
+.py-card-title { margin: 0; font: 700 17px/23px var(--font-display); }
+.py-progress { position: relative; height: 8px; background: var(--line-soft); border-radius: 4px; }
+.py-progress span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--teal-600); border-radius: 4px; }
+.py-progress i { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--navy-700); }
+.py-card--featured .py-progress { background: var(--navy-700); }
+.py-card--featured .py-progress span { background: var(--on-navy); }
+.py-card--featured .py-progress i { background: var(--teal-500); }
+.py-card-meta { display: flex; flex-wrap: wrap; gap: var(--space-4); font: 400 13px/20px var(--font-body); }
+.py-card-meta b { font-weight: 700; font-variant-numeric: tabular-nums; }
+.py-card .py-btn { align-self: flex-start; }
+.py-cd { background: var(--navy-900); color: var(--on-navy); border-radius: var(--radius-lg); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-2); }
+.py-cd-eyebrow { margin: 0; font: 700 11px/16px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--teal-500); }
+.py-cd-title { margin: 0; font: 700 17px/23px var(--font-display); }
+.py-cd-row { display: flex; gap: var(--space-3); margin-top: var(--space-2); flex-wrap: wrap; }
+.py-cd-c { width: 68px; height: 68px; border-radius: 50%; border: 2px solid var(--teal-500); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.py-cd-c b { font: 700 21px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.py-cd-c span { font: 600 10px/1.4 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--on-navy-muted); margin-top: 3px; }
+body { margin: 0; font-family: var(--font-body); background: var(--canvas); color: var(--ink); }
