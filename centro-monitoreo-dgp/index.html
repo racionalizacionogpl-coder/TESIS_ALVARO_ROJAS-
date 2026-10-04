@@ -268,12 +268,34 @@ table{width:100%;border-collapse:collapse;font-size:14px}
 th{font:700 10.5px/1.3 var(--font-body);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);text-align:left;padding:9px 10px;border-bottom:2px solid var(--line);white-space:nowrap}
 td{padding:10px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
 tbody tr:hover td{background:var(--surface-alt)}
-td.wrap{min-width:200px;max-width:440px}
+td.wrap{min-width:200px;max-width:440px;padding-inline:10px;margin:0}
 td.nowrap,th.nowrap{white-space:nowrap}
 td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 .act-col{width:1%;white-space:nowrap;text-align:right}
 .quick{width:68px;border:1px solid var(--line);background:var(--surface-alt);border-radius:var(--radius-sm);padding:4px 7px;font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums}
 .sub{display:block;font-size:12.5px;color:var(--ink-muted)}
+
+/* priorización */
+.prank{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--line-soft)}
+.prank li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.prank-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:6px}
+.prank-meta .sub{display:inline}
+.prank-n{width:28px;height:28px;border-radius:50%;background:var(--navy-700);color:var(--on-navy);display:grid;place-items:center;font:700 13px/1 var(--font-display)}
+.prank-name{border:0;background:none;padding:0;color:var(--ink);font:600 14px/1.35 var(--font-body);text-align:left;cursor:pointer}
+.prank-name:hover{color:var(--teal-700);text-decoration:underline}
+.prank-name .mono{color:var(--teal-700);margin-right:2px}
+.pstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.pstats div{background:var(--surface-alt);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:14px 16px;min-width:0}
+.pstats dt{font:700 10.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px}
+.pstats dd{margin:0;font:700 26px/1.15 var(--font-display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.pstats dd small{font:600 13px/1 var(--font-body);color:var(--ink-muted)}
+.pstats dd.pq{font-size:14px;padding-top:5px}
+.prio-t tr.grp th{background:var(--mist);color:var(--teal-700);border-bottom:1px solid var(--line);padding:8px 10px}
+.prio-t tr.grp:hover th{background:var(--mist)}
+.score{display:inline-flex;align-items:center;gap:8px}
+.score b{font:700 17px/1 var(--font-display);min-width:12px}
+.score .dots{justify-content:flex-start;gap:4px}
+.score .dots i{width:8px;height:8px}
 
 /* EDT */
 .wbs{list-style:none;margin:0;padding:0}
@@ -440,6 +462,17 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
   h1.hero-t{font-size:28px} h1.title{font-size:25px}
   .fgrid,.charter{grid-template-columns:minmax(0,1fr)}
   .mini{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pstats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .pstats div{padding:12px}
+  .pstats dd{font-size:22px}
+  .pstats .pq-box{grid-column:1/-1}
+  .prio-t thead{display:none}
+  .prio-t tbody tr{display:grid;grid-template-columns:minmax(0,1fr) auto;border-bottom:1px solid var(--line-soft)}
+  .prio-t tbody tr.grp{display:block;border:0}
+  .prio-t tr.grp th{display:block}
+  .prio-t td{display:block;border:0}
+  .prio-t td.wrap{min-width:0;max-width:none}
+  .prio-t td:nth-child(3){grid-column:1/-1;padding-top:0}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .kpi{padding:18px 10px 16px;gap:5px}
   .kpi:last-child:nth-child(odd){grid-column:1/-1}
@@ -867,6 +900,13 @@ function prio(p) {
   const quad = i >= 3 ? (e < 3 ? { k: 'prior', label: 'Priorizar acciones de mejora', tone: 'data' } : { k: 'act', label: 'Acciones a realizar', tone: 'ok' }) : (e < 3 ? { k: 'np', label: 'Área no prioritaria', tone: '' } : { k: 'na', label: 'No atender', tone: '' });
   return { i, e, quad };
 }
+const QORDER = { prior: 0, act: 1, np: 2, na: 3 };
+function prioRank() {
+  return projectsSorted().map(p => ({ p, pr: prio(p) })).filter(x => x.pr)
+    .sort((a, b) => (QORDER[a.pr.quad.k] - QORDER[b.pr.quad.k]) || ((b.pr.i - b.pr.e) - (a.pr.i - a.pr.e)) || String(a.p.code || '').localeCompare(String(b.p.code || ''), 'es', { numeric: true }));
+}
+const SCALE_WORDS = ['mínimo', 'bajo', 'moderado', 'alto', 'máximo'];
+const SCALE_TIME = ['largo plazo', 'mediano plazo', 'corto plazo', 'muy corto plazo', 'inmediato'];
 function alertsFor(p) {
   const m = metrics(p), td = today(), out = [];
   const add = (sev, kind, tab, text, code) => out.push({ sev, kind, tab, text, code, pid: p.id, pcode: p.code });
@@ -1040,7 +1080,7 @@ function viewPortfolio() {
     <section class="section">${secTitle('Proyectos en cartera', 'Cartera', 'La tarjeta destacada es el proyecto que hoy exige más atención.')}<div class="cards">${all.map(x => cardProject(x, x.p.id === featId)).join('')}</div></section>
     <section class="section">${secTitle('Panel de control', 'Monitoreo y control')}<div class="split">
       ${panel('Alertas en tiempo real', 'Ordenadas por severidad. Se generan solas a partir del cronograma, los riesgos, los acuerdos y los cambios.', alertList(alerts, true))}
-      ${panel('Matriz impacto–esfuerzo', 'Priorización de la cartera con los 8 criterios de la matriz DGP. Corte en 3, el punto medio de la escala.', matrixSVG(all))}
+      ${panel('Matriz impacto–esfuerzo', 'Priorización de la cartera con los 8 criterios de la matriz DGP. Corte en 3, el punto medio de la escala.', matrixSVG(all) + prioList())}
     </div></section>
     <section class="section">${secTitle('Próximos hitos', 'Agenda')}${events}</section>
     <section class="section">${panel('Actividad reciente', 'Lo último que registró el equipo en el sistema.', feedList())}</section>
@@ -1073,6 +1113,11 @@ function feedList(pid) {
   if (!items.length) return `<div class="empty"><p>Todavía no hay actividad registrada. Cada vez que alguien guarde un cambio aparecerá aquí al instante.</p></div>`;
   return `<ul class="feed">${items.map(f => { const p = projectById(f.pid); return `<li><span class="sev s0"></span><div><span class="who">${esc(nameOf(f.by))}</span> ${esc(f.text)}<div class="a-meta">${p ? `<span class="mono">${esc(p.code)}</span>` : ''}<time datetime="${esc(f.at)}">${esc(ago(Date.parse(f.at)))}</time></div></div></li>`; }).join('')}</ul>`;
 }
+function prioList() {
+  const r = prioRank();
+  if (!r.length) return '';
+  return `<ol class="prank" aria-label="Orden de prioridad de la cartera">${r.map(({ p, pr }, n) => `<li><span class="prank-n">${n + 1}</span><div><button class="prank-name" data-act="go-project" data-id="${esc(p.id)}" data-tab="gobernanza"><span class="mono">${esc(p.code)}</span> ${esc(p.name || 'Sin nombre')}</button><span class="prank-meta">${pill(pr.quad.tone, pr.quad.label)}<span class="sub num">Impacto ${pr.i.toFixed(2)} · Esfuerzo ${pr.e.toFixed(2)}</span></span></div></li>`).join('')}</ol><p class="note" style="margin-top:10px">Orden sugerido: primero el cuadrante y, dentro de él, la mayor diferencia entre impacto y esfuerzo.</p>`;
+}
 function matrixSVG(all) {
   const pts = all.filter(x => x.pr);
   if (!pts.length) return `<div class="empty"><p>Completa los 8 criterios de priorización en el acta de cada proyecto para ubicarlo en la matriz.</p></div>`;
@@ -1083,10 +1128,14 @@ function matrixSVG(all) {
   for (let v = 1; v <= 5; v++) { g += `<text x="${X(v)}" y="${B + 16}" text-anchor="middle" class="c-tick">${v}</text><text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end" class="c-tick">${v}</text>`; }
   g += `<text x="${(L + R) / 2}" y="${H - 6}" text-anchor="middle" class="c-tick">Esfuerzo →</text><text transform="translate(13 ${(Tp + B) / 2}) rotate(-90)" text-anchor="middle" class="c-tick">Impacto →</text>`;
   const seen = {};
-  pts.forEach(({ p, pr }) => {
+  const dots = pts.map(({ p, pr }) => {
     const key = pr.i.toFixed(2) + '|' + pr.e.toFixed(2); const k = seen[key] = (seen[key] || 0) + 1;
-    const x = X(pr.e) + (k - 1) * 10, y = Y(pr.i) - (k - 1) * 10;
-    g += `<g class="g-row" data-act="go-project" data-id="${esc(p.id)}"><title>${esc(p.code)} · ${esc(p.name)} — impacto ${pr.i.toFixed(2)}, esfuerzo ${pr.e.toFixed(2)}: ${esc(pr.quad.label)}</title><circle cx="${x}" cy="${y}" r="7" class="m-dot"/><text x="${x + 11}" y="${y + 4}" class="m-lbl">${esc(p.code)}</text></g>`;
+    return { p, pr, x: X(pr.e) + (k - 1) * 10, y: Y(pr.i) - (k - 1) * 10 };
+  });
+  dots.forEach(({ p, pr, x, y }) => {
+    // la etiqueta va a la izquierda si a la derecha choca con otro punto o con el borde
+    const left = x + 44 > W || dots.some(b => b.p !== p && Math.abs(b.y - y) < 16 && b.x > x && b.x - x < 46);
+    g += `<g class="g-row" data-act="go-project" data-id="${esc(p.id)}"><title>${esc(p.code)} · ${esc(p.name)} — impacto ${pr.i.toFixed(2)}, esfuerzo ${pr.e.toFixed(2)}: ${esc(pr.quad.label)}</title><circle cx="${x}" cy="${y}" r="7" class="m-dot"/><text x="${left ? x - 11 : x + 11}" y="${y + 4}"${left ? ' text-anchor="end"' : ''} class="m-lbl">${esc(p.code)}</text></g>`;
   });
   return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Matriz impacto esfuerzo de la cartera">${g}</svg>`;
 }
@@ -1185,6 +1234,22 @@ function sCurve(p, m) {
   return `<svg class="chart" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Curva S: plan ${pct(m.planPct)}, real ${pct(m.realPct)} a la fecha de corte">${g}</svg><div class="legend"><span><i></i>Línea base (avance planificado acumulado)</span><span><i class="pt"></i>Planificado a hoy</span><span><i class="acc"></i>Avance real a hoy</span></div>`;
 }
 
+function prioPanel(p) {
+  const pr = prio(p), pm = p.prio || {}, notes = pm.notes || {};
+  const edit = canEdit() ? `<button class="btn sm" data-act="edit-project" data-id="${esc(p.id)}">Editar puntajes</button>` : '';
+  const intro = 'Matriz de priorización DGP: 4 criterios de impacto y 4 de esfuerzo, de 1 (mínimo) a 5 (máximo). Un promedio de 3 o más es alto.';
+  if (!pr) return panel('Priorización del proyecto', intro, `<div class="empty"><p>Completa los 8 criterios en el acta para ubicar el proyecto en la matriz.</p>${edit}</div>`);
+  const rank = prioRank(), pos = rank.findIndex(x => x.p.id === p.id) + 1;
+  const row = (k, crit) => {
+    const v = num(p[k], NaN), n = notes[k] || {}, words = k === 'imp2' ? SCALE_TIME : SCALE_WORDS;
+    return `<tr><td class="wrap">${esc(crit)}</td><td class="nowrap"><span class="score"><b class="num">${Number.isFinite(v) ? v : '—'}</b><span class="dots" aria-hidden="true">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= v ? 'on' : ''}"></i>`).join('')}</span></span><span class="sub">${esc(words[v - 1] || '')}</span></td><td class="wrap">${n.j ? esc(n.j) : '<span class="tone-idle">Sin justificación registrada</span>'}${n.ev ? `<span class="sub">Evidencia: ${esc(n.ev)}</span>` : ''}</td></tr>`;
+  };
+  const grp = (label, val) => `<tr class="grp"><th colspan="3">${label} · promedio <span class="num">${val.toFixed(2)}</span></th></tr>`;
+  const stats = `<dl class="pstats"><div><dt>Impacto</dt><dd class="num">${pr.i.toFixed(2)}</dd></div><div><dt>Esfuerzo</dt><dd class="num">${pr.e.toFixed(2)}</dd></div><div><dt>Prioridad</dt><dd class="num">${pos} <small>de ${rank.length}</small></dd></div><div class="pq-box"><dt>Cuadrante</dt><dd class="pq">${pill(pr.quad.tone, pr.quad.label)}</dd></div></dl>`;
+  const table = `<div class="tbl"><table class="prio-t"><thead><tr><th>Criterio</th><th class="nowrap">Puntaje</th><th>Justificación y evidencia</th></tr></thead><tbody>${grp('Impacto', pr.i)}${IMP.map((c, i) => row('imp' + (i + 1), c)).join('')}${grp('Esfuerzo', pr.e)}${ESF.map((c, i) => row('esf' + (i + 1), c)).join('')}</tbody></table></div>`;
+  const src = pm.source ? `<p class="note" style="margin-top:12px;overflow-wrap:anywhere">Fuente: matriz «${esc(String(pm.source).replace(/_/g, ' '))}»${pm.letter ? `, proyecto ${esc(pm.letter)}` : ''} (hoja «Justificación»)${pm.date ? ` · evaluado el ${fmtD(pm.date)}` : ''}.</p>` : '';
+  return panel('Priorización del proyecto', intro, stats + table + src, edit);
+}
 function tabGobernanza(p, m) {
   const pr = prio(p);
   const f = (k, l, wide) => `<div class="${wide ? 'wide' : ''}"><dt>${esc(l)}</dt><dd>${p[k] ? esc(p[k]) : '<span class="tone-idle">Sin registrar</span>'}</dd></div>`;
@@ -1195,6 +1260,7 @@ function tabGobernanza(p, m) {
   const changes = of('changes', p.id).slice().sort((a, b) => String(b.code || '').localeCompare(String(a.code || ''), 'es', { numeric: true }));
   const cTone = { Registrada: 'data', 'En análisis': 'warn', Aprobada: 'ok', Rechazada: 'crit', Implementada: 'ok' };
   return panel('Acta de constitución', 'Autoriza el proyecto y fija su propósito, objetivos y límites.', charter, canEdit() ? `<button class="btn sm" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '')
+    + prioPanel(p)
     + panel('Acuerdos y compromisos de reuniones', `${plural(m.pendA.length, 'pendiente', 'pendientes')} · ${plural(m.lateA.length, 'vencido', 'vencidos')}. Marca «Cumplido» en cuanto se cierre un compromiso.`,
       regTable('agreements', agreements, [
         { h: 'Estado', v: aState, cls: 'nowrap' },
