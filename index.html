@@ -190,6 +190,25 @@
   .mini-card b{display:block; font-size:14px; margin-bottom:4px;}
   .mini-card p{font-size:13px; opacity:.92;}
 
+  .dec-window{border:1px solid var(--line); border-radius:16px; padding:16px 16px 18px; margin-top:16px; background:var(--card);}
+  .dec-window-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .dec-window-head h3{font-family:var(--font-body); font-size:14.5px; font-weight:800; color:var(--ink); margin:0;}
+  .dec-badge{width:28px; height:28px; border-radius:9px; display:grid; place-items:center; font-weight:800; font-size:13px; flex:none;}
+  .dec-obj .dec-badge{background:var(--navy); color:#fff;}
+  .dec-dec .dec-badge{background:var(--mint-bg); color:var(--mint-ink);}
+  .dec-acl .dec-badge{background:var(--lavender-bg); color:var(--lavender-ink);}
+  .dec-count{margin-left:auto; font-size:11.5px; color:var(--muted); font-weight:700;}
+  .dec-acl .mini-card{background:var(--lavender-bg); color:var(--lavender-ink);}
+  .mini-card.obj-card{background:var(--navy); color:#fff; padding:20px 22px;}
+  .mini-card.obj-card b{font-size:16px; margin-bottom:6px;}
+  .mini-card.obj-card p{font-size:14px; opacity:.9;}
+  .dec-del{position:absolute; right:8px; bottom:8px; padding:3px 9px; font-size:11.5px;}
+  body.editing .mini-card{padding-bottom:40px;}
+  .dec-empty{color:var(--muted); font-size:13px;}
+  .dec-hint{font-size:12px; color:var(--amber-ink); background:var(--amber-bg); padding:8px 10px; border-radius:8px; margin-top:10px;}
+  .dec-add{margin-top:12px;}
+  body.editing .obj-card [data-editable]{outline-color:rgba(255,255,255,.6);}
+
   .doc-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; display:flex; gap:14px; margin-bottom:10px; position:relative;}
   .doc-card .n{flex:none; width:30px; height:30px; border-radius:9px; background:var(--navy); color:#fff; display:grid; place-items:center; font-weight:800; font-size:13px;}
   .doc-card b{display:block; font-size:14px; margin-bottom:4px;}
@@ -763,6 +782,9 @@ var DEFAULT_STATE = {
   ],
   strings:{
     idxLabel:"ÍNDICE DEL PLAN",
+    decObjLabel:"Objetivo del proyecto",
+    decDecLabel:"Decisiones",
+    decAclLabel:"Aclaraciones",
     cronoFasesLabel:"Fases y entregables",
     normativasTitle:"Normativas & Guías",
     normativasSub:"Marco normativo y teórico que sustenta el proyecto: desde la política nacional de modernización del Estado hasta la formulación matemática de la teoría de colas.",
@@ -823,7 +845,7 @@ var STATE = null;
 try{
   var raw = document.getElementById("state-data").textContent;
   var parsed = raw && raw.trim() !== "null" ? JSON.parse(raw) : null;
-  STATE = parsed ? mergeState(parsed, DEFAULT_STATE) : JSON.parse(JSON.stringify(DEFAULT_STATE));
+  STATE = parsed ? sanitizeState(mergeState(parsed, DEFAULT_STATE)) : JSON.parse(JSON.stringify(DEFAULT_STATE));
 }catch(e){ STATE = JSON.parse(JSON.stringify(DEFAULT_STATE)); }
 
 /* ================= PATH HELPERS ================= */
@@ -863,9 +885,9 @@ function renderTable(head, rows, rowsPath, headPath){
 }
 
 function renderPlan(){
-  document.getElementById("planKicker").textContent = STATE.planHero.kicker;
-  document.getElementById("planTitle").textContent = STATE.planHero.title;
-  document.getElementById("planSub").textContent = STATE.planHero.sub;
+  document.getElementById("planKicker").innerHTML = STATE.planHero.kicker;
+  document.getElementById("planTitle").innerHTML = STATE.planHero.title;
+  document.getElementById("planSub").innerHTML = STATE.planHero.sub;
 
   var mg = document.getElementById("planMetaGrid"); mg.innerHTML = "";
   STATE.planMeta.forEach(function(m,i){
@@ -884,14 +906,7 @@ function renderPlan(){
     card.id = "sec-"+s.n;
     var html = "<div class='sec-head'><span class='sec-tag'>SECCIÓN "+s.n+"</span><h2 "+ed("sections."+si+".title")+">"+s.title+"</h2></div>";
     html += "<div "+ed("sections."+si+".body")+">"+(s.body||"")+"</div>";
-    if(s.decisions){
-      html += "<div class='grid2'>";
-      s.decisions.forEach(function(d,di){
-        var p = "sections."+si+".decisions."+di;
-        html += "<div class='mini-card'><div class='row'><span class='id' "+ed(p+".0")+">"+d[0]+"</span><span class='date' "+ed(p+".1")+">"+d[1]+"</span></div><b "+ed(p+".2")+">"+d[2]+"</b><p "+ed(p+".3")+">"+d[3]+"</p></div>";
-      });
-      html += "</div>";
-    }
+    if(s.decisions) html += renderDecisionGroups(s.decisions, si);
     if(s.table){
       html += "<div class='table-wrap'><table>"+renderTable(s.table.head, s.table.rows, "sections."+si+".table.rows", "sections."+si+".table.head")+"</table></div>";
     }
@@ -909,13 +924,111 @@ function renderPlan(){
   });
 }
 
+function plainText(html){
+  var d = document.createElement("div"); d.innerHTML = html || "";
+  return (d.textContent || "").replace(/\u00a0/g, " ");
+}
+
+/* O = objetivo del proyecto, A = aclaración, cualquier otro código (D…) = decisión */
+function decKind(id){
+  var c = plainText(id).trim().toUpperCase().charAt(0);
+  return c === "O" ? "obj" : (c === "A" ? "acl" : "dec");
+}
+
+function isBlankDecision(d){
+  return !plainText(d[2]).trim() && !plainText(d[3]).trim();
+}
+
+function groupDecisions(list){
+  var g = {obj:[], dec:[], acl:[]};
+  list.forEach(function(d, di){ g[decKind(d[0])].push({d:d, i:di}); });
+  return g;
+}
+
+function renderDecisionGroups(list, si){
+  var g = groupDecisions(list);
+  var editingNow = document.body.classList.contains("editing");
+  var S = STATE.strings;
+  function card(it, cls){
+    var p = "sections."+si+".decisions."+it.i, d = it.d;
+    var del = editingNow ? "<button class='btn-sm danger dec-del' data-action='del-dec' data-sec='"+si+"' data-row='"+it.i+"'>✕ Eliminar</button>" : "";
+    return "<div class='mini-card "+(cls||"")+"'>"+del+"<div class='row'><span class='id' "+ed(p+".0")+">"+d[0]+"</span><span class='date' "+ed(p+".1")+">"+d[1]+"</span></div><b "+ed(p+".2")+">"+d[2]+"</b><p "+ed(p+".3")+">"+d[3]+"</p></div>";
+  }
+  function shown(items){ return editingNow ? items : items.filter(function(it){ return !isBlankDecision(it.d); }); }
+  function addBtn(kind, label){
+    return editingNow ? "<div class='dec-add'><button class='btn-sm' data-action='add-dec' data-sec='"+si+"' data-kind='"+kind+"'>+ "+label+"</button></div>" : "";
+  }
+  function windowHead(cls, badge, labelKey, count){
+    return "<div class='dec-window "+cls+"'><div class='dec-window-head'><span class='dec-badge'>"+badge+"</span><h3 "+ed("strings."+labelKey)+">"+S[labelKey]+"</h3>"
+      + (count === null ? "" : "<span class='dec-count'>"+count+"</span>") + "</div>";
+  }
+
+  var objs = shown(g.obj);
+  if(!editingNow) objs = objs.slice(0, 1);
+  var html = windowHead("dec-obj", "O", "decObjLabel", null);
+  html += objs.length ? objs.map(function(it){ return card(it, "obj-card"); }).join("") : "<p class='dec-empty'>Aún no se ha registrado el objetivo del proyecto.</p>";
+  if(editingNow && g.obj.length > 1) html += "<p class='dec-hint'>Solo se muestra un objetivo en la página: deja uno y elimina los demás.</p>";
+  if(!g.obj.length) html += addBtn("O", "Añadir objetivo");
+  html += "</div>";
+
+  var decs = shown(g.dec);
+  html += windowHead("dec-dec", "D", "decDecLabel", decs.length);
+  html += decs.length ? "<div class='grid2'>"+decs.map(function(it){ return card(it); }).join("")+"</div>" : "<p class='dec-empty'>Sin decisiones registradas.</p>";
+  html += addBtn("D", "Añadir decisión") + "</div>";
+
+  var acls = shown(g.acl);
+  html += windowHead("dec-acl", "A", "decAclLabel", acls.length);
+  html += acls.length ? "<div class='grid2'>"+acls.map(function(it){ return card(it); }).join("")+"</div>" : "<p class='dec-empty'>Sin aclaraciones registradas.</p>";
+  html += addBtn("A", "Añadir aclaración") + "</div>";
+  return html;
+}
+
+var MESES_ES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","Nov","Dic"];
+function fechaHoyES(){
+  var d = new Date();
+  return (d.getDate()<10?"0":"")+d.getDate()+"-"+MESES_ES[d.getMonth()]+"-"+d.getFullYear();
+}
+
+/* Quita restos del modo edición que se cuelan al copiar/pegar entre tarjetas
+   (elementos con data-path/contenteditable anidados) y deshace el "&amp;amp;…"
+   que se acumulaba en cada guardado. */
+function cleanEditableHTML(str){
+  if(typeof str !== "string") return str;
+  var out = str;
+  if(/contenteditable|data-editable|data-path=/.test(out)){
+    var t = document.createElement("template");
+    t.innerHTML = out;
+    t.content.querySelectorAll("[data-path]").forEach(function(n){
+      var parent = n.parentNode;
+      while(n.firstChild) parent.insertBefore(n.firstChild, n);
+      parent.removeChild(n);
+    });
+    t.content.querySelectorAll("[contenteditable],[data-editable]").forEach(function(n){
+      n.removeAttribute("contenteditable"); n.removeAttribute("data-editable");
+    });
+    out = t.innerHTML;
+  }
+  return out.replace(/&amp;(?:amp;)+/g, "&amp;");
+}
+
+function sanitizeState(v){
+  if(typeof v === "string") return cleanEditableHTML(v);
+  if(Array.isArray(v)) return v.map(sanitizeState);
+  if(v && typeof v === "object"){
+    var o = {};
+    Object.keys(v).forEach(function(k){ o[k] = sanitizeState(v[k]); });
+    return o;
+  }
+  return v;
+}
+
 function renderHero(){
-  document.getElementById("heroBadge").textContent = STATE.hero.badge;
-  document.getElementById("heroTitle").textContent = STATE.hero.title;
-  document.getElementById("heroSub").textContent = STATE.hero.sub;
-  document.getElementById("heroHeading").textContent = STATE.hero.cardHeading;
-  document.getElementById("heroPara").textContent = STATE.hero.cardPara;
-  document.getElementById("heroQuote").textContent = STATE.hero.quote;
+  document.getElementById("heroBadge").innerHTML = STATE.hero.badge;
+  document.getElementById("heroTitle").innerHTML = STATE.hero.title;
+  document.getElementById("heroSub").innerHTML = STATE.hero.sub;
+  document.getElementById("heroHeading").innerHTML = STATE.hero.cardHeading;
+  document.getElementById("heroPara").innerHTML = STATE.hero.cardPara;
+  document.getElementById("heroQuote").innerHTML = STATE.hero.quote;
 
   var crumbs = document.getElementById("heroCrumbs");
   crumbs.innerHTML = STATE.hero.crumbs.map(function(c,i){
@@ -930,8 +1043,8 @@ function renderHero(){
       "<div class='ic'>"+c[0]+"</div><div><b "+ed(p+".1")+">"+c[1]+"</b><span "+ed(p+".2")+">"+c[2]+"</span></div>"));
   });
 
-  document.getElementById("statsHeading").textContent = STATE.statsBand.heading;
-  document.getElementById("statsText").textContent = STATE.statsBand.text;
+  document.getElementById("statsHeading").innerHTML = STATE.statsBand.heading;
+  document.getElementById("statsText").innerHTML = STATE.statsBand.text;
   var sr = document.getElementById("statsRight"); sr.innerHTML="";
   STATE.statsBand.stats.forEach(function(s,i){
     var p = "statsBand.stats."+i;
@@ -940,9 +1053,9 @@ function renderHero(){
 }
 
 function renderCronograma(){
-  document.getElementById("cronoKicker").textContent = STATE.cronoHero.kicker;
-  document.getElementById("cronoTitle").textContent = STATE.cronoHero.title;
-  document.getElementById("cronoSub").textContent = STATE.cronoHero.sub;
+  document.getElementById("cronoKicker").innerHTML = STATE.cronoHero.kicker;
+  document.getElementById("cronoTitle").innerHTML = STATE.cronoHero.title;
+  document.getElementById("cronoSub").innerHTML = STATE.cronoHero.sub;
 
   var mg = document.getElementById("cronoMetaGrid"); mg.innerHTML="";
   STATE.cronoMeta.forEach(function(m,i){
@@ -1102,7 +1215,7 @@ function hydrateStatics(){
   };
   Object.keys(map).forEach(function(k){
     var node = document.getElementById(map[k]);
-    if(node) node.textContent = s[k];
+    if(node) node.innerHTML = s[k];
   });
 }
 
@@ -1159,7 +1272,8 @@ var artifactCap = null, userCap = null, downloadsCap = null;
 
 function harvestEdits(){
   document.querySelectorAll("[data-path]").forEach(function(node){
-    setPath(STATE, node.getAttribute("data-path"), node.innerHTML.trim());
+    if(node.parentElement && node.parentElement.closest("[data-path]")) return; // copia pegada de otra tarjeta
+    setPath(STATE, node.getAttribute("data-path"), cleanEditableHTML(node.innerHTML.trim()));
   });
 }
 
@@ -1178,6 +1292,27 @@ document.getElementById("cancelEditBtn").addEventListener("click", function(){
 });
 
 document.body.addEventListener("click", function(e){
+  var addDec = e.target.closest("[data-action='add-dec']");
+  if(addDec){
+    harvestEdits();
+    var list = STATE.sections[parseInt(addDec.getAttribute("data-sec"),10)].decisions;
+    var kind = addDec.getAttribute("data-kind");
+    var maxN = 0;
+    list.forEach(function(d){
+      var id = plainText(d[0]).trim().toUpperCase();
+      if(id.charAt(0) === kind){ var n = parseInt(id.slice(1),10); if(!isNaN(n) && n > maxN) maxN = n; }
+    });
+    list.push([kind+(maxN+1), fechaHoyES(), "", ""]);
+    setEditing(true);
+    return;
+  }
+  var delDec = e.target.closest("[data-action='del-dec']");
+  if(delDec){
+    harvestEdits();
+    STATE.sections[parseInt(delDec.getAttribute("data-sec"),10)].decisions.splice(parseInt(delDec.getAttribute("data-row"),10), 1);
+    setEditing(true);
+    return;
+  }
   var add = e.target.closest("[data-action='add-row']");
   if(add){
     harvestEdits();
@@ -1348,7 +1483,17 @@ function buildPrintableNode(kind){
       html += "<div style='page-break-inside:avoid;margin-bottom:18px;'>";
       html += "<h1 style='font-size:16px;font-weight:800;color:"+DOCX_NAVY+";margin:0 0 8px;padding-bottom:6px;border-bottom:2px solid "+DOCX_NAVY+";'>"+s.n+". "+s.title+"</h1>";
       if(s.body) html += "<div style='font-size:12.5px;color:"+DOCX_DARK+";'>"+s.body+"</div>";
-      if(s.decisions) html += printableTable(["ID","Fecha","Decisión","Justificación"], s.decisions);
+      if(s.decisions){
+        var dg = groupDecisions(s.decisions);
+        var keep = function(arr){ return arr.filter(function(it){ return !isBlankDecision(it.d); }).map(function(it){ return it.d; }); };
+        var pObj = keep(dg.obj).slice(0, 1), pDec = keep(dg.dec), pAcl = keep(dg.acl);
+        if(pObj.length){
+          html += "<h4>"+STATE.strings.decObjLabel+"</h4>";
+          html += "<div style='border-left:4px solid "+DOCX_NAVY+";background:#EEF2F8;padding:10px 14px;margin:6px 0 14px;font-size:12px;color:"+DOCX_DARK+";'><b style='color:"+DOCX_NAVY+";'>"+pObj[0][0]+" — "+pObj[0][2]+"</b><div style='margin-top:4px;'>"+pObj[0][3]+"</div></div>";
+        }
+        if(pDec.length){ html += "<h4>"+STATE.strings.decDecLabel+"</h4>" + printableTable(["ID","Fecha","Decisión","Justificación"], pDec); }
+        if(pAcl.length){ html += "<h4>"+STATE.strings.decAclLabel+"</h4>" + printableTable(["ID","Fecha","Aclaración","Detalle"], pAcl); }
+      }
       if(s.table) html += printableTable(s.table.head, s.table.rows);
       if(s.docs) html += "<ul style='font-size:12px;color:"+DOCX_DARK+";'>"+s.docs.map(function(d){ return "<li><b>"+d[0]+"</b> — "+d[1]+"</li>"; }).join("")+"</ul>";
       if(s.after) html += s.after;
