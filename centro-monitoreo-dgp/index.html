@@ -513,6 +513,154 @@ td.c,th.c{text-align:center}
   .cd-c{width:58px;height:58px}
   .cd-c b{font-size:18px}
 }
+
+/* modelo de gestión (láminas) */
+:root{--m-proj:#2F6FB3;--m-proc:#1A7049;--m-acred:#A65310;--m-risk:#5F6D84;--m-calidad:#0A7E90;--m-apoyo:#7A879C;--m-on:#FFFFFF;--m-yellow:#FFD84D;--m-yellow-ink:#0B1D3A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--m-proj:#7DB3EE;--m-proc:#5BC98F;--m-acred:#F0A35E;--m-risk:#A6B4CA;--m-calidad:#3CC4D6;--m-apoyo:#7C8CA6;--m-on:#061127}}
+:root[data-theme="dark"]{--m-proj:#7DB3EE;--m-proc:#5BC98F;--m-acred:#F0A35E;--m-risk:#A6B4CA;--m-calidad:#3CC4D6;--m-apoyo:#7C8CA6;--m-on:#061127}
+.md-blob-k{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;text-align:center}
+.md-blob-k .k-label{color:var(--on-navy-muted)}
+.md-slides{display:flex;gap:6px;overflow-x:auto;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);scrollbar-width:thin}
+.md-tab{flex:1 0 150px;border:0;background:none;border-radius:var(--radius-md);padding:10px 12px;text-align:left;cursor:pointer;color:var(--ink-muted);font:700 13.5px/1.25 var(--font-body)}
+.md-tab small{display:block;font:700 10.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+.md-tab:hover{background:var(--surface-alt);color:var(--ink)}
+.md-tab.on{background:var(--navy-900);color:var(--on-navy)}
+.md-tab.on small{color:var(--teal-500)}
+.md-slide{margin-top:22px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.md-pager{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+.md-num{display:inline-grid;place-items:center;min-width:30px;height:30px;padding:0 7px;border-radius:999px;background:var(--m-yellow);color:var(--m-yellow-ink);font:800 12.5px/1 var(--font-display);box-shadow:0 0 0 2px var(--navy-900);flex:none}
+.md-num.big{min-width:56px;height:56px;font-size:24px;box-shadow:0 0 0 3px var(--navy-900)}
+.md-head{display:flex;gap:18px;align-items:flex-start;padding:22px 24px;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--mc);border-radius:var(--radius-md);box-shadow:var(--shadow-card)}
+.md-head h3{font:700 22px/1.25 var(--font-display);margin-bottom:10px}
+.md-head>div{min-width:0}
+.md-lead{font-size:16px;color:var(--ink)}
+.md-quote{margin:0;padding:12px 16px;border-left:3px solid var(--mc,var(--teal-500));background:var(--surface-alt);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:16px;line-height:1.5;color:var(--ink)}
+.md-quote cite{display:block;margin-top:6px;font:600 12px/1.3 var(--font-body);font-style:normal;color:var(--ink-muted)}
+.md-synth{font-size:12px;color:var(--ink-faint);margin-top:8px}
+.md-map{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px;align-items:start}
+.md-venn-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:14px;box-shadow:var(--shadow-card);min-width:0}
+.venn{display:block;width:100%;height:auto}
+.vz{cursor:pointer;outline:none}
+.vz-c{fill:var(--mc);fill-opacity:.13;stroke:var(--mc);stroke-width:2;transition:fill-opacity .15s,stroke-width .15s}
+.vz:hover .vz-c,.vz:focus-visible .vz-c{fill-opacity:.24}
+.vz.sel .vz-c{fill-opacity:.32;stroke-width:3.5}
+.vz-big{fill:var(--m-calidad);fill-opacity:.04;stroke:var(--m-calidad);stroke-width:2;stroke-dasharray:6 5}
+.vz.sel .vz-big{fill-opacity:.1;stroke-width:3}
+.vz-side{fill:var(--surface-alt);stroke:var(--m-apoyo);stroke-width:1.6}
+.vz.sel .vz-side{stroke-width:3;fill:var(--surface)}
+.vz-title{font:800 19px var(--font-display);fill:var(--teal-700)}
+.vz-lbl{font:700 14px var(--font-display);fill:var(--ink);pointer-events:none}
+.vz-small{font:600 12.5px var(--font-body);fill:var(--ink-muted);pointer-events:none}
+.vz-num{fill:var(--m-yellow);stroke:var(--navy-900);stroke-width:2}
+.vz-numt{font:800 13px var(--font-display);fill:var(--m-yellow-ink);pointer-events:none}
+.vz:focus-visible .vz-c,.vz:focus-visible .vz-big,.vz:focus-visible .vz-side{stroke:var(--teal-700);stroke-width:4}
+.md-side{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--mc);border-radius:var(--radius-md);padding:22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:12px;min-width:0}
+.md-side h3{font:700 20px/1.25 var(--font-display)}
+.md-side h4,.md-phase h4,.md-sub{font:700 11px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin:6px 0 2px}
+.md-side .btn{align-self:flex-start}
+.md-cross{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.md-cross-i{display:flex;gap:6px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:14px 16px;min-width:0}
+.md-cross-i p{font-size:14px;margin-left:6px}
+.md-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--mc);flex:none;margin-top:4px;vertical-align:middle;margin-right:4px}
+.md-projs{display:flex;flex-direction:column;gap:8px}
+.md-proj{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:start;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface-alt);border-radius:var(--radius-md);padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;min-width:0}
+.md-proj .code-chip{margin-top:1px}
+.md-proj:hover{border-color:var(--teal-600);background:var(--surface)}
+.md-proj-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.md-proj-t b{font:700 14px/1.3 var(--font-body)}
+.md-proj-t small{font-size:12.5px;color:var(--ink-muted);line-height:1.35}
+.md-proj-m{grid-column:2;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:4px}
+.md-proj-m small{font-size:12px;color:var(--ink-muted)}
+.md-verbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 18px;background:var(--navy-900);border-radius:var(--radius-md);color:var(--on-navy)}
+.md-verbs span{font:700 15px/1 var(--font-display);padding:8px 12px;border-radius:999px;background:var(--navy-700)}
+.md-verbs i{font-style:normal;color:var(--teal-500)}
+.md-verbs em{margin-left:auto;font-style:normal;font:700 11px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;color:var(--teal-500)}
+.md-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.md-tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:18px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
+.md-tool h4{font:700 16px/1.3 var(--font-display)}
+.md-tool p{font-size:14px;color:var(--ink-muted)}
+.md-tool .where{color:var(--ink);font-size:13.5px}
+.md-tool .where b{color:var(--teal-700)}
+.md-plan-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:4px 0 14px}
+.md-bar{flex:1 1 200px;max-width:360px;height:10px;border-radius:5px;background:var(--line-soft);overflow:hidden}
+.md-bar span{display:block;height:100%;background:var(--ok);border-radius:5px}
+.md-plan{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.md-plan li{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface)}
+.md-plan li b{display:block;font-size:14px}
+.md-plan li small{display:block;font-size:12.5px;color:var(--ink-muted)}
+.md-ck{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 12px/1 var(--font-display);background:var(--idle-soft);color:var(--idle)}
+.md-plan li.ok .md-ck{background:var(--ok);color:var(--ok-soft)}
+.md-phases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.md-ph{display:flex;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--radius-md);padding:12px;cursor:pointer;font:700 14px/1.3 var(--font-display);color:var(--ink);min-width:0;position:relative}
+.md-ph small{display:block;font:700 10.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
+.md-ph.on{border-color:var(--m-proc);box-shadow:0 0 0 2px var(--m-proc);background:var(--surface)}
+.md-ph.past{background:var(--surface-alt)}
+.md-phase{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:22px;background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--mc);border-radius:var(--radius-md);padding:22px;box-shadow:var(--shadow-card)}
+.md-phase>*{min-width:0}
+.md-q{font:700 19px/1.35 var(--font-display);margin-bottom:14px}
+.md-items{display:grid;gap:8px}
+.md-items div{display:flex;flex-direction:column;padding:10px 14px;border-left:3px solid var(--mc);background:var(--surface-alt);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.md-items b{font-size:15px}
+.md-items span{font-size:13.5px;color:var(--ink-muted)}
+.md-nav-ph{display:flex;justify-content:space-between}
+.md-sem{margin-top:16px;padding:16px;border:1px dashed var(--line);border-radius:var(--radius-md)}
+.md-sem-scale{display:grid;grid-template-columns:75fr 15fr 10fr;border-radius:var(--radius-sm);overflow:hidden;font:700 12px/1.2 var(--font-body)}
+.md-sem-scale span{padding:8px 10px}
+.md-sem-scale .crit{background:var(--crit-soft);color:var(--crit)}
+.md-sem-scale .warn{background:var(--warn-soft);color:var(--warn)}
+.md-sem-scale .ok{background:var(--ok-soft);color:var(--ok)}
+.md-sem-in{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:14px;flex-wrap:wrap}
+.md-sem-in input{flex:1 1 180px;accent-color:var(--teal-600)}
+.md-sem-in output{font:700 22px/1 var(--font-display);min-width:42px;text-align:right}
+.md-sem-out{margin-top:10px;display:flex;align-items:center;gap:10px}
+.md-sem-out small{color:var(--ink-muted)}
+.md-acr{display:flex;flex-direction:column;gap:12px}
+.md-acr-i{display:flex;gap:12px;align-items:flex-start}
+.md-acr-i p{font-size:14px;color:var(--ink-muted)}
+.md-flow{font:700 13px/1.4 var(--font-body);color:var(--m-acred);padding:10px 12px;background:var(--surface-alt);border-radius:var(--radius-sm)}
+.md-clauses{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.md-cl{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font:800 15px/1 var(--font-display);color:var(--ink);cursor:pointer}
+.md-cl:hover{border-color:var(--m-acred)}
+.md-cl.on{background:var(--m-acred);border-color:var(--m-acred);color:var(--m-on)}
+.md-cl-body h4{font:700 16px/1.3 var(--font-display);margin-bottom:6px}
+.md-cl-body p{font-size:14px}
+.md-cl-body .where{margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.md-step{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px 5px 5px;font:600 12.5px/1.2 var(--font-body);color:var(--ink);cursor:pointer;white-space:nowrap}
+.md-step b{background:var(--m-yellow);color:var(--m-yellow-ink);border-radius:999px;padding:4px 7px;font:800 11px/1 var(--font-display)}
+.md-step:hover{border-color:var(--teal-600)}
+.md-step.on{background:var(--teal-600);color:var(--on-navy);border-color:var(--teal-600);cursor:default}
+.md-step.compact{padding:4px}
+.md-mx .linkish{text-align:left;font-size:13.5px}
+.md-ph>span{min-width:0;overflow-wrap:anywhere}
+@media (max-width:1480px){.live small{display:none}}
+.md-steps{display:flex;flex-wrap:wrap;gap:6px}
+.md-key{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:20px;align-items:center;background:var(--navy-900);color:var(--on-navy);border-radius:var(--radius-lg);padding:24px 26px}
+.md-key .eyebrow{color:var(--teal-500)}
+.md-key-t{font:700 19px/1.35 var(--font-display);margin-bottom:14px}
+.md-key-steps{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.md-key-steps i{font-style:normal;color:var(--teal-500)}
+.md-key-p .md-proj{background:var(--navy-700);border-color:var(--navy-700);color:var(--on-navy)}
+.md-key-p .md-proj-t small,.md-key-p .md-proj-m small{color:var(--on-navy-muted)}
+.md-mx th.c,.md-mx td.c{text-align:center}
+.md-mx th .md-dot{display:block;margin:0 auto 6px}
+.md-yes{color:var(--mc);font-size:20px;line-height:1}
+.md-no{color:var(--ink-faint)}
+.md-flow2{display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding-bottom:4px}
+.md-flow2>i{align-self:center;font-style:normal;color:var(--teal-600);font-weight:700}
+.md-fc{flex:1 0 150px;border:1px solid var(--line);border-top:5px solid var(--mc);border-radius:var(--radius-md);padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:4px}
+.md-fc small{font:700 10.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
+.md-fc b{font:700 15px/1.3 var(--font-display)}
+.md-fc span{font-size:13px;color:var(--ink-muted)}
+.md-fc.calidad{background:var(--navy-900);border-color:var(--navy-900);border-top-color:var(--teal-500);color:var(--on-navy)}
+.md-fc.calidad span,.md-fc.calidad small{color:var(--on-navy-muted)}
+.md-roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.md-role{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:12px;display:flex;flex-direction:column;gap:10px}
+.md-role p{font-size:14px}
+.p-model{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.p-model>span{font:700 11px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--teal-700);margin-right:2px}
+@media (max-width:900px){.md-map,.md-phase,.md-key{grid-template-columns:minmax(0,1fr)}.md-phases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.md-head{flex-direction:column;padding:18px}.md-num.big{min-width:46px;height:46px;font-size:20px}.md-plan{grid-template-columns:minmax(0,1fr)}.md-plan li{grid-template-columns:28px minmax(0,1fr)}.md-plan li>.linkish,.md-plan li>a{grid-column:2;justify-self:start}.md-ph{font-size:13px;padding:10px}.md-verbs em{margin-left:0;width:100%}.md-tab{flex-basis:130px}.md-sem-scale{font-size:10.5px}}
+
 </style>
 
 <header class="nav" id="nav"></header>
@@ -610,6 +758,8 @@ const PROJECT_FIELDS = [
   { k: 'constraints', l: 'Restricciones', t: 'textarea' },
   { k: 'notes', l: 'Notas', t: 'textarea', wide: 1 },
   { k: 'drive', l: 'Carpeta del proyecto en Google Drive (enlace)', t: 'text', wide: 1, ph: 'https://drive.google.com/drive/folders/…' },
+  { k: 'modeloPasos', l: 'Pasos del modelo que trabaja', t: 'text', wide: 1, ph: '2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, ISO', group: 'Modelo de gestión', hint: '2.1 Levantamiento · 2.2 Procedimentación · 2.3 Medir · 2.4 Mejora · 3.1 Estándares · 3.2 Indicadores · 3.3 Autoevaluación · ISO Certificación' },
+  { k: 'modeloRol', l: 'Rol del proyecto en el modelo', t: 'textarea', wide: 1 },
   ...IMP.map((l, i) => ({ k: 'imp' + (i + 1), l, t: 'select', o: OPT.scale, num: 1, group: i === 0 ? 'Priorización · Impacto (1 = mínimo, 5 = máximo)' : undefined })),
   ...ESF.map((l, i) => ({ k: 'esf' + (i + 1), l, t: 'select', o: OPT.scale, num: 1, group: i === 0 ? 'Priorización · Esfuerzo (1 = mínimo, 5 = máximo)' : undefined })),
 ];
@@ -723,13 +873,13 @@ const LISTS = ['projects', ...Object.keys(COLL)];
    ========================================================= */
 const S = { mode: 'connecting', err: null, loaded: new Set(), lastSync: 0, me: null, canWrite: null, readOnly: false, peers: [], profiles: {}, feed: [] };
 LISTS.forEach(k => { S[k] = []; });
-const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true, tfilter: 'all' };
+const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true, tfilter: 'all', slide: 0, mapSel: 'calidad', phaseSel: 0, clause: 4, planPid: null, semVal: 82 };
 try {
   const saved = JSON.parse(localStorage.getItem('dgp-ui') || 'null');
-  if (saved && typeof saved === 'object') { UI.view = saved.view || 'portfolio'; UI.pid = saved.pid || null; UI.tab = saved.tab || 'resumen'; UI.depth = saved.depth || 9; }
+  if (saved && typeof saved === 'object') { UI.view = saved.view || 'portfolio'; UI.pid = saved.pid || null; UI.tab = saved.tab || 'resumen'; UI.depth = saved.depth || 9; UI.slide = saved.slide | 0; }
 } catch (e) { /* almacenamiento no disponible */ }
 if (location.hash === '#guia') UI.view = 'guide';
-const persistUI = () => { try { localStorage.setItem('dgp-ui', JSON.stringify({ view: UI.view, pid: UI.pid, tab: UI.tab, depth: UI.depth })); } catch (e) { /* sin almacenamiento */ } };
+const persistUI = () => { try { localStorage.setItem('dgp-ui', JSON.stringify({ view: UI.view, pid: UI.pid, tab: UI.tab, depth: UI.depth, slide: UI.slide })); } catch (e) { /* sin almacenamiento */ } };
 
 let db = null, user = null, room = null, sample = null, downloads = null;
 const C = window.claude;
@@ -778,7 +928,7 @@ let lastWhere = '';
 function pushPresence() {
   if (!room) return;
   const p = UI.view === 'project' ? projectById(UI.pid) : null;
-  const where = p ? (p.code || 'Proyecto') : UI.view === 'guide' ? 'Guía PMBOK' : 'Portafolio';
+  const where = p ? (p.code || 'Proyecto') : UI.view === 'guide' ? 'Guía PMBOK' : UI.view === 'model' ? 'Modelo de gestión' : 'Portafolio';
   if (where === lastWhere) return;
   lastWhere = where;
   Promise.resolve(room.presence({ where })).catch(() => {});
@@ -979,6 +1129,7 @@ function render() {
   renderNav(); renderFoot();
   const v = $('#view');
   if (UI.view === 'guide') { v.innerHTML = viewGuide(); pushPresence(); return; }
+  if (UI.view === 'model') { v.innerHTML = viewModel(); pushPresence(); return; }
   if (S.mode === 'offline') { v.innerHTML = viewOffline(); return; }
   if (S.mode === 'error') { v.innerHTML = viewError(); return; }
   if (S.mode === 'connecting' || !S.loaded.has('projects')) {
@@ -1005,6 +1156,7 @@ function renderNav() {
     <button class="logo" data-act="go-portfolio" aria-label="Gestión, ir al portafolio">${MARK(38)}<span><b>GESTIÓN</b><small>DE LA DIRECCIÓN DE PROYECTOS</small></span></button>
     <nav class="menu" aria-label="Secciones">
       <button data-act="go-portfolio" aria-current="${UI.view === 'portfolio'}">Portafolio</button>
+      <button data-act="go-model" aria-current="${UI.view === 'model'}">Modelo</button>
       <details class="${UI.view === 'project' ? 'on' : ''}"><summary>Proyectos <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5L5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></summary><div class="dd">${dd}</div></details>
       <button data-act="go-guide" aria-current="${UI.view === 'guide'}">Guía PMBOK</button>
     </nav>
@@ -1015,7 +1167,7 @@ function renderFoot() {
   const P = projectsSorted();
   $('#foot').innerHTML = `<div class="wrap"><div class="foot-grid">
     <div><h4>Gestión</h4><p>Sistema de dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Basado en la Guía del PMBOK® 8.ª edición: 6 principios, 7 dominios de desempeño y 5 áreas de enfoque.</p></div>
-    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
+    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-model">Modelo de gestión</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
     <div><h4>Dominios PMBOK 8</h4><ul>${['Gobernanza', 'Alcance', 'Cronograma', 'Finanzas', 'Interesados', 'Recursos', 'Riesgo'].map(d => `<li>${d}</li>`).join('')}</ul></div>
     <div><h4>Proyectos</h4><ul>${P.slice(0, 8).map(p => `<li><button class="fl" data-act="go-project" data-id="${esc(p.id)}"><span class="mono">${esc(p.code)}</span> · ${esc(String(p.name || '').slice(0, 46))}${String(p.name || '').length > 46 ? '…' : ''}</button></li>`).join('') || '<li>Sin proyectos aún</li>'}</ul></div>
   </div>
@@ -1191,6 +1343,7 @@ function viewProject(p) {
   const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:3%;top:20%"></span><div class="wrap">
     <div><p class="eyebrow">${esc(p.code || '')}${p.unit ? ' · ' + esc(p.unit) : ''}</p><h1 class="title">${esc(p.name || 'Sin nombre')}</h1>
       <div class="facts">${pill(m.health.tone, m.health.label)}${p.manager ? `<span>Dirige <b>${esc(p.manager)}</b></span>` : ''}${p.sponsor ? `<span>Patrocina <b>${esc(p.sponsor)}</b></span>` : ''}${p.start || p.end ? `<span>${fmtD(p.start)} → <b>${fmtD(p.end)}</b></span>` : ''}${p.approach ? `<span>Enfoque <b>${esc(p.approach)}</b></span>` : ''}</div>
+      ${stepsOf(p).length ? `<div class="p-model"><span>En el modelo</span>${stepsOf(p).map(k => stepChip(k)).join('')}</div>` : ''}
       <div class="hero-actions">${actions}</div></div>
     <div>${right}</div>
   </div></section>`;
@@ -1688,6 +1841,14 @@ document.addEventListener('click', e => {
   switch (act) {
     case 'go-portfolio': go('portfolio'); break;
     case 'go-guide': go('guide'); break;
+    case 'go-model': go('model'); break;
+    case 'slide': { const n = Math.max(0, Math.min(SLIDES.length - 1, Number(el.dataset.v) | 0)); UI.slide = n; persistUI(); render(); const t = $('.md-slides'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); break; }
+    case 'msel': UI.mapSel = el.dataset.v; render(); break;
+    case 'phase': UI.phaseSel = Number(el.dataset.v) | 0; render(); break;
+    case 'clause': UI.clause = Number(el.dataset.v) | 0; render(); break;
+    case 'clause-go': UI.clause = Number(el.dataset.v) | 0; UI.slide = 3; persistUI(); render(); break;
+    case 'plan-pid': UI.planPid = el.dataset.id; render(); break;
+    case 'model-step': { const st = STEPS[el.dataset.v]; if (!st) break; UI.slide = st.slide; if (st.phase != null) UI.phaseSel = st.phase; go('model'); break; }
     case 'go-project': go('project', el.dataset.id, el.dataset.tab || (UI.pid === el.dataset.id ? UI.tab : 'resumen')); break;
     case 'tab': UI.tab = el.dataset.tab; UI.scrollGantt = true; persistUI(); render(); break;
     case 'new-project': openForm('projects', null); break;
@@ -1721,6 +1882,19 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if (!$('#modal').hidden) { closeModal(); return; } const dd = document.querySelector('.menu details[open]'); if (dd) dd.open = false; }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('article.pcard')) { e.preventDefault(); e.target.click(); }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('g[role="button"][data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+  if (UI.view === 'model' && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input,select,textarea,[role="tablist"] .md-ph') && $('#modal').hidden) {
+    const n = Math.max(0, Math.min(SLIDES.length - 1, (UI.slide | 0) + (e.key === 'ArrowRight' ? 1 : -1)));
+    if (n !== UI.slide) { UI.slide = n; persistUI(); render(); }
+  }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (!(t.dataset && t.dataset.change === 'sem')) return;
+  UI.semVal = Number(t.value) || 0; const st = semState(UI.semVal);
+  const box = t.closest('.md-sem'); if (!box) return;
+  box.querySelector('output').textContent = UI.semVal;
+  box.querySelector('.md-sem-out').innerHTML = `${pill(st.k, st.t)} <small>rango ${st.r}</small>`;
 });
 document.addEventListener('submit', e => { const form = e.target.closest('#rec-form'); if (!form) return; e.preventDefault(); submitForm(form); });
 document.addEventListener('change', e => {
@@ -1768,6 +1942,242 @@ function viewOffline() {
 function viewError() {
   return `<section class="hero"><div class="wrap"><div><p class="eyebrow">Conexión interrumpida</p><h1 class="title">No se pudo leer la base de datos</h1><p class="lead">Puede que tu acceso haya cambiado o que la conexión se haya cortado. Recarga la página; si el problema sigue, pide al propietario que revise cómo te compartió el sistema.</p></div></div></section>`;
 }
+/* =========================================================
+   Vista: modelo de gestión (láminas interactivas)
+   Contenido base: lámina «Proy. Gestión por Procesos» de Alvaro Rojas
+   ========================================================= */
+const SLIDES = [
+  ['mapa', 'Mapa integrado'],
+  ['proyectos', '1 · Gestión de proyectos'],
+  ['procesos', '2 · Gestión por procesos'],
+  ['acreditacion', '3 · Acreditación y certificación'],
+  ['riesgo', 'Gestión del riesgo'],
+  ['integracion', 'Tus proyectos en el modelo'],
+];
+// pasos del modelo a los que un proyecto puede vincularse (campo «modeloPasos»)
+const STEPS = {
+  '2.1': { label: 'Levantamiento de la documentación', slide: 2, phase: 0 },
+  '2.2': { label: 'Procedimentación', slide: 2, phase: 1 },
+  '2.3': { label: 'Medir', slide: 2, phase: 2 },
+  '2.4': { label: 'Mejora', slide: 2, phase: 3 },
+  '3.1': { label: 'Estándares con evidencias', slide: 3 },
+  '3.2': { label: 'Indicadores de satisfacción', slide: 3 },
+  '3.3': { label: 'Autoevaluación', slide: 3 },
+  'ISO': { label: 'Certificación ISO 9001', slide: 3 },
+};
+const stepsOf = p => String((p && p.modeloPasos) || '').split(/[,;\s]+/).map(s => s.trim().toUpperCase()).filter(k => STEPS[k]);
+const DISC = {
+  proj: { name: 'Gestión de proyectos', num: '1', slide: 1 },
+  proc: { name: 'Gestión por procesos', num: '2', slide: 2 },
+  acred: { name: 'Acreditación y certificación', num: '3', slide: 3 },
+  risk: { name: 'Gestión del riesgo', num: 'R', slide: 4 },
+};
+const discOf = p => { const st = stepsOf(p); return { proj: true, proc: st.some(s => s.startsWith('2.')), acred: st.some(s => s.startsWith('3.') || s === 'ISO'), risk: S.loaded.has('risks') && of('risks', p.id).length > 0 }; };
+const stepChip = (k, pid, compact) => `<button class="md-step${compact ? ' compact' : ''}" data-act="model-step" data-v="${esc(k)}"${pid ? ` data-id="${esc(pid)}"` : ''}${compact ? ` title="${esc(STEPS[k].label)}" aria-label="${esc(k + ' ' + STEPS[k].label)}"` : ''}><b>${esc(k)}</b>${compact ? '' : esc(STEPS[k].label)}</button>`;
+const mdNum = (n, cls) => `<span class="md-num ${cls || ''}">${esc(n)}</span>`;
+const mdQuote = (txt, who) => `<blockquote class="md-quote">${txt}<cite>${who || 'Alvaro Rojas, lámina «Gestión por procesos»'}</cite></blockquote>`;
+const mdSynth = '<p class="md-synth">Síntesis del sistema, no está en tu lámina.</p>';
+const projRow = (p, extra) => { const ready = S.loaded.has('tasks'); const m = ready ? metrics(p) : null; return `<button class="md-proj" data-act="go-project" data-id="${esc(p.id)}"><span class="code-chip">${esc(p.code || '—')}</span><span class="md-proj-t"><b>${esc(p.name || 'Sin nombre')}</b>${extra ? `<small>${extra}</small>` : ''}</span>${m ? `<span class="md-proj-m">${pill(m.health.tone, m.health.label)}<small class="num">Avance ${pct(m.realPct)}</small></span>` : ''}</button>`; };
+const projsWith = fn => (S.loaded.has('projects') ? projectsSorted().filter(fn) : []);
+const linkedList = (fn, extra, empty) => { const L = projsWith(fn); return L.length ? `<div class="md-projs">${L.map(p => projRow(p, extra ? extra(p) : '')).join('')}</div>` : `<p class="note">${empty || 'Ningún proyecto vinculado todavía. Indica los pasos del modelo en «Editar acta» de cada proyecto.'}</p>`; };
+
+function vennSVG(sel) {
+  const g = (key, cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" class="vz-c" style="--mc:var(--m-${key})"/>`;
+  const grp = (key, label, body) => `<g class="vz${sel === key ? ' sel' : ''}" data-act="msel" data-v="${key}" role="button" tabindex="0" aria-pressed="${sel === key}" aria-label="${label}">${body}</g>`;
+  return `<svg class="venn" viewBox="0 0 540 500" role="group" aria-label="Mapa de la gestión de la calidad total">
+    ${grp('calidad', 'Gestión de la calidad total', `<circle cx="270" cy="270" r="215" class="vz-big"/><text x="270" y="150" text-anchor="middle" class="vz-title">Gestión de la Calidad Total</text>`)}
+    ${grp('apoyo', 'Áreas de apoyo: logística y transportes', `<circle cx="222" cy="62" r="50" class="vz-side"/><circle cx="318" cy="62" r="50" class="vz-side"/><text x="205" y="66" text-anchor="middle" class="vz-small">Logística</text><text x="338" y="66" text-anchor="middle" class="vz-small">Transportes</text>`)}
+    ${grp('proj', 'Gestión de proyectos', `${g('proj', 195, 355, 100)}<text x="165" y="400" text-anchor="middle" class="vz-lbl">Gestión de</text><text x="165" y="418" text-anchor="middle" class="vz-lbl">proyectos</text><circle cx="112" cy="408" r="13" class="vz-num"/><text x="112" y="413" text-anchor="middle" class="vz-numt">1</text>`)}
+    ${grp('acred', 'Acreditación y certificación', `${g('acred', 215, 262, 74)}<text x="198" y="250" text-anchor="middle" class="vz-lbl">Acreditación</text><text x="198" y="268" text-anchor="middle" class="vz-lbl">y certificación</text><circle cx="168" cy="216" r="13" class="vz-num"/><text x="168" y="221" text-anchor="middle" class="vz-numt">3</text>`)}
+    ${grp('proc', 'Gestión por procesos', `${g('proc', 322, 250, 86)}<text x="352" y="238" text-anchor="middle" class="vz-lbl">Gestión por</text><text x="352" y="256" text-anchor="middle" class="vz-lbl">procesos</text><circle cx="388" cy="200" r="13" class="vz-num"/><text x="388" y="205" text-anchor="middle" class="vz-numt">2</text>`)}
+    ${grp('risk', 'Gestión del riesgo', `${g('risk', 318, 345, 64)}<text x="330" y="372" text-anchor="middle" class="vz-lbl">Gestión</text><text x="330" y="390" text-anchor="middle" class="vz-lbl">del riesgo</text>`)}
+  </svg>`;
+}
+
+const MAP_INFO = {
+  calidad: { t: 'Gestión de la Calidad Total', c: 'calidad', q: null, body: '<p>Es el paraguas de todo el modelo: la organización completa trabaja para cumplir lo que el usuario espera y mejorar siempre. Dentro de ella viven la gestión de proyectos, la gestión por procesos, la acreditación y certificación y la gestión del riesgo, y se cruzan entre sí.</p>' + mdSynth, slide: null },
+  apoyo: { t: 'Logística y Transportes', c: 'apoyo', q: null, body: '<p>En tu lámina aparecen en el borde superior del círculo de calidad total: son áreas de apoyo de la organización que también pueden ordenarse con este mismo modelo (procesos, indicadores y mejora).</p>' + mdSynth, slide: null },
+  proj: { t: '1 · Gestión de proyectos', c: 'proj', q: 'Busca definir, gestionar, dirigir, evaluar y monitorear toda la planificación de un proyecto, al que mapea de inicio a fin.', slide: 1 },
+  proc: { t: '2 · Gestión por procesos', c: 'proc', q: 'Generar valor es lograr que el usuario sienta el beneficio de que solucionamos su problema y cumplimos con lo que esperaba. ¡Es esa nuestra meta!', slide: 2 },
+  acred: { t: '3 · Acreditación y certificación', c: 'acred', q: 'La acreditación busca el cumplimiento de estándares de calidad, y la certificación el cumplimiento de las cláusulas 4 a 10, que contienen los requisitos auditables y obligatorios.', slide: 3 },
+  risk: { t: 'Gestión del riesgo', c: 'risk', q: null, body: '<p>Anticipa lo que puede impedir que un proyecto, un proceso o una acreditación logre su objetivo, y prepara la respuesta antes de que ocurra. Por eso en tu mapa cruza a los demás círculos.</p>' + mdSynth, slide: 4 },
+};
+const CROSSES = [
+  ['proj', 'proc', 'Un proyecto puede tener como producto un proceso: P01 es el proyecto que implementa la gestión por procesos en las facultades.'],
+  ['proc', 'acred', 'Para certificarte en la ISO 9001 debes tener implementada la gestión por procesos de la fase 1 a la 3.'],
+  ['proj', 'acred', 'La acreditación también se gestiona como proyecto, con cronograma, evidencias y responsables: es P04.'],
+  ['risk', 'proc', 'Los riesgos de proyectos y procesos se miden igual (probabilidad × impacto) y la ISO 9001 los exige en su cláusula 6.'],
+];
+
+function slideMapa() {
+  const sel = MAP_INFO[UI.mapSel] ? UI.mapSel : 'calidad';
+  const info = MAP_INFO[sel];
+  const discKey = DISC[sel] ? sel : null;
+  const linked = discKey ? linkedList(p => discOf(p)[discKey], p => esc(p.modeloRol || '')) : '';
+  return `<div class="md-map">
+    <div class="md-venn-wrap">${vennSVG(sel)}<p class="note" style="text-align:center">Toca un círculo para ver qué busca y qué proyectos lo trabajan.</p></div>
+    <aside class="md-side" style="--mc:var(--m-${info.c})">
+      <p class="eyebrow">${discKey ? 'Disciplina' : 'Marco'}</p><h3>${info.t}</h3>
+      ${info.q ? mdQuote(info.q) : info.body}
+      ${discKey ? `<h4>Proyectos que la trabajan</h4>${linked}` : ''}
+      ${info.slide ? `<button class="btn primary" data-act="slide" data-v="${info.slide}">Abrir la lámina ${esc(DISC[sel].num)} →</button>` : ''}
+    </aside>
+  </div>
+  <div class="md-cross">${CROSSES.map(([a, b, t]) => `<div class="md-cross-i"><span class="md-dot" style="--mc:var(--m-${a})"></span><span class="md-dot" style="--mc:var(--m-${b})"></span><p><b>${DISC[a].name} + ${DISC[b].name}.</b> ${t}</p></div>`).join('')}</div>`;
+}
+
+// componentes del plan de gestión (lámina 1.4) y cómo el sistema comprueba cada uno
+function planItems(p) {
+  const n = c => (S.loaded.has(c) ? of(c, p.id) : []);
+  const T = n('tasks'), R = n('requirements'), C = n('changes'), TM = n('team'), RK = n('risks'), SH = n('stakeholders');
+  const has = v => !!String(v || '').trim();
+  const cnt = (k, one, many) => `${k} ${k === 1 ? one : many}`;
+  return [
+    ['Propósito del plan', 'gobernanza', has(p.purpose), has(p.purpose) ? 'Registrado en el acta' : 'Falta el propósito en el acta'],
+    ['Decisiones adoptadas en esta versión', 'gobernanza', C.some(c => has(c.decision)), C.some(c => has(c.decision)) ? cnt(C.filter(c => has(c.decision)).length, 'decisión registrada', 'decisiones registradas') : 'Sin decisiones en Control de cambios'],
+    ['Enunciado del alcance', 'alcance', has(p.scopeIn), has(p.scopeIn) ? 'Alcance y exclusiones en el acta' : 'Falta «El alcance incluye»'],
+    ['Estructura de desglose del trabajo (EDT / WBS)', 'alcance', T.some(t => t.type === 'Entregable'), T.length ? cnt(T.filter(t => t.type === 'Entregable').length, 'entregable', 'entregables') + ' · ' + cnt(T.length, 'elemento', 'elementos') : 'EDT vacía'],
+    ['Matriz de trazabilidad de requisitos', 'alcance', R.length > 0, R.length ? cnt(R.length, 'requisito', 'requisitos') : 'Sin requisitos registrados'],
+    ['Criterios de aceptación', 'alcance', R.some(r => has(r.criteria)), R.some(r => has(r.criteria)) ? cnt(R.filter(r => has(r.criteria)).length, 'requisito con criterio', 'requisitos con criterio') : 'Sin criterios de aceptación'],
+    ['Roles y responsabilidades (matriz RACI)', 'recursos', TM.length > 0, TM.length ? cnt(TM.length, 'integrante con rol', 'integrantes con rol') : 'Equipo sin registrar'],
+    ['Control de cambios', 'gobernanza', C.length > 0, C.length ? cnt(C.length, 'solicitud', 'solicitudes') : 'Sin solicitudes de cambio'],
+    ['Gestión del cronograma', 'cronograma', T.some(t => t.start && t.end), T.some(t => t.start && t.end) ? 'Cronograma con fechas y línea base' : 'Cronograma sin fechas'],
+    ['Gestión de la calidad', 'gobernanza', has(p.success), has(p.success) ? 'Criterios de éxito definidos' : 'Faltan criterios de éxito'],
+    ['Gestión de riesgos', 'riesgo', RK.length > 0, RK.length ? cnt(RK.length, 'riesgo identificado', 'riesgos identificados') : 'Sin riesgos registrados'],
+    ['Interesados y comunicaciones', 'interesados', SH.length > 0, SH.length ? cnt(SH.length, 'interesado', 'interesados') : 'Sin interesados registrados'],
+    ['Documentos que integran este plan', null, !!driveUrl(p.drive), driveUrl(p.drive) ? 'Carpeta de Drive enlazada' : 'Sin carpeta de Drive'],
+  ];
+}
+
+function slideProyectos() {
+  const tools = [
+    ['1.1', 'Diseñar flujo de trabajo', 'Sirve para organizar y asignar las tareas en secuencia.', 'cronograma', 'EDT y responsables en Cronograma'],
+    ['1.2', 'Cronograma de actividades', 'Sirve para definir el proyecto en fases, etapas, actividades y tareas.', 'cronograma', 'Gantt en Cronograma'],
+    ['1.3', 'Bitácora de trabajo', 'Sirve para registrar el avance diario de cada tarea.', 'bitacora', 'Bitácora y lecciones'],
+    ['1.4', 'Plan de gestión del proyecto', 'Establece las directrices para definir, desarrollar, ejecutar y controlar el proyecto.', null, 'Los 13 componentes, abajo'],
+    ['1.5', 'Página web del proyecto', 'Sirve para publicar todos los documentos del proyecto.', null, 'Es este sistema, con su carpeta de Drive'],
+  ];
+  const P = S.loaded.has('projects') ? projectsSorted() : [];
+  const cur = P.find(p => p.id === UI.planPid) || P[0];
+  const sel = P.length ? `<div class="tfilter" role="group" aria-label="Proyecto">${P.map(p => `<button class="tf${cur && p.id === cur.id ? ' on' : ''}" data-act="plan-pid" data-id="${esc(p.id)}" aria-pressed="${cur && p.id === cur.id}">${esc(p.code || '—')}</button>`).join('')}</div>` : '';
+  let plan = '<p class="note">Conectando con la base de datos para revisar el plan de cada proyecto…</p>';
+  if (cur) {
+    const items = planItems(cur), ok = items.filter(i => i[2]).length;
+    plan = `${sel}<div class="md-plan-head"><div><b class="num">${ok} de ${items.length}</b> componentes del plan ya están en el sistema para <b>${esc(cur.code)}</b></div><div class="md-bar"><span style="width:${Math.round(ok / items.length * 100)}%"></span></div></div>
+    <ol class="md-plan">${items.map(([t, tab, done, note], i) => `<li class="${done ? 'ok' : ''}"><span class="md-ck" aria-hidden="true">${done ? '✓' : i + 1}</span><div><b>${esc(t)}</b><small>${esc(note)}</small></div>${tab ? `<button class="linkish" data-act="go-project" data-id="${esc(cur.id)}" data-tab="${tab}">Ver en ${esc(tabLabel(tab))}</button>` : driveUrl(cur.drive) ? `<a class="linkish" href="${esc(driveUrl(cur.drive))}" target="_blank" rel="noopener noreferrer">Abrir carpeta ↗</a>` : ''}</li>`).join('')}</ol>`;
+  }
+  return `<div class="md-head" style="--mc:var(--m-proj)">${mdNum('1', 'big')}<div><h3>¿Qué busca la gestión de proyectos?</h3>${mdQuote(MAP_INFO.proj.q)}</div></div>
+  <div class="md-verbs">${['Definir', 'Gestionar', 'Dirigir', 'Evaluar', 'Monitorear'].map((v, i) => `<span>${v}</span>${i < 4 ? '<i aria-hidden="true">→</i>' : ''}`).join('')}<em>de inicio a fin</em></div>
+  <div class="md-tools">${tools.map(([n, t, d, tab, where]) => `<div class="md-tool">${mdNum(n)}<h4>${t}</h4><p>${d}</p><p class="where"><b>En el sistema:</b> ${where}</p>${tab && cur ? `<button class="linkish" data-act="go-project" data-id="${esc(cur.id)}" data-tab="${tab}">Abrir en ${esc(cur.code)} →</button>` : ''}</div>`).join('')}</div>
+  ${panel('El contenido de un plan de gestión del proyecto (1.4)', 'Los 13 componentes de tu lámina. El sistema revisa en vivo cuáles ya tiene cada proyecto; elige uno.', plan)}`;
+}
+
+const PHASES = [
+  { k: '2.1', t: 'Levantamiento de la documentación', q: '¿Cómo está tu organización?', items: [['Anexo 1', 'Inventario de productos y procesos'], ['Anexo 3', 'Ficha técnica de documentación del producto y proceso']], note: 'Desde setiembre de 2026 el Anexo 2 quedó derogado: su información se registra en los Anexos 1 y 3 (instructivo del SIGPRO y cierre de la fase 1).' },
+  { k: '2.2', t: 'Procedimentación', q: '¿Cómo se realiza cada actividad de su organización?', items: [['Diagrama de flujo', 'Notación BPMN 2.0'], ['Formato de procedimiento', 'Pasos, responsables, entradas y salidas']], note: 'Desde el 2 de octubre de 2026 la diagramación se hace en Camunda en lugar de Bizagi Modeler.' },
+  { k: '2.3', t: 'Medir', q: '¿Cuáles son las métricas de tus procesos?', items: [['Cantidad', 'Productividad: cuánto se produce o atiende'], ['Calidad', 'Cuánto cumple lo esperado'], ['Satisfacción', 'Qué tan satisfecho queda el usuario']], note: null },
+  { k: '2.4', t: 'Mejora', q: 'Dado que tienes métricas en crítico, hay que mejorar. ¿Con qué herramientas mejoramos tus métricas?', items: [['Pareto y diagramación TO BE', 'Reduce tiempos atacando las pocas causas que generan la mayoría de las demoras'], ['Digitalización', 'Excel, hojas de cálculo, Google Forms, páginas web'], ['Automatización', 'Macros, Apps Script, UiPath Studio, Microsoft Power Automate, Python']], note: 'Después de mejorar se vuelve a medir (2.3): así el ciclo no termina.' },
+];
+const semState = v => (v >= 90 ? { k: 'ok', t: 'Estado óptimo', r: '≥ 90' } : v >= 75 ? { k: 'warn', t: 'Estado aceptable', r: '75 a < 90' } : { k: 'crit', t: 'Estado crítico: hay que mejorar', r: '< 75' });
+
+function slideProcesos() {
+  const ph = Math.min(3, Math.max(0, UI.phaseSel | 0)), f = PHASES[ph];
+  const v = Math.max(0, Math.min(100, Number(UI.semVal) || 0)), st = semState(v);
+  const extra = ph === 2 ? `<div class="md-sem">
+      <div class="md-sem-scale"><span class="crit">&lt; 75 Crítico</span><span class="warn">75 – 90 Aceptable</span><span class="ok">≥ 90 Óptimo</span></div>
+      <label class="md-sem-in"><span>Prueba un indicador:</span><input type="range" min="0" max="100" step="1" value="${v}" data-change="sem" aria-label="Valor del indicador"><output class="num">${v}</output></label>
+      <p class="md-sem-out">${pill(st.k, st.t)} <small>rango ${st.r}</small></p>
+      <p class="note">Es la misma semaforización que usan los indicadores de calidad de la acreditación (3.2).</p>
+    </div>` : '';
+  const linked = linkedList(p => stepsOf(p).includes(f.k), p => esc(p.modeloRol || ''), 'Ningún proyecto trabaja esta fase todavía.');
+  return `<div class="md-head" style="--mc:var(--m-proc)">${mdNum('2', 'big')}<div><h3>¿Qué busca la gestión por procesos?</h3>${mdQuote(MAP_INFO.proc.q)}</div></div>
+  <div class="md-phases" role="tablist" aria-label="Fases">${PHASES.map((x, i) => `<button role="tab" aria-selected="${i === ph}" class="md-ph${i === ph ? ' on' : ''}${i < ph ? ' past' : ''}" data-act="phase" data-v="${i}">${mdNum(x.k)}<span><small>Fase ${i + 1}</small>${esc(x.t)}</span></button>`).join('')}</div>
+  <div class="md-phase" style="--mc:var(--m-proc)">
+    <div><p class="md-q">${esc(f.q)}</p>
+      <div class="md-items">${f.items.map(([a, b]) => `<div><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</div>
+      ${f.note ? `<p class="note" style="margin-top:12px">${esc(f.note)}</p>` : ''}${extra}</div>
+    <aside><h4>Proyectos que trabajan la fase ${esc(f.k)}</h4>${linked}</aside>
+  </div>
+  <div class="md-nav-ph"><button class="btn sm" data-act="phase" data-v="${Math.max(0, ph - 1)}"${ph === 0 ? ' disabled' : ''}>← Fase anterior</button><button class="btn sm" data-act="phase" data-v="${Math.min(3, ph + 1)}"${ph === 3 ? ' disabled' : ''}>Fase siguiente →</button></div>`;
+}
+
+const CLAUSES = [
+  [4, 'Contexto de la organización', 'Comprender el entorno interno y externo de la organización; identificar las necesidades y expectativas de las partes interesadas; definir el alcance del sistema de gestión de la calidad y determinar los procesos necesarios. Es decir, se entrega el organigrama de la organización.', '2.1', true],
+  [5, 'Liderazgo', 'La alta dirección asume el sistema: aprueba la política de la calidad, asigna roles y responsabilidades y pone al usuario en el centro.', null],
+  [6, 'Planificación', 'Identificar riesgos y oportunidades, fijar objetivos de la calidad medibles y planificar los cambios.', 'R'],
+  [7, 'Apoyo', 'Recursos, personas competentes, comunicación e información documentada: los procedimientos y registros.', '2.2'],
+  [8, 'Operación', 'Planificar y controlar los procesos que entregan el servicio, desde los requisitos del usuario hasta las salidas no conformes.', '2.2'],
+  [9, 'Evaluación del desempeño', 'Seguimiento y medición, satisfacción del usuario, auditoría interna y revisión por la dirección.', '2.3'],
+  [10, 'Mejora', 'Tratar las no conformidades, aplicar acciones correctivas y mejorar de forma continua.', '2.4'],
+];
+
+function slideAcreditacion() {
+  const cl = CLAUSES.find(c => c[0] === Number(UI.clause)) || CLAUSES[0];
+  const p01 = S.loaded.has('projects') ? projectsSorted().find(p => stepsOf(p).includes('2.1')) : null;
+  const m01 = p01 && S.loaded.has('tasks') ? metrics(p01) : null;
+  const acr = [
+    ['3.1', 'Cumplimiento de estándares y criterios con evidencias', 'Tener todos los documentos (PDF, Excel, Word, PPT) que son obligatorios por la norma.'],
+    ['3.2', 'Indicadores de calidad', 'Son preguntas de satisfacción. Los indicadores deben estar en el rango de la semaforización: estable u óptimo.'],
+    ['3.3', 'Informe de autoevaluación', 'Se obtiene a raíz del cumplimiento del estándar y del indicador asociado.'],
+  ];
+  const linkTo = k => (k === 'R' ? `<button class="md-step" data-act="slide" data-v="4"><b>R</b>Gestión del riesgo</button>` : k ? stepChip(k) : '');
+  return `<div class="md-head" style="--mc:var(--m-acred)">${mdNum('3', 'big')}<div><h3>¿Qué busca la acreditación y la certificación?</h3>${mdQuote(MAP_INFO.acred.q)}</div></div>
+  <div class="split even">
+    ${panel('Acreditación', 'Tres pasos: los dos primeros alimentan al tercero.', `<div class="md-acr">${acr.map(([n, t, d]) => `<div class="md-acr-i">${mdNum(n)}<div><b>${t}</b><p>${d}</p></div></div>`).join('')}<p class="md-flow">3.1 Estándares + 3.2 Indicadores → 3.3 Autoevaluación</p></div>`)}
+    ${panel('Certificación ISO 9001', 'Cumplimiento de las cláusulas 4 a 10. Para cada cláusula se presentan los documentos que se requieren para cumplirla.', `<div class="md-clauses" role="tablist" aria-label="Cláusulas">${CLAUSES.map(c => `<button role="tab" aria-selected="${c === cl}" class="md-cl${c === cl ? ' on' : ''}" data-act="clause" data-v="${c[0]}">${c[0]}</button>`).join('')}</div>
+      <div class="md-cl-body"><h4>Cláusula ${cl[0]}: ${esc(cl[1])}</h4><p>${esc(cl[2])}</p>${cl[4] ? '' : mdSynth}${cl[3] ? `<p class="where"><b>Se apoya en:</b> ${linkTo(cl[3])}</p>` : ''}</div>`)}
+  </div>
+  <div class="md-key" style="--mc:var(--m-acred)"><div><p class="eyebrow">Requisito clave</p><p class="md-key-t">Para certificarte en la ISO 9001 debes tener implementada la gestión por procesos de la fase 1 a la 3.</p>
+    <div class="md-key-steps">${['2.1', '2.2', '2.3'].map(k => stepChip(k)).join('<i aria-hidden="true">→</i>')}<i aria-hidden="true">→</i><span class="md-step on"><b>ISO</b>Certificación</span></div></div>
+    ${p01 ? `<div class="md-key-p">${projRow(p01, m01 ? `Lleva ${pct(m01.realPct)} de avance real: es el camino hacia la ISO 9001` : '')}</div>` : ''}</div>
+  ${panel('Proyectos de acreditación y certificación', '', linkedList(p => discOf(p).acred, p => esc(p.modeloRol || '')))}`;
+}
+
+function slideRiesgo() {
+  const P = S.loaded.has('projects') ? projectsSorted() : [];
+  const ready = S.loaded.has('risks');
+  const rows = P.map(p => { const R = ready ? of('risks', p.id) : []; const open = R.filter(r => r.status !== 'Cerrado'); const sc = r => num(r.probability) * num(r.impact); return { p, open, high: open.filter(r => sc(r) >= 15), mid: open.filter(r => sc(r) >= 8 && sc(r) < 15) }; });
+  const top = rows.flatMap(x => x.high.map(r => ({ r, p: x.p }))).sort((a, b) => num(b.r.probability) * num(b.r.impact) - num(a.r.probability) * num(a.r.impact)).slice(0, 5);
+  return `<div class="md-head" style="--mc:var(--m-risk)">${mdNum('R', 'big')}<div><h3>¿Qué busca la gestión del riesgo?</h3><p class="md-lead">Anticipar lo que puede impedir que un proyecto, un proceso o una acreditación cumpla su objetivo, y preparar la respuesta antes de que ocurra.</p>${mdSynth}</div></div>
+  <div class="md-tools" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+    <div class="md-tool"><h4>En los proyectos</h4><p>Cada riesgo se califica con probabilidad × impacto (1 a 5). Desde 15 es alto, de 8 a 14 medio y hasta 7 bajo.</p></div>
+    <div class="md-tool"><h4>En los procesos</h4><p>Riesgos operativos, como la baja remisión de documentación de las facultades señalada en el cierre de la fase 1.</p></div>
+    <div class="md-tool"><h4>En la certificación</h4><p>La ISO 9001 exige identificar riesgos y oportunidades en su cláusula 6.</p><button class="linkish" data-act="clause-go" data-v="6">Ver cláusula 6 →</button></div>
+  </div>
+  ${panel('Riesgos abiertos de tu cartera', ready ? 'Se actualiza en vivo con el registro de riesgos de cada proyecto.' : 'Conectando con la base de datos…', P.length ? `<div class="tbl"><table><thead><tr><th>Proyecto</th><th class="r">Abiertos</th><th class="r">Altos (≥ 15)</th><th class="r">Medios</th><th></th></tr></thead><tbody>${rows.map(x => `<tr><td class="wrap"><span class="mono">${esc(x.p.code)}</span> ${esc(x.p.name)}</td><td class="r num">${x.open.length}</td><td class="r num">${x.high.length ? `<b class="tone-crit">${x.high.length}</b>` : 0}</td><td class="r num">${x.mid.length}</td><td class="act-col"><button class="linkish" data-act="go-project" data-id="${esc(x.p.id)}" data-tab="riesgo">Ver riesgos</button></td></tr>`).join('')}</tbody></table></div>${top.length ? `<h4 class="md-sub">Riesgos altos que vigilar</h4><ul class="alerts">${top.map(({ r, p }) => `<li><span class="sev s2"></span><div><div>${esc(r.title || 'Riesgo')} <span class="num">(P×I = ${num(r.probability) * num(r.impact)})</span></div><div class="a-meta"><span class="mono">${esc(p.code)}</span>${r.code ? `<span class="mono">${esc(r.code)}</span>` : ''}${r.owner ? `<span>${esc(r.owner)}</span>` : ''}</div></div></li>`).join('')}</ul>` : ''}` : '<p class="note">Sin proyectos todavía.</p>')}`;
+}
+
+function slideIntegracion() {
+  const P = S.loaded.has('projects') ? projectsSorted() : [];
+  const K = ['proj', 'proc', 'acred', 'risk'];
+  const matrix = P.length ? `<div class="tbl"><table class="md-mx"><thead><tr><th>Proyecto</th>${K.map(k => `<th class="c"><span class="md-dot" style="--mc:var(--m-${k})"></span>${esc(DISC[k].name)}</th>`).join('')}<th>Pasos del modelo</th></tr></thead><tbody>${P.map(p => { const d = discOf(p); const st = stepsOf(p); return `<tr><td class="wrap"><button class="linkish" data-act="go-project" data-id="${esc(p.id)}"><span class="mono">${esc(p.code)}</span> ${esc(p.name)}</button></td>${K.map(k => `<td class="c">${d[k] ? `<span class="md-yes" style="--mc:var(--m-${k})" aria-label="Sí">●</span>` : '<span class="md-no" aria-label="No">·</span>'}</td>`).join('')}<td class="wrap">${st.length ? `<div class="md-steps">${st.map(k => stepChip(k, p.id, true)).join('')}</div>` : '<span class="tone-idle">Sin vincular</span>'}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="note">Conectando con la base de datos…</p>';
+  const byStep = k => P.filter(p => stepsOf(p).includes(k)).map(p => p.code).join(', ');
+  const flow = `<div class="md-flow2">
+    <div class="md-fc" style="--mc:var(--m-proj)"><small>1 · Proyectos</small><b>Se planifican y dirigen</b><span>Los cuatro proyectos de la cartera, con su plan, cronograma y bitácora.</span></div><i aria-hidden="true">→</i>
+    <div class="md-fc" style="--mc:var(--m-proc)"><small>2 · Procesos</small><b>Documentar y procedimentar</b><span>Fases 2.1 y 2.2 ${byStep('2.1') ? `· ${esc(byStep('2.1'))}` : ''}</span></div><i aria-hidden="true">→</i>
+    <div class="md-fc" style="--mc:var(--m-proc)"><small>2 · Procesos</small><b>Medir y mejorar</b><span>Fases 2.3 y 2.4 ${[byStep('2.3'), byStep('2.4')].filter(Boolean).length ? '· ' + esc([...new Set((byStep('2.3') + ', ' + byStep('2.4')).split(', ').filter(Boolean))].join(', ')) : ''}</span></div><i aria-hidden="true">→</i>
+    <div class="md-fc" style="--mc:var(--m-acred)"><small>3 · Acreditación</small><b>Evidencias, indicadores y certificación</b><span>Estándares, autoevaluación e ISO 9001 ${byStep('3.1') || byStep('ISO') ? `· ${esc([...new Set((byStep('3.1') + ', ' + byStep('ISO')).split(', ').filter(Boolean))].join(', '))}` : ''}</span></div><i aria-hidden="true">→</i>
+    <div class="md-fc calidad"><small>Resultado</small><b>Calidad total</b><span>El usuario recibe lo que esperaba.</span></div>
+  </div><p class="note" style="margin-top:10px">La gestión del riesgo acompaña todo el recorrido.</p>`;
+  return `${panel('La cadena de valor del modelo', 'Así se encadenan las disciplinas de tu lámina y en qué punto está cada proyecto.', flow)}
+  ${panel('Cada proyecto en el modelo', 'Los pasos se eligen en «Editar acta» de cada proyecto. Toca un paso para ver su lámina.', matrix)}
+  ${P.length ? `<div class="md-roles">${P.map(p => `<div class="md-role">${projRow(p)}<p>${p.modeloRol ? esc(p.modeloRol) : '<span class="tone-idle">Sin descripción de su rol en el modelo.</span>'}</p></div>`).join('')}</div>` : ''}`;
+}
+
+function viewModel() {
+  const s = Math.min(SLIDES.length - 1, Math.max(0, UI.slide | 0));
+  const body = [slideMapa, slideProyectos, slideProcesos, slideAcreditacion, slideRiesgo, slideIntegracion][s]();
+  const P = S.loaded.has('projects') ? projectsSorted() : [];
+  const nLinked = P.filter(p => stepsOf(p).length).length;
+  return `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:4%;top:22%"></span><div class="wrap"><div><p class="eyebrow">Modelo de gestión · DGP OGPL-UNMSM</p><h1 class="hero-t">Calidad, procesos, proyectos y acreditación en un solo mapa</h1><p class="lead">Qué busca cada disciplina, cómo se cruzan y qué hace cada uno de tus proyectos dentro de ellas. Toca los círculos o avanza lámina por lámina; los datos de los proyectos están en vivo.</p></div>
+    <div class="blob"><h2>El modelo en cifras</h2><div class="md-blob-k"><div><div class="k-val">4</div><div class="k-label">Disciplinas</div></div><div><div class="k-val">4</div><div class="k-label">Fases de procesos</div></div><div><div class="k-val">7</div><div class="k-label">Cláusulas ISO</div></div><div><div class="k-val">${P.length ? `${nLinked}/${P.length}` : '—'}</div><div class="k-label">Proyectos vinculados</div></div></div></div></div></section>
+  <div class="wrap"><section class="section">
+    <div class="md-slides" role="tablist" aria-label="Láminas">${SLIDES.map(([k, t], i) => `<button role="tab" aria-selected="${i === s}" class="md-tab${i === s ? ' on' : ''}" data-act="slide" data-v="${i}"><small>Lámina ${i + 1}</small>${esc(t)}</button>`).join('')}</div>
+    <article class="md-slide" aria-label="${esc(SLIDES[s][1])}">${body}</article>
+    <div class="md-pager"><button class="btn" data-act="slide" data-v="${s - 1}"${s === 0 ? ' disabled' : ''}>← Anterior</button><span class="note num">${s + 1} / ${SLIDES.length}</span><button class="btn primary" data-act="slide" data-v="${s + 1}"${s === SLIDES.length - 1 ? ' disabled' : ''}>Siguiente →</button></div>
+  </section></div>`;
+}
+
 function viewGuide() {
   const principles = [
     ['Adoptar una visión holística', 'Mira el proyecto como un sistema: una decisión de alcance mueve el cronograma, el costo y el riesgo. Decide pensando en el conjunto.', 'Resumen y alertas cruzan todos los dominios en un solo semáforo.'],

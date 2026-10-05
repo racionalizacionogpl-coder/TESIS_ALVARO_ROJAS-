@@ -13,6 +13,7 @@ Sistema de dirección de proyectos de la OGPL-UNMSM basado en la Guía del PMBOK
 
 ## Qué incluye
 
+- **Modelo de gestión:** 6 láminas interactivas basadas en la lámina «Proy. Gestión por Procesos» de Alvaro Rojas: mapa de la calidad total, gestión de proyectos (con la revisión en vivo de los 13 componentes del plan), gestión por procesos (fases 2.1 a 2.4 y semáforo), acreditación y certificación ISO 9001 (cláusulas 4 a 10), gestión del riesgo y el papel de cada proyecto. Cada proyecto se vincula con sus pasos desde «Editar acta».
 - **Portafolio:** semáforo por proyecto, SPI, CPI, avance real vs. planificado, alertas automáticas, matriz impacto–esfuerzo con el orden de prioridad de la cartera y actividad reciente.
 - **Proyecto, por dominio de desempeño:** Gobernanza (acta, priorización con la justificación de cada criterio, acuerdos, control de cambios), Alcance (EDT y trazabilidad de requisitos), Cronograma (Gantt, casilla «Hecha» para completar actividades, filtros Pendientes/Vencidas/Completadas y fecha real de término), Finanzas (valor ganado), Interesados (poder–interés), Recursos (equipo y horas), Riesgo (mapa de calor, riesgos e incidentes), y Bitácora y lecciones aprendidas.
 - **Áreas de enfoque:** Inicio, Planificación, Ejecución, Monitoreo y control, Cierre.
