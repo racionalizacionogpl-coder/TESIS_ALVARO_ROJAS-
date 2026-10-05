@@ -1,9 +1,9 @@
-<title>Proyecta · Centro de Monitoreo</title>
+<title>Gestión · Centro de Monitoreo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Marca Proyecta: barra marina superior, franja principal en bruma turquesa, títulos centrados con subrayado
+/* Marca Gestión: barra marina superior, franja principal en bruma turquesa, títulos centrados con subrayado
    doble, banda de indicadores turquesa, tarjetas blancas con una destacada y pie marino en cuatro columnas.
    Tokens idénticos al sistema de marca (claro / oscuro). */
 :root{
@@ -563,7 +563,7 @@ const initials = n => String(n || '?').split(/\s+/).filter(w => w && /^[A-Za-zÁ
 /* Íconos de la marca (línea 1.75, 24 px) */
 const ICONS = {"portafolio": "<rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"1.5\"/>", "alerta": "<path d=\"M12 3.8L21 19.5H3Z\"/><path d=\"M12 9.5v4.5\"/><path d=\"M12 16.9v.1\"/>", "cronograma": "<rect x=\"3\" y=\"4.5\" width=\"10\" height=\"3.2\" rx=\"1\"/><rect x=\"8\" y=\"10.4\" width=\"12.5\" height=\"3.2\" rx=\"1\"/><rect x=\"5.5\" y=\"16.3\" width=\"9\" height=\"3.2\" rx=\"1\"/>", "riesgo": "<path d=\"M12 3l7 3v5c0 4.6-3 8.1-7 10-4-1.9-7-5.4-7-10V6z\"/><path d=\"M12 8.2v4.3\"/><path d=\"M12 15.6v.1\"/>", "acuerdo": "<rect x=\"5\" y=\"4.5\" width=\"14\" height=\"16.5\" rx=\"2\"/><path d=\"M9.5 4.5V3h5v1.5\"/><path d=\"M8.6 13.1l2.4 2.4 4.4-4.9\"/>", "equipo": "<circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3.5 19.5c0-3.1 2.5-5.3 5.5-5.3s5.5 2.2 5.5 5.3\"/><circle cx=\"16.8\" cy=\"9\" r=\"2.6\"/><path d=\"M15.6 14.3c2.8-.2 4.9 1.8 4.9 4.7\"/>", "hito": "<path d=\"M12 3l6 6-6 6-6-6z\"/><path d=\"M12 15v6\"/>", "curva": "<path d=\"M3 18.5l6-6 4 3.2 8-9\"/><path d=\"M15.5 6.7H21v5.5\"/>", "cambio": "<path d=\"M4 8.5h14\"/><path d=\"M14.5 5l3.5 3.5-3.5 3.5\"/><path d=\"M20 15.5H6\"/><path d=\"M9.5 12L6 15.5 9.5 19\"/>", "asesor": "<path d=\"M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z\"/><path d=\"M18.5 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z\"/>"};
 const icon = (n, s = 24) => `<svg class="ico" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[n] || ''}</svg>`;
-const MARK = (s = 38, dia = 'var(--navy-900)') => `<svg width="${s}" height="${s}" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1BB0C4"/><rect x="13.5" y="11" width="6.5" height="26" rx="1.2" fill="#FFFFFF"/><path d="M17 14.25H26.5A6.75 6.75 0 0 1 26.5 27.75H17" fill="none" stroke="#FFFFFF" stroke-width="6.5"/><path d="M33 32.5L37.5 37L33 41.5L28.5 37Z" fill="${dia}"/></svg>`;
+const MARK = (s = 38, dia = 'var(--navy-900)') => `<svg width="${s}" height="${s}" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1BB0C4"/><path d="M28.89 16.21A9 9 0 1 0 31 22H23" fill="none" stroke="#FFFFFF" stroke-width="6.25"/><path d="M33 32.5L37.5 37L33 41.5L28.5 37Z" fill="${dia}"/></svg>`;
 
 /* =========================================================
    Modelo de datos (PMBOK 8: dominios de desempeño)
@@ -1002,7 +1002,7 @@ function renderNav() {
   const avs = ids.slice(0, 4).map(id => { const pr = profileOf(id); const nm = pr ? (pr.name || (S.me && id === S.me.id ? 'Tú' : 'Alguien')) : '…'; const w = (peers.find(x => x.by === id) || {}).presence; return pr && pr.avatarUrl ? `<img src="${esc(pr.avatarUrl)}" alt="${esc(nm)}" title="${esc(nm)}${w && w.where ? ' · ' + esc(w.where) : ''}">` : ''; }).join('');
   const dd = P.map(p => { const m = S.loaded.has('tasks') ? metrics(p) : null; return `<button data-act="go-project" data-id="${esc(p.id)}"><span class="code-chip">${esc(p.code || '—')}</span><span class="nm">${esc(p.name || 'Sin nombre')}</span>${m ? `<span class="pill ${m.health.tone}"><i></i>${esc(m.health.label)}</span>` : ''}</button>`; }).join('') || '<p class="note" style="padding:8px">Aún no hay proyectos.</p>';
   $('#nav').innerHTML = `<div class="wrap">
-    <button class="logo" data-act="go-portfolio" aria-label="Proyecta, ir al portafolio">${MARK(38)}<span><b>PROYECTA</b><small>DIRECCIÓN DE PROYECTOS</small></span></button>
+    <button class="logo" data-act="go-portfolio" aria-label="Gestión, ir al portafolio">${MARK(38)}<span><b>GESTIÓN</b><small>DE LA DIRECCIÓN DE PROYECTOS</small></span></button>
     <nav class="menu" aria-label="Secciones">
       <button data-act="go-portfolio" aria-current="${UI.view === 'portfolio'}">Portafolio</button>
       <details class="${UI.view === 'project' ? 'on' : ''}"><summary>Proyectos <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5L5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></summary><div class="dd">${dd}</div></details>
@@ -1014,12 +1014,12 @@ function renderNav() {
 function renderFoot() {
   const P = projectsSorted();
   $('#foot').innerHTML = `<div class="wrap"><div class="foot-grid">
-    <div><h4>Proyecta</h4><p>Sistema de dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Basado en la Guía del PMBOK® 8.ª edición: 6 principios, 7 dominios de desempeño y 5 áreas de enfoque.</p></div>
+    <div><h4>Gestión</h4><p>Sistema de dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Basado en la Guía del PMBOK® 8.ª edición: 6 principios, 7 dominios de desempeño y 5 áreas de enfoque.</p></div>
     <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
     <div><h4>Dominios PMBOK 8</h4><ul>${['Gobernanza', 'Alcance', 'Cronograma', 'Finanzas', 'Interesados', 'Recursos', 'Riesgo'].map(d => `<li>${d}</li>`).join('')}</ul></div>
     <div><h4>Proyectos</h4><ul>${P.slice(0, 8).map(p => `<li><button class="fl" data-act="go-project" data-id="${esc(p.id)}"><span class="mono">${esc(p.code)}</span> · ${esc(String(p.name || '').slice(0, 46))}${String(p.name || '').length > 46 ? '…' : ''}</button></li>`).join('') || '<li>Sin proyectos aún</li>'}</ul></div>
   </div>
-  <div class="foot-bottom"><span style="display:flex;align-items:center;gap:12px">${MARK(30, '#FFFFFF')}<small>© ${new Date().getFullYear()} OGPL-UNMSM · Proyecta, dirección de proyectos en tiempo real</small></span><button class="totop" data-act="top" aria-label="Volver arriba"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg></button></div></div>`;
+  <div class="foot-bottom"><span style="display:flex;align-items:center;gap:12px">${MARK(30, '#FFFFFF')}<small>© ${new Date().getFullYear()} OGPL-UNMSM · Gestión de la dirección de proyectos en tiempo real</small></span><button class="totop" data-act="top" aria-label="Volver arriba"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg></button></div></div>`;
 }
 
 /* ---------- piezas reutilizables ---------- */
@@ -1592,9 +1592,9 @@ DATOS: ${JSON.stringify(projectPayload(p))}`;
 async function exportProject(p) {
   if (!downloads || !p) return;
   const strip = r => { const o = Object.assign({}, r); delete o.updatedBy; delete o.createdBy; return o; };
-  const data = { exportado: new Date().toISOString(), fuente: 'Proyecta · Centro de Monitoreo', proyecto: strip(p), metricas: (() => { const m = metrics(p); return { avancePlanificadoPct: m.planPct, avanceRealPct: m.realPct, SPI: m.SPI, CPI: m.CPI, BAC: m.budget, PV: m.PV, EV: m.EV, AC: m.AC, EAC: m.EAC, semaforo: m.health.label }; })() };
+  const data = { exportado: new Date().toISOString(), fuente: 'Gestión · Centro de Monitoreo', proyecto: strip(p), metricas: (() => { const m = metrics(p); return { avancePlanificadoPct: m.planPct, avanceRealPct: m.realPct, SPI: m.SPI, CPI: m.CPI, BAC: m.budget, PV: m.PV, EV: m.EV, AC: m.AC, EAC: m.EAC, semaforo: m.health.label }; })() };
   Object.keys(COLL).forEach(c => { data[c] = of(c, p.id).map(strip); });
-  try { await downloads.save({ filename: `${(p.code || 'proyecto').replace(/[^\w.-]+/g, '_')}_proyecta_${isoD(today())}.json`, data: JSON.stringify(data, null, 2) }); }
+  try { await downloads.save({ filename: `${(p.code || 'proyecto').replace(/[^\w.-]+/g, '_')}_gestion_${isoD(today())}.json`, data: JSON.stringify(data, null, 2) }); }
   catch (e) { const c = e && e.code; if (c && !/cancel|declin|denied|dismiss/i.test(c)) toast('No se pudo preparar el archivo.', 'warn'); }
 }
 
@@ -1762,7 +1762,7 @@ setInterval(() => {
    Vistas auxiliares
    ========================================================= */
 function viewOffline() {
-  return `<section class="hero"><div class="wrap"><div><p class="eyebrow">Sin conexión a la base compartida</p><h1 class="hero-t">Proyecta · Centro de Monitoreo</h1><p class="lead">Este sistema guarda los proyectos en una base de datos compartida de claude.ai para que todo el equipo vea los mismos datos en tiempo real. Ábrelo desde claude.ai con tu cuenta iniciada para consultar y registrar información.</p><div class="hero-actions"><button class="btn primary" data-act="go-guide">Ver la guía PMBOK</button></div></div>
+  return `<section class="hero"><div class="wrap"><div><p class="eyebrow">Sin conexión a la base compartida</p><h1 class="hero-t">Gestión · Centro de Monitoreo</h1><p class="lead">Este sistema guarda los proyectos en una base de datos compartida de claude.ai para que todo el equipo vea los mismos datos en tiempo real. Ábrelo desde claude.ai con tu cuenta iniciada para consultar y registrar información.</p><div class="hero-actions"><button class="btn primary" data-act="go-guide">Ver la guía PMBOK</button></div></div>
   <div class="blob"><h2>Al conectarte podrás</h2><ul style="margin:0;padding-left:18px;line-height:1.9;color:var(--on-navy)"><li>Ver la cartera con semáforos, SPI, CPI y alertas.</li><li>Gestionar cada proyecto por los 7 dominios del PMBOK 8.</li><li>Actualizar avances, riesgos, acuerdos y la bitácora.</li><li>Pedir a Claude un informe de estado.</li></ul></div></div></section>`;
 }
 function viewError() {
@@ -1793,7 +1793,7 @@ function viewGuide() {
     ['Monitoreo y control', 'Medir, comparar con la línea base y corregir.', 'Curva S, SPI/CPI, alertas, control de cambios, incidentes.'],
     ['Cierre', 'Aceptar entregables y transferir lo aprendido.', 'Requisitos validados, lecciones aprendidas, exportación de datos.'],
   ];
-  return `<section class="hero"><span class="bubble" style="width:20px;height:20px;left:5%;top:18%"></span><div class="wrap"><div><p class="eyebrow">Marco de referencia</p><h1 class="hero-t">La guía PMBOK dentro del sistema</h1><p class="lead">Cómo se traduce la Guía del PMBOK® 8.ª edición (2025) en cada pantalla de Proyecta, con su equivalencia en la 6.ª (2017) y la 7.ª (2021). Las explicaciones son una síntesis propia, no texto de la guía.</p></div>
+  return `<section class="hero"><span class="bubble" style="width:20px;height:20px;left:5%;top:18%"></span><div class="wrap"><div><p class="eyebrow">Marco de referencia</p><h1 class="hero-t">La guía PMBOK dentro del sistema</h1><p class="lead">Cómo se traduce la Guía del PMBOK® 8.ª edición (2025) en cada pantalla de Gestión, con su equivalencia en la 6.ª (2017) y la 7.ª (2021). Las explicaciones son una síntesis propia, no texto de la guía.</p></div>
     <div class="blob"><h2>PMBOK 8 en cifras</h2><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;text-align:center"><div><div class="k-val">6</div><div class="k-label" style="color:var(--on-navy-muted)">Principios</div></div><div><div class="k-val">7</div><div class="k-label" style="color:var(--on-navy-muted)">Dominios</div></div><div><div class="k-val">5</div><div class="k-label" style="color:var(--on-navy-muted)">Áreas de enfoque</div></div></div><p style="text-align:center;margin-top:16px;color:var(--on-navy-muted);font-size:13px">40 procesos no prescriptivos que se adaptan a cada proyecto.</p></div></div></section>
   <div class="wrap">
   <section class="section">${secTitle('Los 6 principios', 'Octava edición', 'La 7.ª edición tenía 12 principios; la 8.ª los consolida en seis.')}<div class="guide-grid">${principles.map((x, i) => `<div class="gcard"><div class="gnum">${i + 1}</div><h3>${x[0]}</h3><p>${x[1]}</p><p class="where"><b>En el sistema:</b> ${x[2]}</p></div>`).join('')}</div></section>

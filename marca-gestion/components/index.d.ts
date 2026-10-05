@@ -14,4 +14,4 @@ export interface ProjectCardProps { code: string; name: string; tone?: 'ok' | 'w
 export declare function ProjectCard(props: ProjectCardProps): React.ReactElement;
 export interface CountdownProps { target: string | number | Date; title: string; label?: string }
 export declare function Countdown(props: CountdownProps): React.ReactElement;
-declare global { interface Window { Proyecta: { Button: typeof Button; StatusPill: typeof StatusPill; SectionTitle: typeof SectionTitle; KpiTile: typeof KpiTile; ProjectCard: typeof ProjectCard; Countdown: typeof Countdown; Icon: typeof Icon } } }
+declare global { interface Window { Gestion: { Button: typeof Button; StatusPill: typeof StatusPill; SectionTitle: typeof SectionTitle; KpiTile: typeof KpiTile; ProjectCard: typeof ProjectCard; Countdown: typeof Countdown; Icon: typeof Icon } } }

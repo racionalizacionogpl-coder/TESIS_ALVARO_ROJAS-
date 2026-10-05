@@ -1,11 +1,11 @@
-Proyecta es la marca del sistema de dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Promete una sola cosa: **ver el estado real de cada proyecto, ahora**. Su carácter es ejecutivo, preciso y sereno: marino que da autoridad, turquesa que señala lo que está vivo, mucho aire y cifras grandes.
+Gestión es la marca del sistema de gestión de la dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Promete una sola cosa: **ver el estado real de cada proyecto, ahora**. Su carácter es ejecutivo, preciso y sereno: marino que da autoridad, turquesa que señala lo que está vivo, mucho aire y cifras grandes.
 
 ## Esencia
 
-- **Nombre:** Proyecta. Se escribe así en texto corrido y PROYECTA solo dentro del logotipo.
-- **Descriptor:** Dirección de Proyectos. Respaldo institucional: DGP · OGPL-UNMSM.
-- **Lema:** Dirección de proyectos en tiempo real.
-- **Atributos:** ejecutivo, preciso, transparente, vivo. Si una pieza se ve festiva, recargada o escolar, no es Proyecta.
+- **Nombre:** Gestión. Se escribe así en texto corrido, con tilde, y GESTIÓN solo dentro del logotipo. Junto con su descriptor se lee «Gestión de la dirección de proyectos».
+- **Descriptor:** de la Dirección de Proyectos. Respaldo institucional: DGP · OGPL-UNMSM.
+- **Lema:** Gestión de la dirección de proyectos en tiempo real.
+- **Atributos:** ejecutivo, preciso, transparente, vivo. Si una pieza se ve festiva, recargada o escolar, no es Gestión.
 
 ## Voz y contenido
 
@@ -19,10 +19,10 @@ Proyecta es la marca del sistema de dirección de proyectos de la Dirección de 
 
 ## Logotipo
 
-- **Símbolo** (`proyecta-mark.svg`): cuadrado turquesa `teal-500` con una P blanca y un rombo de hito en `navy-900`, el mismo rombo que marca los hitos en un diagrama de Gantt.
-- **Firma horizontal** (`proyecta-lockup.svg`): símbolo, PROYECTA en Montserrat 800 en `navy-900` y el descriptor en `ink-muted`. Úsala sobre `surface`, `canvas` o `mist`.
-- **Firma invertida** (`proyecta-lockup-inverse.svg`): texto blanco y rombo blanco. Úsala solo sobre `navy-900` o `navy-700`.
-- Zona de protección: deja libre alrededor de la firma al menos el ancho de la P (≈ 1/5 del símbolo). Tamaño mínimo: símbolo de 24 px, firma de 140 px de ancho.
+- **Símbolo** (`gestion-mark.svg`): cuadrado turquesa `teal-500` con una G blanca y un rombo de hito en `navy-900`, el mismo rombo que marca los hitos en un diagrama de Gantt.
+- **Firma horizontal** (`gestion-lockup.svg`): símbolo, GESTIÓN en Montserrat 800 en `navy-900` y el descriptor «DE LA DIRECCIÓN DE PROYECTOS» en `ink-muted`. Úsala sobre `surface`, `canvas` o `mist`.
+- **Firma invertida** (`gestion-lockup-inverse.svg`): texto blanco y rombo blanco. Úsala solo sobre `navy-900` o `navy-700`.
+- Zona de protección: deja libre alrededor de la firma al menos 1/5 del ancho del símbolo. Tamaño mínimo: símbolo de 24 px, firma de 200 px de ancho (así el descriptor sigue legible).
 - No recolorees, no estires, no agregues sombras ni pongas la firma sobre fotos sin una capa `navy-900`. En aplicaciones pequeñas (favicon, avatar) usa solo el símbolo.
 
 ## Color
@@ -55,7 +55,7 @@ Proporción 60 · 30 · 10: neutros claros (`canvas`, `surface`, `mist`) en el 6
 5. **Banda de indicadores**: bloques `teal-600` con ícono de línea blanco, etiqueta `label`, cifra `kpi` y nota `small`, de 4 a 5 por fila.
 6. **Cuenta regresiva al próximo hito**: panel `navy-900` con `radius-lg` y cuatro círculos (días, horas, minutos y segundos) con borde `teal-500`.
 7. **Personas**: avatar circular con anillo `teal-500` e iniciales en `navy-700`, nombre en `card-title` y rol en `small`. El compromiso de un interesado se muestra con cinco puntos, de Desconocedor a Líder.
-8. **Pie marino** en cuatro columnas (Proyecta, Sistema, Dominios PMBOK, Proyectos), firma invertida y botón circular `teal-600` para volver arriba.
+8. **Pie marino** en cuatro columnas (Gestión, Sistema, Dominios PMBOK, Proyectos), firma invertida y botón circular `teal-600` para volver arriba.
 
 El espaciado sigue la escala de 4 px: `space-6` dentro de paneles, `space-12` entre secciones y `space-4` como margen lateral mínimo en móvil.
 
@@ -97,7 +97,7 @@ El espaciado sigue la escala de 4 px: `space-6` dentro de paneles, `space-12` en
 
 ## Componentes
 
-Los componentes viven en `components/bundle.js` como `window.Proyecta` y requieren React 18:
+Los componentes viven en `components/bundle.js` como `window.Gestion` y requieren React 18:
 
 - `Button`: botones.
 - `StatusPill`: píldoras de estado.

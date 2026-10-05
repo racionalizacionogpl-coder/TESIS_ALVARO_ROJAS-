@@ -5,7 +5,7 @@
 <body>
 <div id="root"></div>
 <script>
-  var P = window.Proyecta, h = React.createElement;
+  var P = window.Gestion, h = React.createElement;
   ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
     h('div', { className: 'py-row' }, h(P.Button, { variant: 'primary' }, 'Guardar acuerdo'), h(P.Button, { variant: 'accent', icon: 'asesor' }, 'Informe con IA'), h(P.Button, null, 'Exportar datos'), h(P.Button, { size: 'sm' }, 'Editar')),
     h('div', { className: 'py-row', style: { background: 'var(--navy-900)' } }, h(P.Button, { variant: 'pill' }, 'Nuevo proyecto'), h(P.Button, { variant: 'pill', size: 'sm' }, 'Exportar'))));

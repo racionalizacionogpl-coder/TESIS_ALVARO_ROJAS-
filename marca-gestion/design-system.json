@@ -5,8 +5,8 @@
   "v": 1,
   "at": "2026-10-04T10:09:23Z"
  },
- "title": "Proyecta",
- "namespace": "Proyecta",
+ "title": "Gestión",
+ "namespace": "Gestion",
  "libraries": [
   {
    "name": "react",
@@ -27,27 +27,27 @@
    "name": "Logos",
    "tile": "l",
    "order": [
-    "proyecta-mark.svg",
-    "proyecta-lockup.svg",
-    "proyecta-lockup-inverse.svg"
+    "gestion-mark.svg",
+    "gestion-lockup.svg",
+    "gestion-lockup-inverse.svg"
    ],
    "files": {
-    "proyecta-mark.svg": {
-     "name": "proyecta-mark.svg",
-     "blob": "320e3931bf14760cfcb900c669daffed",
-     "size": 469,
+    "gestion-mark.svg": {
+     "name": "gestion-mark.svg",
+     "blob": "c2f8074d7bf4a2a6554166f7a01a39d4",
+     "size": 341,
      "type": "image/svg+xml"
     },
-    "proyecta-lockup.svg": {
-     "name": "proyecta-lockup.svg",
-     "blob": "8d0690529899a77928b814506ec1c846",
-     "size": 11096,
+    "gestion-lockup.svg": {
+     "name": "gestion-lockup.svg",
+     "blob": "f6e52ad864cb29e10b674a804624e935",
+     "size": 31785,
      "type": "image/svg+xml"
     },
-    "proyecta-lockup-inverse.svg": {
-     "name": "proyecta-lockup-inverse.svg",
-     "blob": "30b4edf78739b95193e7a1bad502ec96",
-     "size": 11096,
+    "gestion-lockup-inverse.svg": {
+     "name": "gestion-lockup-inverse.svg",
+     "blob": "01b82e42066e1fb17d499ac4929e38ba",
+     "size": 31785,
      "type": "image/svg+xml"
     }
    }
@@ -138,8 +138,8 @@
  },
  "lastChange": {
   "by": "Alvaro Rojas",
-  "at": "2026-10-04T10:09:23Z",
+  "at": "2026-10-04T20:30:00Z",
   "via": "Claude Code",
-  "note": "Primera versión de la marca Proyecta para el sistema de dirección de proyectos"
+  "note": "La marca cambia de nombre: Proyecta pasa a ser Gestión, con símbolo G y descriptor «de la dirección de proyectos»"
  }
 }
