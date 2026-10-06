@@ -9,3 +9,4 @@ Fuente del sistema de diseño de Gestión, la marca del sistema de gestión de l
 - `assets/Icons/`: los 10 íconos de línea del sistema.
 - `components/`: componentes React (`bundle.js`, `bundle.css`, `index.d.ts`) con su vista previa.
 - La aplicación que usa la marca está en `../centro-monitoreo-dgp/`.
+- `Manual_de_marca_Gestion.pdf`: manual de marca en PDF (11 páginas A4) con logotipo, usos, color, tipografía, íconos, componentes, composición, accesibilidad y el código CSS para aplicar la marca en otras páginas.
