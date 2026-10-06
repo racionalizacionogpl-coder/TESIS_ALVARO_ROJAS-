@@ -661,6 +661,214 @@ td.c,th.c{text-align:center}
 @media (max-width:900px){.md-map,.md-phase,.md-key{grid-template-columns:minmax(0,1fr)}.md-phases{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.md-head{flex-direction:column;padding:18px}.md-num.big{min-width:46px;height:46px;font-size:20px}.md-plan{grid-template-columns:minmax(0,1fr)}.md-plan li{grid-template-columns:28px minmax(0,1fr)}.md-plan li>.linkish,.md-plan li>a{grid-column:2;justify-self:start}.md-ph{font-size:13px;padding:10px}.md-verbs em{margin-left:0;width:100%}.md-tab{flex-basis:130px}.md-sem-scale{font-size:10.5px}}
 
+/* =========================================================
+   Pizarra digital: lienzo infinito con zonas, tarjetas, aristas y recorrido
+   ========================================================= */
+:root{--wbc-proj:var(--m-proj);--wbc-proc:var(--m-proc);--wbc-acred:var(--m-acred);--wbc-risk:var(--m-risk);--wbc-calidad:var(--m-calidad);--wbc-navy:var(--series-2);--wbc-hub:#0B1D3A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--wbc-hub:#173764}}
+:root[data-theme="dark"]{--wbc-hub:#173764}
+.wb-hero .wrap{grid-template-columns:minmax(0,1fr);padding-block:30px 30px}
+.wb-zones{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.wb-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 13px 5px 5px;font:600 13px/1.2 var(--font-body);color:var(--ink);cursor:pointer;transition:border-color .15s}
+.wb-chip span{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--wc);color:var(--m-on);font:800 11.5px/1 var(--font-display)}
+.wb-chip:hover{border-color:var(--wc)}
+.wb-shell{padding:22px clamp(12px,2vw,28px) 0;max-width:1720px;margin:0 auto}
+.wb{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden;scroll-margin-top:76px}
+.wb.max{position:fixed;inset:0;z-index:70;border-radius:0;border:0;display:flex;flex-direction:column}
+html.wb-lock{overflow:hidden}
+.wb-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+.wb-bar .btn.on{background:var(--teal-100);border-color:var(--teal-600);color:var(--teal-700)}
+.wb-sep{width:1px;height:24px;background:var(--line);margin-inline:4px}
+.wb-zl{min-width:46px;text-align:center;font:500 12.5px/1 var(--font-mono);color:var(--ink-muted)}
+.wb-hint{margin-left:auto;font-size:12.5px;color:var(--ink-faint)}
+.wb-viewport{position:relative;height:clamp(520px,calc(100vh - 200px),940px);overflow:hidden;overflow:clip;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;background-color:var(--canvas);background-image:radial-gradient(circle,var(--line) 1.3px,transparent 1.6px);background-size:32px 32px;outline:none}
+.wb-viewport.anim{transition:background-position .7s cubic-bezier(.2,.7,.2,1),background-size .7s cubic-bezier(.2,.7,.2,1)}
+.wb.max .wb-viewport{flex:1;height:auto;min-height:0}
+.wb.touring:not(.max) .wb-viewport{height:clamp(400px,calc(100vh - 340px),800px)}
+.wb-viewport.drag{cursor:grabbing}
+.wb-viewport:focus-visible{box-shadow:inset 0 0 0 3px var(--teal-600);border-radius:0}
+.wb-world{position:absolute;left:0;top:0;transform-origin:0 0}
+.wb-world.anim{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.wb-edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.wb-el{position:absolute;transition:opacity .35s ease,box-shadow .2s ease,border-color .2s ease}
+.wb-el.dim{opacity:.16}
+.wb-wtitle{position:absolute;left:84px;top:16px;font:800 30px/1.1 var(--font-display);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.wb-wtitle small{font:700 18px/1 var(--font-body);letter-spacing:.09em;color:var(--teal-700);margin-left:14px}
+.wb-wlegend{position:absolute;right:84px;top:22px;display:flex;gap:26px;font:600 16px/1 var(--font-body);color:var(--ink-muted);white-space:nowrap}
+.wb-wlegend span{display:inline-flex;align-items:center;gap:10px}
+.wb-lg{fill:none;stroke-width:3.5;stroke-linecap:round}
+.wb-lg.base{stroke:var(--series-2)} .wb-lg.flow{stroke:var(--ink-faint);stroke-width:2.5} .wb-lg.rel{stroke:var(--teal-500);stroke-dasharray:8 6}
+/* zonas */
+.wb-frame{border-radius:30px;background:var(--surface-alt);background:color-mix(in srgb,var(--wc) 7%,var(--surface));border:2px solid color-mix(in srgb,var(--wc) 34%,transparent);border-top:12px solid var(--wc);cursor:zoom-in}
+.wb-frame:hover{border-color:var(--wc)}
+.wb-frame header{display:flex;align-items:center;gap:16px;padding:10px 24px}
+.wb-fn{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--m-yellow);color:var(--m-yellow-ink);box-shadow:0 0 0 3px var(--navy-900);font:800 23px/1 var(--font-display);flex:none}
+.wb-frame h3{font:800 26px/1.15 var(--font-display);color:var(--ink)}
+.wb-frame header p{font-size:15px;line-height:1.35;color:var(--ink-muted);margin-top:3px}
+/* tarjetas */
+.wb-node{display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:8px 12px;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--wc);border-radius:14px;box-shadow:var(--shadow-card);overflow:hidden;cursor:pointer;color:var(--ink)}
+.wb-node:hover{border-color:var(--wc);box-shadow:var(--shadow-float)}
+.wb-node.sel{box-shadow:0 0 0 4px var(--teal-500),var(--shadow-float)}
+.wb-node:focus-visible{box-shadow:var(--focus-ring),var(--shadow-float);border-radius:14px}
+.wb-node h4{font:700 17px/1.25 var(--font-display);color:var(--ink);min-width:0;overflow-wrap:anywhere}
+.wb-node.has-num{grid-template-columns:auto minmax(0,1fr)}
+.wb-node.has-num>h4{align-self:center}
+.wb-node.has-num .wb-body{grid-column:1/-1}
+.wb-step.has-num .wb-num{grid-row:span 2;align-self:start}
+.wb-step.has-num .wb-body{grid-column:2}
+.wb-phase.has-num{grid-template-columns:minmax(0,1fr)}
+.wb-ts{display:none}
+.wb-num{display:inline-grid;place-items:center;min-width:34px;height:34px;padding:0 8px;border-radius:999px;background:var(--m-yellow);color:var(--m-yellow-ink);box-shadow:0 0 0 2px var(--navy-900);font:800 13px/1 var(--font-display);justify-self:start;white-space:nowrap}
+.wb-num.in{display:inline-grid;margin-right:10px;vertical-align:3px}
+.wb-proj .wb-num{font-family:var(--font-mono);font-weight:500}
+.wb-body{font-size:14.5px;line-height:1.45;color:var(--ink-muted);min-width:0;display:flex;flex-direction:column;gap:8px}
+.wb-body ol,.wb-body ul{margin:0;padding-left:20px}
+.wb-body b{color:var(--ink)}
+.wb-quote{border-top-width:1px;border-left:6px solid var(--wc)}
+.wb-q{font:600 17px/1.45 var(--font-body);color:var(--ink)}
+.wb-hub{background:var(--wbc-hub);border:0;border-radius:26px;padding:26px 30px;color:var(--on-navy);box-shadow:var(--shadow-float);text-align:center;align-content:center;outline:4px solid color-mix(in srgb,var(--teal-500) 50%,transparent);outline-offset:7px}
+.wb-hub:hover{box-shadow:var(--shadow-float)}
+.wb-hub h4{font:800 28px/1.15 var(--font-display);color:var(--on-navy)}
+.wb-hub .wb-body{color:var(--on-navy-muted);font-size:16px}
+.wb-hub.sel{box-shadow:0 0 0 4px var(--teal-500),var(--shadow-float)}
+.wb-key{background:var(--wbc-hub);border-color:var(--wbc-hub);color:var(--on-navy)}
+.wb-key h4{color:var(--teal-500)}
+.wb-key .wb-body,.wb-key .wb-body b{color:var(--on-navy)}
+.wb-pq{font-style:italic;color:var(--ink)}
+.wb-phase .wb-body ul{padding-left:18px}
+.wb-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.wb-cols b,.wb-flow b{display:block;font:700 11.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--wc);margin-bottom:4px}
+.wb-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.wb-flow b{width:100%;margin:0}
+.wb-flow span{padding:4px 10px;border-radius:999px;background:var(--surface-alt);background:color-mix(in srgb,var(--wc) 12%,var(--surface));color:var(--ink);font-weight:600;font-size:13px}
+.wb-flow i{font-style:normal;color:var(--wc);font-weight:700}
+.wb-chips{display:flex;flex-wrap:wrap;gap:5px}
+.wb-chips span{padding:3px 8px;border-radius:999px;background:var(--surface-alt);border:1px solid var(--line);font-size:12px;line-height:1.3;color:var(--ink)}
+.wb-tree{list-style:none;padding:0!important;display:flex;flex-direction:column;gap:8px}
+.wb-tree li{padding:3px 0 3px 12px;border-left:3px solid var(--wc)}
+.wb-tree b,.wb-tree small{display:block}
+.wb-tree small{font-size:13px}
+.wb-sem{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;text-align:center;font:700 15px/1.25 var(--font-display)}
+.wb-sem span{padding:8px 6px;border-radius:8px}
+.wb-sem small{display:block;font:600 11.5px/1.2 var(--font-body);margin-top:2px}
+.wb-sem .crit,.wb-grid .crit{background:var(--crit-soft);color:var(--crit)}
+.wb-sem .warn,.wb-grid .warn{background:var(--warn-soft);color:var(--warn)}
+.wb-sem .ok,.wb-grid .ok{background:var(--ok-soft);color:var(--ok)}
+.wb-pxi{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center}
+.wb-pxi p{margin:0 0 3px}
+.wb-grid{display:grid;grid-template-columns:repeat(5,34px);gap:3px}
+.wb-grid i{display:grid;place-items:center;height:34px;border-radius:5px;font:500 12px/1 var(--font-mono);font-style:normal}
+.wb-risk,.wb-cov{list-style:none;padding:0!important;display:flex;flex-direction:column;gap:6px;margin:0}
+.wb-risk li{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 10px;background:var(--surface-alt);border-radius:8px}
+.wb-cov li{display:grid;grid-template-columns:40px minmax(0,1fr) 44px;gap:10px;align-items:center}
+.wb-mini{display:block;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.wb-mini i{display:block;height:100%;background:var(--ok)}
+.wb-cl{list-style:none;padding:0!important;display:flex;flex-direction:column;gap:6px}
+.wb-cl li{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;background:var(--surface-alt)}
+.wb-cl li b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--wc);color:var(--m-on);font:800 12.5px/1 var(--font-display)}
+.wb-cl li span{color:var(--ink);font-weight:600;line-height:1.25}
+.wb-cl li em{font:500 11px/1 var(--font-mono);font-style:normal;padding:4px 7px;border-radius:999px;background:var(--m-yellow);color:var(--m-yellow-ink)}
+.wb-flowmini{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.wb-flowmini span{padding:4px 10px;border-radius:999px;background:var(--navy-700);color:var(--on-navy);font:700 12.5px/1.2 var(--font-display)}
+.wb-flowmini span.on{background:var(--m-yellow);color:var(--m-yellow-ink)}
+.wb-flowmini i{font-style:normal;color:var(--teal-500)}
+.wb-ph{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;font-size:13.5px}
+.wb-av>span{display:block;position:relative;height:10px;border-radius:5px;background:var(--line-soft)}
+.wb-av>span i{display:block;height:100%;border-radius:5px;background:var(--teal-600)}
+.wb-av>span em{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ink)}
+.wb-av small{display:block;margin-top:5px;font-size:12.5px}
+.wb-steps{display:flex;flex-wrap:wrap;gap:5px}
+.wb-steps span{padding:3px 8px;border-radius:999px;background:var(--m-yellow);color:var(--m-yellow-ink);font:800 11.5px/1.2 var(--font-display)}
+.wb-rol{font-size:13.5px}
+/* aristas y etiquetas */
+.wb-e{fill:none;stroke-linecap:round;transition:opacity .35s,stroke .2s,stroke-width .2s}
+.wb-e.base{stroke:var(--series-2);stroke-width:3.5}
+.wb-e.flow{stroke:var(--ink-faint);stroke-width:2.5}
+.wb-e.rel{stroke:var(--teal-500);stroke-width:3;stroke-dasharray:10 9;opacity:0}
+.rel .wb-e.rel{opacity:.9;animation:wb-march 1.6s linear infinite}
+.wb-e.hi{stroke:var(--teal-600);stroke-width:4.5;opacity:1}
+.wb-e.dim,.rel .wb-e.rel.dim{opacity:.12}
+.wb-ar.base{fill:var(--series-2)} .wb-ar.flow{fill:var(--ink-faint)} .wb-ar.rel{fill:var(--teal-500)}
+.wb-tag{position:absolute;transform:translate(-50%,-50%);padding:4px 11px;border-radius:999px;font:700 13px/1.2 var(--font-body);white-space:nowrap;pointer-events:none;transition:opacity .35s;box-shadow:var(--shadow-card)}
+.wb-tag.base{background:var(--wbc-hub);color:var(--on-navy)}
+.wb-tag.flow{background:var(--surface);color:var(--ink-muted);border:1px solid var(--line)}
+.wb-tag.rel{background:var(--teal-600);color:#FFFFFF;opacity:0}
+.rel .wb-tag.rel,.wb-tag.rel.hi{opacity:1}
+.wb-tag.dim,.rel .wb-tag.rel.dim{opacity:.15}
+@keyframes wb-march{to{stroke-dashoffset:-38}}
+/* lejos: solo títulos grandes, como un mapa conceptual */
+.far .wb-body{display:none}
+.far .wb-node{align-content:center;padding:14px 22px}
+.far .wb-node h4{font-size:34px;line-height:1.12}
+.far .wb-step h4{font-size:24px}
+.far .wb-phase{padding-inline:14px}
+.far .wb-phase h4{font-size:19px}
+.far .wb-e.base{stroke-width:7}
+.far .wb-e.flow{stroke-width:5}
+.far .wb-e.rel{stroke-width:7;stroke-dasharray:22 16}
+.far .wb-e.hi{stroke-width:9}
+.far .wb-node.tall.has-num{grid-template-columns:minmax(0,1fr)}
+.far .wb-node.tall.has-num>h4{align-self:start}
+.far .wb-step.tall .wb-num{grid-row:auto}
+.far .wb-hub h4{font-size:46px}
+.far .wb-num{min-width:52px;height:52px;font-size:20px;padding:0 12px}
+.far .wb-frame h3{font-size:46px}
+.far .wb-frame header p{display:none}
+.far .wb-fn{width:66px;height:66px;font-size:30px}
+.far .wb-tag{font-size:24px;padding:7px 18px}
+.far .wb-tag.flow{display:none}
+.far .wb-wtitle{font-size:46px}
+.far .wb-wtitle small{font-size:28px}
+.far .wb-wlegend{font-size:28px;top:18px}
+/* minimapa, panel y recorrido */
+.wb-minimap{position:absolute;left:12px;bottom:12px;width:160px;height:auto;aspect-ratio:3400/2300;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-card);cursor:pointer;z-index:2}
+.wb-minimap rect{opacity:.42}
+.wb-minimap .wb-mm-vp{opacity:1;fill:var(--teal-500);fill-opacity:.14;stroke:var(--teal-600);stroke-width:2;vector-effect:non-scaling-stroke}
+.wb-panel{position:absolute;top:12px;right:12px;bottom:12px;width:min(380px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-float);padding:22px 22px 24px;overflow-y:auto;overscroll-behavior:contain;transform:translateX(calc(100% + 24px));visibility:hidden;transition:transform .38s cubic-bezier(.2,.7,.2,1),visibility 0s .38s;cursor:auto;user-select:text;-webkit-user-select:text;touch-action:pan-y;z-index:3}
+.wb-panel.on{transform:none;visibility:visible;transition:transform .38s cubic-bezier(.2,.7,.2,1)}
+.wb-panel h3{font:700 21px/1.25 var(--font-display);margin:0 34px 12px 0}
+.wb-x{position:absolute;top:12px;right:12px;font-size:15px}
+.wb-more{font-size:14.5px;line-height:1.55;display:flex;flex-direction:column;gap:10px;color:var(--ink)}
+.wb-more ul,.wb-more ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.wb-more .wb-cov{padding:0}
+.wb-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.wb-kids{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
+.wb-kids .linkish{font-size:14px;text-align:left}
+.wb-tour{display:none}
+.wb-tour.on{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 20px;align-items:center;padding:14px 18px 16px;background:var(--navy-900);color:var(--on-navy);animation:wb-up .35s ease-out}
+.wb-tour-t small{font:700 11px/1.3 var(--font-body);letter-spacing:.09em;text-transform:uppercase;color:var(--teal-500)}
+.wb-tour-t b{display:block;font:700 18px/1.25 var(--font-display);margin:2px 0 4px}
+.wb-tour-t p{font-size:14.5px;color:var(--on-navy-muted);max-width:92ch}
+.wb-tour-b{display:flex;flex-wrap:wrap;gap:8px}
+.wb-dots{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+.wb-dots button{width:12px;height:12px;border:0;border-radius:6px;padding:0;background:var(--navy-700);cursor:pointer;transition:width .25s,background-color .25s}
+.wb-dots button:hover{background:var(--teal-600)}
+.wb-dots button.on{width:30px;background:var(--teal-500)}
+/* animación de entrada */
+.wb-intro .wb-frame{animation:wb-in .55s cubic-bezier(.2,.7,.2,1) both}
+.wb-intro .wb-node{animation:wb-in .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 22ms + 220ms)}
+.wb-intro .wb-e.base,.wb-intro .wb-e.flow{stroke-dasharray:1;stroke-dashoffset:1;animation:wb-draw 1s ease-out .75s forwards}
+.wb-intro .wb-tag{animation:wb-fade .4s ease-out 1.5s both}
+@keyframes wb-in{from{opacity:0;transform:translateY(18px) scale(.96)}}
+@keyframes wb-draw{to{stroke-dashoffset:0}}
+@keyframes wb-fade{from{opacity:0}}
+@keyframes wb-up{from{opacity:0;transform:translateY(8px)}}
+@media (prefers-reduced-motion:reduce){.wb-world.anim,.wb-viewport.anim,.wb-panel,.wb-panel.on{transition:none}.rel .wb-e.rel,.wb-tour.on{animation:none}}
+@media (max-width:900px){.wb-hint{display:none}}
+@media (max-width:640px){
+  .wb-shell{padding-inline:8px}
+  .wb-viewport{height:clamp(420px,64vh,560px)}
+  .wb.touring:not(.max) .wb-viewport{height:clamp(300px,48vh,440px)}
+  .wb-tl{display:none}.wb-ts{display:inline}
+  .wb-zl{display:none}
+  .wb.touring .wb-minimap{display:none}
+  .wb-sep{display:none}
+  .wb-minimap{width:112px;left:8px;bottom:8px}
+  .wb-panel{top:auto;left:8px;right:8px;bottom:8px;width:auto;max-height:60%;transform:translateY(calc(100% + 16px))}
+  .wb-tour.on{grid-template-columns:minmax(0,1fr);padding:12px 14px 14px}
+  .wb-tour-t p{font-size:13.5px}
+  .wb-chip{font-size:12.5px}
+}
 </style>
 
 <header class="nav" id="nav"></header>
@@ -873,12 +1081,13 @@ const LISTS = ['projects', ...Object.keys(COLL)];
    ========================================================= */
 const S = { mode: 'connecting', err: null, loaded: new Set(), lastSync: 0, me: null, canWrite: null, readOnly: false, peers: [], profiles: {}, feed: [] };
 LISTS.forEach(k => { S[k] = []; });
-const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true, tfilter: 'all', slide: 0, mapSel: 'calidad', phaseSel: 0, clause: 4, planPid: null, semVal: 82 };
+const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true, tfilter: 'all', slide: 0, mapSel: 'calidad', phaseSel: 0, clause: 4, planPid: null, semVal: 82, wb: { x: 0, y: 0, k: 0.3, init: false, sel: null, tour: -1, rel: false, max: false }, wbModel: null, wbHtml: '' };
 try {
   const saved = JSON.parse(localStorage.getItem('dgp-ui') || 'null');
   if (saved && typeof saved === 'object') { UI.view = saved.view || 'portfolio'; UI.pid = saved.pid || null; UI.tab = saved.tab || 'resumen'; UI.depth = saved.depth || 9; UI.slide = saved.slide | 0; }
 } catch (e) { /* almacenamiento no disponible */ }
 if (location.hash === '#guia') UI.view = 'guide';
+if (location.hash === '#pizarra') UI.view = 'board';
 const persistUI = () => { try { localStorage.setItem('dgp-ui', JSON.stringify({ view: UI.view, pid: UI.pid, tab: UI.tab, depth: UI.depth, slide: UI.slide })); } catch (e) { /* sin almacenamiento */ } };
 
 let db = null, user = null, room = null, sample = null, downloads = null;
@@ -928,7 +1137,7 @@ let lastWhere = '';
 function pushPresence() {
   if (!room) return;
   const p = UI.view === 'project' ? projectById(UI.pid) : null;
-  const where = p ? (p.code || 'Proyecto') : UI.view === 'guide' ? 'Guía PMBOK' : UI.view === 'model' ? 'Modelo de gestión' : 'Portafolio';
+  const where = p ? (p.code || 'Proyecto') : UI.view === 'guide' ? 'Guía PMBOK' : UI.view === 'model' ? 'Modelo de gestión' : UI.view === 'board' ? 'Pizarra digital' : 'Portafolio';
   if (where === lastWhere) return;
   lastWhere = where;
   Promise.resolve(room.presence({ where })).catch(() => {});
@@ -1129,7 +1338,14 @@ function render() {
   renderNav(); renderFoot();
   const v = $('#view');
   if (UI.view === 'guide') { v.innerHTML = viewGuide(); pushPresence(); return; }
+  if (UI.view !== 'board') UI.wb.max = false;
+  document.documentElement.classList.toggle('wb-lock', UI.view === 'board' && UI.wb.max);
   if (UI.view === 'model') { v.innerHTML = viewModel(); pushPresence(); return; }
+  if (UI.view === 'board') {
+    // la pizarra solo se reconstruye si cambió su contenido: así no se pierde la cámara ni el panel abierto
+    const h = viewBoard(); if (h !== UI.wbHtml || !$('#wb')) { v.innerHTML = h; UI.wbHtml = h; wbMount(); }
+    pushPresence(); return;
+  }
   if (S.mode === 'offline') { v.innerHTML = viewOffline(); return; }
   if (S.mode === 'error') { v.innerHTML = viewError(); return; }
   if (S.mode === 'connecting' || !S.loaded.has('projects')) {
@@ -1157,6 +1373,7 @@ function renderNav() {
     <nav class="menu" aria-label="Secciones">
       <button data-act="go-portfolio" aria-current="${UI.view === 'portfolio'}">Portafolio</button>
       <button data-act="go-model" aria-current="${UI.view === 'model'}">Modelo</button>
+      <button data-act="go-board" aria-current="${UI.view === 'board'}">Pizarra</button>
       <details class="${UI.view === 'project' ? 'on' : ''}"><summary>Proyectos <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5L5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></summary><div class="dd">${dd}</div></details>
       <button data-act="go-guide" aria-current="${UI.view === 'guide'}">Guía PMBOK</button>
     </nav>
@@ -1167,7 +1384,7 @@ function renderFoot() {
   const P = projectsSorted();
   $('#foot').innerHTML = `<div class="wrap"><div class="foot-grid">
     <div><h4>Gestión</h4><p>Sistema de dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Basado en la Guía del PMBOK® 8.ª edición: 6 principios, 7 dominios de desempeño y 5 áreas de enfoque.</p></div>
-    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-model">Modelo de gestión</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
+    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-model">Modelo de gestión</button></li><li><button class="fl" data-act="go-board">Pizarra digital</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
     <div><h4>Dominios PMBOK 8</h4><ul>${['Gobernanza', 'Alcance', 'Cronograma', 'Finanzas', 'Interesados', 'Recursos', 'Riesgo'].map(d => `<li>${d}</li>`).join('')}</ul></div>
     <div><h4>Proyectos</h4><ul>${P.slice(0, 8).map(p => `<li><button class="fl" data-act="go-project" data-id="${esc(p.id)}"><span class="mono">${esc(p.code)}</span> · ${esc(String(p.name || '').slice(0, 46))}${String(p.name || '').length > 46 ? '…' : ''}</button></li>`).join('') || '<li>Sin proyectos aún</li>'}</ul></div>
   </div>
@@ -1842,6 +2059,21 @@ document.addEventListener('click', e => {
     case 'go-portfolio': go('portfolio'); break;
     case 'go-guide': go('guide'); break;
     case 'go-model': go('model'); break;
+    case 'go-board': go('board'); break;
+    case 'wb-node': {
+      if (!el.closest('#wb-vp')) wbScrollIn();
+      wbSelect(el.dataset.v, true); break;
+    }
+    case 'wb-bg': if (UI.wb.sel && !e.target.closest('.wb-panel')) wbClose(); break;
+    case 'wb-close': wbClose(); break;
+    case 'wb-tour-go': wbTour(Number(el.dataset.v) | 0); break;
+    case 'wb-tour-end': wbEndTour(); break;
+    case 'wb-rel': UI.wb.rel = !UI.wb.rel; el.classList.toggle('on', UI.wb.rel); el.setAttribute('aria-pressed', String(UI.wb.rel)); el.innerHTML = wbRelTxt(); wbRespot(); break;
+    case 'wb-zoom': { const r = wbVp().getBoundingClientRect(); wbZoomAt(Number(el.dataset.v) > 0 ? 1.3 : 1 / 1.3, r.width / 2, r.height / 2, true); break; }
+    case 'wb-fit': wbFitRect([0, 0, WB_W, WB_H], true, 0.96); break;
+    case 'wb-max': wbMax(); break;
+    case 'wb-mini': { const r = el.getBoundingClientRect(), v = wbVp().getBoundingClientRect(), c = UI.wb; const wx = (e.clientX - r.left) / r.width * WB_W, wy = (e.clientY - r.top) / r.height * WB_H; c.x = v.width / 2 - wx * c.k; c.y = v.height / 2 - wy * c.k; wbApply(true); break; }
+    case 'wb-slide': UI.slide = Math.max(0, Math.min(SLIDES.length - 1, Number(el.dataset.v) | 0)); go('model'); break;
     case 'slide': { const n = Math.max(0, Math.min(SLIDES.length - 1, Number(el.dataset.v) | 0)); UI.slide = n; persistUI(); render(); const t = $('.md-slides'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); break; }
     case 'msel': UI.mapSel = el.dataset.v; render(); break;
     case 'phase': UI.phaseSel = Number(el.dataset.v) | 0; render(); break;
@@ -1882,7 +2114,8 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if (!$('#modal').hidden) { closeModal(); return; } const dd = document.querySelector('.menu details[open]'); if (dd) dd.open = false; }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('article.pcard')) { e.preventDefault(); e.target.click(); }
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('g[role="button"][data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('g[role="button"][data-act],.wb-node[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+  if (UI.view === 'board' && $('#modal').hidden && !(e.target.closest && e.target.closest('input,select,textarea'))) { wbKey(e); return; }
   if (UI.view === 'model' && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input,select,textarea,[role="tablist"] .md-ph') && $('#modal').hidden) {
     const n = Math.max(0, Math.min(SLIDES.length - 1, (UI.slide | 0) + (e.key === 'ArrowRight' ? 1 : -1)));
     if (n !== UI.slide) { UI.slide = n; persistUI(); render(); }
@@ -2169,13 +2402,340 @@ function viewModel() {
   const body = [slideMapa, slideProyectos, slideProcesos, slideAcreditacion, slideRiesgo, slideIntegracion][s]();
   const P = S.loaded.has('projects') ? projectsSorted() : [];
   const nLinked = P.filter(p => stepsOf(p).length).length;
-  return `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:4%;top:22%"></span><div class="wrap"><div><p class="eyebrow">Modelo de gestión · DGP OGPL-UNMSM</p><h1 class="hero-t">Calidad, procesos, proyectos y acreditación en un solo mapa</h1><p class="lead">Qué busca cada disciplina, cómo se cruzan y qué hace cada uno de tus proyectos dentro de ellas. Toca los círculos o avanza lámina por lámina; los datos de los proyectos están en vivo.</p></div>
+  return `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:4%;top:22%"></span><div class="wrap"><div><p class="eyebrow">Modelo de gestión · DGP OGPL-UNMSM</p><h1 class="hero-t">Calidad, procesos, proyectos y acreditación en un solo mapa</h1><p class="lead">Qué busca cada disciplina, cómo se cruzan y qué hace cada uno de tus proyectos dentro de ellas. Toca los círculos o avanza lámina por lámina; los datos de los proyectos están en vivo.</p><div class="hero-actions"><button class="btn primary" data-act="go-board">Verlo todo en la pizarra digital →</button></div></div>
     <div class="blob"><h2>El modelo en cifras</h2><div class="md-blob-k"><div><div class="k-val">4</div><div class="k-label">Disciplinas</div></div><div><div class="k-val">4</div><div class="k-label">Fases de procesos</div></div><div><div class="k-val">7</div><div class="k-label">Cláusulas ISO</div></div><div><div class="k-val">${P.length ? `${nLinked}/${P.length}` : '—'}</div><div class="k-label">Proyectos vinculados</div></div></div></div></div></section>
   <div class="wrap"><section class="section">
     <div class="md-slides" role="tablist" aria-label="Láminas">${SLIDES.map(([k, t], i) => `<button role="tab" aria-selected="${i === s}" class="md-tab${i === s ? ' on' : ''}" data-act="slide" data-v="${i}"><small>Lámina ${i + 1}</small>${esc(t)}</button>`).join('')}</div>
     <article class="md-slide" aria-label="${esc(SLIDES[s][1])}">${body}</article>
     <div class="md-pager"><button class="btn" data-act="slide" data-v="${s - 1}"${s === 0 ? ' disabled' : ''}>← Anterior</button><span class="note num">${s + 1} / ${SLIDES.length}</span><button class="btn primary" data-act="slide" data-v="${s + 1}"${s === SLIDES.length - 1 ? ' disabled' : ''}>Siguiente →</button></div>
   </section></div>`;
+}
+
+/* =========================================================
+   Vista: pizarra digital (lienzo con mapa conceptual, recorrido y enlaces)
+   ========================================================= */
+const WB_W = 3400, WB_H = 2300;
+const WB_LINKS = {
+  driveRoot: 'https://drive.google.com/drive/folders/11vfVOJ4ncu_e0R6NdczRPykBDpmvLPzf',
+  manual: 'https://claude.ai/code/artifact/4d95721b-8046-43ca-b223-76d415098dcc',
+  brand: 'https://claude.ai/artifact/7sJauz2myUpBJy6pJkkVa6',
+};
+const wbIsFrame = id => /^f\d$/.test(id);
+const wbTxt = (long, short) => `<span class="wb-tl">${long}</span><span class="wb-ts">${short}</span>`;
+const wbStartTxt = () => (UI.wb.tour >= 0 ? wbTxt('▶ Recorrido en curso', '▶ En curso') : wbTxt('▶ Iniciar recorrido', '▶ Recorrido'));
+const wbRelTxt = () => wbTxt(UI.wb.rel ? 'Ocultar relaciones' : 'Mostrar relaciones', 'Relaciones');
+const wbMaxTxt = () => (UI.wb.max ? wbTxt('Salir de pantalla completa', 'Salir') : wbTxt('Pantalla completa', 'Ampliar'));
+const wbLink = (label, attrs) => `<button class="btn sm" ${attrs}>${label}</button>`;
+const wbHref = (label, href) => `<a class="btn sm" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${label} ↗</a>`;
+const wbProjLinks = (tab, label) => (S.loaded.has('projects') ? projectsSorted() : []).map(p => wbLink(`${label || 'Abrir en'} ${esc(p.code)}`, `data-act="go-project" data-id="${esc(p.id)}"${tab ? ` data-tab="${tab}"` : ''}`)).join('');
+
+function wbModel() {
+  const F = [
+    { id: 'f1', x: 80, y: 80, w: 1200, h: 820, c: 'proj', n: '1', t: 'Gestión de proyectos', s: 'Definir, gestionar, dirigir, evaluar y monitorear de inicio a fin' },
+    { id: 'f2', x: 2120, y: 80, w: 1200, h: 820, c: 'proc', n: '2', t: 'Gestión por procesos', s: 'Generar valor para el usuario' },
+    { id: 'f3', x: 2120, y: 1340, w: 1200, h: 880, c: 'acred', n: '3', t: 'Acreditación y certificación', s: 'Estándares de calidad y cláusulas ISO 9001' },
+    { id: 'f4', x: 1340, y: 1340, w: 720, h: 880, c: 'risk', n: 'R', t: 'Gestión del riesgo', s: 'Anticipar y responder' },
+    { id: 'f5', x: 80, y: 1340, w: 1200, h: 880, c: 'navy', n: 'P', t: 'Cartera de proyectos', s: 'Estado en vivo de P01 a P04' },
+    { id: 'f6', x: 1340, y: 80, w: 720, h: 820, c: 'calidad', n: 'i', t: 'Datos y evidencias', s: 'Dónde vive cada dato y cada documento' },
+  ];
+  const N = [];
+  const add = o => (N.push(o), o);
+  const P = S.loaded.has('projects') ? projectsSorted() : [];
+  // centro
+  add({ id: 'hub', f: 'hub', x: 1450, y: 990, w: 500, h: 260, k: 'hub', t: 'Gestión de la Calidad Total', b: '<p>El paraguas del modelo: la organización entera trabaja para que el usuario reciba lo que esperaba y para mejorar siempre.</p>', more: '<p>Dentro de la calidad total viven la gestión de proyectos, la gestión por procesos, la acreditación y certificación y la gestión del riesgo. Se cruzan entre sí: un proyecto implementa procesos, los procesos sostienen la certificación y el riesgo atraviesa a todos.</p><p class="note">Síntesis del sistema basada en tu lámina «Gestión por procesos».</p>', links: wbLink('Abrir el mapa integrado', 'data-act="wb-slide" data-v="0"') });
+  // f1 · proyectos
+  add({ id: 'p-def', f: 'f1', x: 120, y: 170, w: 520, h: 170, k: 'quote', c: 'proj', t: '¿Qué busca?', b: `<p class="wb-q">${MAP_INFO.proj.q}</p>`, links: wbLink('Abrir la lámina 2', 'data-act="wb-slide" data-v="1"') });
+  add({ id: 'pmbok', f: 'f1', x: 120, y: 370, w: 520, h: 500, k: 'card', c: 'proj', t: 'Guía del PMBOK 8.ª edición (2025)', b: `<div class="wb-cols"><div><b>6 principios</b><ol><li>Visión holística</li><li>Enfocarse en el valor</li><li>Integrar la calidad</li><li>Liderazgo responsable</li><li>Sostenibilidad</li><li>Cultura de empoderamiento</li></ol></div><div><b>7 dominios</b><ol><li>Gobernanza</li><li>Alcance</li><li>Cronograma</li><li>Finanzas</li><li>Interesados</li><li>Recursos</li><li>Riesgo</li></ol></div></div><div class="wb-flow"><b>5 áreas de enfoque</b><span>Inicio</span><i>→</i><span>Planificación</span><i>→</i><span>Ejecución</span><i>→</i><span>Monitoreo y control</span><i>→</i><span>Cierre</span></div>`, more: '<p>La base metodológica del sistema. Cada dominio de desempeño es una pestaña dentro de cada proyecto, y cada proyecto marca su área de enfoque actual.</p>', links: wbLink('Abrir la Guía PMBOK', 'data-act="go-guide"') });
+  const tools = [['1.1', 'Diseñar flujo de trabajo', 'Organiza y asigna las tareas en secuencia.', 'cronograma'], ['1.2', 'Cronograma de actividades', 'Fases, etapas, actividades y tareas.', 'cronograma'], ['1.3', 'Bitácora de trabajo', 'Avance diario de cada tarea.', 'bitacora'], ['1.4', 'Plan de gestión del proyecto', 'Directrices para definir, desarrollar y controlar.', 'gobernanza'], ['1.5', 'Página web del proyecto', 'Publica todos los documentos.', null]];
+  tools.forEach(([n, t, d, tab], i) => add({ id: 't' + n, f: 'f1', x: 700, y: 170 + i * 105, w: 540, h: 88, k: 'step', c: 'proj', num: n, t, b: `<p>${d}</p>`, links: tab ? wbProjLinks(tab) : wbLink('Ir al portafolio', 'data-act="go-portfolio"') }));
+  const coverage = P.map(p => { const it = planItems(p); const ok = it.filter(x => x[2]).length; return `<li><span class="mono">${esc(p.code)}</span><span class="wb-mini"><i style="width:${Math.round(ok / it.length * 100)}%"></i></span><b class="num">${ok}/${it.length}</b></li>`; }).join('');
+  add({ id: 'plan13', f: 'f1', x: 700, y: 715, w: 540, h: 165, k: 'card', c: 'proj', t: 'Plan de gestión: 13 componentes', b: `<div class="wb-chips">${['Propósito', 'Decisiones', 'Alcance', 'EDT', 'Requisitos', 'Criterios', 'RACI', 'Cambios', 'Cronograma', 'Calidad', 'Riesgos', 'Interesados', 'Documentos'].map((x, i) => `<span>${i + 1} ${x}</span>`).join('')}</div>`, more: `<p>Cobertura en vivo de los 13 componentes en cada proyecto:</p><ul class="wb-cov">${coverage || '<li>Conectando…</li>'}</ul>`, links: wbLink('Ver el detalle (lámina 2)', 'data-act="wb-slide" data-v="1"') });
+  // f6 · información
+  add({ id: 'sys', f: 'f6', x: 1380, y: 170, w: 640, h: 170, k: 'card', c: 'calidad', t: 'Sistema Gestión (esta web)', b: '<p>Guarda el <b>estado</b> de cada proyecto: avance, acuerdos, riesgos y cambios, en tiempo real para todo el equipo.</p>', links: wbLink('Portafolio', 'data-act="go-portfolio"') + wbLink('Modelo', 'data-act="go-model"') });
+  add({ id: 'drive', f: 'f6', x: 1380, y: 380, w: 640, h: 250, k: 'card', c: 'calidad', t: 'Google Drive: la evidencia', b: '<ul class="wb-tree"><li><b>1. Proyectos de UNMSM</b><small>P01–P04 · 01 Planificación · 02 Reuniones · 03 Entregables</small></li><li><b>2. Centro de monitoreo</b><small>Matriz de priorización</small></li><li><b>3. Repositorio</b><small>PMBOK, libros, casos y riesgos</small></li></ul>', more: '<p>La carpeta «DIRECCIÓN DE LA GESTIÓN DE PROYECTOS» guarda los documentos de respaldo. Cada proyecto tiene su carpeta con tres subcarpetas: 01 Planificación, 02 Reuniones y 03 Entregables.</p>', links: wbHref('Abrir la carpeta', WB_LINKS.driveRoot) });
+  add({ id: 'manual', f: 'f6', x: 1380, y: 670, w: 640, h: 190, k: 'card', c: 'calidad', t: 'Manuales', b: '<p>Manual de Gestión con el mapa de documentos y manual de marca para otras páginas.</p>', links: wbHref('Manual de Gestión', WB_LINKS.manual) + wbHref('Marca', WB_LINKS.brand) });
+  // f2 · procesos
+  add({ id: 'g-meta', f: 'f2', x: 2160, y: 170, w: 1120, h: 120, k: 'quote', c: 'proc', t: 'La meta', b: `<p class="wb-q">${MAP_INFO.proc.q}</p>`, links: wbLink('Abrir la lámina 3', 'data-act="wb-slide" data-v="2"') });
+  PHASES.forEach((ph, i) => add({ id: 'ph' + ph.k, f: 'f2', x: 2160 + i * 287, y: 330, w: 260, h: 300, k: 'phase', c: 'proc', num: ph.k, t: ph.t, b: `<p class="wb-pq">${esc(ph.q)}</p><ul>${ph.items.map(([a]) => `<li>${esc(a)}</li>`).join('')}</ul>`, more: `<p class="wb-pq">${esc(ph.q)}</p><ul>${ph.items.map(([a, b]) => `<li><b>${esc(a)}:</b> ${esc(b)}</li>`).join('')}</ul>${ph.note ? `<p class="note">${esc(ph.note)}</p>` : ''}${(() => { const L = P.filter(p => stepsOf(p).includes(ph.k)); return L.length ? `<p><b>Proyectos que la trabajan:</b> ${L.map(p => esc(p.code)).join(', ')}</p>` : ''; })()}`, links: wbLink(`Abrir la fase ${ph.k}`, `data-act="model-step" data-v="${ph.k}"`) }));
+  add({ id: 'sem', f: 'f2', x: 2160, y: 670, w: 540, h: 200, k: 'card', c: 'proc', t: 'Semáforo de indicadores', b: '<div class="wb-sem"><span class="crit">&lt; 75<small>Crítico</small></span><span class="warn">75 – 90<small>Aceptable</small></span><span class="ok">≥ 90<small>Óptimo</small></span></div><p>Cantidad (productividad), calidad y satisfacción.</p>', links: wbLink('Probar el simulador', 'data-act="model-step" data-v="2.3"') });
+  add({ id: 'tools-m', f: 'f2', x: 2740, y: 670, w: 540, h: 200, k: 'card', c: 'proc', t: 'Herramientas de mejora', b: '<ol><li><b>Pareto y diagramación TO BE:</b> reduce tiempos</li><li><b>Digitalización:</b> Excel, Sheets, Forms, web</li><li><b>Automatización:</b> macros, Apps Script, UiPath, Power Automate, Python</li></ol>', links: wbLink('Abrir la fase 2.4', 'data-act="model-step" data-v="2.4"') });
+  // f3 · acreditación
+  add({ id: 'a-def', f: 'f3', x: 2160, y: 1430, w: 1120, h: 120, k: 'quote', c: 'acred', t: '¿Qué busca?', b: `<p class="wb-q">${MAP_INFO.acred.q}</p>`, links: wbLink('Abrir la lámina 4', 'data-act="wb-slide" data-v="3"') });
+  [['3.1', 'Estándares con evidencias', 'Todos los documentos obligatorios por la norma (PDF, Excel, Word, PPT).', 1590], ['3.2', 'Indicadores de calidad', 'Preguntas de satisfacción dentro del rango: estable u óptimo.', 1790]].forEach(([n, t, d, y]) => add({ id: 'a' + n, f: 'f3', x: 2160, y, w: 360, h: 170, k: 'step', c: 'acred', num: n, t, b: `<p>${d}</p>`, links: wbLink('Abrir acreditación', `data-act="model-step" data-v="${n}"`) }));
+  add({ id: 'a3.3', f: 'f3', x: 2580, y: 1690, w: 280, h: 170, k: 'step', c: 'acred', num: '3.3', t: 'Autoevaluación', b: '<p>Se obtiene del cumplimiento del estándar y su indicador.</p>', links: wbLink('Abrir acreditación', 'data-act="model-step" data-v="3.3"') });
+  add({ id: 'iso', f: 'f3', x: 2900, y: 1590, w: 380, h: 590, k: 'card', c: 'acred', t: 'ISO 9001 · cláusulas 4 a 10', b: `<ul class="wb-cl">${CLAUSES.map(c => `<li><b>${c[0]}</b><span>${esc(c[1])}</span>${c[3] ? `<em>${c[3] === 'R' ? 'Riesgo' : esc(c[3])}</em>` : ''}</li>`).join('')}</ul>`, more: `<ul>${CLAUSES.map(c => `<li><b>${c[0]} ${esc(c[1])}:</b> ${esc(c[2])}</li>`).join('')}</ul><p class="note">La cláusula 4 usa tu texto; las demás son síntesis del sistema.</p>`, links: wbLink('Abrir certificación', 'data-act="model-step" data-v="ISO"') });
+  add({ id: 'iso-key', f: 'f3', x: 2160, y: 2000, w: 700, h: 180, k: 'key', c: 'acred', t: 'Requisito clave', b: '<p>Para certificarte en la ISO 9001 debes tener implementada la gestión por procesos de la <b>fase 1 a la 3</b>.</p><div class="wb-flowmini"><span>2.1</span><i>→</i><span>2.2</span><i>→</i><span>2.3</span><i>→</i><span class="on">ISO</span></div>', links: wbLink('Ver el requisito', 'data-act="model-step" data-v="ISO"') });
+  // f4 · riesgo
+  add({ id: 'r-def', f: 'f4', x: 1380, y: 1430, w: 640, h: 160, k: 'quote', c: 'risk', t: '¿Qué busca?', b: '<p class="wb-q">Anticipar lo que puede impedir que un proyecto, un proceso o una acreditación cumpla su objetivo, y preparar la respuesta.</p>', more: '<p class="wb-q">Anticipar lo que puede impedir que un proyecto, un proceso o una acreditación cumpla su objetivo, y preparar la respuesta.</p><p class="note">Síntesis del sistema, no está en tu lámina.</p>', links: wbLink('Abrir la lámina 5', 'data-act="wb-slide" data-v="4"') });
+  const cell = (pr, im) => { const v = pr * im; return `<i class="${v >= 15 ? 'crit' : v >= 8 ? 'warn' : 'ok'}">${v}</i>`; };
+  add({ id: 'r-pxi', f: 'f4', x: 1380, y: 1620, w: 640, h: 270, k: 'card', c: 'risk', t: 'Probabilidad × impacto', b: `<div class="wb-pxi"><div class="wb-grid">${[5, 4, 3, 2, 1].map(pr => [1, 2, 3, 4, 5].map(im => cell(pr, im)).join('')).join('')}</div><div><p><b class="tone-crit">≥ 15</b> alto</p><p><b class="tone-warn">8 a 14</b> medio</p><p><b class="tone-ok">≤ 7</b> bajo</p><p class="note">Mismo criterio en proyectos, procesos y en la cláusula 6 de la ISO 9001.</p></div></div>` });
+  const rk = P.map(p => { const R = S.loaded.has('risks') ? of('risks', p.id).filter(r => r.status !== 'Cerrado') : []; const hi = R.filter(r => num(r.probability) * num(r.impact) >= 15).length; return `<li><span class="mono">${esc(p.code)}</span><span>${plural(R.length, 'abierto', 'abiertos')}</span>${hi ? `<b class="tone-crit">${plural(hi, 'alto', 'altos')}</b>` : '<b class="tone-ok">sin altos</b>'}</li>`; }).join('');
+  add({ id: 'r-live', f: 'f4', x: 1380, y: 1920, w: 640, h: 260, k: 'card', c: 'risk', t: 'Riesgos abiertos, en vivo', b: `<ul class="wb-risk">${rk || '<li>Conectando…</li>'}</ul>`, links: wbProjLinks('riesgo', 'Riesgos de') });
+  // f5 · cartera
+  P.slice(0, 4).forEach((p, i) => {
+    const m = S.loaded.has('tasks') ? metrics(p) : null;
+    const st = stepsOf(p);
+    add({ id: 'pr-' + p.id, pid: p.id, f: 'f5', x: 120 + (i % 2) * 580, y: 1430 + Math.floor(i / 2) * 395, w: 540, h: 370, k: 'proj', c: 'navy', num: p.code, t: p.name || 'Sin nombre',
+      b: `${m ? `<div class="wb-ph">${pill(m.health.tone, m.health.label)}<span>Área de enfoque: <b>${esc(p.phase || '—')}</b></span></div><div class="wb-av"><span><i style="width:${Math.min(100, Math.round(m.realPct || 0))}%"></i><em style="left:${Math.min(100, Math.round(m.planPct || 0))}%"></em></span><small class="num">Real ${pct(m.realPct)} · Plan ${pct(m.planPct)}</small></div>` : '<p class="note">Conectando…</p>'}${st.length ? `<div class="wb-steps">${st.map(k => `<span>${esc(k)}</span>`).join('')}</div>` : ''}${p.modeloRol ? `<p class="wb-rol">${esc(p.modeloRol)}</p>` : ''}`,
+      more: `<p>${esc(p.modeloRol || 'Sin rol definido en el modelo.')}</p>${st.length ? `<p><b>Pasos del modelo que trabaja:</b></p><div class="md-steps">${st.map(k => stepChip(k, p.id)).join('')}</div>` : ''}`,
+      links: wbLink('Abrir el proyecto', `data-act="go-project" data-id="${esc(p.id)}"`) + wbLink('Cronograma', `data-act="go-project" data-id="${esc(p.id)}" data-tab="cronograma"`) + (driveUrl(p.drive) ? wbHref('Carpeta en Drive', driveUrl(p.drive)) : '') });
+  });
+  if (!P.length) add({ id: 'pr-wait', f: 'f5', x: 120, y: 1430, w: 1120, h: 130, k: 'card', c: 'navy', t: S.loaded.has('projects') ? 'Aún no hay proyectos en la cartera' : 'Conectando con la cartera…', b: '<p>Cuando la base de datos responda, aquí aparecerán los proyectos con su estado, avance y pasos del modelo, en vivo.</p>' });
+  // aristas: [desde, hacia, etiqueta, tipo, anclas (lado y posición), posición de la etiqueta]
+  const E = [
+    ['hub', 'f1', 'planifica', 'base', ['l', 0.3, 'b', 0.8]], ['hub', 'f5', 'ejecuta', 'base', ['l', 0.7, 't', 0.8]],
+    ['hub', 'f6', 'registra', 'base', ['t', 0.5, 'b', 0.5]], ['hub', 'f4', 'anticipa', 'base', ['b', 0.5, 't', 0.5]],
+    ['hub', 'f2', 'estandariza', 'base', ['r', 0.3, 'b', 0.2]], ['hub', 'f3', 'certifica', 'base', ['r', 0.7, 't', 0.2]],
+    ['t1.1', 't1.2', '', 'flow'], ['t1.2', 't1.3', '', 'flow'], ['t1.3', 't1.4', '', 'flow'], ['t1.4', 't1.5', '', 'flow'], ['t1.5', 'plan13', '', 'flow'],
+    ['ph2.1', 'ph2.2', '', 'flow'], ['ph2.2', 'ph2.3', '', 'flow'], ['ph2.3', 'ph2.4', '', 'flow'], ['ph2.3', 'sem', '', 'flow'], ['ph2.4', 'tools-m', '', 'flow'],
+    ['a3.1', 'a3.3', '', 'flow'], ['a3.2', 'a3.3', '', 'flow'], ['sys', 'drive', 'estado y evidencia', 'flow'], ['r-def', 'r-pxi', '', 'flow'],
+    ['ph2.3', 'a3.2', 'misma semaforización', 'rel'], ['ph2.2', 'iso-key', 'requisito ISO', 'rel'], ['r-pxi', 'iso', 'cláusula 6', 'rel', null, 0.06], ['plan13', 'r-def', 'componente 11', 'rel', ['b', 0.5, 'l', 0.5], 0.25],
+  ];
+  P.slice(0, 4).forEach(p => stepsOf(p).forEach(k => { const target = k.startsWith('2.') ? 'ph' + k : k === 'ISO' ? 'iso' : 'a' + k; E.push(['pr-' + p.id, target, '', 'rel']); }));
+  const tour = [
+    { r: [0, 0, WB_W, WB_H], t: 'Visión general', c: 'Este lienzo reúne el modelo de gestión de la DGP: la calidad total al centro y, alrededor, las disciplinas, los proyectos y la información que los sostiene.' },
+    { r: [1250, 890, 900, 460], f: 'hub', t: 'Calidad total', c: 'Todo apunta a la calidad total: que el usuario reciba lo que esperaba. Las seis zonas que la rodean son las formas de lograrlo.' },
+    { r: [80, 80, 1200, 820], f: 'f1', t: '1 · Gestión de proyectos', c: 'Define, gestiona, dirige, evalúa y monitorea cada proyecto de inicio a fin.' },
+    { r: [100, 360, 560, 520], f: 'f1', t: 'PMBOK 8', c: 'La base metodológica: 6 principios, 7 dominios de desempeño y 5 áreas de enfoque.' },
+    { r: [680, 160, 580, 730], f: 'f1', t: 'Herramientas y plan', c: 'Cinco herramientas de trabajo y un plan de gestión de 13 componentes que el sistema revisa en vivo.' },
+    { r: [2120, 80, 1200, 820], f: 'f2', t: '2 · Gestión por procesos', c: 'Generar valor: que el usuario sienta que solucionamos su problema y cumplimos con lo que esperaba.' },
+    { r: [2140, 310, 1160, 340], f: 'f2', t: 'Las cuatro fases', c: 'Levantar la documentación, procedimentar, medir y mejorar, en cadena.' },
+    { r: [2140, 650, 1160, 240], f: 'f2', t: 'Medir y mejorar', c: 'Lo medido se clasifica con el semáforo; lo crítico se mejora con Pareto, digitalización y automatización, y se vuelve a medir.' },
+    { r: [2120, 1340, 800, 880], f: 'f3', t: '3 · Acreditación', c: 'Evidencias de los estándares e indicadores en rango; ambos alimentan el informe de autoevaluación.' },
+    { r: [2120, 1560, 1200, 660], f: 'f3', t: 'Certificación ISO 9001', c: 'La auditoría revisa las cláusulas 4 a 10 y exige la gestión por procesos de la fase 1 a la 3.' },
+    { r: [1340, 1340, 720, 880], f: 'f4', t: 'Gestión del riesgo', c: 'Probabilidad × impacto en proyectos, procesos y en la cláusula 6 de la ISO 9001.' },
+    { r: [80, 1340, 1200, 880], f: 'f5', t: 'Cartera de proyectos', c: 'Los proyectos con su estado, avance y área de enfoque, en vivo. Toca uno para abrirlo.' },
+    { r: [0, 0, WB_W, WB_H], rel: true, t: 'Cómo se integra', c: 'Las líneas turquesa muestran qué paso del modelo trabaja cada proyecto y cómo se conectan procesos, acreditación y riesgo.' },
+    { r: [1340, 80, 720, 820], f: 'f6', t: 'Datos y evidencias', c: 'El sistema Gestión guarda el estado, Drive guarda la evidencia y los manuales explican cómo usarlos.' },
+  ];
+  return { F, N, E, tour };
+}
+
+/* geometría de las aristas: curvas de Bézier entre lados de las tarjetas */
+const WB_NRM = { l: [-1, 0], r: [1, 0], t: [0, -1], b: [0, 1] };
+const wbPt = ([x, y, w, h], s, t) => (s === 'l' ? [x, y + h * t] : s === 'r' ? [x + w, y + h * t] : s === 't' ? [x + w * t, y] : [x + w * t, y + h]);
+function wbRect(id, M) { if (wbIsFrame(id)) { const f = M.F.find(x => x.id === id); return f && [f.x, f.y, f.w, f.h]; } const n = M.N.find(x => x.id === id); return n && [n.x, n.y, n.w, n.h]; }
+function wbPath(a, b, anc, lt) {
+  let s1, s2, p1, p2, L;
+  if (anc) { s1 = anc[0]; s2 = anc[2]; p1 = wbPt(a, s1, anc[1]); p2 = wbPt(b, s2, anc[3]); L = Math.max(40, Math.hypot(p2[0] - p1[0], p2[1] - p1[1]) * 0.45); }
+  else {
+    const dx = b[0] + b[2] / 2 - (a[0] + a[2] / 2), dy = b[1] + b[3] / 2 - (a[1] + a[3] / 2);
+    const horiz = Math.abs(dx) / (a[2] + b[2]) > Math.abs(dy) / (a[3] + b[3]);
+    s1 = horiz ? (dx > 0 ? 'r' : 'l') : (dy > 0 ? 'b' : 't'); s2 = { l: 'r', r: 'l', t: 'b', b: 't' }[s1];
+    p1 = wbPt(a, s1, 0.5); p2 = wbPt(b, s2, 0.5); L = Math.max(40, Math.abs(horiz ? p2[0] - p1[0] : p2[1] - p1[1]) * 0.5);
+  }
+  const n1 = WB_NRM[s1], n2 = WB_NRM[s2];
+  const c1 = [p1[0] + n1[0] * L, p1[1] + n1[1] * L], c2 = [p2[0] + n2[0] * L, p2[1] + n2[1] * L];
+  const t = lt == null ? 0.5 : lt, u = 1 - t, B = i => u * u * u * p1[i] + 3 * u * u * t * c1[i] + 3 * u * t * t * c2[i] + t * t * t * p2[i];
+  const r = v => Math.round(v * 10) / 10;
+  return { d: `M${r(p1[0])} ${r(p1[1])}C${r(c1[0])} ${r(c1[1])} ${r(c2[0])} ${r(c2[1])} ${r(p2[0])} ${r(p2[1])}`, mx: r(B(0)), my: r(B(1)) };
+}
+
+function wbTourBar(M) {
+  const i = UI.wb.tour, stop = i >= 0 ? M.tour[i] : null;
+  if (!stop) return '';
+  return `<div class="wb-tour-t"><small>Parada ${i + 1} de ${M.tour.length}</small><b>${esc(stop.t)}</b><p>${esc(stop.c)}</p></div><div class="wb-tour-b"><button class="btn sm" data-act="wb-tour-go" data-v="${i - 1}"${i === 0 ? ' disabled' : ''}>← Anterior</button><button class="btn sm primary" data-act="wb-tour-go" data-v="${i + 1}"${i === M.tour.length - 1 ? ' disabled' : ''}>Siguiente →</button><button class="btn sm" data-act="wb-tour-end">Salir</button></div><div class="wb-dots">${M.tour.map((s, j) => `<button class="${j === i ? 'on' : ''}" data-act="wb-tour-go" data-v="${j}" aria-label="Parada ${j + 1}: ${esc(s.t)}"${j === i ? ' aria-current="step"' : ''}></button>`).join('')}</div>`;
+}
+
+function viewBoard() {
+  const M = wbModel(); UI.wbModel = M;
+  const W = UI.wb;
+  const frames = M.F.map(f => `<div class="wb-el wb-frame" data-el="${f.id}" data-f="${f.id}" style="left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;--wc:var(--wbc-${f.c})" data-act="wb-node" data-v="${f.id}" title="Acercar a esta zona"><header><span class="wb-fn">${esc(f.n)}</span><div><h3>${esc(f.t)}</h3><p>${esc(f.s)}</p></div></header></div>`).join('');
+  const nodes = M.N.map((n, i) => `<div class="wb-el wb-node wb-${n.k}${n.num ? ' has-num' : ''}${n.h >= 150 ? ' tall' : ''}" data-el="${n.id}" data-f="${n.f}" style="left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px;--wc:var(--wbc-${n.c || 'navy'});--i:${i}" data-act="wb-node" data-v="${n.id}" tabindex="0" role="button" aria-label="${esc((n.num ? n.num + ' ' : '') + n.t)}: ver explicación">${n.num ? `<span class="wb-num">${esc(n.num)}</span>` : ''}<h4>${esc(n.t)}</h4><div class="wb-body">${n.b || ''}</div></div>`).join('');
+  let edges = '', tags = '';
+  M.E.forEach(([a, b, lbl, kind, anc, lt]) => {
+    const ra = wbRect(a, M), rb = wbRect(b, M); if (!ra || !rb) return;
+    const p = wbPath(ra, rb, anc, lt);
+    edges += `<path class="wb-e ${kind}" data-a="${a}" data-b="${b}" d="${p.d}"${kind === 'rel' ? '' : ' pathLength="1"'} marker-end="url(#wb-ar-${kind})"/>`;
+    if (lbl) tags += `<span class="wb-tag ${kind}" data-a="${a}" data-b="${b}" style="left:${p.mx}px;top:${p.my}px">${esc(lbl)}</span>`;
+  });
+  const hub = M.N.find(n => n.id === 'hub');
+  const mini = `<svg class="wb-minimap" viewBox="0 0 ${WB_W} ${WB_H}" data-act="wb-mini" role="img" aria-label="Minimapa: toca una zona para ir a ella">${M.F.map(f => `<rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}" rx="40" style="fill:var(--wbc-${f.c})"/>`).join('')}<rect x="${hub.x}" y="${hub.y}" width="${hub.w}" height="${hub.h}" rx="40" style="fill:var(--wbc-hub)"/><rect class="wb-mm-vp" x="0" y="0" width="10" height="10" rx="16"/></svg>`;
+  const lg = (k, t) => `<span><svg width="46" height="12" aria-hidden="true"><path d="M3 6H43" class="wb-lg ${k}"/></svg>${t}</span>`;
+  const zones = [...M.F].sort((a, b) => a.id.localeCompare(b.id)).map(f => `<button class="wb-chip" style="--wc:var(--wbc-${f.c})" data-act="wb-node" data-v="${f.id}"><span>${esc(f.n)}</span>${esc(f.t)}</button>`).join('');
+  const tb = wbTourBar(M);
+  return `<section class="hero wb-hero"><div class="wrap"><div><p class="eyebrow">Pizarra digital · DGP OGPL-UNMSM</p><h1 class="title">El modelo de gestión en un solo lienzo</h1><p class="lead">Un mapa conceptual de todo el sistema: arrastra para moverte, usa la rueda o los botones para acercar y toca cualquier tarjeta para ver su explicación y sus enlaces. El recorrido te lleva parada por parada.</p><div class="wb-zones" aria-label="Ir a una zona">${zones}</div></div></div></section>
+  <div class="wb-shell">
+  <div class="wb${W.max ? ' max' : ''}${tb ? ' touring' : ''}" id="wb">
+    <div class="wb-bar" role="toolbar" aria-label="Herramientas de la pizarra">
+      <button class="btn sm primary" id="wb-start" data-act="wb-tour-go" data-v="${W.tour >= 0 ? W.tour : 0}">${wbStartTxt()}</button>
+      <button class="btn sm${W.rel ? ' on' : ''}" data-act="wb-rel" aria-pressed="${!!W.rel}">${wbRelTxt()}</button>
+      <span class="wb-sep"></span>
+      <button class="btn sm" data-act="wb-zoom" data-v="-1" aria-label="Alejar">−</button><span class="wb-zl num" id="wb-zl">100%</span><button class="btn sm" data-act="wb-zoom" data-v="1" aria-label="Acercar">+</button>
+      <button class="btn sm" data-act="wb-fit">Ver todo</button>
+      <button class="btn sm" data-act="wb-max" id="wb-maxb">${wbMaxTxt()}</button>
+      <span class="wb-hint">Teclas: ← → recorrido · + − zoom · 0 ver todo · Esc salir</span>
+    </div>
+    <div class="wb-viewport${W.rel ? ' rel' : ''}" id="wb-vp" data-act="wb-bg" tabindex="0" aria-label="Lienzo del modelo de gestión. Arrastra para moverte; más y menos para acercar">
+      <div class="wb-world" id="wb-world" style="width:${WB_W}px;height:${WB_H}px">
+        <div class="wb-wtitle">Modelo de gestión de la DGP <small>OGPL-UNMSM</small></div>
+        <div class="wb-wlegend">${lg('base', 'Jerarquía')}${lg('flow', 'Secuencia')}${lg('rel', 'Relación')}</div>
+        ${frames}
+        <svg class="wb-edges" width="${WB_W}" height="${WB_H}" aria-hidden="true"><defs>${['base', 'flow', 'rel'].map(k => `<marker id="wb-ar-${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="wb-ar ${k}"/></marker>`).join('')}</defs>${edges}</svg>
+        ${nodes}${tags}
+      </div>
+      ${mini}
+      <aside class="wb-panel" id="wb-panel" aria-live="polite"></aside>
+    </div>
+    <div class="wb-tour${tb ? ' on' : ''}" id="wb-tour" aria-live="polite">${tb}</div>
+  </div></div>`;
+}
+
+/* cámara */
+const wbVp = () => document.getElementById('wb-vp');
+let wbSize = null, wbIntroT = 0;
+function wbApply(anim) {
+  const w = document.getElementById('wb-world'), vp = wbVp(); if (!w || !vp) return;
+  const c = UI.wb, mo = !!anim && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  w.classList.toggle('anim', mo); vp.classList.toggle('anim', mo);
+  w.style.transform = `translate(${c.x}px,${c.y}px) scale(${c.k})`;
+  vp.classList.toggle('far', c.k < 0.45);
+  let g = 32 * c.k; while (g < 16) g *= 2;
+  vp.style.backgroundSize = `${g}px ${g}px`; vp.style.backgroundPosition = `${c.x}px ${c.y}px`;
+  const zl = document.getElementById('wb-zl'); if (zl) zl.textContent = Math.round(c.k * 100) + '%';
+  const r = vp.getBoundingClientRect(), mv = vp.querySelector('.wb-mm-vp'); wbSize = [r.width, r.height];
+  if (mv) { mv.setAttribute('x', -c.x / c.k); mv.setAttribute('y', -c.y / c.k); mv.setAttribute('width', r.width / c.k); mv.setAttribute('height', r.height / c.k); }
+}
+// mantiene el mismo punto del lienzo al centro cuando cambia el tamaño del visor
+function wbReflow() {
+  const vp = wbVp(); if (!vp || !wbSize) return;
+  const r = vp.getBoundingClientRect(); UI.wb.x += (r.width - wbSize[0]) / 2; UI.wb.y += (r.height - wbSize[1]) / 2; wbApply(false);
+}
+function wbFitRect([x, y, w, h], anim, pad) {
+  const vp = wbVp(); if (!vp) return;
+  const r = vp.getBoundingClientRect(); const p = pad == null ? 0.92 : pad;
+  const k = Math.max(0.08, Math.min(1.6, Math.min(r.width / w, r.height / h) * p));
+  UI.wb.k = k; UI.wb.x = r.width / 2 - (x + w / 2) * k; UI.wb.y = r.height / 2 - (y + h / 2) * k;
+  wbApply(anim);
+}
+function wbZoomAt(f, mx, my, anim) {
+  const c = UI.wb, k2 = Math.max(0.08, Math.min(2.2, c.k * f));
+  c.x = mx - (mx - c.x) * k2 / c.k; c.y = my - (my - c.y) * k2 / c.k; c.k = k2; wbApply(anim);
+}
+function wbSpot(fid, sel) {
+  const M = UI.wbModel; if (!M) return;
+  const w = document.getElementById('wb-world'); if (!w) return;
+  const rel = UI.wb.rel || (M.tour[UI.wb.tour] || {}).rel;
+  const conn = new Set(); if (sel) { conn.add(sel); M.E.forEach(([a, b]) => { if (a === sel) conn.add(b); if (b === sel) conn.add(a); }); }
+  const own = sel && (M.N.find(n => n.id === sel) || {}).f;
+  w.querySelectorAll('.wb-el').forEach(el => { const id = el.dataset.el; const dim = (fid && el.dataset.f !== fid && id !== fid) || (sel && !conn.has(id) && id !== own); el.classList.toggle('dim', !!dim); el.classList.toggle('sel', id === sel); });
+  w.querySelectorAll('.wb-e,.wb-tag').forEach(e => { const hit = !!sel && (e.dataset.a === sel || e.dataset.b === sel); const near = !!fid && (e.dataset.a === fid || e.dataset.b === fid || (M.N.find(n => n.id === e.dataset.a) || {}).f === fid); e.classList.toggle('hi', hit); e.classList.toggle('dim', !!(fid || sel) && !hit && !near); });
+  wbVp().classList.toggle('rel', !!rel || !!sel);
+}
+function wbRespot() {
+  const M = UI.wbModel, W = UI.wb; if (!M) return;
+  if (W.tour >= 0) wbSpot(M.tour[W.tour].f || null, null);
+  else if (W.sel) wbSpot(wbIsFrame(W.sel) ? W.sel : null, wbIsFrame(W.sel) ? null : W.sel);
+  else wbSpot(null, null);
+}
+function wbPanel(id) {
+  const M = UI.wbModel, el = document.getElementById('wb-panel'); if (!M || !el) return;
+  const n = M.N.find(x => x.id === id), f = M.F.find(x => x.id === id);
+  if (!n && !f) { el.classList.remove('on'); el.innerHTML = ''; return; }
+  const close = '<button class="icon-btn wb-x" data-act="wb-close" aria-label="Cerrar la explicación">✕</button>';
+  if (f) { const kids = M.N.filter(x => x.f === f.id); el.innerHTML = `${close}<p class="eyebrow">Zona ${esc(f.n)}</p><h3>${esc(f.t)}</h3><p class="wb-more">${esc(f.s)}.</p><p class="md-sub" style="margin-top:16px">Contenido de la zona</p><ul class="wb-kids">${kids.map(k => `<li><button class="linkish" data-act="wb-node" data-v="${k.id}">${k.num ? esc(k.num) + ' · ' : ''}${esc(k.t)} →</button></li>`).join('')}</ul>`; }
+  else el.innerHTML = `${close}<p class="eyebrow">${esc((M.F.find(x => x.id === n.f) || { t: 'Centro del modelo' }).t)}</p><h3>${n.num ? `<span class="wb-num in">${esc(n.num)}</span>` : ''}${esc(n.t)}</h3><div class="wb-more">${n.more || n.b || ''}</div>${n.links ? `<div class="wb-links">${n.links}</div>` : ''}`;
+  el.classList.add('on'); el.scrollTop = 0;
+}
+function wbStartLabel() { const b = document.getElementById('wb-start'); if (b) { b.innerHTML = wbStartTxt(); b.dataset.v = Math.max(0, UI.wb.tour); } }
+function wbSetTourBar() {
+  const tb = document.getElementById('wb-tour'); if (!tb || !UI.wbModel) return;
+  const h = wbTourBar(UI.wbModel); tb.innerHTML = h; tb.classList.toggle('on', !!h); wbStartLabel();
+  const wb = document.getElementById('wb'); if (wb) wb.classList.toggle('touring', !!h);
+}
+function wbSelect(id, zoom) {
+  const M = UI.wbModel; if (!M || !wbVp()) return;
+  UI.wb.sel = id; UI.wb.tour = -1; wbSetTourBar();
+  wbPanel(id); wbRespot();
+  if (!zoom) return;
+  const r = wbRect(id, M); if (!r) return;
+  const vp = wbVp().getBoundingClientRect(), sheet = vp.width <= 640;
+  const panelW = !sheet && vp.width > 760 ? 392 : 0, availH = sheet ? vp.height * 0.4 : vp.height, pad = sheet ? 24 : 60;
+  const k = Math.max(0.12, Math.min(1.25, Math.min((vp.width - panelW) / (r[2] + pad * 2), availH / (r[3] + pad * 2))));
+  UI.wb.k = k; UI.wb.x = (vp.width - panelW) / 2 - (r[0] + r[2] / 2) * k; UI.wb.y = availH / 2 - (r[1] + r[3] / 2) * k; wbApply(true);
+}
+function wbClose() {
+  UI.wb.sel = null; const p = document.getElementById('wb-panel'); if (p) p.classList.remove('on'); wbRespot();
+}
+// trae la pizarra completa a la vista, por debajo de la barra de navegación fija
+function wbScrollIn() {
+  const wb = document.getElementById('wb'); if (!wb || UI.wb.max) return;
+  const r = wb.getBoundingClientRect(), navH = ($('#nav') || wb).getBoundingClientRect().height;
+  if (r.top < navH - 1 || r.bottom > innerHeight + 1) window.scrollBy({ top: r.top - navH - 8, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+}
+function wbTour(i) {
+  const M = UI.wbModel; if (!M || !wbVp()) return;
+  const starting = UI.wb.tour < 0;
+  i = Math.max(0, Math.min(M.tour.length - 1, i)); UI.wb.tour = i; UI.wb.sel = null;
+  wbSetTourBar(); if (starting) wbScrollIn();
+  const pnl = document.getElementById('wb-panel'); if (pnl) pnl.classList.remove('on');
+  const s = M.tour[i]; wbRespot(); wbFitRect(s.r, true, s.f ? 0.9 : 0.96);
+}
+function wbEndTour() { UI.wb.tour = -1; wbSetTourBar(); wbRespot(); wbReflow(); }
+function wbMax() {
+  const wb = document.getElementById('wb'); if (!wb) return;
+  UI.wb.max = !UI.wb.max; wb.classList.toggle('max', UI.wb.max); document.documentElement.classList.toggle('wb-lock', UI.wb.max);
+  const b = document.getElementById('wb-maxb'); if (b) b.innerHTML = wbMaxTxt();
+  wbReflow(); if (UI.wb.max) wbVp().focus({ preventScroll: true });
+}
+function wbMount() {
+  const vp = wbVp(); if (!vp) return;
+  if (!UI.wb.init) {
+    UI.wb.init = true; wbFitRect([0, 0, WB_W, WB_H], false, 0.96);
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { const w = document.getElementById('wb-world'); w.classList.add('wb-intro'); clearTimeout(wbIntroT); wbIntroT = setTimeout(() => { const x = document.getElementById('wb-world'); if (x) x.classList.remove('wb-intro'); }, 2600); }
+  } else wbApply(false);
+  if (UI.wb.sel && UI.wb.tour < 0) wbPanel(UI.wb.sel);
+  wbRespot();
+}
+// arrastre, rueda y pellizco
+const wbPtr = { down: false, moved: false, x: 0, y: 0, pts: new Map(), pinch: 0 };
+document.addEventListener('pointerdown', e => {
+  wbPtr.moved = false;
+  const vp = e.target.closest && e.target.closest('#wb-vp'); if (!vp || e.target.closest('.wb-panel,.wb-minimap,button,a')) return;
+  wbPtr.pts.set(e.pointerId, [e.clientX, e.clientY]);
+  wbPtr.down = true; wbPtr.x = e.clientX; wbPtr.y = e.clientY;
+  if (wbPtr.pts.size === 2) { const [a, b] = [...wbPtr.pts.values()]; wbPtr.pinch = Math.hypot(a[0] - b[0], a[1] - b[1]); }
+});
+document.addEventListener('pointermove', e => {
+  if (!wbPtr.down || !wbVp()) return;
+  if (wbPtr.pts.has(e.pointerId)) wbPtr.pts.set(e.pointerId, [e.clientX, e.clientY]);
+  if (wbPtr.pts.size === 2 && wbPtr.pinch) {
+    const [a, b] = [...wbPtr.pts.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); const r = wbVp().getBoundingClientRect();
+    wbZoomAt(d / wbPtr.pinch, (a[0] + b[0]) / 2 - r.left, (a[1] + b[1]) / 2 - r.top, false); wbPtr.pinch = d; wbPtr.moved = true; return;
+  }
+  const dx = e.clientX - wbPtr.x, dy = e.clientY - wbPtr.y;
+  if (!wbPtr.moved && Math.hypot(dx, dy) < 5) return;
+  wbPtr.moved = true; wbVp().classList.add('drag');
+  UI.wb.x += dx; UI.wb.y += dy; wbPtr.x = e.clientX; wbPtr.y = e.clientY; wbApply(false);
+});
+const wbUp = e => { wbPtr.pts.delete(e.pointerId); if (wbPtr.pts.size < 2) wbPtr.pinch = 0; if (!wbPtr.pts.size) { wbPtr.down = false; const vp = wbVp(); if (vp) vp.classList.remove('drag'); } };
+document.addEventListener('pointerup', wbUp); document.addEventListener('pointercancel', wbUp);
+// un arrastre no debe abrir la tarjeta sobre la que termina
+document.addEventListener('click', e => { if (wbPtr.moved && e.target.closest && e.target.closest('#wb-vp')) { e.stopPropagation(); e.preventDefault(); wbPtr.moved = false; } }, true);
+document.addEventListener('wheel', e => {
+  const vp = e.target.closest && e.target.closest('#wb-vp'); if (!vp || e.target.closest('.wb-panel')) return;
+  e.preventDefault(); const r = vp.getBoundingClientRect();
+  wbZoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top, false);
+}, { passive: false });
+// con el teclado, la tarjeta enfocada se trae a la vista
+document.addEventListener('focusin', e => {
+  const n = e.target.closest && e.target.closest('.wb-node'), vp = wbVp(); if (!n || !vp || wbPtr.down) return;
+  const a = n.getBoundingClientRect(), v = vp.getBoundingClientRect();
+  if (a.left >= v.left && a.right <= v.right && a.top >= v.top && a.bottom <= v.bottom) return;
+  const rr = UI.wbModel && wbRect(n.dataset.el, UI.wbModel); if (!rr) return;
+  const k = Math.max(UI.wb.k, 0.5); UI.wb.k = k; UI.wb.x = v.width / 2 - (rr[0] + rr[2] / 2) * k; UI.wb.y = v.height / 2 - (rr[1] + rr[3] / 2) * k; wbApply(true);
+});
+window.addEventListener('resize', () => { if (UI.view === 'board') wbReflow(); });
+function wbKey(e) {
+  const W = UI.wb;
+  if (e.key === 'Escape') { if (W.tour >= 0) wbEndTour(); else if (W.sel) wbClose(); else if (W.max) wbMax(); return; }
+  if (W.tour >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); wbTour(W.tour + (e.key === 'ArrowRight' ? 1 : -1)); return; }
+  if (!(e.target.closest('#wb') || W.max) || e.target.closest('.wb-panel') || e.ctrlKey || e.metaKey || e.altKey) return;
+  const vp = wbVp(); if (!vp) return; const r = vp.getBoundingClientRect();
+  if (e.key === '+' || e.key === '=') { e.preventDefault(); wbZoomAt(1.3, r.width / 2, r.height / 2, true); }
+  else if (e.key === '-' || e.key === '_') { e.preventDefault(); wbZoomAt(1 / 1.3, r.width / 2, r.height / 2, true); }
+  else if (e.key === '0') { e.preventDefault(); wbFitRect([0, 0, WB_W, WB_H], true, 0.96); }
+  else if (/^Arrow/.test(e.key)) { e.preventDefault(); const s = 140; if (e.key === 'ArrowLeft') UI.wb.x += s; if (e.key === 'ArrowRight') UI.wb.x -= s; if (e.key === 'ArrowUp') UI.wb.y += s; if (e.key === 'ArrowDown') UI.wb.y -= s; wbApply(true); }
 }
 
 function viewGuide() {
