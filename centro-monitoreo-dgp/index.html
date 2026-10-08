@@ -887,12 +887,68 @@ html.wb-lock{overflow:hidden}
 .plan-gates b{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--navy-900);color:var(--on-navy);font:800 12px/1 var(--font-display)}
 @media (max-width:1000px){.plan-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-gates{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.plan-flow{grid-template-columns:minmax(0,1fr)}}
+.pr{position:fixed;inset:0;z-index:62;background:var(--scrim);display:flex;align-items:stretch;justify-content:center;padding:16px}
+html.pr-lock{overflow:hidden}
+.pr-shell{width:min(1240px,100%);background:var(--canvas);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-float)}
+.pr-top{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:16px 22px;background:var(--navy-900);color:var(--on-navy)}
+.pr-top-t{min-width:0;flex:1 1 360px}
+.pr-top small{font:700 11px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--teal-500)}
+.pr-top small .mono{font-size:11.5px;letter-spacing:0;text-transform:none}
+.pr-top h2{font:700 20px/1.25 var(--font-display);margin-top:3px}
+.pr-top-a{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pr-prog{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--on-navy-muted)}
+.pr-prog b{color:var(--on-navy)}
+.pr-bar{display:inline-block;width:80px;height:6px;border-radius:3px;background:var(--navy-700);overflow:hidden}
+.pr-bar i{display:block;height:100%;background:var(--teal-500)}
+.pr-main{flex:1;min-height:0;display:grid;grid-template-columns:260px minmax(0,1fr)}
+.pr-toc{border-right:1px solid var(--line);background:var(--surface);overflow-y:auto;padding:14px 10px}
+.pr-toc-t{font:700 10.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);padding:0 8px 8px}
+.pr-toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.pr-toc button{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;border:0;background:none;border-radius:var(--radius-sm);padding:7px 8px;font:600 13px/1.3 var(--font-body);color:var(--ink);cursor:pointer}
+.pr-toc button:hover{background:var(--surface-alt)}
+.pr-tk{flex:none;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:10px;margin-top:1px}
+.pr-tk.on{background:var(--ok);border-color:var(--ok);color:var(--ok-soft)}
+.pr-body{position:relative;overflow-y:auto;padding:22px clamp(16px,3vw,36px) 60px;scroll-behavior:auto}
+.pr-sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow-card)}
+.pr-sec.editing{border-color:var(--teal-600);box-shadow:0 0 0 2px var(--teal-600)}
+.pr-sec-h{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.pr-sec-h h3{font:700 18px/1.3 var(--font-display);flex:1 1 320px}
+.pr-sec-a{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pr-val{border:1px dashed var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font:700 12px/1.2 var(--font-body);color:var(--ink-muted);cursor:pointer}
+.pr-val.on{border:1px solid var(--ok);background:var(--ok-soft);color:var(--ok)}
+.pr-sec p{margin:0 0 10px;font-size:14.5px;line-height:1.6;text-align:justify}
+.pr-sec .pr-small{font-size:12.5px;color:var(--ink-muted);text-align:left}
+.pr-sec .pr-cap{font-size:12.5px;color:var(--ink-muted);text-align:center;font-style:italic}
+.pr-h{font:700 15px/1.3 var(--font-display);margin:16px 0 8px}
+.pr-sec ul,.pr-sec ol{margin:0 0 12px;padding-left:22px;font-size:14.5px;line-height:1.55}
+.pr-sec li{margin-bottom:4px}
+.pr-fig{margin:6px 0 4px;text-align:center}
+.pr-fig img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:var(--radius-sm);background:#fff}
+.pr-tbl{margin:4px 0 14px}
+.pr-tbl table{font-size:13px}
+.pr-tbl th,.pr-tbl td{vertical-align:top;white-space:normal;min-width:70px}
+.pr-ck{width:96px;min-width:96px!important;text-align:center}
+.pr-ck label{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.pr-ck input{width:18px;height:18px;accent-color:var(--ok);cursor:pointer}
+.pr-ck span{font-size:11px;color:var(--ok);white-space:nowrap}
+tr.pr-done td:not(.pr-ck){color:var(--ink-muted)}
+.pr-in{width:100%;border:1px solid var(--line);border-radius:var(--radius-sm);padding:9px 11px;font:400 14px/1.5 var(--font-body);background:var(--surface);color:var(--ink);resize:vertical;margin-bottom:10px}
+.pr-in-h{font:700 15px/1.3 var(--font-display)}
+.pr-lab{font-size:12px!important;color:var(--ink-muted);margin:0 0 4px!important;text-align:left!important}
+.pr-etbl td[contenteditable],.pr-etbl th[contenteditable]{outline:1px dashed var(--line);outline-offset:-3px;background:var(--surface)}
+.pr-etbl td[contenteditable]:focus,.pr-etbl th[contenteditable]:focus{outline:2px solid var(--teal-600)}
+.pr-x{width:36px;min-width:36px!important}
+.pr-eacts{display:flex;gap:8px;align-items:center;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.pr-eacts .grow{flex:1}
+.pr-upd{font-size:12px!important;color:var(--ink-faint);text-align:right!important;margin:6px 0 0!important}
+@media (max-width:860px){.pr{padding:0}.pr-shell{border-radius:0}.pr-main{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}.pr-toc{border-right:0;border-bottom:1px solid var(--line);padding:8px}.pr-toc-t{display:none}.pr-toc ol{flex-direction:row;overflow-x:auto;gap:6px}.pr-toc li{flex:none}.pr-toc button{white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:5px 10px}.pr-sec{padding:16px}.pr-sec p{text-align:left}}
 </style>
 
 <header class="nav" id="nav"></header>
 <main id="view"><div class="wrap loading"><h2>Conectando con la base de datos del equipo…</h2><p>En unos segundos verás la cartera de proyectos, sus alertas y el avance actualizado.</p></div></main>
 <footer class="foot" id="foot"></footer>
 <div id="modal" hidden></div>
+<div id="plan-reader" class="pr" hidden></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -1108,7 +1164,7 @@ const COLL = {
     { k: 'action', l: 'Recomendación para próximos proyectos', t: 'textarea', wide: 1 },
   ] },
 };
-const LISTS = ['projects', ...Object.keys(COLL)];
+const LISTS = ['projects', ...Object.keys(COLL), 'planSections'];
 
 /* =========================================================
    Estado
@@ -1369,7 +1425,7 @@ function teamNames(pid) {
    ========================================================= */
 function render() {
   MC = new Map();
-  renderNav(); renderFoot();
+  renderNav(); renderFoot(); renderPlanReader();
   const v = $('#view');
   if (UI.view === 'guide') { v.innerHTML = viewGuide(); pushPresence(); return; }
   if (UI.view !== 'board') UI.wb.max = false;
@@ -1689,18 +1745,97 @@ function plansPanel(p) {
   const card = ({ ph, n, pl }) => {
     const [fase, nombre] = ph.split(' · ');
     if (!pl) return `<article class="plan-card none"><small>${esc(fase)}</small><h3>${esc(nombre)}</h3><p class="note">Plan aún no registrado.</p>${canEdit() ? `<button class="btn sm" data-act="add" data-coll="plans">Registrar plan</button>` : ''}</article>`;
-    const v = valid(pl), ok = PLAN_SECTIONS.filter(([k]) => v.has(k)).length, file = planFile(pl.file), dr = driveUrl(pl.docUrl);
+    const v = valid(pl), ok = PLAN_SECTIONS.filter(([k]) => v.has(k)).length, file = planFile(pl.file), dr = driveUrl(pl.docUrl), hasC = secsOf(pl.id).length, ck = planChecks(pl.id);
     return `<article class="plan-card"><small>${esc(fase)}</small><h3>${esc(nombre)}</h3><p class="plan-t">${esc(pl.title || '')}</p>
       <p class="plan-meta"><span class="mono">${esc(pl.code || '—')}</span>${pl.version ? ` · v${esc(pl.version)}` : ''}${pl.date ? ` · ${fmtD(pl.date)}` : ''}</p>
       ${pill(planTone[pl.status] || '', pl.status || 'Por elaborar')}
-      <div class="plan-bar" title="Secciones validadas"><span style="width:${(ok / PLAN_SECTIONS.length * 100).toFixed(0)}%"></span></div><p class="plan-meta num">${ok} de ${PLAN_SECTIONS.length} partes validadas</p>
-      <div class="plan-acts">${file ? `<a class="btn sm primary" href="${esc(file)}" target="_blank" rel="noopener">Ver PDF</a>` : ''}${dr ? `<a class="btn sm" href="${esc(dr)}" target="_blank" rel="noopener noreferrer">Word en Drive ↗</a>` : ''}${canEdit() ? `<button class="icon-btn" data-act="edit" data-coll="plans" data-id="${esc(pl.id)}">Editar</button>` : ''}</div></article>`;
+      <div class="plan-bar" title="Secciones validadas"><span style="width:${(ok / PLAN_SECTIONS.length * 100).toFixed(0)}%"></span></div><p class="plan-meta num">${ok} de ${PLAN_SECTIONS.length} partes validadas${ck.n ? ` · ${ck.d}/${ck.n} actividades cumplidas` : ''}</p>
+      <div class="plan-acts">${hasC ? `<button class="btn sm primary" data-act="open-plan" data-id="${esc(pl.id)}">Abrir plan</button>` : ''}${file ? `<a class="btn sm" href="${esc(file)}" target="_blank" rel="noopener">PDF</a>` : ''}${dr ? `<a class="btn sm" href="${esc(dr)}" target="_blank" rel="noopener noreferrer">Word en Drive ↗</a>` : ''}${canEdit() ? `<button class="icon-btn" data-act="edit" data-coll="plans" data-id="${esc(pl.id)}">Editar</button>` : ''}</div></article>`;
   };
   const gate = i => { const pl = byPhase[i].pl; return `<div><b>G${i + 1}</b><span><strong>Fase ${i + 1} → Fase ${i + 2}.</strong> ${esc((pl && pl.gate) ? pl.gate : 'Criterio por definir en el plan de la fase.')}</span></div>`; };
   const flow = `<div class="plan-flow">${byPhase.map(card).join('')}</div><div class="plan-gates" aria-label="Compuertas entre fases">${[0, 1, 2].map(gate).join('')}</div>`;
   const mx = `<div class="tbl"><table class="plan-mx"><thead><tr><th>Parte común a todos los planes</th>${byPhase.map(x => `<th class="c">${esc(x.ph.split(' · ')[0])}</th>`).join('')}</tr></thead><tbody>${PLAN_SECTIONS.map(([k, t]) => `<tr><td>${/^\d/.test(k) ? `<span class="mono">${k}.</span> ` : ''}${esc(t)}</td>${byPhase.map(x => { if (!x.pl || x.pl.status === 'Por elaborar') return '<td class="c tone-idle">—</td>'; return valid(x.pl).has(k) ? '<td class="c"><span class="pm-ok" title="Validada">✓</span></td>' : '<td class="c"><span class="pm-pend" title="Redactada, por validar">•</span></td>'; }).join('')}</tr>`).join('')}</tbody></table></div><p class="note" style="margin-top:8px">✓ validada · • redactada, por validar · — sin plan. Todos los planes comparten estas 16 partes (Anexo B, regla 1), por eso la matriz sirve para comparar fases.</p>`;
   return panel('Planes de gestión por fase', 'Un plan por fase con la misma estructura; entre fases, una compuerta que solo se cruza con el 100 % de la fase previa (decisión F1-D-04). Aprueba el Jefe de la OGPL.', flow + mx, addBtn('plans', 'Registrar plan'));
 }
+/* lector y editor de planes: el contenido completo de cada plan vive en la colección «planSections» */
+const fmtTxt = t => esc(String(t == null ? '' : t)).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+const planById = id => (S.plans || []).find(x => x.id === id);
+const secsOf = planId => (S.planSections || []).filter(s => s.plan === planId).sort((a, b) => (a.order | 0) - (b.order | 0));
+const planValid = pl => new Set(String((pl && pl.validated) || '').toUpperCase().split(/[,;\s]+/).filter(Boolean));
+function planChecks(planId) { let n = 0, d = 0; secsOf(planId).forEach(s => (s.blocks || []).forEach(b => { if (b.check) (b.rows || []).forEach((r, i) => { n++; if ((b.done || [])[i]) d++; }); })); return { n, d }; }
+function prBlock(b, sid, bi) {
+  switch (b.t) {
+    case 'h': return `<h4 class="pr-h">${fmtTxt(b.text)}</h4>`;
+    case 'p': return `<p class="${b.small ? 'pr-small' : ''}">${fmtTxt(b.text)}</p>`;
+    case 'cap': return `<p class="pr-cap">${fmtTxt(b.text)}</p>`;
+    case 'ul': case 'ol': return `<${b.t}>${(b.items || []).map(x => `<li>${fmtTxt(x)}</li>`).join('')}</${b.t}>`;
+    case 'img': return `<figure class="pr-fig"><img src="${esc(b.src)}" alt="Figura del plan" loading="lazy"></figure>`;
+    case 'table': {
+      const ed = canEdit();
+      const head = (b.check ? '<th class="pr-ck">Cumplido</th>' : '') + (b.head || []).map(h => `<th>${fmtTxt(h)}</th>`).join('');
+      const rows = (b.rows || []).map((r, ri) => { const dn = b.check ? (b.done || [])[ri] : ''; return `<tr class="${dn ? 'pr-done' : ''}">${b.check ? `<td class="pr-ck"><label><input type="checkbox" data-pchk="${esc(sid)}:${bi}:${ri}"${dn ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como cumplido"><span>${dn ? fmtD(dn) : ''}</span></label></td>` : ''}${r.map(c => `<td>${fmtTxt(c)}</td>`).join('')}</tr>`; }).join('');
+      return `<div class="tbl pr-tbl"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+  }
+  return '';
+}
+function prEdit(b, bi) {
+  const ta = (v, n) => `<textarea class="pr-in" data-eb="${bi}" rows="${n}">${esc(v || '')}</textarea>`;
+  switch (b.t) {
+    case 'h': return `<input class="pr-in pr-in-h" data-eb="${bi}" value="${esc(b.text || '')}" aria-label="Subtítulo">`;
+    case 'p': case 'cap': return ta(b.text, Math.max(2, Math.ceil(String(b.text || '').length / 100) + 1));
+    case 'ul': case 'ol': return `<p class="pr-lab">${b.t === 'ul' ? 'Viñetas' : 'Lista numerada'}: un elemento por línea</p>` + ta((b.items || []).join('\n'), Math.max(3, (b.items || []).length + 1));
+    case 'img': return prBlock(b, '', bi);
+    case 'table': return `<div class="tbl pr-tbl pr-etbl" data-eb="${bi}"><table><thead><tr>${(b.head || []).map(h => `<th contenteditable="true">${esc(h)}</th>`).join('')}<th class="pr-x"></th></tr></thead><tbody>${(b.rows || []).map((r, ri) => `<tr data-ri="${ri}">${r.map(c => `<td contenteditable="true">${esc(c)}</td>`).join('')}<td class="pr-x"><button type="button" class="icon-btn" data-act="pr-delrow" aria-label="Eliminar fila">✕</button></td></tr>`).join('')}</tbody></table></div><button type="button" class="btn sm" data-act="pr-addrow" data-v="${bi}">Agregar fila</button>`;
+  }
+  return '';
+}
+function prCollect(sec) {
+  const root = document.getElementById('pr-edit'); if (!root) return null;
+  const blocks = (sec.blocks || []).map((b, bi) => {
+    const el = root.querySelector(`[data-eb="${bi}"]`); if (!el) return b;
+    if (b.t === 'h' || b.t === 'p' || b.t === 'cap') return Object.assign({}, b, { text: el.value.trim() });
+    if (b.t === 'ul' || b.t === 'ol') return Object.assign({}, b, { items: el.value.split('\n').map(s => s.trim()).filter(Boolean) });
+    if (b.t === 'table') {
+      const cell = x => x.innerText.replace(/\n+$/, '').trim();
+      const trs = [...el.querySelectorAll('tbody tr')];
+      const nb = Object.assign({}, b, { head: [...el.querySelectorAll('thead th[contenteditable]')].map(cell), rows: trs.map(tr => [...tr.querySelectorAll('td[contenteditable]')].map(cell)) });
+      if (b.check) nb.done = trs.map(tr => (tr.dataset.ri !== undefined && tr.dataset.ri !== '' ? (b.done || [])[+tr.dataset.ri] || '' : ''));
+      return nb;
+    }
+    return b;
+  }).filter(b => !((b.t === 'p' || b.t === 'h') && !b.text));
+  root.querySelectorAll('[data-newp]').forEach(t => { if (t.value.trim()) blocks.push({ t: 'p', text: t.value.trim() }); });
+  return blocks;
+}
+function renderPlanReader(force) {
+  const box = document.getElementById('plan-reader'); if (!box) return;
+  const pl = UI.planOpen ? planById(UI.planOpen) : null;
+  if (!pl) { if (!box.hidden) { box.hidden = true; box.innerHTML = ''; } document.documentElement.classList.remove('pr-lock'); return; }
+  if (!force && UI.planEdit && box.querySelector('#pr-edit')) return; // no pisar una edición en curso
+  const prevBody = box.querySelector('.pr-body'), st = prevBody ? prevBody.scrollTop : 0;
+  const secs = secsOf(pl.id), val = planValid(pl), ck = planChecks(pl.id), ed = canEdit();
+  const [fase] = String(pl.phase || '').split(' · ');
+  const toc = secs.map(s => `<li><button data-act="pr-goto" data-v="${esc(s.id)}"><span class="pr-tk${val.has(String(s.key).toUpperCase()) ? ' on' : ''}" aria-hidden="true">${val.has(String(s.key).toUpperCase()) ? '✓' : ''}</span>${esc(s.key === '0' ? s.title : s.title.replace(/^Anexo ([A-Z])\. /, 'Anexo $1 · '))}</button></li>`).join('');
+  const sec = s => {
+    const editing = UI.planEdit === s.id, isVal = val.has(String(s.key).toUpperCase());
+    const acts = editing ? '' : `${s.key !== '0' ? (ed ? `<button class="pr-val${isVal ? ' on' : ''}" data-act="pr-valid" data-v="${esc(s.key)}" aria-pressed="${isVal}">${isVal ? '✓ Validada' : 'Marcar como validada'}</button>` : (isVal ? '<span class="pr-val on">✓ Validada</span>' : '')) : ''}${ed && !UI.planEdit ? `<button class="btn sm" data-act="pr-edit" data-v="${esc(s.id)}">Editar</button>` : ''}`;
+    const body = editing
+      ? `<div id="pr-edit" data-id="${esc(s.id)}">${(s.blocks || []).map((b, bi) => `<div class="pr-eb">${prEdit(b, bi)}</div>`).join('')}<div id="pr-newp"></div><p class="pr-lab">Usa **texto** para resaltar en negrita. En las tablas escribe directo en cada celda.</p><div class="pr-eacts"><button class="btn sm" data-act="pr-addp">Agregar párrafo</button><span class="grow"></span><button class="btn sm" data-act="pr-cancel">Cancelar</button><button class="btn sm primary" data-act="pr-save">Guardar sección</button></div></div>`
+      : (s.blocks || []).map((b, bi) => prBlock(b, s.id, bi)).join('');
+    return `<section class="pr-sec${editing ? ' editing' : ''}" id="pr-${esc(s.id)}"><div class="pr-sec-h"><h3>${esc(s.title)}</h3><div class="pr-sec-a">${acts}</div></div>${body}${s.updatedAt && s.updatedBy ? `<p class="pr-upd">Editado ${esc(ago(Date.parse(s.updatedAt)))}${profileOf(s.updatedBy) && profileOf(s.updatedBy).name ? ' por ' + esc(profileOf(s.updatedBy).name) : ''}</p>` : ''}</section>`;
+  };
+  const pdf = planFile(pl.file), dr = driveUrl(pl.docUrl);
+  box.innerHTML = `<div class="pr-shell" role="dialog" aria-modal="true" aria-label="${esc(pl.title || 'Plan de gestión')}">
+    <header class="pr-top"><div class="pr-top-t"><small>${esc(fase)} · <span class="mono">${esc(pl.code || '')}</span>${pl.version ? ` · v${esc(pl.version)}` : ''}</small><h2>${esc(pl.title || 'Plan de gestión')}</h2></div>
+      <div class="pr-top-a">${pill(planTone[pl.status] || '', pl.status || 'Por elaborar')}${ck.n ? `<span class="pr-prog"><b class="num">${ck.d}/${ck.n}</b> actividades cumplidas<span class="pr-bar"><i style="width:${(ck.d / ck.n * 100).toFixed(0)}%"></i></span></span>` : ''}${pdf ? `<a class="btn sm" href="${esc(pdf)}" target="_blank" rel="noopener">PDF</a>` : ''}${dr ? `<a class="btn sm" href="${esc(dr)}" target="_blank" rel="noopener noreferrer">Word en Drive ↗</a>` : ''}<button class="btn sm" data-act="pr-close">Cerrar ✕</button></div></header>
+    <div class="pr-main"><nav class="pr-toc" aria-label="Secciones del plan"><p class="pr-toc-t">Contenido · <span class="num">${PLAN_SECTIONS.filter(([k]) => val.has(k)).length}/${PLAN_SECTIONS.length}</span> validadas</p><ol>${toc}</ol></nav>
+    <div class="pr-body">${secs.length ? secs.map(sec).join('') : '<div class="empty"><p>Este plan aún no tiene contenido cargado en el sistema.</p></div>'}</div></div></div>`;
+  box.hidden = false; document.documentElement.classList.add('pr-lock');
+  const nb = box.querySelector('.pr-body'); if (nb) nb.scrollTop = st;
+}
+function prClose() { if (UI.planEdit && !confirm('Hay una sección en edición sin guardar. ¿Cerrar de todos modos?')) return; UI.planOpen = null; UI.planEdit = null; renderPlanReader(true); }
+
 function tabGobernanza(p, m) {
   const pr = prio(p);
   const f = (k, l, wide) => `<div class="${wide ? 'wide' : ''}"><dt>${esc(l)}</dt><dd>${p[k] ? esc(p[k]) : '<span class="tone-idle">Sin registrar</span>'}</dd></div>`;
@@ -2118,6 +2253,27 @@ document.addEventListener('click', e => {
     case 'go-guide': go('guide'); break;
     case 'go-model': go('model'); break;
     case 'go-board': go('board'); break;
+    case 'open-plan': UI.planOpen = el.dataset.id; UI.planEdit = null; renderPlanReader(true); { const b = document.querySelector('#plan-reader .pr-close-f, #plan-reader [data-act="pr-close"]'); if (b) b.focus(); } break;
+    case 'pr-close': prClose(); break;
+    case 'pr-goto': { const t = document.getElementById('pr-' + el.dataset.v), bd = document.querySelector('#plan-reader .pr-body'); if (t && bd) bd.scrollTop = t.offsetTop - 8; break; }
+    case 'pr-edit': if (!canEdit()) break; UI.planEdit = el.dataset.v; renderPlanReader(true); { const t = document.getElementById('pr-' + el.dataset.v); if (t) t.scrollIntoView({ block: 'start' }); } break;
+    case 'pr-cancel': UI.planEdit = null; renderPlanReader(true); break;
+    case 'pr-addp': { const c = document.getElementById('pr-newp'); if (c) { const t = document.createElement('textarea'); t.className = 'pr-in'; t.rows = 3; t.dataset.newp = '1'; t.placeholder = 'Nuevo párrafo'; c.appendChild(t); t.focus(); } break; }
+    case 'pr-addrow': { const tb = document.querySelector(`#pr-edit [data-eb="${el.dataset.v}"] tbody`); if (!tb) break; const cols = tb.closest('table').querySelectorAll('thead th[contenteditable]').length; const tr = document.createElement('tr'); tr.dataset.ri = ''; tr.innerHTML = '<td contenteditable="true"></td>'.repeat(cols) + '<td class="pr-x"><button type="button" class="icon-btn" data-act="pr-delrow" aria-label="Eliminar fila">✕</button></td>'; tb.appendChild(tr); tr.firstChild.focus(); break; }
+    case 'pr-delrow': { const tr = el.closest('tr'); if (tr) tr.remove(); break; }
+    case 'pr-save': {
+      const sec = (S.planSections || []).find(x => x.id === UI.planEdit); if (!sec || !canEdit()) break;
+      const blocks = prCollect(sec); if (!blocks) break; el.disabled = true;
+      updateRec('planSections', sec.id, { blocks }).then(() => { toast('Sección guardada', 'ok'); const pl = planById(sec.plan); logFeed(sec.pid, `editó «${String(sec.title).slice(0, 60)}» del ${pl ? pl.code : 'plan'}`); UI.planEdit = null; renderPlanReader(true); }).catch(err => { el.disabled = false; writeErr(err); });
+      break;
+    }
+    case 'pr-valid': {
+      const pl = planById(UI.planOpen); if (!pl || !canEdit()) break;
+      const v = planValid(pl), k = String(el.dataset.v).toUpperCase(); if (v.has(k)) v.delete(k); else v.add(k);
+      const order = PLAN_SECTIONS.map(([x]) => x); const list = [...v].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+      updateRec('plans', pl.id, { validated: list.join(', ') }).then(() => toast(v.has(k) ? 'Sección marcada como validada' : 'Sección marcada como pendiente', 'ok')).catch(writeErr);
+      break;
+    }
     case 'wb-node': {
       if (!el.closest('#wb-vp')) wbScrollIn();
       wbSelect(el.dataset.v, true); break;
@@ -2170,7 +2326,7 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { if (!$('#modal').hidden) { closeModal(); return; } const dd = document.querySelector('.menu details[open]'); if (dd) dd.open = false; }
+  if (e.key === 'Escape') { if (!$('#modal').hidden) { closeModal(); return; } if (UI.planOpen) { if (!UI.planEdit) prClose(); return; } const dd = document.querySelector('.menu details[open]'); if (dd) dd.open = false; }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('article.pcard')) { e.preventDefault(); e.target.click(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('g[role="button"][data-act],.wb-node[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
   if (UI.view === 'board' && $('#modal').hidden && !(e.target.closest && e.target.closest('input,select,textarea'))) { wbKey(e); return; }
@@ -2190,6 +2346,24 @@ document.addEventListener('input', e => {
 document.addEventListener('submit', e => { const form = e.target.closest('#rec-form'); if (!form) return; e.preventDefault(); submitForm(form); });
 document.addEventListener('change', e => {
   const t = e.target;
+  if (t.dataset && t.dataset.pchk) {
+    const [sid, bi, ri] = t.dataset.pchk.split(':'); const sec = (S.planSections || []).find(x => x.id === sid);
+    if (!sec || !canEdit()) { t.checked = !t.checked; return; }
+    const blocks = JSON.parse(JSON.stringify(sec.blocks || [])); const b = blocks[+bi]; if (!b) return;
+    b.done = (b.rows || []).map((_, i) => (b.done || [])[i] || '');
+    const day = isoD(today()); b.done[+ri] = t.checked ? day : '';
+    t.disabled = true;
+    updateRec('planSections', sid, { blocks }).then(() => {
+      const row = b.rows[+ri] || [], name = String(row[1] || row[0] || '').slice(0, 70);
+      toast(t.checked ? 'Actividad cumplida' : 'Actividad marcada como pendiente', 'ok');
+      logFeed(sec.pid, `${t.checked ? 'marcó como cumplida' : 'reabrió'} «${name}» en el plan`);
+      // si la fila es una tarea del cronograma (T1.4.5.2…), también se cierra allí
+      const m = /^T(\d+(?:\.\d+)+)$/.exec(String(row[0] || '').trim());
+      const task = m && t.checked ? S.tasks.find(x => x.pid === sec.pid && String(x.wbs) === m[1]) : null;
+      if (task && num(task.progress) < 100) updateRec('tasks', task.id, { progress: 100, doneAt: day, prevProgress: num(task.progress) }).catch(() => {});
+    }).catch(err => { t.checked = !t.checked; t.disabled = false; writeErr(err); });
+    return;
+  }
   if (t.dataset && t.dataset.change === 'depth') { UI.depth = Number(t.value) || 9; UI.scrollGantt = true; persistUI(); render(); return; }
   if (t.dataset && t.dataset.quick === 'done') {
     const task = S.tasks.find(x => x.id === t.dataset.id); if (!task) return;
