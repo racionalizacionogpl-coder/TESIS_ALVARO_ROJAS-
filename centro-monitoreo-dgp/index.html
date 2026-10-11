@@ -632,7 +632,9 @@ td.c,th.c{text-align:center}
 .md-step.compact{padding:4px}
 .md-mx .linkish{text-align:left;font-size:13.5px}
 .md-ph>span{min-width:0;overflow-wrap:anywhere}
-@media (max-width:1480px){.live small{display:none}}
+.live small,.live-t,.nav-r .np .np-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.nav-r .np{padding:7px 12px;font-size:16px;line-height:1}.nav-r .np .np-plus{font-weight:600}.menu>button,.menu summary{padding-inline:10px}.nav .wrap{gap:16px}
+@media (max-width:640px){.nav-r .np{display:none}}
+@media (max-width:1180px){.nav .wrap{gap:4px 14px;padding-block:8px 0}.menu{order:3;width:100%;margin:0;overflow-x:auto}.menu>button,.menu summary{padding:12px 10px 11px}.nav-r{margin-left:auto}.dd{position:fixed;left:16px;right:16px;top:auto;min-width:0;max-width:none}}
 .md-steps{display:flex;flex-wrap:wrap;gap:6px}
 .md-key{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:20px;align-items:center;background:var(--navy-900);color:var(--on-navy);border-radius:var(--radius-lg);padding:24px 26px}
 .md-key .eyebrow{color:var(--teal-500)}
@@ -942,6 +944,190 @@ tr.pr-done td:not(.pr-ck){color:var(--ink-muted)}
 .pr-eacts .grow{flex:1}
 .pr-upd{font-size:12px!important;color:var(--ink-faint);text-align:right!important;margin:6px 0 0!important}
 @media (max-width:860px){.pr{padding:0}.pr-shell{border-radius:0}.pr-main{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}.pr-toc{border-right:0;border-bottom:1px solid var(--line);padding:8px}.pr-toc-t{display:none}.pr-toc ol{flex-direction:row;overflow-x:auto;gap:6px}.pr-toc li{flex:none}.pr-toc button{white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:5px 10px}.pr-sec{padding:16px}.pr-sec p{text-align:left}}
+/* =========================================================
+   Equipo, horarios, reuniones e intranet
+   ========================================================= */
+.av-chip{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--mc);color:#fff;font:800 12px/1 var(--font-display);flex:none;box-shadow:0 0 0 2px var(--surface)}
+.av-chip.sm{width:24px;height:24px;font-size:9.5px}
+.av-chip.lg{width:44px;height:44px;font-size:15px}
+.av-chip.xl{width:72px;height:72px;font-size:24px;box-shadow:0 0 0 4px var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font:700 12.5px/1.2 var(--font-body);color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--teal-600)}
+.chip.on{background:var(--navy-900);border-color:var(--navy-900);color:var(--on-navy)}
+.code-chip.all{background:var(--navy-900);color:var(--on-navy)}
+button.code-chip{border:0;cursor:pointer}
+.sub-h{font:700 15px/1.3 var(--font-display);margin:18px 0 10px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.sub-h small{font:600 12px/1.3 var(--font-body);color:var(--ink-muted)}
+.mini-h{font:700 11px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin:0 0 8px}
+.mini-f{display:inline-flex;flex-direction:column;gap:4px;font:700 11.5px/1.2 var(--font-body);color:var(--ink-muted)}
+.mini-f select{border:1px solid var(--line);background:var(--surface);border-radius:var(--radius-sm);padding:6px 8px;font:600 13px/1.2 var(--font-body);color:var(--ink)}
+.mini-c{display:inline-flex;align-items:center;gap:7px;font:600 13px/1.3 var(--font-body);color:var(--ink);cursor:pointer}
+.mini-c input{width:16px;height:16px;accent-color:var(--teal-600)}
+.av-ctl{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;margin-bottom:14px}
+.av-who{display:flex;flex-wrap:wrap;gap:8px 16px;margin:4px 0 12px}
+.av-w{display:inline-flex;align-items:center;gap:8px;font:700 13px/1.2 var(--font-body)}
+.av-w small{display:block;font:600 11px/1.3 var(--font-body);color:var(--ink-muted)}
+.av-w.pend small{color:var(--warn)}
+.av-warn{display:flex;gap:8px;align-items:flex-start;background:var(--warn-soft);color:var(--ink);border-radius:var(--radius-sm);padding:10px 12px;font-size:13.5px;margin-bottom:14px}
+.av-warn .ico{color:var(--warn);flex:none;margin-top:1px}
+.av-split{align-items:start}
+.avg{display:flex;flex-direction:column;gap:2px;min-width:0}
+.avg-r{display:grid;grid-template-columns:46px repeat(var(--avg-cols),minmax(0,1fr));gap:2px}
+.avg-head b{font:700 11px/1.2 var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);text-align:center;padding:4px 0}
+.avg-t{font:500 10.5px/1 var(--font-mono);color:var(--ink-faint);text-align:right;padding-right:6px;transform:translateY(-5px)}
+.avg-c{height:17px;border:0;border-radius:3px;font:700 10px/1 var(--font-body);color:var(--ink-muted);padding:0;cursor:default;background:var(--surface-alt)}
+.avg-c.all{background:var(--ok-soft);color:var(--ok);cursor:pointer;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ok) 30%,transparent)}
+.avg-c.all:hover{background:var(--ok);color:var(--ok-soft)}
+.avg-c.one{background:var(--warn-soft);color:var(--warn)}
+.avg-c.some{background:color-mix(in srgb,var(--crit) 22%,var(--surface));color:var(--crit)}
+.avg-c.none{background:color-mix(in srgb,var(--crit) 40%,var(--surface));color:var(--crit)}
+.fr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.fr-list li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;align-items:start;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
+.fr-list li>b{font:700 14px/1.6 var(--font-display)}
+.fr-list li>span{display:flex;flex-wrap:wrap;gap:8px}
+.fr{display:inline-flex;align-items:center;gap:8px;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:5px 12px;font:700 13px/1.2 var(--font-mono)}
+.fr small{font:600 11.5px/1 var(--font-body);color:var(--ink-muted)}
+.fr .linkish{font-size:12px}
+/* reuniones */
+.mt-list{display:flex;flex-direction:column;gap:10px}
+.mt-wk{font:700 11px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin:12px 0 2px}
+.mt-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:12px 14px}
+.mt-row.off{opacity:.6}
+.mt-date{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy-900);color:var(--on-navy);border-radius:var(--radius-sm);padding:6px 4px;min-width:56px;text-align:center}
+.mt-date span{font:700 10.5px/1.2 var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--on-navy-muted)}
+.mt-date b{font:800 22px/1.1 var(--font-display)}
+.mt-main{min-width:0}
+.mt-top{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:13px}
+.mt-main h4{font:700 15.5px/1.3 var(--font-display);margin:4px 0 6px}
+.mt-att{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.mt-att small{margin-left:8px;font-size:12.5px;color:var(--ink-muted)}
+.mt-a{position:relative;display:inline-flex}
+.mt-a.si::after,.mt-a.no::after{position:absolute;right:-3px;bottom:-3px;width:12px;height:12px;border-radius:50%;font:800 8px/12px var(--font-body);text-align:center;color:#fff}
+.mt-a.si::after{content:"✓";background:var(--ok)}
+.mt-a.no::after{content:"✕";background:var(--crit)}
+.mt-cf{display:flex;gap:6px;align-items:flex-start;font-size:13px;color:var(--crit);margin-top:6px;font-weight:600}
+.mt-cf .ico{flex:none;margin-top:1px}
+.mt-ag{margin-top:6px;font-size:13px}
+.mt-ag summary{cursor:pointer;color:var(--teal-700);font-weight:700}
+.mt-ag p{margin-top:4px;color:var(--ink-muted)}
+.mt-acts{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.mt-rsvp{display:flex;gap:6px}
+.btn.ok-on{background:var(--ok);border-color:var(--ok);color:var(--ok-soft)}
+.btn.no-on{background:var(--crit);border-color:var(--crit);color:#fff}
+.mt-past{margin-top:16px}
+.mt-past summary{cursor:pointer;font:700 13px/1.3 var(--font-body);color:var(--ink-muted);margin-bottom:10px}
+.ser-list{display:flex;flex-direction:column;gap:8px}
+.ser{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px dashed var(--line);border-radius:var(--radius-md);background:var(--surface-alt)}
+.ser b{display:block;font-size:14px}
+.ser small{color:var(--ink-muted);font-size:12.5px}
+.agenda{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.ag-card{display:grid;grid-template-columns:60px minmax(0,1fr);gap:14px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--teal-600);border-radius:var(--radius-md);padding:14px;box-shadow:var(--shadow-card)}
+.ag-card.soon{border-top-color:var(--crit)}
+.ag-card h3{font:700 15px/1.3 var(--font-display);margin:4px 0}
+.ag-card .linkish{font-size:12.5px;margin-top:6px;display:inline-block}
+/* diálogo de reunión */
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mt-check{margin:14px 0 0;display:flex;flex-direction:column;gap:6px}
+.cf-ok{color:var(--ok);font-weight:700;font-size:13.5px}
+.cf-bad{display:flex;gap:6px;color:var(--crit);font-weight:700;font-size:13.5px}
+.mt-sug{margin-top:12px}
+.chk-row{display:flex;flex-wrap:wrap;gap:12px 22px;margin-top:14px}
+.sch-row{display:grid;grid-template-columns:130px 104px 104px minmax(0,1fr) 34px;gap:8px;margin-bottom:8px}
+.sch-row select,.sch-row input{border:1px solid var(--line);background:var(--surface-alt);border-radius:var(--radius-sm);padding:8px 9px;font:400 14px/1.3 var(--font-body);color:var(--ink);min-width:0}
+/* horarios */
+.mem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:20px;margin-top:6px}
+.mem-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:18px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:12px;min-width:0}
+.mem-card header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start}
+.mem-card h3{font:700 16px/1.25 var(--font-display)}
+.mem-card header p{font-size:13px;color:var(--ink-muted)}
+.mem-p{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.mem-src{font-size:12.5px}
+.mem-acts{display:flex;gap:8px}
+.mem-n{display:inline-flex;align-items:center;gap:8px}
+.mem-n small{display:block;font-size:12.5px;color:var(--ink-muted);margin-top:2px}.acc-t td{vertical-align:top}.acc-t td .pill{margin-top:4px}.acc-acts{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.acc-acts .icon-btn{white-space:nowrap;padding-inline:4px}
+tr.off td{opacity:.55}
+/* calendario semanal */
+.wk{--wk-h:430px;font-size:11px;min-width:0}
+.wk-h{display:grid;grid-template-columns:42px repeat(var(--wk-cols),minmax(0,1fr));gap:3px;margin-bottom:4px}
+.wk-h b{font:700 11px/1.2 var(--font-body);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);text-align:center;padding:3px 0;border-radius:4px}
+.wk-h b small{display:block;font:600 10.5px/1.2 var(--font-body);letter-spacing:0;text-transform:none}
+.wk-h b.on{background:var(--navy-900);color:var(--on-navy)}
+.wk-b{display:grid;grid-template-columns:42px repeat(var(--wk-cols),minmax(0,1fr));gap:3px;height:var(--wk-h);position:relative}
+.wk-t{position:relative}
+.wk-t span{position:absolute;right:6px;transform:translateY(-6px);font:500 10px/1 var(--font-mono);color:var(--ink-faint)}
+.wk-c{position:relative;background:var(--surface-alt);border-radius:4px;overflow:hidden}
+.wk-c.on{background:color-mix(in srgb,var(--teal-500) 8%,var(--surface-alt))}
+.wk-c>i{position:absolute;left:0;right:0;border-top:1px dashed var(--line-soft)}
+.wk-i{position:absolute;left:2px;right:2px;border-radius:4px;padding:3px 5px;overflow:hidden;background:var(--idle-soft);color:var(--ink);border-left:3px solid var(--idle);display:flex;flex-direction:column;gap:1px}
+.wk-i b{font:700 10.5px/1.15 var(--font-body);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.wk-i small{font:500 9.5px/1.1 var(--font-mono);color:var(--ink-muted)}
+.wk-i.reunion{background:var(--teal-100);border-left-color:var(--teal-600)}
+.wk-i.reunion b{color:var(--teal-700)}
+/* intranet */
+.login-card{max-width:440px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--teal-600);border-radius:var(--radius-lg);box-shadow:var(--shadow-float);padding:26px 28px;display:flex;flex-direction:column;gap:14px}
+.login-mark{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.login-mark b{display:block;font:800 18px/1 var(--font-display);letter-spacing:.06em}
+.login-mark span{font:700 11px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--teal-700)}
+.login-card .btn{justify-content:center}
+.me-hero .wrap{align-items:center}
+.me-id{display:flex;gap:20px;align-items:center;min-width:0}
+.me-id>div{min-width:0}
+.me-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.me-now{font:700 16px/1.35 var(--font-display);text-align:center;padding:10px;border-radius:var(--radius-md);background:var(--navy-700)}
+.me-now.free{color:#9EE6C1}.me-now.busy{color:#FFC9A8}.me-now.pend,.me-now.off{color:var(--on-navy-muted)}
+.me-next{margin-top:14px;display:flex;flex-direction:column;gap:3px;text-align:center}
+.me-next small{font:700 11px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--teal-500)}
+.me-next b{font:700 15px/1.3 var(--font-display)}
+.me-next span{font-size:13px;color:var(--on-navy-muted)}
+.me-preview,.me-alert{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:12px clamp(16px,3.2vw,36px);font-size:14px}
+.me-preview{background:var(--navy-700);color:var(--on-navy)}
+.me-alert{background:var(--warn-soft);color:var(--ink)}
+.me-alert .ico{color:var(--warn)}
+.me-projs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.me-proj{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--teal-600);border-radius:var(--radius-md);padding:16px 18px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:8px;min-width:0}
+.me-proj header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.me-proj h3{font:700 16px/1.3 var(--font-display)}
+.me-role{font-size:14px}
+.me-role small{display:block;font:700 10.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
+.me-bar{height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.me-bar span{display:block;height:100%;background:var(--teal-600)}
+.me-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.me-fx p{font-size:14px;line-height:1.55;margin:0 0 8px}
+.me-fx ul{margin:0 0 10px;padding-left:20px;font-size:14px;line-height:1.5}
+.me-fx li{margin-bottom:4px}
+.raci-g{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+.raci-g small{font:700 10.5px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
+.raci-g p{font-size:13.5px;line-height:1.45}
+.raci-k{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font:800 13px/1 var(--font-display);color:#fff;background:var(--idle)}
+.raci-k.R{background:var(--teal-600)}.raci-k.A{background:var(--navy-700)}.raci-k.C{background:var(--warn)}
+.me-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.me-cols.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.me-cols .sub-h{margin-top:0}
+.pd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.pd{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface)}
+.pd p{font-size:13.5px;line-height:1.45}
+.pd small{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12px;color:var(--ink-muted);margin-top:4px}
+.pd.late{border-color:var(--crit);background:var(--crit-soft)}
+.pd.done p{color:var(--ink-muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.pd-ck input{width:18px;height:18px;accent-color:var(--ok);margin-top:2px;cursor:pointer}
+.pd-ok{display:grid;place-items:center;min-width:28px;height:24px;padding:0 6px;border-radius:999px;background:var(--surface-alt);font:700 12px/1 var(--font-body);color:var(--ink-muted)}
+.log-form{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.log-form .fgrid{width:100%}
+.dir{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.dir li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-soft)}
+.dir b{display:block;font-size:14px}
+.dir small{display:block;font-size:12px;color:var(--ink-muted);overflow-wrap:anywhere}
+.dir a{color:var(--teal-700)}
+.ns{font:700 11.5px/1.25 var(--font-body);padding:4px 9px;border-radius:999px;text-align:right;max-width:170px}
+.ns.free{background:var(--ok-soft);color:var(--ok)}.ns.busy{background:var(--crit-soft);color:var(--crit)}.ns.pend,.ns.off{background:var(--idle-soft);color:var(--idle)}
+.nav-me{display:inline-flex;align-items:center;gap:7px;border:1px solid color-mix(in srgb,var(--on-navy) 35%,transparent);background:transparent;color:var(--on-navy);border-radius:999px;padding:5px 12px 5px 5px;font:700 11.5px/1 var(--font-body);letter-spacing:.07em;text-transform:uppercase;cursor:pointer}
+.nav-me:hover{border-color:var(--teal-500)}
+.nav-me .av-chip{width:24px;height:24px;font-size:9.5px;box-shadow:none}
+.nav-me .ni{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--teal-600)}
+@media (max-width:1100px){.me-cols{grid-template-columns:minmax(0,1fr)}.mem-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.av-split{grid-template-columns:minmax(0,1fr)}.mt-row{grid-template-columns:56px minmax(0,1fr)}.mt-acts{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;align-items:center}.me-cols.two{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.sch-row{grid-template-columns:1fr 1fr;}.sch-row input[name=t]{grid-column:1/-1}.f2{grid-template-columns:1fr 1fr}.me-id{flex-direction:column;align-items:flex-start}.avg-c{height:15px;font-size:9px}.avg-r{grid-template-columns:36px repeat(var(--avg-cols),minmax(0,1fr))}.wk{--wk-h:380px}.wk-i small{display:none}.fr-list li{grid-template-columns:minmax(0,1fr)}.dir li{grid-template-columns:auto minmax(0,1fr)}.dir .ns{grid-column:2;justify-self:start;text-align:left}}
 </style>
 
 <header class="nav" id="nav"></header>
@@ -1164,21 +1350,23 @@ const COLL = {
     { k: 'action', l: 'Recomendación para próximos proyectos', t: 'textarea', wide: 1 },
   ] },
 };
-const LISTS = ['projects', ...Object.keys(COLL), 'planSections'];
+const LISTS = ['projects', ...Object.keys(COLL), 'planSections', 'members', 'meetings'];
 
 /* =========================================================
    Estado
    ========================================================= */
 const S = { mode: 'connecting', err: null, loaded: new Set(), lastSync: 0, me: null, canWrite: null, readOnly: false, peers: [], profiles: {}, feed: [] };
 LISTS.forEach(k => { S[k] = []; });
-const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true, tfilter: 'all', slide: 0, mapSel: 'calidad', phaseSel: 0, clause: 4, planPid: null, semVal: 82, wb: { x: 0, y: 0, k: 0.3, init: false, sel: null, tour: -1, rel: false, max: false }, wbModel: null, wbHtml: '' };
+const UI = { view: 'portfolio', pid: null, tab: 'resumen', depth: 9, ai: {}, scrollGantt: true, tfilter: 'all', slide: 0, mapSel: 'calidad', phaseSel: 0, clause: 4, planPid: null, semVal: 82, wb: { x: 0, y: 0, k: 0.3, init: false, sel: null, tour: -1, rel: false, max: false }, wbModel: null, wbHtml: '', teamTab: 'disp', av: { scope: 'all', buf: 15, min: 60, sun: false }, mtScope: 'all-all', session: loadSession(), viewAs: null };
 try {
   const saved = JSON.parse(localStorage.getItem('dgp-ui') || 'null');
-  if (saved && typeof saved === 'object') { UI.view = saved.view || 'portfolio'; UI.pid = saved.pid || null; UI.tab = saved.tab || 'resumen'; UI.depth = saved.depth || 9; UI.slide = saved.slide | 0; }
+  if (saved && typeof saved === 'object') { UI.view = saved.view || 'portfolio'; UI.pid = saved.pid || null; UI.tab = saved.tab || 'resumen'; UI.depth = saved.depth || 9; UI.slide = saved.slide | 0; if (saved.teamTab) UI.teamTab = saved.teamTab; }
 } catch (e) { /* almacenamiento no disponible */ }
 if (location.hash === '#guia') UI.view = 'guide';
 if (location.hash === '#pizarra') UI.view = 'board';
-const persistUI = () => { try { localStorage.setItem('dgp-ui', JSON.stringify({ view: UI.view, pid: UI.pid, tab: UI.tab, depth: UI.depth, slide: UI.slide })); } catch (e) { /* sin almacenamiento */ } };
+if (location.hash === '#equipo') UI.view = 'team';
+if (location.hash === '#intranet') UI.view = 'me';
+const persistUI = () => { try { localStorage.setItem('dgp-ui', JSON.stringify({ view: UI.view, pid: UI.pid, tab: UI.tab, depth: UI.depth, slide: UI.slide, teamTab: UI.teamTab })); } catch (e) { /* sin almacenamiento */ } };
 
 let db = null, user = null, room = null, sample = null, downloads = null;
 const C = window.claude;
@@ -1198,6 +1386,7 @@ async function boot() {
   if (user) {
     try { S.me = await user.me(); } catch (e) { S.me = null; }
     try { S.canWrite = await user.can('data.write'); } catch (e) { S.canWrite = null; }
+    S.isOwner = !!(S.me && S.me.isOwner);
   }
   LISTS.forEach(subscribe);
   db.collection('feed').orderBy('at', 'desc').limit(40).onSnapshot(snap => {
@@ -1227,7 +1416,7 @@ let lastWhere = '';
 function pushPresence() {
   if (!room) return;
   const p = UI.view === 'project' ? projectById(UI.pid) : null;
-  const where = p ? (p.code || 'Proyecto') : UI.view === 'guide' ? 'Guía PMBOK' : UI.view === 'model' ? 'Modelo de gestión' : UI.view === 'board' ? 'Pizarra digital' : 'Portafolio';
+  const where = p ? (p.code || 'Proyecto') : UI.view === 'guide' ? 'Guía PMBOK' : UI.view === 'model' ? 'Modelo de gestión' : UI.view === 'board' ? 'Pizarra digital' : UI.view === 'team' ? 'Equipo y agenda' : UI.view === 'me' ? 'Intranet' : 'Portafolio';
   if (where === lastWhere) return;
   lastWhere = where;
   Promise.resolve(room.presence({ where })).catch(() => {});
@@ -1387,6 +1576,7 @@ function alertsFor(p) {
   m.soonA.forEach(a => { const d = dBetween(td, parseD(a.due)); add(1, 'Acuerdo', 'gobernanza', `${d === 0 ? 'Vence hoy' : `Vence en ${plural(d, 'día', 'días')}`}${a.owner ? ` (${a.owner})` : ''}: ${a.text}`, ''); });
   m.pendC.forEach(c => { const d = parseD(c.date); const age = d ? dBetween(d, td) : 0; if (age > 7) add(1, 'Cambio', 'gobernanza', `Solicitud sin decisión desde hace ${age} días: ${c.title}`, c.code); });
   m.openI.filter(i => i.priority === 'Alta').forEach(i => add(1, 'Incidente', 'riesgo', `Incidente de prioridad alta abierto: ${i.title}`, i.code));
+  meetingAlerts(p).forEach(([sev, text]) => add(sev, 'Reunión', 'gobernanza', text, ''));
   m.leaves.filter(t => t.type === 'Hito' && num(t.progress) < 100).forEach(t => { const d = parseD(t.end || t.start); if (d && d >= td && dBetween(td, d) <= 7) add(0, 'Hito', 'cronograma', `Hito en ${plural(dBetween(td, d), 'día', 'días')}: ${t.name}`, t.wbs); });
   return out;
 }
@@ -1442,6 +1632,8 @@ function render() {
     v.innerHTML = `<div class="wrap loading"><h2>Conectando con la base de datos del equipo…</h2><p>En unos segundos verás la cartera de proyectos, sus alertas y el avance actualizado.</p></div>`;
     return;
   }
+  if (UI.view === 'team') { v.innerHTML = viewTeam(); pushPresence(); return; }
+  if (UI.view === 'me') { v.innerHTML = viewMe(); pushPresence(); return; }
   if (UI.view === 'project' && !projectById(UI.pid)) UI.view = 'portfolio';
   v.innerHTML = UI.view === 'project' ? viewProject(projectById(UI.pid)) : viewPortfolio();
   if (UI.scrollGantt) { const gs = $('.g-scroll'); if (gs) { if (gs.dataset.todayX) gs.scrollLeft = Math.max(0, +gs.dataset.todayX - gs.clientWidth * 0.35); UI.scrollGantt = false; } }
@@ -1450,7 +1642,7 @@ function render() {
 }
 function renderNav() {
   const P = projectsSorted();
-  const live = S.mode === 'live' ? `<span class="live"><i></i>En vivo <small>${S.lastSync ? 'sincronizado ' + ago(S.lastSync) : ''}</small></span>`
+  const live = S.mode === 'live' ? `<span class="live" title="En vivo${S.lastSync ? ' · sincronizado ' + ago(S.lastSync) : ''}"><i></i><span class="live-t">En vivo</span> <small>${S.lastSync ? 'sincronizado ' + ago(S.lastSync) : ''}</small></span>`
     : S.mode === 'offline' ? `<span class="live off"><i></i>Sin conexión</span>`
     : S.mode === 'error' ? `<span class="live err"><i></i>Conexión interrumpida</span>`
     : `<span class="live wait"><i></i>Conectando</span>`;
@@ -1464,17 +1656,18 @@ function renderNav() {
       <button data-act="go-portfolio" aria-current="${UI.view === 'portfolio'}">Portafolio</button>
       <button data-act="go-model" aria-current="${UI.view === 'model'}">Modelo</button>
       <button data-act="go-board" aria-current="${UI.view === 'board'}">Pizarra</button>
+      <button data-act="go-team" aria-current="${UI.view === 'team'}">Equipo</button>
       <details class="${UI.view === 'project' ? 'on' : ''}"><summary>Proyectos <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5L5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></summary><div class="dd">${dd}</div></details>
       <button data-act="go-guide" aria-current="${UI.view === 'guide'}">Guía PMBOK</button>
     </nav>
-    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${S.mode === 'live' && !canEdit() ? '<span class="pill">Solo lectura</span>' : ''}${canEdit() ? '<button class="btn pill" data-act="new-project">Nuevo proyecto</button>' : ''}</div>
+    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${S.mode === 'live' && !canEdit() ? '<span class="pill">Solo lectura</span>' : ''}${canEdit() ? '<button class="btn pill np" data-act="new-project" title="Nuevo proyecto"><span class="np-plus" aria-hidden="true">+</span><span class="np-t">Nuevo proyecto</span></button>' : ''}${(() => { const sm = sessionMember(); return `<button class="nav-me" data-act="go-me" aria-current="${UI.view === 'me'}" title="${sm ? esc(sm.name) : 'Ingresar al intranet del equipo'}">${sm ? avatar(sm) : `<span class="ni">${icon('equipo', 15)}</span>`}${sm ? esc(String(mName(sm)).split(' ')[0]) : 'Intranet'}</button>`; })()}</div>
   </div>`;
 }
 function renderFoot() {
   const P = projectsSorted();
   $('#foot').innerHTML = `<div class="wrap"><div class="foot-grid">
     <div><h4>Gestión</h4><p>Sistema de dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Basado en la Guía del PMBOK® 8.ª edición: 6 principios, 7 dominios de desempeño y 5 áreas de enfoque.</p></div>
-    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-model">Modelo de gestión</button></li><li><button class="fl" data-act="go-board">Pizarra digital</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
+    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-model">Modelo de gestión</button></li><li><button class="fl" data-act="go-board">Pizarra digital</button></li><li><button class="fl" data-act="go-team">Equipo y agenda</button></li><li><button class="fl" data-act="go-me">Intranet del equipo</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
     <div><h4>Dominios PMBOK 8</h4><ul>${['Gobernanza', 'Alcance', 'Cronograma', 'Finanzas', 'Interesados', 'Recursos', 'Riesgo'].map(d => `<li>${d}</li>`).join('')}</ul></div>
     <div><h4>Proyectos</h4><ul>${P.slice(0, 8).map(p => `<li><button class="fl" data-act="go-project" data-id="${esc(p.id)}"><span class="mono">${esc(p.code)}</span> · ${esc(String(p.name || '').slice(0, 46))}${String(p.name || '').length > 46 ? '…' : ''}</button></li>`).join('') || '<li>Sin proyectos aún</li>'}</ul></div>
   </div>
@@ -1556,6 +1749,7 @@ function viewPortfolio() {
       ${kpi('Acuerdos vencidos', lateA, 'Compromisos de reuniones', 'acuerdo')}
     </div></section>
     ${UI.ai.portfolio ? `<section class="section">${aiPanel('portfolio')}</section>` : ''}
+    ${agendaBand()}
     <section class="section">${secTitle('Proyectos en cartera', 'Cartera', 'La tarjeta destacada es el proyecto que hoy exige más atención.')}<div class="cards">${all.map(x => cardProject(x, x.p.id === featId)).join('')}</div></section>
     <section class="section">${secTitle('Panel de control', 'Monitoreo y control')}<div class="split">
       ${panel('Alertas en tiempo real', 'Ordenadas por severidad. Se generan solas a partir del cronograma, los riesgos, los acuerdos y los cambios.', alertList(alerts, true))}
@@ -1845,7 +2039,7 @@ function tabGobernanza(p, m) {
   const aState = a => { if (a.status !== 'Pendiente') return pill(a.status === 'Cumplido' ? 'ok' : '', a.status); const d = parseD(a.due); if (d && d < td) return pill('crit', 'Vencido'); if (d && dBetween(td, d) <= 3) return pill('warn', 'Por vencer'); return pill('data', 'Pendiente'); };
   const changes = of('changes', p.id).slice().sort((a, b) => String(b.code || '').localeCompare(String(a.code || ''), 'es', { numeric: true }));
   const cTone = { Registrada: 'data', 'En análisis': 'warn', Aprobada: 'ok', Rechazada: 'crit', Implementada: 'ok' };
-  return plansPanel(p) + panel('Acta de constitución', 'Autoriza el proyecto y fija su propósito, objetivos y límites.', charter, canEdit() ? `<button class="btn sm" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '')
+  return plansPanel(p) + projectMeetingsPanel(p) + panel('Acta de constitución', 'Autoriza el proyecto y fija su propósito, objetivos y límites.', charter, canEdit() ? `<button class="btn sm" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '')
     + prioPanel(p)
     + panel('Acuerdos y compromisos de reuniones', `${plural(m.pendA.length, 'pendiente', 'pendientes')} · ${plural(m.lateA.length, 'vencido', 'vencidos')}. Marca «Cumplido» en cuanto se cierre un compromiso.`,
       regTable('agreements', agreements, [
@@ -2225,7 +2419,7 @@ async function deleteFromForm(form) {
   try {
     await db.doc(`${coll}/${id}`).delete();
     if (coll === 'projects') {
-      for (const c of Object.keys(COLL)) for (const r of of(c, id)) await db.doc(`${c}/${r.id}`).delete();
+      for (const c of [...Object.keys(COLL), 'meetings']) for (const r of of(c, id)) await db.doc(`${c}/${r.id}`).delete();
       UI.view = 'portfolio'; UI.pid = null; persistUI();
     }
     closeModal(); toast('Registro eliminado', 'ok');
@@ -2253,6 +2447,34 @@ document.addEventListener('click', e => {
     case 'go-guide': go('guide'); break;
     case 'go-model': go('model'); break;
     case 'go-board': go('board'); break;
+    case 'go-team': if (el.dataset.v) UI.teamTab = el.dataset.v; if (el.dataset.scope) UI.av.scope = el.dataset.scope; go('team'); break;
+    case 'go-me': go('me'); break;
+    case 'team-tab': UI.teamTab = el.dataset.v; persistUI(); render(); break;
+    case 'av-scope': UI.av.scope = el.dataset.v; render(); break;
+    case 'mt-filter': UI.mtScope = el.dataset.v; render(); break;
+    case 'mt-new': { if (!canSchedule()) break; const pre = {}; if (el.dataset.v) { const [d, t] = el.dataset.v.split(':').map(Number); pre.date = nextDateFor(d); pre.start = m2t(t); } if (el.dataset.scope) pre.scope = el.dataset.scope; else if (UI.view === 'team') pre.scope = UI.av.scope; openMeetingForm(null, pre); break; }
+    case 'mt-edit': if (canSchedule()) openMeetingForm(el.dataset.id); break;
+    case 'mt-pick': { const f = $('#mt-form'); if (!f) break; const [d, a, dur] = el.dataset.v.split(':').map(Number); if (dowOf(f.elements.date.value) !== d) f.elements.date.value = nextDateFor(d); f.elements.start.value = m2t(a); f.elements.end.value = m2t(a + dur); mtFormCheck(); break; }
+    case 'mt-del': { const f = $('#mt-form'), mt = f && (S.meetings || []).find(x => x.id === f.dataset.id), z = $('#del-zone'); if (!mt || !z) break; z.innerHTML = `<span>¿Eliminar?</span><button type="button" class="btn sm danger" data-act="mt-del-go" data-v="one">Solo esta</button>${mt.series ? '<button type="button" class="btn sm danger" data-act="mt-del-go" data-v="next">Esta y las siguientes</button>' : ''}<button type="button" class="btn sm" data-act="close-modal">No</button>`; break; }
+    case 'mt-del-go': {
+      const f = $('#mt-form'), mt = f && (S.meetings || []).find(x => x.id === f.dataset.id); if (!mt) break;
+      const L = el.dataset.v === 'next' && mt.series ? (S.meetings || []).filter(x => x.series === mt.series && String(x.date) >= String(mt.date)) : [mt];
+      (async () => { try { for (const x of L) await db.doc('meetings/' + x.id).delete(); closeModal(); toast(L.length > 1 ? `${L.length} reuniones eliminadas` : 'Reunión eliminada', 'ok'); logFeed(mt.pid || null, `eliminó ${L.length > 1 ? `${L.length} reuniones` : 'la reunión'} «${mt.title}»`); } catch (err) { writeErr(err); } })();
+      break;
+    }
+    case 'mt-rsvp': { const me = sessionMember(), mt = (S.meetings || []).find(x => x.id === el.dataset.id); if (!me || !mt || !canEdit()) { toast('Ingresa al intranet para confirmar tu asistencia.', 'warn'); break; } const conf = Object.assign({}, mt.confirm || {}); conf[me.id] = conf[me.id] === el.dataset.v ? '' : el.dataset.v; updateRec('meetings', mt.id, { confirm: conf }).then(() => toast(conf[me.id] === 'si' ? 'Asistencia confirmada' : conf[me.id] === 'no' ? 'Avisaste que no podrás asistir' : 'Respuesta retirada', 'ok')).catch(writeErr); break; }
+    case 'mt-csv': { const f2 = UI.mtScope || 'all-all'; saveCsv(upcomingMeetings(meetingsAll()).filter(mt => f2 === 'all-all' || (f2 === 'all' ? !mt.pid : mt.pid === f2)), 'reuniones_equipo_gestion.csv'); break; }
+    case 'me-csv': { const m = curMember(); if (m) saveCsv(upcomingMeetings(meetingsAll()).filter(mt => attendeesOf(mt).some(x => x.id === m.id)), 'mis_reuniones_gestion.csv'); break; }
+    case 'sched-edit': { const m = memberById(el.dataset.id); if (m && canEditMember(m)) openScheduleForm(m.id); break; }
+    case 'sch-add': { const tpl = $('#sch-tpl'), box = $('#sch-rows'); if (tpl && box) { box.appendChild(tpl.content.cloneNode(true)); const r = box.lastElementChild; if (r) { const prev = r.previousElementSibling; if (prev) r.querySelector('[name=d]').value = prev.querySelector('[name=d]').value; r.querySelector('[name=s]').focus(); } } break; }
+    case 'sch-del': { const r = el.closest('.sch-row'); if (r) r.remove(); break; }
+    case 'mem-new': if (canEdit() && isAdmin()) openMemberForm(null); break;
+    case 'mem-edit': if (canEdit() && isAdmin()) openMemberForm(el.dataset.id); break;
+    case 'mem-reset': { const m = memberById(el.dataset.id); if (!m || !canEdit() || !isAdmin()) break; if (!confirm(`¿Restablecer la contraseña de ${mName(m)} a la inicial?`)) break; passHash(m.id, DEF_PASS).then(h => updateRec('members', m.id, { pinHash: h, mustChange: true })).then(() => toast(`Contraseña de ${mName(m)} restablecida`, 'ok')).catch(writeErr); break; }
+    case 'view-as': if (isAdmin()) { UI.viewAs = el.dataset.id; go('me'); } break;
+    case 'view-as-exit': UI.viewAs = null; UI.teamTab = 'acc'; go('team'); break;
+    case 'pw-open': openPassForm(); break;
+    case 'logout': UI.session = null; UI.viewAs = null; saveSession(null); toast('Sesión cerrada', 'ok'); render(); break;
     case 'open-plan': UI.planOpen = el.dataset.id; UI.planEdit = null; renderPlanReader(true); { const b = document.querySelector('#plan-reader .pr-close-f, #plan-reader [data-act="pr-close"]'); if (b) b.focus(); } break;
     case 'pr-close': prClose(); break;
     case 'pr-goto': { const t = document.getElementById('pr-' + el.dataset.v), bd = document.querySelector('#plan-reader .pr-body'); if (t && bd) bd.scrollTop = t.offsetTop - 8; break; }
@@ -2337,13 +2559,17 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('input', e => {
   const t = e.target;
+  if (t.closest && t.closest('#mt-form') && /^(start|end|date)$/.test(t.name)) { mtFormCheck(); return; }
   if (!(t.dataset && t.dataset.change === 'sem')) return;
   UI.semVal = Number(t.value) || 0; const st = semState(UI.semVal);
   const box = t.closest('.md-sem'); if (!box) return;
   box.querySelector('output').textContent = UI.semVal;
   box.querySelector('.md-sem-out').innerHTML = `${pill(st.k, st.t)} <small>rango ${st.r}</small>`;
 });
-document.addEventListener('submit', e => { const form = e.target.closest('#rec-form'); if (!form) return; e.preventDefault(); submitForm(form); });
+document.addEventListener('submit', e => {
+  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog }[f.id];
+  if (!h) return; e.preventDefault(); h(f);
+});
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset && t.dataset.pchk) {
@@ -2364,6 +2590,10 @@ document.addEventListener('change', e => {
     }).catch(err => { t.checked = !t.checked; t.disabled = false; writeErr(err); });
     return;
   }
+  if (t.dataset && t.dataset.change === 'av-buf') { UI.av.buf = +t.value || 0; render(); return; }
+  if (t.dataset && t.dataset.change === 'av-min') { UI.av.min = +t.value || 60; render(); return; }
+  if (t.dataset && t.dataset.change === 'av-sun') { UI.av.sun = !!t.checked; render(); return; }
+  if (t.closest && t.closest('#mt-form')) { mtFormCheck(); return; }
   if (t.dataset && t.dataset.change === 'depth') { UI.depth = Number(t.value) || 9; UI.scrollGantt = true; persistUI(); render(); return; }
   if (t.dataset && t.dataset.quick === 'done') {
     const task = S.tasks.find(x => x.id === t.dataset.id); if (!task) return;
@@ -2968,6 +3198,532 @@ function wbKey(e) {
   else if (e.key === '-' || e.key === '_') { e.preventDefault(); wbZoomAt(1 / 1.3, r.width / 2, r.height / 2, true); }
   else if (e.key === '0') { e.preventDefault(); wbFitRect([0, 0, WB_W, WB_H], true, 0.96); }
   else if (/^Arrow/.test(e.key)) { e.preventDefault(); const s = 140; if (e.key === 'ArrowLeft') UI.wb.x += s; if (e.key === 'ArrowRight') UI.wb.x -= s; if (e.key === 'ArrowUp') UI.wb.y += s; if (e.key === 'ArrowDown') UI.wb.y -= s; wbApply(true); }
+}
+
+/* =========================================================
+   Equipo: integrantes, horarios, cruce de disponibilidad, reuniones e intranet
+   ========================================================= */
+const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const DIAS3 = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const FERIADOS = { '2026-10-08': 'Combate de Angamos', '2026-11-01': 'Todos los Santos', '2026-12-08': 'Inmaculada Concepción', '2026-12-09': 'Batalla de Ayacucho', '2026-12-25': 'Navidad', '2027-01-01': 'Año Nuevo' };
+const DEF_PASS = '123456789';
+const MT_STATUS = ['Programada', 'Realizada', 'Postergada', 'Cancelada'];
+const JORNADA = { from: 8 * 60, to: 22 * 60 };
+const t2m = s => { const m = /^(\d{1,2}):(\d{2})/.exec(String(s || '').trim()); return m ? +m[1] * 60 + +m[2] : null; };
+const m2t = n => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`;
+const durTxt = n => (n >= 60 ? `${Math.floor(n / 60)} h${n % 60 ? ` ${n % 60} min` : ''}` : `${n} min`);
+const normN = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const dowOf = s => { const d = parseD(s); return d ? ((d.getDay() + 6) % 7) + 1 : null; };
+const fmtDay = s => { const d = parseD(s); return d ? `${DIAS[(d.getDay() + 6) % 7]} ${d.getDate()} ${MES[d.getMonth()]}` : '—'; };
+
+/* integrantes */
+const membersAll = () => (S.members || []).slice().sort((a, b) => (+a.order || 99) - (+b.order || 99) || String(a.name).localeCompare(String(b.name), 'es'));
+const membersActive = () => membersAll().filter(m => m.active !== false);
+const memberById = id => (S.members || []).find(m => m.id === id);
+const mName = m => (m && (m.short || m.name)) || 'Integrante';
+const aliasesOf = m => [m.name, m.short, ...String(m.aliases || '').split(/[,;\n]+/)].map(normN).filter(a => a.length > 2);
+const memberMatches = (m, text) => { const t = normN(text); return !!t && aliasesOf(m).some(a => t.includes(a)); };
+const isGroupOwner = text => /^(el grupo|todo el equipo|todos|equipo del proyecto)$/.test(normN(text));
+const avatar = (m, size) => `<span class="av-chip${size ? ' ' + size : ''}" style="--mc:${esc(m.color || 'var(--teal-600)')}" aria-hidden="true">${esc(initials(mName(m)))}</span>`;
+function membersOfProject(pid) {
+  const p = projectById(pid);
+  const names = (S.team || []).filter(t => t.pid === pid).map(t => t.name).concat(p && p.manager ? [p.manager] : []);
+  return membersActive().filter(m => names.some(n => memberMatches(m, n)));
+}
+function projectsOf(m) {
+  const out = new Map();
+  (S.team || []).forEach(t => { if (memberMatches(m, t.name)) { const p = projectById(t.pid); if (p && !out.has(p.id)) out.set(p.id, { p, role: t.role || '', dedication: num(t.dedication) }); } });
+  projectsSorted().forEach(p => { if (!out.has(p.id) && memberMatches(m, p.manager)) out.set(p.id, { p, role: 'Director del proyecto', dedication: 0 }); });
+  return [...out.values()].sort((a, b) => String(a.p.code).localeCompare(String(b.p.code), 'es', { numeric: true }));
+}
+
+/* horarios */
+const schedState = m => ((m.schedule || []).length ? 'ok' : m.noClasses ? 'none' : 'pend');
+const SCHED_LBL = { ok: ['ok', 'Horario cargado'], none: ['data', 'Sin clases'], pend: ['warn', 'Horario pendiente'] };
+function busyOf(m, d) {
+  return (m.schedule || []).filter(b => +b.d === +d).map(b => ({ s: t2m(b.s), e: t2m(b.e), t: b.t || 'Clase' })).filter(b => b.s != null && b.e != null && b.e > b.s).sort((a, b) => a.s - b.s);
+}
+function cutOut(ints, s, e) { const out = []; for (const [a, b] of ints) { if (e <= a || s >= b) { out.push([a, b]); continue; } if (s > a) out.push([a, s]); if (e < b) out.push([e, b]); } return out; }
+function freeRanges(ms, d, o) {
+  let ints = [[o.from, o.to]];
+  ms.forEach(m => busyOf(m, d).forEach(b => { ints = cutOut(ints, b.s - o.buf, b.e + o.buf); }));
+  return ints.filter(([a, b]) => b - a >= o.min);
+}
+function busyIn(m, d, s, e, buf) { return busyOf(m, d).filter(b => b.s - (buf || 0) < e && b.e + (buf || 0) > s); }
+const scopeMembers = scope => (!scope || scope === 'all' ? membersActive() : membersOfProject(scope));
+const scopeName = scope => (!scope || scope === 'all' ? 'Equipo completo' : ((projectById(scope) || {}).code || 'Proyecto'));
+
+/* reuniones */
+const meetingsAll = () => (S.meetings || []).slice().sort((a, b) => (String(a.date) + String(a.start)).localeCompare(String(b.date) + String(b.start)));
+const mtScope = mt => (mt.pid ? mt.pid : 'all');
+const attendeesOf = mt => scopeMembers(mtScope(mt));
+function mtAt(mt, which) { const d = parseD(mt.date); if (!d) return null; const n = t2m(which === 'end' ? mt.end : mt.start) || 0; return new Date(d.getFullYear(), d.getMonth(), d.getDate(), Math.floor(n / 60), n % 60); }
+function conflictsOf(mt) {
+  const d = dowOf(mt.date), s = t2m(mt.start), e = t2m(mt.end); if (!d || s == null || e == null) return [];
+  const out = []; attendeesOf(mt).forEach(m => busyIn(m, d, s, e).forEach(b => out.push({ m, b })));
+  return out;
+}
+const isOpenMt = mt => mt.status !== 'Cancelada' && mt.status !== 'Realizada';
+function upcomingMeetings(list, n) { const now = new Date(); return list.filter(mt => isOpenMt(mt) && mtAt(mt, 'end') && mtAt(mt, 'end') >= now).slice(0, n || 999); }
+function whenTxt(mt) {
+  const s = mtAt(mt, 'start'); if (!s) return '—';
+  const d = dBetween(today(), parseD(mt.date));
+  const day = d === 0 ? 'Hoy' : d === 1 ? 'Mañana' : d > 1 && d < 7 ? `${DIAS[(s.getDay() + 6) % 7]}` : fmtDay(mt.date);
+  return `${day} · ${mt.start}–${mt.end}`;
+}
+function gcalUrl(mt) {
+  const d = String(mt.date).replace(/-/g, ''), s = String(mt.start).replace(':', '') + '00', e = String(mt.end).replace(':', '') + '00';
+  const q = new URLSearchParams({ action: 'TEMPLATE', text: `${mt.title || 'Reunión'} · ${scopeName(mtScope(mt))}`, dates: `${d}T${s}/${d}T${e}`, ctz: 'America/Lima', details: `${mt.agenda || ''}\n\nParticipan: ${attendeesOf(mt).map(mName).join(', ')}\nGestión · DGP OGPL-UNMSM`, location: mt.place || '' });
+  return 'https://calendar.google.com/calendar/render?' + q.toString();
+}
+function gcalSeriesUrl(list) {
+  // solo si las fechas siguen una regla exacta (cada 7 o 14 días sin saltos)
+  if (list.length < 2) return '';
+  const ds = list.map(mt => parseD(mt.date)); const step = dBetween(ds[0], ds[1]);
+  if (![7, 14].includes(step) || ds.some((d, i) => i && dBetween(ds[i - 1], d) !== step)) return '';
+  // UNTIL en UTC: 23:59:59 de Lima (UTC−5) del último día = 04:59:59Z del día siguiente
+  const mt = list[0], end = new Date(ds[ds.length - 1]); end.setDate(end.getDate() + 1);
+  const u = new URL(gcalUrl(mt)); u.searchParams.set('recur', `RRULE:FREQ=WEEKLY;INTERVAL=${step / 7};UNTIL=${isoD(end).replace(/-/g, '')}T045959Z`);
+  return u.toString();
+}
+function meetingsCsv(list) {
+  const q = s => `"${String(s == null ? '' : s).replace(/"/g, '""')}"`;
+  const d = iso => { const x = parseD(iso); return `${String(x.getMonth() + 1).padStart(2, '0')}/${String(x.getDate()).padStart(2, '0')}/${x.getFullYear()}`; };
+  const t = hm => { const n = t2m(hm) || 0, h = Math.floor(n / 60); return `${String(((h + 11) % 12) + 1).padStart(2, '0')}:${String(n % 60).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
+  const rows = [['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time', 'All Day Event', 'Description', 'Location', 'Private']];
+  list.forEach(mt => rows.push([`${mt.title} · ${scopeName(mtScope(mt))}`, d(mt.date), t(mt.start), d(mt.date), t(mt.end), 'False', `${mt.agenda || ''} Participan: ${attendeesOf(mt).map(mName).join(', ')}`, mt.place || '', 'True']));
+  return '﻿' + rows.map(r => r.map(q).join(',')).join('\r\n');
+}
+async function saveCsv(list, name) {
+  if (!downloads) { toast('La descarga no está disponible en esta vista.', 'warn'); return; }
+  try { await downloads.save({ filename: name, data: meetingsCsv(list) }); }
+  catch (e) { const c = e && e.code; if (c && !/cancel|declin|denied|dismiss/i.test(c)) toast('No se pudo preparar el archivo.', 'warn'); }
+}
+
+/* sesión del intranet (identifica al integrante; no reemplaza los permisos del sistema) */
+function loadSession() { try { const s = JSON.parse(localStorage.getItem('dgp-session') || 'null'); if (s && s.id && s.exp > Date.now()) return s; } catch (e) { /* sin almacenamiento */ } return null; }
+function saveSession(s) { try { if (s) localStorage.setItem('dgp-session', JSON.stringify(s)); else localStorage.removeItem('dgp-session'); } catch (e) { /* sin almacenamiento */ } }
+const sessionMember = () => { const s = UI.session; const m = s && memberById(s.id); return m && m.active !== false ? m : null; };
+const isAdmin = () => !!(S.isOwner || (sessionMember() && sessionMember().admin));
+const curMember = () => (UI.viewAs && isAdmin() ? memberById(UI.viewAs) : null) || sessionMember();
+const canEditMember = m => canEdit() && (isAdmin() || (sessionMember() && sessionMember().id === m.id));
+const canSchedule = () => canEdit() && isAdmin();
+async function sha256hex(str) {
+  const data = new TextEncoder().encode(str);
+  if (window.crypto && crypto.subtle) { try { const h = await crypto.subtle.digest('SHA-256', data); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join(''); } catch (e) { /* respaldo */ } }
+  return sha256js(data);
+}
+function sha256js(bytes) {
+  const K = [0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2];
+  const H = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+  const l = bytes.length, n = (((l + 9) >> 6) + 1) << 4, w = new Uint32Array(n);
+  for (let i = 0; i < l; i++) w[i >> 2] |= bytes[i] << (24 - (i % 4) * 8);
+  w[l >> 2] |= 0x80 << (24 - (l % 4) * 8); w[n - 1] = l * 8;
+  const r = (x, c) => (x >>> c) | (x << (32 - c)), W = new Uint32Array(64);
+  for (let i = 0; i < n; i += 16) {
+    for (let t = 0; t < 64; t++) W[t] = t < 16 ? w[i + t] : (r(W[t - 2], 17) ^ r(W[t - 2], 19) ^ (W[t - 2] >>> 10)) + W[t - 7] + (r(W[t - 15], 7) ^ r(W[t - 15], 18) ^ (W[t - 15] >>> 3)) + W[t - 16];
+    let [a, b, c, d, e, f, g, h] = H;
+    for (let t = 0; t < 64; t++) {
+      const t1 = (h + (r(e, 6) ^ r(e, 11) ^ r(e, 25)) + ((e & f) ^ (~e & g)) + K[t] + W[t]) >>> 0, t2 = ((r(a, 2) ^ r(a, 13) ^ r(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) >>> 0;
+      h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+    }
+    H[0] = (H[0] + a) >>> 0; H[1] = (H[1] + b) >>> 0; H[2] = (H[2] + c) >>> 0; H[3] = (H[3] + d) >>> 0; H[4] = (H[4] + e) >>> 0; H[5] = (H[5] + f) >>> 0; H[6] = (H[6] + g) >>> 0; H[7] = (H[7] + h) >>> 0;
+  }
+  return H.map(x => x.toString(16).padStart(8, '0')).join('');
+}
+const passHash = (id, pass) => sha256hex(`${id}:${pass}`);
+
+/* calendario semanal reutilizable */
+function weekCal(days, items, o) {
+  const from = o.from, to = o.to, span = to - from, hrs = [];
+  for (let h = Math.ceil(from / 60); h <= Math.floor(to / 60); h++) hrs.push(h);
+  const today1 = o.today || 0;
+  return `<div class="wk" style="--wk-cols:${days.length}"><div class="wk-h"><span></span>${days.map(d => `<b class="${d === today1 ? 'on' : ''}">${DIAS3[d - 1]}${o.dates ? `<small>${o.dates[d] || ''}</small>` : ''}</b>`).join('')}</div>
+    <div class="wk-b"><div class="wk-t">${hrs.map(h => `<span style="top:${((h * 60 - from) / span * 100).toFixed(2)}%">${String(h).padStart(2, '0')}:00</span>`).join('')}</div>${days.map(d => `<div class="wk-c${d === today1 ? ' on' : ''}">${hrs.map(h => `<i style="top:${((h * 60 - from) / span * 100).toFixed(2)}%"></i>`).join('')}${items.filter(i => +i.d === d).map(i => { const s = Math.max(from, i.s), e = Math.min(to, i.e); if (e <= s) return ''; return `<div class="wk-i ${i.k || ''}" style="top:${((s - from) / span * 100).toFixed(2)}%;height:${((e - s) / span * 100).toFixed(2)}%" title="${esc(`${i.t} · ${m2t(i.s)}–${m2t(i.e)}${i.sub ? ' · ' + i.sub : ''}`)}"><b>${esc(i.t)}</b><small>${m2t(i.s)}–${m2t(i.e)}</small></div>`; }).join('')}</div>`).join('')}</div></div>`;
+}
+const classItems = m => (m.schedule || []).map(b => ({ d: +b.d, s: t2m(b.s), e: t2m(b.e), t: b.t || 'Clase', k: 'clase' })).filter(i => i.s != null && i.e != null);
+
+/* ---------- vista Equipo ---------- */
+function viewTeam() {
+  const tabs = [['disp', 'Disponibilidad común'], ['reun', 'Cronograma de reuniones'], ['hor', 'Horarios']].concat(isAdmin() ? [['acc', 'Accesos al intranet']] : []);
+  const tab = tabs.some(t => t[0] === UI.teamTab) ? UI.teamTab : 'disp';
+  const ms = membersActive(), withS = ms.filter(m => schedState(m) !== 'pend');
+  const up = upcomingMeetings(meetingsAll());
+  const next = up[0];
+  const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:20%"></span><div class="wrap"><div><p class="eyebrow">Equipo y agenda · DGP OGPL-UNMSM</p><h1 class="title">Horarios del equipo, horas libres en común y reuniones</h1><p class="lead">Cruza los horarios de clases de cada integrante, encuentra las franjas en que todos están libres y programa las reuniones de cada proyecto o del equipo completo. Las reuniones avisan si chocan con una clase.</p></div>
+    <div class="blob"><h2>El equipo hoy</h2><div class="md-blob-k"><div><div class="k-val">${ms.length}</div><div class="k-label">Integrantes</div></div><div><div class="k-val">${withS.length}/${ms.length}</div><div class="k-label">Horarios cargados</div></div><div><div class="k-val">${up.length}</div><div class="k-label">Reuniones por venir</div></div><div><div class="k-val" style="font-size:20px">${next ? esc(whenTxt(next).split(' · ')[0]) : '—'}</div><div class="k-label">Próxima reunión</div></div></div></div></div></section>`;
+  if (!S.loaded.has('members')) return hero + '<div class="wrap section"><div class="empty"><p>Cargando el equipo…</p></div></div>';
+  const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'acc' ? teamAccess() : teamDisp();
+  return hero + `<div class="wrap"><div class="tabs" role="tablist" aria-label="Secciones del equipo">${tabs.map(([k, l]) => `<button class="tab" role="tab" aria-selected="${tab === k}" data-act="team-tab" data-v="${k}">${esc(l)}</button>`).join('')}</div>${body}</div>`;
+}
+function scopeChips(cur, act) {
+  return `<div class="chips" role="group" aria-label="Alcance">${[['all', 'Equipo completo']].concat(projectsSorted().map(p => [p.id, p.code])).map(([k, l]) => `<button class="chip${cur === k ? ' on' : ''}" data-act="${act}" data-v="${esc(k)}" aria-pressed="${cur === k}">${esc(l)}</button>`).join('')}</div>`;
+}
+function teamDisp() {
+  const o = UI.av, ms = scopeMembers(o.scope), known = ms.filter(m => schedState(m) !== 'pend'), pend = ms.filter(m => schedState(m) === 'pend');
+  const days = o.sun ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6];
+  const step = 30, from = JORNADA.from, to = JORNADA.to;
+  const rows = []; for (let t = from; t < to; t += step) rows.push(t);
+  const head = `<div class="avg-r avg-head"><span></span>${days.map(d => `<b>${DIAS3[d - 1]}</b>`).join('')}</div>`;
+  const grid = rows.map(t => `<div class="avg-r"><span class="avg-t">${t % 60 === 0 ? m2t(t) : ''}</span>${days.map(d => {
+    const busy = known.map(m => ({ m, b: busyIn(m, d, t, t + step, o.buf)[0] })).filter(x => x.b);
+    const free = known.length - busy.length, all = known.length && !busy.length;
+    const lvl = all ? 'all' : busy.length === 1 ? 'one' : busy.length >= known.length ? 'none' : 'some';
+    const tip = `${DIAS[d - 1]} ${m2t(t)}–${m2t(t + step)}: ${all ? 'todos libres' : `${free} de ${known.length} libres. Ocupados: ${busy.map(x => `${mName(x.m)} (${x.b.t})`).join(', ')}`}`;
+    return `<button class="avg-c ${lvl}" ${all && canSchedule() ? `data-act="mt-new" data-v="${d}:${t}"` : 'tabindex="-1"'} title="${esc(tip)}" aria-label="${esc(tip)}">${all ? '✓' : free ? free : ''}</button>`;
+  }).join('')}</div>`).join('');
+  const ranges = days.map(d => ({ d, r: freeRanges(known, d, { from, to, buf: o.buf, min: o.min }) })).filter(x => x.r.length);
+  const list = ranges.length ? `<ul class="fr-list">${ranges.map(({ d, r }) => `<li><b>${DIAS[d - 1]}</b><span>${r.map(([a, b]) => `<span class="fr">${m2t(a)}–${m2t(b)} <small>${durTxt(b - a)}</small>${canSchedule() ? `<button class="linkish" data-act="mt-new" data-v="${d}:${a}">Programar</button>` : ''}</span>`).join('')}</span></li>`).join('')}</ul>` : '<p class="note">No hay franjas comunes con esa duración mínima. Prueba con una duración menor o un margen más corto.</p>';
+  const who = `<div class="av-who">${ms.map(m => `<span class="av-w ${schedState(m)}">${avatar(m)}<span>${esc(mName(m))}<small>${esc(SCHED_LBL[schedState(m)][1])}</small></span></span>`).join('')}</div>`;
+  return panel('Cruce de horarios', `Franjas de ${m2t(from)} a ${m2t(to)}. Verde con ✓: todos libres; el número indica cuántos están libres; el color se oscurece cuantos más estén en clase.${canSchedule() ? ' Toca un ✓ para programar una reunión.' : ''}`,
+    `<div class="av-ctl">${scopeChips(o.scope, 'av-scope')}<label class="mini-f">Margen antes y después de clase<select data-change="av-buf">${[0, 15, 30].map(v => `<option value="${v}"${+o.buf === v ? ' selected' : ''}>${v} min</option>`).join('')}</select></label><label class="mini-f">Duración mínima<select data-change="av-min">${[30, 60, 90, 120].map(v => `<option value="${v}"${+o.min === v ? ' selected' : ''}>${durTxt(v)}</option>`).join('')}</select></label><label class="mini-c"><input type="checkbox" data-change="av-sun"${o.sun ? ' checked' : ''}> Incluir domingo</label></div>
+    ${who}${pend.length ? `<p class="av-warn">${icon('alerta', 18)}<span><b>${plural(pend.length, 'integrante sin horario', 'integrantes sin horario')}:</b> ${pend.map(mName).join(', ')}. Mientras no se cargue su horario se consideran libres, así que una franja «común» puede chocar con sus clases.</span></p>` : ''}
+    <div class="split av-split"><div class="avg" style="--avg-cols:${days.length}" role="grid" aria-label="Disponibilidad por media hora">${head}${grid}</div>
+    <div><h3 class="sub-h">Franjas libres en común <small>${esc(scopeName(o.scope))} · mínimo ${durTxt(o.min)}${o.buf ? ` · margen ${o.buf} min` : ''}</small></h3>${list}</div></div>`,
+    canSchedule() ? '<button class="btn sm primary" data-act="mt-new">Programar reunión</button>' : '');
+}
+function mtRow(mt, me, ro) {
+  const p = mt.pid ? projectById(mt.pid) : null, att = attendeesOf(mt), cf = conflictsOf(mt), conf = mt.confirm || {};
+  const d = parseD(mt.date);
+  const st = mt.status && mt.status !== 'Programada' ? pill(mt.status === 'Realizada' ? 'ok' : mt.status === 'Cancelada' ? 'crit' : 'warn', mt.status) : '';
+  const meBtns = me && !ro && isOpenMt(mt) && canEdit() ? `<span class="mt-rsvp">${['si', 'no'].map(v => `<button class="btn sm${conf[me.id] === v ? (v === 'si' ? ' ok-on' : ' no-on') : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('')}</span>` : '';
+  return `<article class="mt-row${mt.status === 'Cancelada' ? ' off' : ''}">
+    <div class="mt-date">${d ? `<span>${DIAS3[(d.getDay() + 6) % 7]}</span><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span>` : '—'}</div>
+    <div class="mt-main"><p class="mt-top"><span class="mono">${esc(mt.start)}–${esc(mt.end)}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : '<span class="code-chip all">Equipo completo</span>'}${st}${FERIADOS[mt.date] ? pill('warn', 'Feriado') : ''}</p>
+      <h4>${esc(mt.title || 'Reunión')}</h4>
+      <p class="mt-att">${att.map(m => `<span class="mt-a${conf[m.id] === 'si' ? ' si' : conf[m.id] === 'no' ? ' no' : ''}" title="${esc(mName(m))}${conf[m.id] === 'si' ? ' · asistirá' : conf[m.id] === 'no' ? ' · no podrá' : ''}">${avatar(m, 'sm')}</span>`).join('')}<small>${esc(mt.place || 'Lugar por definir')}</small></p>
+      ${cf.length ? `<p class="mt-cf">${icon('alerta', 16)}Choca con: ${cf.map(x => `${esc(mName(x.m))} (${esc(x.b.t)} ${m2t(x.b.s)}–${m2t(x.b.e)})`).join('; ')}</p>` : ''}
+      ${mt.agenda ? `<details class="mt-ag"><summary>Agenda</summary><p>${fmtTxt(mt.agenda)}</p></details>` : ''}</div>
+    <div class="mt-acts">${meBtns}<a class="btn sm" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer" title="Agregar a Google Calendar para recibir avisos">Google Calendar ↗</a>${canSchedule() && !ro ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Editar</button>` : ''}</div></article>`;
+}
+function weekLabel(iso) { const d = parseD(iso); const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7)); const sun = new Date(mon); sun.setDate(mon.getDate() + 6); return `Semana del ${mon.getDate()} ${MES[mon.getMonth()]} al ${sun.getDate()} ${MES[sun.getMonth()]}`; }
+function meetingList(list, me, ro) {
+  if (!list.length) return '<div class="empty"><p>No hay reuniones programadas.</p></div>';
+  let html = '', wk = '';
+  list.forEach(mt => { const w = weekLabel(mt.date); if (w !== wk) { wk = w; html += `<h4 class="mt-wk">${esc(w)}</h4>`; } html += mtRow(mt, me, ro); });
+  return `<div class="mt-list">${html}</div>`;
+}
+function teamMeetings() {
+  const f = UI.mtScope || 'all-all';
+  const all = meetingsAll(), now = new Date();
+  const match = mt => f === 'all-all' || (f === 'all' ? !mt.pid : mt.pid === f);
+  const up = all.filter(mt => match(mt) && isOpenMt(mt) && mtAt(mt, 'end') >= now);
+  const past = all.filter(mt => match(mt) && !(isOpenMt(mt) && mtAt(mt, 'end') >= now)).reverse().slice(0, 12);
+  const series = new Map(); up.forEach(mt => { if (mt.series) { if (!series.has(mt.series)) series.set(mt.series, []); series.get(mt.series).push(mt); } });
+  const cfN = up.filter(mt => conflictsOf(mt).length).length;
+  const chips = `<div class="chips" role="group" aria-label="Filtrar reuniones">${[['all-all', 'Todas'], ['all', 'Equipo completo']].concat(projectsSorted().map(p => [p.id, p.code])).map(([k, l]) => `<button class="chip${f === k ? ' on' : ''}" data-act="mt-filter" data-v="${esc(k)}" aria-pressed="${f === k}">${esc(l)}</button>`).join('')}</div>`;
+  const ser = series.size ? `<div class="ser-list">${[...series.values()].map(L => { const a = L[0], g = gcalSeriesUrl(L); return `<div class="ser"><div><b>${esc(a.title)}</b><small>${esc(DIAS[dowOf(a.date) - 1])} ${esc(a.start)}–${esc(a.end)} · ${plural(L.length, 'fecha', 'fechas')} hasta el ${fmtD(L[L.length - 1].date)}</small></div>${g ? `<a class="btn sm" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Agregar la serie a Google Calendar ↗</a>` : '<small class="note">Tiene fechas movidas por feriados: agrégalas una por una o con el CSV.</small>'}</div>`; }).join('')}</div>` : '';
+  return panel('Cronograma de reuniones', `${plural(up.length, 'reunión por venir', 'reuniones por venir')}${cfN ? ` · <b class="tone-crit">${plural(cfN, 'choca', 'chocan')} con alguna clase</b>` : ''}. Agrega las reuniones a Google Calendar para recibir los avisos en el celular.`,
+    `${chips}${ser ? `<h3 class="sub-h">Series programadas</h3>${ser}` : ''}<h3 class="sub-h">Próximas reuniones</h3>${meetingList(up, null)}${past.length ? `<details class="mt-past"><summary>Reuniones anteriores o canceladas (${past.length})</summary>${meetingList(past, null)}</details>` : ''}`,
+    `${downloads && up.length ? '<button class="btn sm" data-act="mt-csv">Descargar CSV para Google Calendar</button>' : ''}${canSchedule() ? '<button class="btn sm primary" data-act="mt-new">Programar reunión</button>' : ''}`);
+}
+function teamSchedules() {
+  const ms = membersActive();
+  return `<div class="mem-grid">${ms.map(m => { const st = schedState(m), L = SCHED_LBL[st];
+    return `<article class="mem-card"><header>${avatar(m, 'lg')}<div><h3>${esc(m.name)}</h3><p>${esc(m.role || '')}</p><p class="mem-p">${projectsOf(m).map(x => `<span class="code-chip">${esc(x.p.code)}</span>`).join('')}</p></div>${pill(L[0], L[1])}</header>
+      ${st === 'ok' ? weekCal(m.schedule.some(b => +b.d === 7) ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6], classItems(m), { from: 8 * 60, to: 22 * 60 }) : `<div class="empty"><p>${st === 'none' ? 'Sin clases este semestre: disponible en toda la jornada.' : 'Aún no se carga su horario. Mientras tanto se considera libre en los cruces.'}</p></div>`}
+      <p class="note mem-src">${m.scheduleSrc ? `Fuente: ${esc(m.scheduleSrc)}` : ''}${m.scheduleAt ? ` · actualizado el ${fmtD(m.scheduleAt)}` : ''}${m.scheduleNote ? `<br>${esc(m.scheduleNote)}` : ''}</p>
+      ${canEditMember(m) ? `<div class="mem-acts"><button class="btn sm" data-act="sched-edit" data-id="${esc(m.id)}">Editar horario</button></div>` : ''}</article>`; }).join('')}</div>${isAdmin() && canEdit() ? '<p style="margin-top:14px"><button class="btn sm" data-act="mem-new">Agregar integrante</button></p>' : ''}`;
+}
+function teamAccess() {
+  const ms = membersAll();
+  return panel('Accesos al intranet', `Cada integrante ingresa con su correo institucional y su contraseña. La contraseña inicial es <b class="mono">${DEF_PASS}</b> y el sistema pide cambiarla en el primer ingreso. Revisa que cada correo sea el real: los marcados «por confirmar» se armaron con el formato nombre.apellido@unmsm.edu.pe.`,
+    `<div class="tbl"><table class="acc-t"><thead><tr><th>Integrante</th><th>Correo</th><th>Contraseña</th><th>Último ingreso</th><th><span class="sr">Acciones</span></th></tr></thead><tbody>${ms.map(m => `<tr${m.active === false ? ' class="off"' : ''}><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b>${m.admin ? ' <span class="pill accent">Administrador</span>' : ''}${m.active === false ? ' <span class="pill">Inactivo</span>' : ''}<small>${esc(m.role || '')}</small></span></span></td><td class="nowrap">${esc(m.email || '—')}${m.emailOk ? '' : '<br><span class="pill warn"><i></i>Por confirmar</span>'}</td><td class="nowrap">${m.mustChange ? '<span class="pill warn"><i></i>Inicial</span>' : '<span class="pill ok"><i></i>Personal</span>'}</td><td class="nowrap">${m.lastLogin ? esc(ago(Date.parse(m.lastLogin))) : '—'}</td><td><div class="acc-acts">${canEdit() ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(m.id)}">Editar</button><button class="icon-btn" data-act="mem-reset" data-id="${esc(m.id)}">Restablecer contraseña</button>` : ''}<button class="icon-btn" data-act="view-as" data-id="${esc(m.id)}">Ver su intranet</button></div></td></tr>`).join('')}</tbody></table></div>
+    <p class="note" style="margin-top:12px"><b>Importante:</b> el ingreso identifica a cada integrante y personaliza su vista; no es una barrera de seguridad. Cualquier persona con acceso al sistema puede ver la cartera, así que no guardes aquí información confidencial. Para que un integrante pueda marcar tareas, confirmar reuniones o editar su horario, compártele el sistema desde claude.ai con permiso para interactuar.</p>`,
+    canEdit() ? '<button class="btn sm primary" data-act="mem-new">Agregar integrante</button>' : '');
+}
+
+/* ---------- diálogos ---------- */
+function dlg(title, body, foot, id) {
+  const mdl = $('#modal');
+  mdl.innerHTML = `<div class="overlay" data-act="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title"><form id="${id}" novalidate><header class="dlg-head"><h2 id="dlg-title">${esc(title)}</h2><button type="button" class="icon-btn" data-act="close-modal" aria-label="Cerrar">Cerrar</button></header><div class="dlg-body">${body}</div><p class="form-err" id="form-err" hidden></p><footer class="dlg-foot">${foot}</footer></form></div></div>`;
+  mdl.hidden = false;
+  setTimeout(() => { const f = mdl.querySelector('input:not([type=hidden]):not([type=checkbox]),select,textarea'); if (f) f.focus(); }, 30);
+}
+const fld = (label, ctl, wide, hint) => `<label class="f${wide ? ' wide' : ''}"><span>${esc(label)}</span>${ctl}${hint ? `<small>${hint}</small>` : ''}</label>`;
+function nextDateFor(d) { const t = today(); const x = new Date(t); x.setDate(t.getDate() + ((d - (((t.getDay() + 6) % 7) + 1) + 7) % 7 || 7)); return isoD(x); }
+function openMeetingForm(id, pre) {
+  const mt = id ? (S.meetings || []).find(x => x.id === id) || {} : {};
+  const scope = id ? mtScope(mt) : (pre && pre.scope) || (UI.view === 'project' ? UI.pid : UI.av.scope) || 'all';
+  const date = mt.date || (pre && pre.date) || nextDateFor(2), start = mt.start || (pre && pre.start) || '16:00';
+  const end = mt.end || m2t((t2m(start) || 960) + 60);
+  const opts = [['all', 'Equipo completo (todos los proyectos)']].concat(projectsSorted().map(p => [p.id, `${p.code} · ${p.name}`]));
+  const body = `<div class="fgrid">
+    ${fld('Título', `<input name="title" value="${esc(mt.title || (scope === 'all' ? 'Reunión general del equipo' : `Seguimiento · ${scopeName(scope)}`))}" required>`, 1)}
+    ${fld('Participan', `<select name="scope">${opts.map(([k, l]) => `<option value="${esc(k)}"${k === scope ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`, 1)}
+    ${fld('Fecha', `<input type="date" name="date" value="${esc(date)}" required>`)}
+    <div class="f2">${fld('Inicio', `<input type="time" name="start" value="${esc(start)}" step="900" required>`)}${fld('Fin', `<input type="time" name="end" value="${esc(end)}" step="900" required>`)}</div>
+    ${id ? fld('Estado', `<select name="status">${MT_STATUS.map(s => `<option${(mt.status || 'Programada') === s ? ' selected' : ''}>${s}</option>`).join('')}</select>`) : fld('Repetir', `<select name="rep"><option value="no">No se repite</option><option value="7">Cada semana</option><option value="14">Cada dos semanas</option></select>`)}
+    ${id ? fld('Lugar o enlace', `<input name="place" value="${esc(mt.place || '')}" placeholder="OGPL, aula o enlace de Meet">`) : fld('Repetir hasta', `<input type="date" name="until" value="2026-12-18">`)}
+    ${id ? '' : fld('Lugar o enlace', `<input name="place" value="" placeholder="OGPL, aula o enlace de Meet">`, 1)}
+    ${fld('Agenda', `<textarea name="agenda" rows="3">${esc(mt.agenda || '1. Avance del cronograma. 2. Acuerdos pendientes. 3. Riesgos y bloqueos. 4. Próximos pasos.')}</textarea>`, 1)}
+  </div><div class="mt-check" id="mt-check" aria-live="polite"></div><div class="mt-sug" id="mt-sug"></div>`;
+  const foot = `${id ? '<div class="del-zone" id="del-zone"><button type="button" class="btn ghost danger" data-act="mt-del">Eliminar</button></div>' : ''}<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">${id ? 'Guardar' : 'Programar'}</button></div>`;
+  dlg(id ? 'Editar reunión' : 'Programar reunión', body, foot, 'mt-form');
+  $('#mt-form').dataset.id = id || '';
+  mtFormCheck();
+}
+function mtFormVals(f) { return { title: f.elements.title.value.trim(), scope: f.elements.scope.value, date: f.elements.date.value, start: f.elements.start.value, end: f.elements.end.value, rep: f.elements.rep ? +f.elements.rep.value || 0 : 0, until: f.elements.until ? f.elements.until.value : '', place: f.elements.place.value.trim(), agenda: f.elements.agenda.value.trim(), status: f.elements.status ? f.elements.status.value : 'Programada' }; }
+function mtDates(v) {
+  const out = [], skipped = []; const d0 = parseD(v.date); if (!d0) return { out, skipped };
+  if (!v.rep) return { out: [v.date], skipped };
+  const end = parseD(v.until) || d0; const taken = new Set();
+  for (let d = new Date(d0); d <= end && out.length < 40; d.setDate(d.getDate() + v.rep)) {
+    let iso = isoD(d);
+    if (FERIADOS[iso]) { skipped.push(iso); if (v.rep === 14) { const x = new Date(d); x.setDate(x.getDate() + 7); const alt = isoD(x); if (x <= end && !FERIADOS[alt]) iso = alt; else continue; } else continue; }
+    if (!taken.has(iso)) { taken.add(iso); out.push(iso); }
+  }
+  return { out, skipped };
+}
+function mtFormCheck() {
+  const f = $('#mt-form'); if (!f) return;
+  const v = mtFormVals(f), box = $('#mt-check'), sug = $('#mt-sug');
+  const s = t2m(v.start), e = t2m(v.end), ms = scopeMembers(v.scope), pend = ms.filter(m => schedState(m) === 'pend');
+  let msg = '';
+  if (s == null || e == null || e <= s) msg = `<p class="cf-bad">${icon('alerta', 16)}La hora de fin debe ser posterior a la de inicio.</p>`;
+  else {
+    const { out, skipped } = mtDates(v);
+    const cf = []; out.forEach(iso => { const d = dowOf(iso); ms.forEach(m => busyIn(m, d, s, e).forEach(b => cf.push(`${fmtDay(iso)}: ${mName(m)} (${b.t} ${m2t(b.s)}–${m2t(b.e)})`))); });
+    msg = (cf.length ? `<p class="cf-bad">${icon('alerta', 16)}Choca con clases: ${esc(cf.slice(0, 4).join('; '))}${cf.length > 4 ? ` y ${cf.length - 4} más` : ''}.</p>` : `<p class="cf-ok">✓ Nadie de ${esc(scopeName(v.scope))} tiene clase en ese horario${out.length > 1 ? ` (${plural(out.length, 'fecha', 'fechas')})` : ''}.</p>`)
+      + (skipped.length ? `<p class="note">Feriados ${v.rep === 14 ? 'movidos una semana' : 'omitidos'}: ${skipped.map(x => `${fmtDay(x)} (${FERIADOS[x]})`).join(', ')}.</p>` : '')
+      + (pend.length ? `<p class="note">Sin horario cargado: ${esc(pend.map(mName).join(', '))}; confírmalo con ${pend.length > 1 ? 'ellos' : 'esa persona'}.</p>` : '');
+  }
+  box.innerHTML = msg;
+  const dur = s != null && e != null && e > s ? e - s : 60;
+  const rs = [1, 2, 3, 4, 5, 6].map(d => ({ d, r: freeRanges(ms.filter(m => schedState(m) !== 'pend'), d, { from: JORNADA.from, to: JORNADA.to, buf: 15, min: dur }) })).filter(x => x.r.length);
+  sug.innerHTML = rs.length ? `<p class="mini-h">Franjas libres en común para ${esc(scopeName(v.scope))} (${durTxt(dur)}, margen de 15 min):</p><div class="chips">${rs.flatMap(({ d, r }) => r.map(([a, b]) => `<button type="button" class="chip" data-act="mt-pick" data-v="${d}:${a}:${dur}">${DIAS3[d - 1]} ${m2t(a)}–${m2t(b)}</button>`)).join('')}</div>` : '';
+}
+async function submitMeeting(f) {
+  const v = mtFormVals(f), id = f.dataset.id || null;
+  if (!v.title || !v.date || !v.start || !v.end) { formErr('Completa título, fecha, inicio y fin.'); return; }
+  if (t2m(v.end) <= t2m(v.start)) { formErr('La hora de fin debe ser posterior a la de inicio.'); return; }
+  const base = { title: v.title, pid: v.scope === 'all' ? '' : v.scope, start: v.start, end: v.end, place: v.place, agenda: v.agenda };
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    if (id) { await updateRec('meetings', id, Object.assign(base, { date: v.date, status: v.status })); toast('Reunión actualizada', 'ok'); }
+    else {
+      const { out } = mtDates(v); if (!out.length) { formErr('No hay fechas válidas entre la fecha inicial y la final.'); btn.disabled = false; return; }
+      const series = out.length > 1 ? 'S-' + Date.now().toString(36) : '';
+      for (const iso of out) await createRec('meetings', Object.assign({}, base, { date: iso, status: 'Programada', series, confirm: {} }));
+      toast(out.length > 1 ? `${plural(out.length, 'reunión programada', 'reuniones programadas')}` : 'Reunión programada', 'ok');
+      logFeed(base.pid || null, `programó ${out.length > 1 ? `${out.length} reuniones` : 'una reunión'} «${v.title}» desde el ${fmtD(out[0])}`);
+    }
+    closeModal(); schedule();
+  } catch (e) { btn.disabled = false; writeErr(e); }
+}
+function openScheduleForm(id) {
+  const m = memberById(id); if (!m) return;
+  const rows = (m.schedule || []).slice().sort((a, b) => a.d - b.d || String(a.s).localeCompare(String(b.s)));
+  const row = b => `<div class="sch-row"><select name="d" aria-label="Día">${DIAS.map((x, i) => `<option value="${i + 1}"${+b.d === i + 1 ? ' selected' : ''}>${x}</option>`).join('')}</select><input type="time" name="s" value="${esc(b.s || '')}" aria-label="Inicio" step="900"><input type="time" name="e" value="${esc(b.e || '')}" aria-label="Fin" step="900"><input name="t" value="${esc(b.t || '')}" placeholder="Curso o actividad" aria-label="Curso"><button type="button" class="icon-btn" data-act="sch-del" aria-label="Quitar">✕</button></div>`;
+  const body = `<p class="note" style="margin-bottom:12px">Registra cada bloque de clase como aparece en el SUM. Las reuniones se programan fuera de estos bloques.</p><div id="sch-rows">${rows.map(row).join('')}</div><template id="sch-tpl">${row({ d: 1 })}</template>
+    <p style="margin:10px 0 14px"><button type="button" class="btn sm" data-act="sch-add">Agregar bloque</button></p>
+    <div class="fgrid">${fld('Fuente', `<input name="src" value="${esc(m.scheduleSrc || 'Horario del SUM')}">`, 1)}${fld('Observación', `<input name="note" value="${esc(m.scheduleNote || '')}" placeholder="Por ejemplo: la captura empieza a las 10:00">`, 1)}</div>
+    <label class="mini-c" style="margin-top:10px"><input type="checkbox" name="none"${m.noClasses ? ' checked' : ''}> No tiene clases este semestre</label>`;
+  dlg(`Horario de ${mName(m)}`, body, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Guardar horario</button></div>', 'sch-form');
+  $('#sch-form').dataset.id = id;
+}
+async function submitSchedule(f) {
+  const m = memberById(f.dataset.id); if (!m) return;
+  const blocks = []; let bad = '';
+  f.querySelectorAll('.sch-row').forEach(r => { const d = +r.querySelector('[name=d]').value, s = r.querySelector('[name=s]').value, e = r.querySelector('[name=e]').value, t = r.querySelector('[name=t]').value.trim(); if (!s && !e && !t) return; if (t2m(s) == null || t2m(e) == null || t2m(e) <= t2m(s)) { bad = `Revisa el bloque del ${DIAS[d - 1]}: la hora de fin debe ser posterior a la de inicio.`; return; } blocks.push({ d, s, e, t: t || 'Clase' }); });
+  if (bad) { formErr(bad); return; }
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    await updateRec('members', m.id, { schedule: blocks, noClasses: !!f.elements.none.checked && !blocks.length, scheduleSrc: f.elements.src.value.trim(), scheduleNote: f.elements.note.value.trim(), scheduleAt: isoD(today()) });
+    closeModal(); toast('Horario guardado', 'ok'); logFeed(null, `actualizó el horario de ${mName(m)}`);
+  } catch (e) { btn.disabled = false; writeErr(e); }
+}
+function openMemberForm(id) {
+  const m = id ? memberById(id) || {} : {};
+  const body = `<div class="fgrid">${fld('Nombre completo', `<input name="name" value="${esc(m.name || '')}" required>`, 1)}${fld('Nombre corto', `<input name="short" value="${esc(m.short || '')}" placeholder="Nombre y apellido">`)}${fld('Correo institucional', `<input name="email" type="email" value="${esc(m.email || '')}" placeholder="nombre.apellido@unmsm.edu.pe" required>`)}
+    ${fld('Cargo en el equipo', `<input name="role" value="${esc(m.role || '')}">`, 1)}
+    ${fld('Otros nombres con que aparece', `<input name="aliases" value="${esc(m.aliases || '')}">`, 1, 'Separados por comas. Sirven para reconocer sus tareas, acuerdos y riesgos en los cronogramas.')}
+    ${fld('Rol en los planes de gestión', `<input name="planRoles" value="${esc(m.planRoles || '')}">`, 1, 'Cómo aparece en las tablas de responsables del plan, por ejemplo «Analistas, Equipo de racionalización».')}
+    ${fld('Columna en la matriz RACI', `<input name="raci" value="${esc(m.raci || '')}" placeholder="Analistas de racionalización">`)}${fld('Color', `<input name="color" type="color" value="${esc(m.color || '#0A7E90')}">`)}</div>
+    <div class="chk-row"><label class="mini-c"><input type="checkbox" name="emailOk"${m.emailOk ? ' checked' : ''}> Correo confirmado</label><label class="mini-c"><input type="checkbox" name="admin"${m.admin ? ' checked' : ''}> Administrador</label><label class="mini-c"><input type="checkbox" name="active"${m.active === false ? '' : ' checked'}> Activo</label></div>`;
+  dlg(id ? `Editar a ${mName(m)}` : 'Agregar integrante', body, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>', 'mem-form');
+  $('#mem-form').dataset.id = id || '';
+}
+async function submitMember(f) {
+  const id = f.dataset.id || null, g = k => f.elements[k].value.trim();
+  const data = { name: g('name'), short: g('short'), email: g('email').toLowerCase(), role: g('role'), aliases: g('aliases'), planRoles: g('planRoles'), raci: g('raci'), color: g('color'), emailOk: f.elements.emailOk.checked, admin: f.elements.admin.checked, active: f.elements.active.checked };
+  if (!data.name || !data.email) { formErr('Completa el nombre y el correo.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { formErr('El correo no tiene un formato válido.'); return; }
+  if ((S.members || []).some(x => x.id !== id && String(x.email).toLowerCase() === data.email)) { formErr('Ese correo ya está registrado para otro integrante.'); return; }
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    if (id) await updateRec('members', id, data);
+    else { const nid = 'm-' + normN(data.short || data.name).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) + '-' + Date.now().toString(36).slice(-4); await db.doc('members/' + nid).set(Object.assign(data, stamp(), { order: (S.members || []).length + 1, schedule: [], pinHash: await passHash(nid, DEF_PASS), mustChange: true, createdAt: new Date().toISOString() })); }
+    closeModal(); toast(id ? 'Integrante actualizado' : 'Integrante agregado', 'ok');
+  } catch (e) { btn.disabled = false; writeErr(e); }
+}
+function openPassForm() {
+  const m = sessionMember(); if (!m) return;
+  dlg('Cambiar mi contraseña', `<div class="fgrid">${fld('Contraseña actual', '<input name="old" type="password" autocomplete="current-password" required>', 1)}${fld('Nueva contraseña', '<input name="p1" type="password" autocomplete="new-password" required>', 0, 'Mínimo 6 caracteres. No uses la contraseña de tu correo de San Marcos.')}${fld('Repite la nueva', '<input name="p2" type="password" autocomplete="new-password" required>')}</div>`, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Cambiar</button></div>', 'pw-form');
+}
+async function submitPass(f) {
+  const m = sessionMember(); if (!m) return;
+  const old = f.elements.old.value, p1 = f.elements.p1.value, p2 = f.elements.p2.value;
+  if ((await passHash(m.id, old)) !== m.pinHash) { formErr('La contraseña actual no es correcta.'); return; }
+  if (p1.length < 6) { formErr('La nueva contraseña debe tener al menos 6 caracteres.'); return; }
+  if (p1 !== p2) { formErr('Las dos contraseñas nuevas no coinciden.'); return; }
+  if (p1 === DEF_PASS) { formErr('Elige una contraseña distinta de la inicial.'); return; }
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try { await updateRec('members', m.id, { pinHash: await passHash(m.id, p1), mustChange: false }); closeModal(); toast('Contraseña cambiada', 'ok'); }
+  catch (e) { btn.disabled = false; writeErr(e); }
+}
+
+/* ---------- intranet ---------- */
+let loginFails = 0, loginLock = 0;
+async function submitLogin(f) {
+  const err = $('#login-err'), show = t => { err.textContent = t; err.hidden = false; };
+  if (Date.now() < loginLock) { show(`Demasiados intentos. Espera ${Math.ceil((loginLock - Date.now()) / 1000)} segundos.`); return; }
+  const email = f.elements.email.value.trim().toLowerCase(), pass = f.elements.pass.value;
+  if (!S.loaded.has('members')) { show('Todavía se está cargando el equipo. Intenta en unos segundos.'); return; }
+  const m = (S.members || []).find(x => String(x.email || '').toLowerCase() === email && x.active !== false);
+  const ok = m && (await passHash(m.id, pass)) === m.pinHash;
+  if (!ok) { loginFails++; if (loginFails >= 5) { loginLock = Date.now() + 30000; loginFails = 0; } show(m ? 'La contraseña no es correcta.' : 'Ese correo no está registrado en el equipo. Pide al administrador que lo registre.'); return; }
+  loginFails = 0; UI.session = { id: m.id, exp: Date.now() + 7 * DAY }; saveSession(UI.session); UI.viewAs = null;
+  if (canEdit()) updateRec('members', m.id, { lastLogin: new Date().toISOString() }).catch(() => {});
+  toast(`Bienvenido, ${mName(m)}`, 'ok'); render(); window.scrollTo(0, 0);
+}
+function viewLogin() {
+  return `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:6%;top:24%"></span><div class="wrap"><div><p class="eyebrow">Intranet del equipo · DGP OGPL-UNMSM</p><h1 class="title">Mi espacio de trabajo</h1><p class="lead">Ingresa con tu correo institucional de San Marcos para ver tus proyectos, tus funciones según el cronograma y el plan de gestión, tus pendientes, tus reuniones y tu horario.</p></div></div></section>
+  <div class="wrap section"><form class="login-card" id="login-form" novalidate><div class="login-mark">${MARK(46)}<div><b>GESTIÓN</b><span>Intranet del equipo</span></div></div>
+    <label class="f"><span>Correo institucional</span><input name="email" type="email" autocomplete="username" placeholder="nombre.apellido@unmsm.edu.pe" required></label>
+    <label class="f"><span>Contraseña</span><input name="pass" type="password" autocomplete="current-password" required></label>
+    <p class="form-err" id="login-err" hidden></p>
+    <button class="btn primary" type="submit">Ingresar</button>
+    <p class="note">¿Primer ingreso? Usa la contraseña inicial que te dio el director del proyecto; el sistema te pedirá cambiarla. ¿Olvidaste tu contraseña? Pide al administrador que la restablezca.</p></form></div>`;
+}
+function myItems(m) {
+  const projs = projectsOf(m), pids = new Set(projs.map(x => x.p.id));
+  const owns = (txt, pid) => memberMatches(m, txt) || (isGroupOwner(txt) && pids.has(pid));
+  const tasks = (S.tasks || []).filter(t => t.type !== 'Entregable' && owns(t.owner, t.pid));
+  const agreements = (S.agreements || []).filter(a => owns(a.owner, a.pid));
+  const risks = (S.risks || []).filter(r => r.status !== 'Cerrado' && owns(r.owner, r.pid));
+  const keys = String(m.planRoles || '').split(/[,;\n]+/).map(normN).filter(a => a.length > 2).concat(aliasesOf(m));
+  const plan = [];
+  (S.plans || []).filter(pl => pids.has(pl.pid)).forEach(pl => secsOf(pl.id).forEach(sec => (sec.blocks || []).forEach((b, bi) => {
+    if (b.t !== 'table' || !b.check) return;
+    const ci = (b.head || []).findIndex(h => /responsable/i.test(h)); if (ci < 0) return;
+    const ti = Math.max(0, (b.head || []).findIndex(h => /actividad|tarea|descrip/i.test(h)));
+    const di = (b.head || []).findIndex(h => /fecha/i.test(h));
+    (b.rows || []).forEach((r, ri) => { const cell = normN(r[ci]); if (keys.some(k => cell.includes(k))) plan.push({ pl, sec, bi, ri, text: r[ti], date: di >= 0 ? r[di] : '', done: (b.done || [])[ri] || '' }); });
+  })));
+  const extra = [...new Set([...tasks, ...agreements, ...risks].map(x => x.pid).filter(pid => pid && !pids.has(pid)))].map(projectById).filter(Boolean);
+  return { projs, pids, tasks, agreements, risks, plan, extra };
+}
+function plansFor(pids) { return (S.plans || []).filter(pl => pids.has(pl.pid) && secsOf(pl.id).length).sort((a, b) => String(b.phase).localeCompare(String(a.phase))); }
+function myPlanFunctions(m, pids) {
+  for (const pl of plansFor(pids)) {
+    const sec = secsOf(pl.id).find(s => s.key === '7'); if (!sec) continue;
+    const bl = sec.blocks || [];
+    const i = bl.findIndex(b => b.t === 'p' && /^\*\*/.test(b.text || '') && aliasesOf(m).some(a => normN(String(b.text).split('**')[1] || '').includes(a)));
+    if (i < 0) continue;
+    const out = [bl[i]]; for (let j = i + 1; j < bl.length; j++) { const b = bl[j]; if (b.t === 'h' || (b.t === 'p' && /^\*\*/.test(b.text || ''))) break; out.push(b); }
+    return { pl, sec, blocks: out };
+  }
+  return null;
+}
+function myRaci(m, pids) {
+  if (!m.raci) return null;
+  for (const pl of plansFor(pids)) {
+    const sec = secsOf(pl.id).find(s => s.key === '7'); if (!sec) continue;
+    const tb = (sec.blocks || []).find(b => b.t === 'table' && (b.head || []).some(h => normN(h) === normN(m.raci))); if (!tb) continue;
+    const ci = tb.head.findIndex(h => normN(h) === normN(m.raci)), g = { R: [], A: [], C: [], I: [] };
+    tb.rows.forEach(r => { const v = String(r[ci] || '').trim().toUpperCase().replace('*', ''); if (g[v]) g[v].push(r[0]); });
+    return { pl, g };
+  }
+  return null;
+}
+function nowStatus(m) {
+  const st = schedState(m); if (st === 'pend') return { k: 'pend', t: 'Horario pendiente' };
+  const n = new Date(), d = ((n.getDay() + 6) % 7) + 1, min = n.getHours() * 60 + n.getMinutes();
+  const b = busyOf(m, d).find(x => min >= x.s && min < x.e);
+  if (b) return { k: 'busy', t: `En clase hasta las ${m2t(b.e)} · ${b.t}` };
+  if (min < JORNADA.from || min >= JORNADA.to || d === 7) return { k: 'off', t: 'Fuera de la jornada' };
+  const nx = busyOf(m, d).find(x => x.s > min);
+  return { k: 'free', t: nx ? `Libre hasta las ${m2t(nx.s)}` : 'Libre el resto del día' };
+}
+function viewMe() {
+  if (!S.loaded.has('members') || !S.loaded.has('projects')) return '<div class="wrap loading"><h2>Conectando con el equipo…</h2></div>';
+  const m = curMember(); if (!m) return viewLogin();
+  const real = sessionMember(), preview = !!(UI.viewAs && (!real || real.id !== m.id));
+  const it = myItems(m), td = today(), now = new Date();
+  const openT = it.tasks.filter(t => num(t.progress) < 100), lateT = openT.filter(t => taskState(t, td).k === 'late');
+  const openA = it.agreements.filter(a => a.status === 'Pendiente'), openP = it.plan.filter(x => !x.done);
+  const myMt = upcomingMeetings(meetingsAll()).filter(mt => attendeesOf(mt).some(x => x.id === m.id));
+  const nxt = myMt[0];
+  const ed = canEdit() && !preview;
+  // semana actual (el domingo se muestra la semana que empieza): clases y reuniones
+  const sunday = td.getDay() === 0, mon = new Date(td); mon.setDate(td.getDate() + (sunday ? 1 : -((td.getDay() + 6) % 7)));
+  const dates = {}, wkItems = classItems(m);
+  for (let i = 0; i < 7; i++) { const x = new Date(mon); x.setDate(mon.getDate() + i); const iso = isoD(x); dates[i + 1] = `${x.getDate()} ${MES[x.getMonth()]}`; meetingsAll().filter(mt => mt.date === iso && mt.status !== 'Cancelada' && attendeesOf(mt).some(a => a.id === m.id)).forEach(mt => wkItems.push({ d: i + 1, s: t2m(mt.start), e: t2m(mt.end), t: (mt.pid ? scopeName(mtScope(mt)) + ' · ' : '') + mt.title, k: 'reunion', sub: scopeName(mtScope(mt)) })); }
+  const days = wkItems.some(i => i.d === 7) ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6];
+  const banner = preview ? `<div class="me-preview">${icon('equipo', 18)}<span>Vista previa del intranet de <b>${esc(m.name)}</b>, tal como lo ve al ingresar.</span><button class="btn sm" data-act="view-as-exit">Salir de la vista previa</button></div>` : '';
+  const mustChange = preview || !real ? '' : !canEdit() ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Modo de solo lectura.</b> Puedes ver tu información, pero para marcar avances, confirmar reuniones${real.mustChange ? ', cambiar la contraseña inicial' : ''} o editar tu horario, el director debe compartirte el sistema con permiso para interactuar.</span></div>` : real.mustChange ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Estás usando la contraseña inicial.</b> Cámbiala por una personal para proteger tu acceso.</span><button class="btn sm primary" data-act="pw-open">Cambiar contraseña</button></div>` : '';
+  const hero = `<section class="hero me-hero"><div class="wrap"><div class="me-id">${avatar(m, 'xl')}<div><p class="eyebrow">Intranet del equipo · ${esc(m.role || 'Integrante')}</p><h1 class="title">Hola, ${esc(String(mName(m)).split(' ')[0])}</h1><p class="lead">${esc(m.name)} · ${esc(m.email || '')}</p><p class="me-chips">${it.projs.map(x => `<button class="code-chip" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}</p><div class="hero-actions">${preview ? '' : `${canEdit() ? '<button class="btn sm" data-act="pw-open">Cambiar contraseña</button>' : ''}<button class="btn sm" data-act="logout">Cerrar sesión</button>`}</div></div></div>
+    <div class="blob"><h2>Ahora mismo</h2><p class="me-now ${nowStatus(m).k}">${esc(nowStatus(m).t)}</p>${nxt ? `<p class="me-next"><small>Tu próxima reunión</small><b>${esc(nxt.title)}</b><span>${esc(whenTxt(nxt))}</span></p>` : '<p class="me-next"><small>Tu próxima reunión</small><b>Sin reuniones programadas</b></p>'}</div></div></section>`;
+  const kpis = `<section class="section kband"><div class="kpis">${kpi('Mis proyectos', it.projs.length, esc(it.projs.map(x => x.p.code).join(' · ') || '—'), 'portafolio')}${kpi('Tareas pendientes', openT.length + openP.length, `${openT.length} del cronograma · ${openP.length} del plan`, 'cronograma')}${kpi('Vencidas', lateT.length, lateT.length ? 'Ponte al día esta semana' : 'Nada vencido', 'alerta')}${kpi('Acuerdos pendientes', openA.length, 'Compromisos de reuniones', 'acuerdo')}${kpi('Reuniones por venir', myMt.length, nxt ? esc(whenTxt(nxt)) : 'Sin reuniones', 'equipo')}</div></section>`;
+  // proyectos y funciones
+  const fx = myPlanFunctions(m, it.pids), rc = myRaci(m, it.pids);
+  const projCards = it.projs.map(({ p, role, dedication }) => { const mm = S.loaded.has('tasks') ? metrics(p) : null; return `<article class="me-proj"><header><span class="code-chip">${esc(p.code)}</span>${mm ? pill(mm.health.tone, mm.health.label) : ''}</header><h3>${esc(p.name)}</h3><p class="me-role"><small>Tu rol</small>${esc(role || '—')}${dedication ? ` · ${dedication}% de dedicación` : ''}</p>${mm ? `<div class="me-bar"><span style="width:${clamp(mm.realPct || 0, 0, 100).toFixed(0)}%"></span></div><p class="note num">Avance real ${pct(mm.realPct)} · planificado ${pct(mm.planPct)} · área de enfoque: ${esc(p.phase || '—')}</p>` : ''}<div class="me-acts"><button class="btn sm" data-act="go-project" data-id="${esc(p.id)}">Abrir el proyecto</button>${driveUrl(p.drive) ? `<a class="btn sm" href="${esc(driveUrl(p.drive))}" target="_blank" rel="noopener noreferrer">Carpeta en Drive ↗</a>` : ''}${(S.plans || []).filter(pl => pl.pid === p.id && secsOf(pl.id).length).map(pl => `<button class="btn sm" data-act="open-plan" data-id="${esc(pl.id)}">Plan ${esc(String(pl.phase || '').split(' · ')[0])}</button>`).join('')}</div></article>`; }).join('');
+  const extra = it.extra.length ? `<p class="note" style="margin-top:10px">También tienes compromisos en: ${it.extra.map(p => `<button class="linkish" data-act="go-project" data-id="${esc(p.id)}">${esc(p.code)}</button>`).join(', ')}.</p>` : '';
+  const funcs = fx ? `<div class="me-fx"><p class="mini-h">Según el plan ${esc(fx.pl.code || '')} (sección 7.2)</p>${fx.blocks.map((b, bi) => prBlock(b, fx.sec.id, bi)).join('')}</div>` : '<p class="note">Tus funciones detalladas aparecerán aquí cuando el plan de gestión de tu proyecto las incluya en la sección 7.2.</p>';
+  const raci = rc ? `<div class="me-raci"><p class="mini-h">Tu papel en la matriz RACI (${esc(rc.pl.code || '')}, columna «${esc(m.raci)}»)</p>${[['R', 'Lo haces'], ['A', 'Lo apruebas'], ['C', 'Te consultan'], ['I', 'Te informan']].filter(([k]) => rc.g[k].length).map(([k, l]) => `<div class="raci-g"><b class="raci-k ${k}">${k}</b><div><small>${l}</small><p>${rc.g[k].map(esc).join(' · ')}</p></div></div>`).join('')}</div>` : '';
+  // pendientes
+  const tRow = t => { const st = taskState(t, td), p = projectById(t.pid); return `<li class="pd ${st.k}"><label class="pd-ck"><input type="checkbox" data-quick="done" data-id="${esc(t.id)}"${num(t.progress) >= 100 ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como hecha"></label><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> <span class="mono">${esc(t.wbs || '')}</span> ${esc(t.name)}</p><small>${pill(st.tone, st.label)} ${t.end ? `Fin ${fmtD(t.end)}` : ''} · ${Math.round(num(t.progress))}%</small></div></li>`; };
+  const pRow = x => `<li class="pd ${x.done ? 'done' : ''}"><label class="pd-ck"><input type="checkbox" data-pchk="${esc(x.sec.id)}:${x.bi}:${x.ri}"${x.done ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como cumplida"></label><div><p><span class="code-chip">${esc(x.pl.code || 'Plan')}</span> ${fmtTxt(x.text)}</p><small>${x.date ? esc(x.date) : ''}${x.done ? ` · cumplida el ${fmtD(x.done)}` : ''} · <button class="linkish" data-act="open-plan" data-id="${esc(x.pl.id)}">ver en el plan</button></small></div></li>`;
+  const aRow = a => { const p = projectById(a.pid), d = parseD(a.due), late = a.status === 'Pendiente' && d && d < td; return `<li class="pd ${a.status === 'Pendiente' ? (late ? 'late' : '') : 'done'}">${a.status === 'Pendiente' && ed ? `<button class="icon-btn" data-act="agree-done" data-id="${esc(a.id)}">Cumplido</button>` : `<span class="pd-ok">${a.status === 'Pendiente' ? '•' : '✓'}</span>`}<div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(a.text)}</p><small>${a.due ? `${late ? '<b class="tone-crit">Venció</b>' : 'Vence'} ${fmtD(a.due)} · ` : ''}${esc(a.meeting || '')}</small></div></li>`; };
+  const tasksOpen = openT.slice().sort((a, b) => String(a.end || '9').localeCompare(String(b.end || '9')));
+  const pend = `<div class="me-cols"><div><h3 class="sub-h">Del cronograma <small>${openT.length} pendientes</small></h3>${tasksOpen.length ? `<ul class="pd-list">${tasksOpen.map(tRow).join('')}</ul>` : '<p class="note">No tienes tareas pendientes asignadas en los cronogramas.</p>'}</div>
+    <div><h3 class="sub-h">Del plan de gestión <small>${openP.length} pendientes</small></h3>${it.plan.length ? `<ul class="pd-list">${it.plan.map(pRow).join('')}</ul>` : '<p class="note">No hay actividades del plan a tu nombre.</p>'}</div>
+    <div><h3 class="sub-h">Acuerdos de reuniones <small>${openA.length} pendientes</small></h3>${it.agreements.length ? `<ul class="pd-list">${it.agreements.slice().sort((a, b) => (a.status === 'Pendiente' ? 0 : 1) - (b.status === 'Pendiente' ? 0 : 1)).map(aRow).join('')}</ul>` : '<p class="note">No tienes acuerdos a tu nombre.</p>'}</div></div>`;
+  const risks = it.risks.length ? panel('Mis riesgos', 'Riesgos de los que eres dueño: revisa su respuesta y su próxima fecha de revisión.', `<ul class="pd-list">${it.risks.map(r => { const p = projectById(r.pid); return `<li class="pd"><span class="pd-ok">${riskScore(r)}</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(r.title)}</p><small>${esc(r.strategy || 'Sin estrategia')} · ${esc(r.status || '')}${r.due ? ` · revisión ${fmtD(r.due)}` : ''}</small></div></li>`; }).join('')}</ul>`) : '';
+  // reuniones
+  const mts = panel('Mis reuniones', `${myMt.length > 6 ? `Las próximas 6 de ${myMt.length}. ` : ''}Confirma tu asistencia y agrégalas a tu Google Calendar para recibir los avisos.`, meetingList(myMt.slice(0, 6), m, preview), `${downloads && myMt.length ? '<button class="btn sm" data-act="me-csv">Descargar mis reuniones (CSV)</button>' : ''}<button class="btn sm" data-act="go-team" data-v="reun">Ver el cronograma completo</button>`);
+  // bitácora
+  const myLogs = (S.logbook || []).filter(l => memberMatches(m, l.person)).sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 5);
+  const logForm = ed && !it.projs.length ? '<p class="note">Podrás registrar en la bitácora cuando figures en el equipo de un proyecto.</p>' : ed ? `<form class="log-form" id="log-form" novalidate><div class="fgrid"><label class="f"><span>Proyecto</span><select name="pid">${it.projs.map(x => `<option value="${esc(x.p.id)}">${esc(x.p.code)} · ${esc(x.p.name)}</option>`).join('')}</select></label><div class="f2"><label class="f"><span>Fecha</span><input type="date" name="date" value="${isoD(td)}"></label><label class="f"><span>Horas</span><input type="number" name="hours" min="0" max="24" step="0.5" value="4"></label></div><label class="f wide"><span>¿Qué hiciste hoy?</span><textarea name="activity" rows="2" required></textarea></label><label class="f wide"><span>Bloqueos o pendientes</span><input name="blockers" placeholder="Opcional"></label></div><button class="btn sm primary" type="submit">Registrar en la bitácora</button></form>` : `<p class="note">${preview ? 'En la vista previa no se registra en la bitácora.' : 'Para registrar en la bitácora necesitas permiso para interactuar con el sistema.'}</p>`;
+  const logs = `<div class="me-cols two"><div>${logForm}</div><div><h3 class="sub-h">Tus últimos registros</h3>${myLogs.length ? `<ul class="pd-list">${myLogs.map(l => { const p = projectById(l.pid); return `<li class="pd"><span class="pd-ok num">${num(l.hours)}h</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(l.activity)}</p><small>${fmtD(l.date)}${l.blockers ? ` · Bloqueo: ${esc(l.blockers)}` : ''}</small></div></li>`; }).join('')}</ul>` : '<p class="note">Aún no registras actividades.</p>'}</div></div>`;
+  // equipo
+  const dir = `<ul class="dir">${membersActive().map(x => { const ns = nowStatus(x); return `<li>${avatar(x)}<div><b>${esc(x.name)}</b><small>${esc(x.role || '')}</small><small>${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : ''}</small></div><span class="ns ${ns.k}">${esc(ns.t)}</span></li>`; }).join('')}</ul>`;
+  return banner + mustChange + hero + `<div class="wrap">${kpis}
+    <section class="section">${secTitle('Mis proyectos y funciones', 'Qué te toca', 'Tu rol en cada proyecto, tus funciones según el plan de gestión y tu lugar en la matriz de responsabilidades.')}<div class="me-projs">${projCards || '<div class="empty"><p>Aún no figuras en el equipo de ningún proyecto.</p></div>'}</div>${extra}<div class="split" style="margin-top:20px">${panel('Mis funciones', '', funcs)}${raci ? panel('Mis responsabilidades', '', raci) : panel('Mis responsabilidades', '', '<p class="note">Tu papel en la matriz RACI aparecerá cuando tu columna esté definida en el plan.</p>')}</div></section>
+    <section class="section">${secTitle('Mis pendientes', 'Para hacer', 'Marca lo que terminas: se actualiza el cronograma, el plan y el tablero de todo el equipo.')}${panel('Pendientes asignados a mí', '', pend)}${risks ? `<div style="margin-top:20px">${risks}</div>` : ''}</section>
+    <section class="section">${secTitle('Mi semana', 'Agenda', sunday ? 'Tus clases y tus reuniones de la semana que empieza mañana.' : 'Tus clases y tus reuniones de esta semana.')}${panel('Clases y reuniones', 'Gris: clases. Turquesa: reuniones del equipo.', weekCal(days, wkItems, { from: 8 * 60, to: 22 * 60, today: sunday ? 0 : ((td.getDay() + 6) % 7) + 1, dates }), canEditMember(m) && !preview ? `<button class="btn sm" data-act="sched-edit" data-id="${esc(m.id)}">Editar mi horario</button>` : '')}<div style="margin-top:20px">${mts}</div></section>
+    <section class="section">${secTitle('Bitácora y equipo', 'Día a día')}<div class="split">${panel('Bitácora de trabajo', 'Registra en un minuto lo que avanzaste; alimenta la bitácora del proyecto.', logs)}${panel('Equipo', '¿Quién está libre ahora? Según su horario de clases.', dir)}</div></section>
+  </div>`;
+}
+async function submitLog(f) {
+  const m = curMember(); if (!m) return;
+  const pid = f.elements.pid.value, act = f.elements.activity.value.trim();
+  if (!act) { toast('Escribe qué hiciste.', 'warn'); return; }
+  const tm = (S.team || []).find(t => t.pid === pid && memberMatches(m, t.name));
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    await createRec('logbook', { pid, date: f.elements.date.value || isoD(today()), person: tm ? tm.name : m.name, hours: Math.max(0, Math.min(24, Number(f.elements.hours.value) || 0)), wbs: '', activity: act, blockers: f.elements.blockers.value.trim() });
+    toast('Registrado en la bitácora', 'ok'); logFeed(pid, `registró su avance en la bitácora: «${act.slice(0, 70)}»`);
+  } catch (e) { writeErr(e); } finally { btn.disabled = false; }
+}
+/* recordatorios en el portafolio y en cada proyecto */
+function meetingAlerts(p) {
+  const out = []; const td = today();
+  (S.meetings || []).filter(mt => mt.pid === p.id && isOpenMt(mt)).forEach(mt => {
+    const d = parseD(mt.date); if (!d || d < td) return; const n = dBetween(td, d);
+    if (n <= 2) out.push([n === 0 ? 2 : 1, `Reunión «${mt.title}» ${n === 0 ? 'hoy' : n === 1 ? 'mañana' : 'pasado mañana'} de ${mt.start} a ${mt.end}.`]);
+    const cf = conflictsOf(mt); if (cf.length && n <= 14) out.push([1, `La reunión del ${fmtDay(mt.date)} choca con la clase de ${[...new Set(cf.map(x => mName(x.m)))].join(', ')}.`]);
+  });
+  return out;
+}
+function agendaBand() {
+  const up = upcomingMeetings(meetingsAll(), 4); if (!up.length) return '';
+  return `<section class="section">${secTitle('Agenda del equipo', 'Próximas reuniones', 'Programadas en las franjas en que todos están libres. Agrégalas a tu Google Calendar para recibir los avisos.')}<div class="agenda">${up.map(mt => { const p = mt.pid ? projectById(mt.pid) : null, cf = conflictsOf(mt), d = parseD(mt.date), n = dBetween(today(), d); return `<article class="ag-card${n <= 1 ? ' soon' : ''}"><div class="mt-date"><span>${DIAS3[(d.getDay() + 6) % 7]}</span><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span></div><div><p class="mt-top"><span class="mono">${esc(mt.start)}–${esc(mt.end)}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : '<span class="code-chip all">Equipo completo</span>'}${n === 0 ? pill('crit', 'Hoy') : n === 1 ? pill('warn', 'Mañana') : ''}</p><h3>${esc(mt.title)}</h3><p class="note">${esc(attendeesOf(mt).map(mName).join(', '))}</p>${cf.length ? `<p class="mt-cf">${icon('alerta', 16)}Choca con la clase de ${esc([...new Set(cf.map(x => mName(x.m)))].join(', '))}</p>` : ''}<a class="linkish" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer">Agregar a Google Calendar ↗</a></div></article>`; }).join('')}</div><p style="text-align:center;margin-top:14px"><button class="btn" data-act="go-team" data-v="reun">Ver el cronograma completo</button></p></section>`;
+}
+function projectMeetingsPanel(p) {
+  const up = upcomingMeetings(meetingsAll()).filter(mt => mt.pid === p.id).slice(0, 4);
+  return panel('Reuniones del equipo del proyecto', `Participan: ${esc(membersOfProject(p.id).map(mName).join(', ') || 'sin integrantes registrados')}. Se programan en las franjas libres de todos.`, up.length ? meetingList(up, null) : '<div class="empty"><p>No hay reuniones programadas para este proyecto.</p></div>', `<button class="btn sm" data-act="go-team" data-v="disp" data-scope="${esc(p.id)}">Ver horas libres</button>${canSchedule() ? `<button class="btn sm primary" data-act="mt-new" data-scope="${esc(p.id)}">Programar reunión</button>` : ''}`);
 }
 
 function viewGuide() {
