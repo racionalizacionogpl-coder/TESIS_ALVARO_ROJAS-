@@ -1268,6 +1268,44 @@ html.of-lock,html.of-lock body{overflow:hidden}
   .of-cap{bottom:8px}
   .of-bub{max-width:180px}
 }
+/* ---------- directorio del equipo ---------- */
+.dir-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:16px}
+.dir-q{flex:1 1 260px;min-width:0}
+.dir-q input{width:100%;border:1px solid var(--line);border-radius:999px;padding:9px 14px;font:inherit;font-size:14px;background:var(--surface);color:var(--ink)}
+.dir-q input:focus{outline:none;box-shadow:var(--focus-ring)}
+.dir-adm{display:flex;flex-wrap:wrap;gap:6px}
+.dir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.dir-card{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface)}
+.dir-card.ext{background:var(--surface-alt);border-style:dashed}
+.dir-card header{display:flex;gap:10px;align-items:flex-start}
+.dir-card h3{margin:0;font:800 15px/1.25 var(--font-display)}
+.dir-card header p{margin:2px 0 0;font-size:13px;color:var(--ink-muted)}
+.dir-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0;font-size:13px}
+.dir-meta a{color:var(--teal-700);word-break:break-all}
+.dir-chips{display:flex;flex-direction:column;gap:6px}
+.dir-chip{display:flex;align-items:center;gap:8px;padding:4px 6px 4px 4px;border:1px solid var(--line-soft);border-radius:var(--radius-sm);background:var(--surface-alt);font-size:13px}
+.dir-chip .code-chip{flex:none;cursor:pointer;border:0}
+.dir-r{flex:1;min-width:0;line-height:1.3}
+.dir-x{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--crit);font:700 15px/1 var(--font-body);cursor:pointer}
+.dir-x:hover{border-color:var(--crit);background:var(--crit-soft)}
+.dir-card footer{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:auto;padding-top:8px;border-top:1px solid var(--line-soft)}
+.dir-cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.dir-col{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface)}
+.dir-col header{display:flex;gap:10px;align-items:flex-start}
+.dir-col header .code-chip{flex:none;cursor:pointer;border:0}
+.dir-col h3{margin:0;font:800 14px/1.3 var(--font-display)}
+.dir-col header small{display:block;margin-top:2px;font-size:12.5px;color:var(--ink-muted)}
+.dir-col ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dir-col li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center}
+.dir-col li b{display:block;font-size:13.5px}
+.dir-col li small{display:block;font-size:12.5px;color:var(--ink-muted);line-height:1.3}
+.dir-ra{display:inline-flex;align-items:center;gap:2px}
+.dir-add{align-self:flex-start;margin-top:auto}
+.nw{white-space:nowrap}
+.asg-pj{grid-column:1/-1;border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 12px;margin:12px 0 0}
+.asg-pj legend{padding:0 6px;font-weight:700;font-size:13px}
+.asg-row{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;gap:8px;margin:6px 0}
+.asg-row input[type=text],.asg-row input:not([type]){border:1px solid var(--line);border-radius:var(--radius-sm);padding:6px 8px;font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink);min-width:0}
 </style>
 
 <header class="nav" id="nav"></header>
@@ -2544,7 +2582,8 @@ async function submitForm(form) {
   if (data.start && data.end && data.end < data.start) { formErr('La fecha de fin no puede ser anterior a la de inicio.'); return; }
   if (coll === 'tasks' && !/^\d+(\.\d+)*$/.test(data.wbs)) { formErr('El código EDT debe tener el formato 1, 1.2 o 1.2.3 (solo números separados por puntos).'); return; }
   if (isP && S.projects.some(p => p.id !== id && String(p.code).toLowerCase() === String(data.code).toLowerCase())) { formErr(`Ya existe un proyecto con el código ${data.code}.`); return; }
-  if (!isP) data.pid = UI.pid;
+  const recPid = !isP && id ? ((S[coll] || []).find(r => r.id === id) || {}).pid : null;
+  if (!isP) data.pid = recPid || UI.pid;
   const btn = form.querySelector('[type=submit]'); btn.disabled = true;
   try {
     let newId = id;
@@ -2554,7 +2593,7 @@ async function submitForm(form) {
     toast(id ? 'Cambios guardados' : 'Registro creado', 'ok');
     const label = data.name || data.title || data.text || data.description || data.activity || data.situation || data.code || '';
     if (isP && !id && newId) { UI.view = 'project'; UI.pid = newId; UI.tab = 'resumen'; persistUI(); }
-    logFeed(isP ? newId : UI.pid, `${id ? 'actualizó' : 'registró'} ${isP ? (id ? 'el acta del proyecto' : 'el proyecto') : COLL[coll].one} «${String(label).slice(0, 90)}»`);
+    logFeed(isP ? newId : data.pid, `${id ? 'actualizó' : 'registró'} ${isP ? (id ? 'el acta del proyecto' : 'el proyecto') : COLL[coll].one} «${String(label).slice(0, 90)}»`);
     schedule();
   } catch (e) { btn.disabled = false; writeErr(e); }
 }
@@ -2569,7 +2608,7 @@ async function deleteFromForm(form) {
       UI.view = 'portfolio'; UI.pid = null; persistUI();
     }
     closeModal(); toast('Registro eliminado', 'ok');
-    logFeed(coll === 'projects' ? null : UI.pid, `eliminó ${coll === 'projects' ? 'el proyecto' : COLL[coll].one} «${String(rec.name || rec.title || rec.text || rec.description || rec.activity || rec.code || '').slice(0, 90)}»`);
+    logFeed(coll === 'projects' ? null : (rec.pid || UI.pid), `eliminó ${coll === 'projects' ? 'el proyecto' : COLL[coll].one} «${String(rec.name || rec.title || rec.text || rec.description || rec.activity || rec.code || '').slice(0, 90)}»`);
     schedule();
   } catch (e) { writeErr(e); if (zone) zone.innerHTML = '<button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button>'; }
 }
@@ -2616,6 +2655,10 @@ document.addEventListener('click', e => {
     case 'sch-add': { const tpl = $('#sch-tpl'), box = $('#sch-rows'); if (tpl && box) { box.appendChild(tpl.content.cloneNode(true)); const r = box.lastElementChild; if (r) { const prev = r.previousElementSibling; if (prev) r.querySelector('[name=d]').value = prev.querySelector('[name=d]').value; r.querySelector('[name=s]').focus(); } } break; }
     case 'sch-del': { const r = el.closest('.sch-row'); if (r) r.remove(); break; }
     case 'mem-new': if (canEdit() && isAdmin()) openMemberForm(null); break;
+    case 'dir-mode': UI.dirMode = el.dataset.v; render(); break;
+    case 'dir-assign': openAssignForm({ key: el.dataset.key || '', pid: el.dataset.pid || '' }); break;
+    case 'dir-register': { if (!canSchedule()) break; const x = dirPeople().find(y => y.key === el.dataset.key); if (x) openMemberForm(null, { name: x.name, short: x.name, role: (x.assign[0] && x.assign[0].t && x.assign[0].t.role) || '', email: x.email || '', aliases: x.name, from: x.key, has: x.assign.filter(a => a.t).map(a => ({ pid: a.p.id, role: a.t.role || '' })) }); break; }
+    case 'dir-unassign': { const t = (S.team || []).find(x => x.id === el.dataset.id), pj = t && projectById(t.pid); if (!t || !canSchedule()) break; if (!confirm(`¿Quitar a ${t.name} del equipo de ${pj ? pj.code : 'este proyecto'}? Sus tareas, acuerdos y registros se conservan.`)) break; db.doc('team/' + t.id).delete().then(() => { toast(`${t.name} salió de ${pj ? pj.code : 'el proyecto'}`, 'ok'); logFeed(t.pid, `quitó a ${t.name} del equipo del proyecto`); }).catch(writeErr); break; }
     case 'mem-edit': if (canEdit() && isAdmin()) openMemberForm(el.dataset.id); break;
     case 'mem-reset': { const m = memberById(el.dataset.id); if (!m || !canEdit() || !isAdmin()) break; if (!confirm(`¿Restablecer la contraseña de ${mName(m)} a la inicial?`)) break; passHash(m.id, DEF_PASS).then(h => updateRec('members', m.id, { pinHash: h, mustChange: true })).then(() => toast(`Contraseña de ${mName(m)} restablecida`, 'ok')).catch(writeErr); break; }
     case 'view-as': if (isAdmin()) { UI.viewAs = el.dataset.id; go('me'); } break;
@@ -2711,6 +2754,7 @@ document.addEventListener('keydown', e => {
 document.addEventListener('input', e => {
   const t = e.target;
   if (t.closest && t.closest('#mt-form') && /^(start|end|date)$/.test(t.name)) { mtFormCheck(); return; }
+  if (t.id === 'dir-q') { UI.dirQ = t.value; const pos = t.selectionStart; render(); const q = $('#dir-q'); if (q) { q.focus({ preventScroll: true }); try { q.setSelectionRange(pos, pos); } catch (er) { /* no aplica */ } } return; }
   if (t.id === 'of-range') { UI.of.min = +t.value || JORNADA.from; OF.dirty = true; OF.jump = true; ofClockPaint(false); return; }
   if (!(t.dataset && t.dataset.change === 'sem')) return;
   UI.semVal = Number(t.value) || 0; const st = semState(UI.semVal);
@@ -2719,7 +2763,7 @@ document.addEventListener('input', e => {
   box.querySelector('.md-sem-out').innerHTML = `${pill(st.k, st.t)} <small>rango ${st.r}</small>`;
 });
 document.addEventListener('submit', e => {
-  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk }[f.id];
+  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign }[f.id];
   if (!h) return; e.preventDefault(); h(f);
 });
 document.addEventListener('change', e => {
@@ -2742,6 +2786,7 @@ document.addEventListener('change', e => {
     }).catch(err => { t.checked = !t.checked; t.disabled = false; writeErr(err); });
     return;
   }
+  if (t.name === 'person' && t.closest && t.closest('#asg-form')) { const nw = $('#asg-new'); if (nw) nw.hidden = t.value !== 'new'; return; }
   if (t.dataset && t.dataset.change === 'of-speed') { UI.of.speed = +t.value || 10; ofClockPaint(true); return; }
   if (t.dataset && t.dataset.change === 'av-buf') { UI.av.buf = +t.value || 0; render(); return; }
   if (t.dataset && t.dataset.change === 'av-min') { UI.av.min = +t.value || 60; render(); return; }
@@ -3378,14 +3423,14 @@ const aliasesOf = m => [m.name, m.short, ...String(m.aliases || '').split(/[,;\n
 const memberMatches = (m, text) => { const t = normN(text); return !!t && aliasesOf(m).some(a => t.includes(a)); };
 const isGroupOwner = text => /^(el grupo|todo el equipo|todos|equipo del proyecto)$/.test(normN(text));
 const avatar = (m, size) => `<span class="av-chip${size ? ' ' + size : ''}" style="--mc:${esc(m.color || 'var(--teal-600)')}" aria-hidden="true">${esc(initials(mName(m)))}</span>`;
+const teamOf = (m, t) => (t.memberId ? t.memberId === m.id : memberMatches(m, t.name));
 function membersOfProject(pid) {
-  const p = projectById(pid);
-  const names = (S.team || []).filter(t => t.pid === pid).map(t => t.name).concat(p && p.manager ? [p.manager] : []);
-  return membersActive().filter(m => names.some(n => memberMatches(m, n)));
+  const p = projectById(pid), rows = (S.team || []).filter(t => t.pid === pid);
+  return membersActive().filter(m => rows.some(t => teamOf(m, t)) || !!(p && p.manager && memberMatches(m, p.manager)));
 }
 function projectsOf(m) {
   const out = new Map();
-  (S.team || []).forEach(t => { if (memberMatches(m, t.name)) { const p = projectById(t.pid); if (p && !out.has(p.id)) out.set(p.id, { p, role: t.role || '', dedication: num(t.dedication) }); } });
+  (S.team || []).forEach(t => { if (teamOf(m, t)) { const p = projectById(t.pid); if (p && !out.has(p.id)) out.set(p.id, { p, role: t.role || '', dedication: num(t.dedication) }); } });
   projectsSorted().forEach(p => { if (!out.has(p.id) && memberMatches(m, p.manager)) out.set(p.id, { p, role: 'Director del proyecto', dedication: 0 }); });
   return [...out.values()].sort((a, b) => String(a.p.code).localeCompare(String(b.p.code), 'es', { numeric: true }));
 }
@@ -3498,7 +3543,7 @@ const classItems = m => (m.schedule || []).map(b => ({ d: +b.d, s: t2m(b.s), e: 
 
 /* ---------- vista Equipo ---------- */
 function viewTeam() {
-  const tabs = [['disp', 'Disponibilidad común'], ['reun', 'Cronograma de reuniones'], ['hor', 'Horarios']].concat(isAdmin() ? [['acc', 'Accesos al intranet']] : []);
+  const tabs = [['dir', 'Directorio'], ['disp', 'Disponibilidad común'], ['reun', 'Cronograma de reuniones'], ['hor', 'Horarios']].concat(isAdmin() ? [['acc', 'Accesos al intranet']] : []);
   const tab = tabs.some(t => t[0] === UI.teamTab) ? UI.teamTab : 'disp';
   const ms = membersActive(), withS = ms.filter(m => schedState(m) !== 'pend');
   const up = upcomingMeetings(meetingsAll());
@@ -3506,7 +3551,7 @@ function viewTeam() {
   const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:20%"></span><div class="wrap"><div><p class="eyebrow">Equipo y agenda · DGP OGPL-UNMSM</p><h1 class="title">Horarios del equipo, horas libres en común y reuniones</h1><p class="lead">Cruza los horarios de clases de cada integrante, encuentra las franjas en que todos están libres y programa las reuniones de cada proyecto o del equipo completo. Las reuniones avisan si chocan con una clase.</p></div>
     <div class="blob"><h2>El equipo hoy</h2><div class="md-blob-k"><div><div class="k-val">${ms.length}</div><div class="k-label">Integrantes</div></div><div><div class="k-val">${withS.length}/${ms.length}</div><div class="k-label">Horarios cargados</div></div><div><div class="k-val">${up.length}</div><div class="k-label">Reuniones por venir</div></div><div><div class="k-val" style="font-size:20px">${next ? esc(whenTxt(next).split(' · ')[0]) : '—'}</div><div class="k-label">Próxima reunión</div></div></div></div></div></section>`;
   if (!S.loaded.has('members')) return hero + '<div class="wrap section"><div class="empty"><p>Cargando el equipo…</p></div></div>';
-  const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'acc' ? teamAccess() : teamDisp();
+  const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'acc' ? teamAccess() : tab === 'dir' ? teamDirectory() : teamDisp();
   return hero + `<div class="wrap"><div class="tabs" role="tablist" aria-label="Secciones del equipo">${tabs.map(([k, l]) => `<button class="tab" role="tab" aria-selected="${tab === k}" data-act="team-tab" data-v="${k}">${esc(l)}</button>`).join('')}</div>${body}</div>`;
 }
 function scopeChips(cur, act) {
@@ -3581,9 +3626,90 @@ function teamSchedules() {
 function teamAccess() {
   const ms = membersAll();
   return panel('Accesos al intranet', `Cada integrante ingresa con su correo institucional y su contraseña. La contraseña inicial es <b class="mono">${DEF_PASS}</b> y el sistema pide cambiarla en el primer ingreso. Revisa que cada correo sea el real: los marcados «por confirmar» se armaron con el formato nombre.apellido@unmsm.edu.pe.`,
-    `<div class="tbl"><table class="acc-t"><thead><tr><th>Integrante</th><th>Correo</th><th>Contraseña</th><th>Último ingreso</th><th><span class="sr">Acciones</span></th></tr></thead><tbody>${ms.map(m => `<tr${m.active === false ? ' class="off"' : ''}><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b>${m.admin ? ' <span class="pill accent">Administrador</span>' : ''}${m.active === false ? ' <span class="pill">Inactivo</span>' : ''}<small>${esc(m.role || '')}</small></span></span></td><td class="nowrap">${esc(m.email || '—')}${m.emailOk ? '' : '<br><span class="pill warn"><i></i>Por confirmar</span>'}</td><td class="nowrap">${m.mustChange ? '<span class="pill warn"><i></i>Inicial</span>' : '<span class="pill ok"><i></i>Personal</span>'}</td><td class="nowrap">${m.lastLogin ? esc(ago(Date.parse(m.lastLogin))) : '—'}</td><td><div class="acc-acts">${canEdit() ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(m.id)}">Editar</button><button class="icon-btn" data-act="mem-reset" data-id="${esc(m.id)}">Restablecer contraseña</button>` : ''}<button class="icon-btn" data-act="view-as" data-id="${esc(m.id)}">Ver su intranet</button></div></td></tr>`).join('')}</tbody></table></div>
+    `<div class="tbl"><table class="acc-t"><thead><tr><th>Integrante</th><th>Correo</th><th>Contraseña</th><th>Último ingreso</th><th><span class="sr">Acciones</span></th></tr></thead><tbody>${ms.map(m => `<tr${m.active === false ? ' class="off"' : ''}><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b>${m.admin ? ' <span class="pill accent">Administrador</span>' : ''}${m.active === false ? ' <span class="pill">Inactivo</span>' : ''}<small>${esc(m.role || '')}</small></span></span></td><td class="nowrap">${m.email ? `${esc(m.email)}${m.emailOk ? '' : '<br><span class="pill warn"><i></i>Por confirmar</span>'}` : '<span class="note">Sin correo: no puede ingresar</span>'}</td><td class="nowrap">${m.mustChange ? '<span class="pill warn"><i></i>Inicial</span>' : '<span class="pill ok"><i></i>Personal</span>'}</td><td class="nowrap">${m.lastLogin ? esc(ago(Date.parse(m.lastLogin))) : '—'}</td><td><div class="acc-acts">${canEdit() ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(m.id)}">Editar</button><button class="icon-btn" data-act="mem-reset" data-id="${esc(m.id)}">Restablecer contraseña</button>` : ''}<button class="icon-btn" data-act="view-as" data-id="${esc(m.id)}">Ver su intranet</button></div></td></tr>`).join('')}</tbody></table></div>
     <p class="note" style="margin-top:12px"><b>Importante:</b> el ingreso identifica a cada integrante y personaliza su vista; no es una barrera de seguridad. Cualquier persona con acceso al sistema puede ver la cartera, así que no guardes aquí información confidencial. Para que un integrante pueda marcar tareas, confirmar reuniones o editar su horario, compártele el sistema desde claude.ai con permiso para interactuar.</p>`,
     canEdit() ? '<button class="btn sm primary" data-act="mem-new">Agregar integrante</button>' : '');
+}
+
+/* ---------- directorio: todas las personas de todos los proyectos ---------- */
+function dirPeople() {
+  const people = membersActive().map(m => ({ key: 'm:' + m.id, m, name: m.name, role: m.role || '', email: m.email || '', assign: [] }));
+  const byKey = new Map(people.map(x => [x.key, x]));
+  (S.team || []).forEach(t => {
+    const p = projectById(t.pid); if (!p) return;
+    let x = t.memberId ? byKey.get('m:' + t.memberId) : people.find(y => y.m && memberMatches(y.m, t.name));
+    if (!x) { const k = 'n:' + normN(t.name); x = byKey.get(k); if (!x) { x = { key: k, m: null, name: t.name, role: t.role || '', email: t.contact || '', assign: [] }; people.push(x); byKey.set(k, x); } }
+    x.assign.push({ t, p });
+  });
+  projectsSorted().forEach(p => {
+    if (!p.manager) return;
+    const x = people.find(y => (y.m ? memberMatches(y.m, p.manager) : normN(y.name) === normN(p.manager)));
+    if (x && !x.assign.some(a => a.p.id === p.id)) x.assign.push({ t: null, p, mgr: true });
+  });
+  people.forEach(x => x.assign.sort((a, b) => String(a.p.code).localeCompare(String(b.p.code), 'es', { numeric: true })));
+  return people.sort((a, b) => (a.m ? 0 : 1) - (b.m ? 0 : 1) || (a.m && b.m ? (+a.m.order || 99) - (+b.m.order || 99) : 0) || String(a.name).localeCompare(String(b.name), 'es'));
+}
+const dirAv = x => (x.m ? avatar(x.m) : `<span class="av-chip" style="--mc:var(--idle)" aria-hidden="true">${esc(initials(x.name))}</span>`);
+function dirChip(a, admin) {
+  const role = a.mgr ? 'Director/a del proyecto' : (a.t.role || 'Sin rol definido');
+  return `<span class="dir-chip"><button class="code-chip" data-act="go-project" data-id="${esc(a.p.id)}" title="${esc(a.p.name)}">${esc(a.p.code)}</button><span class="dir-r">${esc(role)}${a.t && num(a.t.dedication) ? ` · <span class="nw">${num(a.t.dedication)} %</span>` : ''}</span>${admin && a.t ? `<button class="dir-x" data-act="dir-unassign" data-id="${esc(a.t.id)}" aria-label="Quitar a ${esc(a.t.name)} de ${esc(a.p.code)}" title="Quitar de ${esc(a.p.code)}">×</button>` : ''}</span>`;
+}
+function teamDirectory() {
+  const admin = canSchedule(), mode = UI.dirMode || 'people', q = normN(UI.dirQ || ''), all = dirPeople(), P = projectsSorted();
+  const hit = x => !q || normN(`${x.name} ${x.role} ${x.email} ${x.assign.map(a => `${a.p.code} ${a.p.name} ${a.t ? a.t.role : ''}`).join(' ')}`).includes(q);
+  const people = all.filter(hit), nAsg = (S.team || []).filter(t => projectById(t.pid)).length, nIn = all.filter(x => x.m && x.m.email).length;
+  const top = `<div class="dir-top"><div class="seg" role="group" aria-label="Vista del directorio"><button data-act="dir-mode" data-v="people" aria-pressed="${mode === 'people'}">Personas</button><button data-act="dir-mode" data-v="proj" aria-pressed="${mode === 'proj'}">Por proyecto</button></div><label class="dir-q"><span class="sr">Buscar en el directorio</span><input type="search" id="dir-q" placeholder="Buscar por nombre, rol, correo o proyecto" value="${esc(UI.dirQ || '')}" autocomplete="off"></label>${admin ? '<span class="dir-adm"><button class="btn sm" data-act="dir-assign">Asignar a un proyecto</button><button class="btn sm primary" data-act="mem-new">Agregar persona</button></span>' : ''}</div>`;
+  let body;
+  if (mode === 'proj') {
+    body = `<div class="dir-cols">${P.map(p => {
+      const rows = all.filter(hit).flatMap(x => x.assign.filter(a => a.p.id === p.id).map(a => ({ x, a })));
+      return `<section class="dir-col"><header><button class="code-chip" data-act="go-project" data-id="${esc(p.id)}">${esc(p.code)}</button><div><h3>${esc(p.name)}</h3><small>${plural(rows.length, 'persona', 'personas')}${p.manager ? ` · dirige ${esc(p.manager)}` : ''}</small></div></header>
+        ${rows.length ? `<ul>${rows.map(({ x, a }) => `<li>${dirAv(x)}<div><b>${esc(x.m ? mName(x.m) : x.name)}</b><small>${esc(a.mgr ? 'Director/a del proyecto' : (a.t.role || 'Sin rol definido'))}${a.t && num(a.t.dedication) ? ` · <span class="nw">${num(a.t.dedication)} %</span>` : ''}</small></div>${admin && a.t ? `<span class="dir-ra"><button class="icon-btn" data-act="edit" data-coll="team" data-id="${esc(a.t.id)}" aria-label="Editar el rol de ${esc(a.t.name)}">Editar</button><button class="dir-x" data-act="dir-unassign" data-id="${esc(a.t.id)}" aria-label="Quitar a ${esc(a.t.name)} de ${esc(p.code)}" title="Quitar">×</button></span>` : ''}</li>`).join('')}</ul>` : '<p class="note">Sin personas asignadas.</p>'}
+        ${admin ? `<button class="btn sm dir-add" data-act="dir-assign" data-pid="${esc(p.id)}">+ Agregar persona a ${esc(p.code)}</button>` : ''}</section>`;
+    }).join('')}</div>`;
+  } else {
+    body = people.length ? `<div class="dir-grid">${people.map(x => {
+      const st = x.m ? schedState(x.m) : null;
+      return `<article class="dir-card${x.m ? '' : ' ext'}"><header>${dirAv(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.role || (x.assign[0] && x.assign[0].t ? x.assign[0].t.role : '') || '—')}</p></div></header>
+        <p class="dir-meta">${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : '<span class="note">Sin correo registrado</span>'}${x.m ? `${pill(SCHED_LBL[st][0], SCHED_LBL[st][1])}${x.m.email ? '<span class="pill ok"><i></i>Intranet</span>' : ''}` : '<span class="pill"><i></i>Colaborador sin registro</span>'}</p>
+        <div class="dir-chips">${x.assign.length ? x.assign.map(a => dirChip(a, admin)).join('') : '<span class="note">Sin proyectos asignados.</span>'}</div>
+        ${admin ? `<footer><button class="btn sm" data-act="dir-assign" data-key="${esc(x.key)}">Asignar a un proyecto</button>${x.m ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(x.m.id)}">Editar datos</button>` : `<button class="icon-btn" data-act="dir-register" data-key="${esc(x.key)}">Registrar en el equipo</button>`}</footer>` : ''}</article>`;
+    }).join('')}</div>` : '<div class="empty"><p>No hay personas que coincidan con la búsqueda.</p></div>';
+  }
+  return panel('Directorio del equipo', `${plural(all.length, 'persona', 'personas')} en ${plural(P.length, 'proyecto', 'proyectos')} · ${plural(nAsg, 'asignación', 'asignaciones')} · ${nIn} con acceso al intranet.${admin ? ' Como administrador puedes asignar personas a cada proyecto, cambiar su rol o quitarlas.' : ''}`, top + body);
+}
+function openAssignForm(pre) {
+  if (!canSchedule()) return;
+  pre = pre || {};
+  const people = dirPeople(), P = projectsSorted();
+  const body = `<div class="fgrid">
+    ${fld('Persona', `<select name="person" required><option value="">Elige una persona…</option>${people.map(x => `<option value="${esc(x.key)}"${pre.key === x.key ? ' selected' : ''}>${esc(x.name)}${x.m ? '' : ' · colaborador sin registro'}</option>`).join('')}<option value="new">+ Persona nueva (solo en este proyecto)…</option></select>`, 1)}
+    <div class="f wide" id="asg-new" hidden>${fld('Nombre completo de la persona nueva', '<input name="newName" autocomplete="off">', 1, 'Para darle acceso al intranet, regístrala después con «Registrar en el equipo».')}</div>
+    ${fld('Proyecto', `<select name="pid" required>${P.map(p => `<option value="${esc(p.id)}"${pre.pid === p.id ? ' selected' : ''}>${esc(p.code)} · ${esc(p.name)}</option>`).join('')}</select>`, 1)}
+    ${fld('Rol en el proyecto', '<input name="role" required placeholder="Por ejemplo: Analista de procesos">', 1)}
+    ${fld('Dedicación (%)', '<input type="number" name="dedication" min="0" max="100" step="5" value="0">')}
+    ${fld('Competencias', '<input name="skills" placeholder="Opcional">')}
+  </div>`;
+  dlg('Asignar a un proyecto', body, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Asignar</button></div>', 'asg-form');
+}
+async function submitAssign(f) {
+  if (!canSchedule()) return;
+  const key = f.elements.person.value, pid = f.elements.pid.value, role = f.elements.role.value.trim(), p = projectById(pid);
+  if (!key) { formErr('Elige a la persona.'); return; }
+  if (!p) { formErr('Elige el proyecto.'); return; }
+  if (!role) { formErr('Escribe el rol que cumplirá en el proyecto.'); return; }
+  let name = '', memberId = '', contact = '';
+  if (key === 'new') { name = f.elements.newName.value.trim(); if (!name) { formErr('Escribe el nombre de la persona nueva.'); return; } }
+  else {
+    const x = dirPeople().find(y => y.key === key); if (!x) { formErr('No se encontró a esa persona.'); return; }
+    if (x.assign.some(a => a.p.id === pid && a.t)) { formErr(`${x.name} ya forma parte de ${p.code}. Para cambiar su rol, usa «Editar» en la vista por proyecto.`); return; }
+    name = x.m ? x.m.name : x.name; memberId = x.m ? x.m.id : ''; contact = x.email || '';
+  }
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    await createRec('team', { pid, name, memberId, role, dedication: clamp(num(f.elements.dedication.value), 0, 100), skills: f.elements.skills.value.trim(), contact });
+    closeModal(); toast(`${name} se sumó a ${p.code}`, 'ok'); logFeed(pid, `asignó a ${name} al equipo del proyecto como ${role}`);
+  } catch (e) { btn.disabled = false; writeErr(e); }
 }
 
 /* ---------- diálogos ---------- */
@@ -3686,27 +3812,34 @@ async function submitSchedule(f) {
     closeModal(); toast('Horario guardado', 'ok'); logFeed(null, `actualizó el horario de ${mName(m)}`);
   } catch (e) { btn.disabled = false; writeErr(e); }
 }
-function openMemberForm(id) {
-  const m = id ? memberById(id) || {} : {};
-  const body = `<div class="fgrid">${fld('Nombre completo', `<input name="name" value="${esc(m.name || '')}" required>`, 1)}${fld('Nombre corto', `<input name="short" value="${esc(m.short || '')}" placeholder="Nombre y apellido">`)}${fld('Correo institucional', `<input name="email" type="email" value="${esc(m.email || '')}" placeholder="nombre.apellido@unmsm.edu.pe" required>`)}
+function openMemberForm(id, pre) {
+  const m = id ? memberById(id) || {} : Object.assign({}, pre || {});
+  const body = `<div class="fgrid">${fld('Nombre completo', `<input name="name" value="${esc(m.name || '')}" required>`, 1)}${fld('Nombre corto', `<input name="short" value="${esc(m.short || '')}" placeholder="Nombre y apellido">`)}${fld('Correo institucional', `<input name="email" type="email" value="${esc(m.email || '')}" placeholder="nombre.apellido@unmsm.edu.pe">`, 0, 'Con correo puede ingresar al intranet; sin correo queda solo en el directorio.')}
     ${fld('Cargo en el equipo', `<input name="role" value="${esc(m.role || '')}">`, 1)}
     ${fld('Otros nombres con que aparece', `<input name="aliases" value="${esc(m.aliases || '')}">`, 1, 'Separados por comas. Sirven para reconocer sus tareas, acuerdos y riesgos en los cronogramas.')}
     ${fld('Rol en los planes de gestión', `<input name="planRoles" value="${esc(m.planRoles || '')}">`, 1, 'Cómo aparece en las tablas de responsables del plan, por ejemplo «Analistas, Equipo de racionalización».')}
     ${fld('Columna en la matriz RACI', `<input name="raci" value="${esc(m.raci || '')}" placeholder="Analistas de racionalización">`)}${fld('Color', `<input name="color" type="color" value="${esc(m.color || '#0A7E90')}">`)}</div>
-    <div class="chk-row"><label class="mini-c"><input type="checkbox" name="emailOk"${m.emailOk ? ' checked' : ''}> Correo confirmado</label><label class="mini-c"><input type="checkbox" name="admin"${m.admin ? ' checked' : ''}> Administrador</label><label class="mini-c"><input type="checkbox" name="active"${m.active === false ? '' : ' checked'}> Activo</label></div>`;
-  dlg(id ? `Editar a ${mName(m)}` : 'Agregar integrante', body, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>', 'mem-form');
+    <div class="chk-row"><label class="mini-c"><input type="checkbox" name="emailOk"${m.emailOk ? ' checked' : ''}> Correo confirmado</label><label class="mini-c"><input type="checkbox" name="admin"${m.admin ? ' checked' : ''}> Administrador</label><label class="mini-c"><input type="checkbox" name="active"${m.active === false ? '' : ' checked'}> Activo</label></div>
+    ${id ? '' : `<fieldset class="asg-pj"><legend>Proyectos en los que participará</legend>${projectsSorted().map(p => { const h = ((pre && pre.has) || []).find(a => a.pid === p.id); return `<label class="asg-row"><input type="checkbox" name="pj" value="${esc(p.id)}"${(pre && pre.pid === p.id) || h ? ' checked' : ''}${h ? ' disabled' : ''}><span class="code-chip">${esc(p.code)}</span><input name="pjrole-${esc(p.id)}" placeholder="Rol en ${esc(p.code)}" aria-label="Rol en ${esc(p.code)}"${h ? ` value="${esc(h.role)}" disabled title="Ya forma parte de ${esc(p.code)}"` : ''}></label>`; }).join('')}</fieldset>`}`;
+  dlg(id ? `Editar a ${mName(m)}` : pre && pre.from ? `Registrar a ${m.name} en el equipo` : 'Agregar integrante', body, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>', 'mem-form');
   $('#mem-form').dataset.id = id || '';
+  $('#mem-form').dataset.from = (!id && pre && pre.from) || '';
 }
 async function submitMember(f) {
   const id = f.dataset.id || null, g = k => f.elements[k].value.trim();
   const data = { name: g('name'), short: g('short'), email: g('email').toLowerCase(), role: g('role'), aliases: g('aliases'), planRoles: g('planRoles'), raci: g('raci'), color: g('color'), emailOk: f.elements.emailOk.checked, admin: f.elements.admin.checked, active: f.elements.active.checked };
-  if (!data.name || !data.email) { formErr('Completa el nombre y el correo.'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { formErr('El correo no tiene un formato válido.'); return; }
-  if ((S.members || []).some(x => x.id !== id && String(x.email).toLowerCase() === data.email)) { formErr('Ese correo ya está registrado para otro integrante.'); return; }
+  if (!data.name) { formErr('Escribe el nombre completo.'); return; }
+  if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { formErr('El correo no tiene un formato válido.'); return; }
+  if (data.email && (S.members || []).some(x => x.id !== id && String(x.email || '').toLowerCase() === data.email)) { formErr('Ese correo ya está registrado para otro integrante.'); return; }
+  const pjs = id ? [] : [...f.querySelectorAll('input[name=pj]:checked:not(:disabled)')].map(c => ({ pid: c.value, role: (f.elements['pjrole-' + c.value] || {}).value || '' }));
   const btn = f.querySelector('[type=submit]'); btn.disabled = true;
   try {
     if (id) await updateRec('members', id, data);
-    else { const nid = 'm-' + normN(data.short || data.name).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) + '-' + Date.now().toString(36).slice(-4); await db.doc('members/' + nid).set(Object.assign(data, stamp(), { order: (S.members || []).length + 1, schedule: [], pinHash: await passHash(nid, DEF_PASS), mustChange: true, createdAt: new Date().toISOString() })); }
+    else { const nid = 'm-' + normN(data.short || data.name).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) + '-' + Date.now().toString(36).slice(-4); await db.doc('members/' + nid).set(Object.assign(data, stamp(), { order: (S.members || []).length + 1, schedule: [], pinHash: await passHash(nid, DEF_PASS), mustChange: true, createdAt: new Date().toISOString() }));
+      const from = f.dataset.from || '', linked = from ? (S.team || []).filter(t => !t.memberId && 'n:' + normN(t.name) === from) : [];
+      for (const t of linked) await updateRec('team', t.id, { memberId: nid, name: data.name, contact: data.email || t.contact || '' });
+      for (const a of pjs) await createRec('team', { pid: a.pid, name: data.name, memberId: nid, role: a.role.trim(), dedication: 0, skills: '', contact: data.email });
+      if (pjs.length) logFeed(null, `sumó a ${data.name} al directorio y a ${pjs.length > 1 ? `${pjs.length} proyectos` : 'un proyecto'}`); }
     closeModal(); toast(id ? 'Integrante actualizado' : 'Integrante agregado', 'ok');
   } catch (e) { btn.disabled = false; writeErr(e); }
 }
@@ -3952,7 +4085,7 @@ function ofQueue(m) {
 function ofZoneOf(m) {
   const role = normN(`${m.role || ''} ${m.planRoles || ''}`), codes = projectsOf(m).map(x => String(x.p.code || '').toUpperCase());
   if (m.admin || /director|lider|senior/.test(role)) return 'dir';
-  if (/desarroll|full ?stack|sigpro|programad|sistemas/.test(role)) return 'lab';
+  if (/desarroll|full ?stack|sigpro|programad|sistemas|automatiz|inteligencia artificial/.test(role)) return 'lab';
   if (codes.includes('P04') && !codes.includes('P01')) return 'acred';
   if (codes.includes('P01')) return 'proc';
   if (codes.includes('P04')) return 'acred';
@@ -4723,6 +4856,7 @@ function ofActions(m) {
   if (/revision documental|pmbok/.test(r)) A.push(['check', 'Lista de verificación PMBOK', 'Prepara una lista de verificación para revisar un plan de gestión de proyecto según el PMBOK 7 (dominios de desempeño, alcance, cronograma, riesgos, interesados, calidad), con criterios de forma y de fondo.']);
   if (/normativa|iso|coneau|sineace|evidencia/.test(r)) A.push(['evid', 'Matriz de evidencias', 'Prepara una matriz de evidencias para la certificación ISO 9001 y la acreditación de la FCM: requisito o estándar, evidencia esperada, responsable, ubicación y estado.']);
   if (/desarroll|full ?stack|sigpro|programad/.test(r)) A.push(['hu', 'Historias de usuario SIGPRO', 'Redacta historias de usuario con criterios de aceptación para el siguiente módulo de SIGPRO relacionado con sus pendientes.'], ['deploy', 'Plan de pruebas y despliegue', 'Prepara un plan breve de pruebas y despliegue para sus pendientes de desarrollo: casos de prueba, ambiente, responsables y pasos de reversión.']);
+  if (/automatiz|inteligencia artificial/.test(r)) A.push(['ahp', 'Estructura del modelo AHP', 'Propón la estructura de un modelo AHP (Proceso de Jerarquía Analítica) para priorizar la asignación presupuestal: meta, criterios tomados de la ley de presupuesto, subcriterios, alternativas y cómo validar la consistencia; luego, cómo entrenar un modelo con la data histórica.'], ['flujo', 'Flujo de una automatización', 'Diseña el flujo de trabajo de una automatización en Apps Script relacionada con sus pendientes: disparador, validaciones, registro en Google Sheets, notificación por correo y manejo de errores, en pasos numerados.']);
   A.push(['dia', 'Planificar su día', 'Propón un plan de trabajo para hoy con sus pendientes más urgentes, considerando sus clases y reuniones, en bloques de tiempo realistas.'], ['avance', 'Reporte de avance', 'Redacta su reporte de avance semanal: lo hecho, lo que sigue, bloqueos y apoyo que necesita.']);
   return A.map(([k, t, p]) => ({ k, t, p }));
 }
