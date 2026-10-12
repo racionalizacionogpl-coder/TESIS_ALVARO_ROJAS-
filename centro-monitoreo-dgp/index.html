@@ -78,7 +78,7 @@ p{margin:0}
 .dd button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;border:0;background:none;padding:9px 10px;border-radius:var(--radius-sm);text-align:left;cursor:pointer;color:var(--ink)}
 .dd button:hover{background:var(--surface-alt)}
 .dd .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.nav-r{display:flex;align-items:center;gap:12px}
+.nav-r{display:flex;align-items:center;gap:9px}
 .live{display:inline-flex;align-items:center;gap:7px;font:700 11px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--on-navy)}
 .live i{width:8px;height:8px;border-radius:50%;background:var(--teal-500);animation:pulse 2.4s infinite}
 .live.off i{background:var(--on-navy-muted);animation:none} .live.err i{background:var(--crit);animation:none} .live.wait i{animation:none}
@@ -632,9 +632,9 @@ td.c,th.c{text-align:center}
 .md-step.compact{padding:4px}
 .md-mx .linkish{text-align:left;font-size:13.5px}
 .md-ph>span{min-width:0;overflow-wrap:anywhere}
-.live small,.live-t,.nav-r .np .np-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.nav-r .np{padding:7px 12px;font-size:16px;line-height:1}.nav-r .np .np-plus{font-weight:600}.menu>button,.menu summary{padding-inline:10px}.nav .wrap{gap:16px}
+.live small,.live-t,.nav-r .np .np-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.nav-r .np{padding:7px 12px;font-size:16px;line-height:1}.nav-r .np .np-plus{font-weight:600}.menu>button,.menu summary{padding-inline:9px}.nav .wrap{gap:12px}
 @media (max-width:640px){.nav-r .np{display:none}}
-@media (max-width:1180px){.nav .wrap{gap:4px 14px;padding-block:8px 0}.menu{order:3;width:100%;margin:0;overflow-x:auto}.menu>button,.menu summary{padding:12px 10px 11px}.nav-r{margin-left:auto}.dd{position:fixed;left:16px;right:16px;top:auto;min-width:0;max-width:none}}
+@media (max-width:1240px){.nav .wrap{gap:4px 14px;padding-block:8px 0}.menu{order:3;width:100%;margin:0;overflow-x:auto}.menu>button,.menu summary{padding:12px 10px 11px}.nav-r{margin-left:auto}.dd{position:fixed;left:16px;right:16px;top:auto;min-width:0;max-width:none}}
 .md-steps{display:flex;flex-wrap:wrap;gap:6px}
 .md-key{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:20px;align-items:center;background:var(--navy-900);color:var(--on-navy);border-radius:var(--radius-lg);padding:24px 26px}
 .md-key .eyebrow{color:var(--teal-500)}
@@ -1306,9 +1306,94 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .asg-pj legend{padding:0 6px;font-weight:700;font-size:13px}
 .asg-row{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;gap:8px;margin:6px 0}
 .asg-row input[type=text],.asg-row input:not([type]){border:1px solid var(--line);border-radius:var(--radius-sm);padding:6px 8px;font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink);min-width:0}
+/* reuniones de emergencia */
+:root{--sos:#B8352C;--sos-ink:#FFFFFF;--sos-soft:#FBE5E3;--sos-line:#F2C4BF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--sos:#C4433A;--sos-soft:#3B1C1A;--sos-line:#6B2B26}}
+:root[data-theme="dark"]{--sos:#C4433A;--sos-soft:#3B1C1A;--sos-line:#6B2B26}
+.btn.sos{background:var(--sos);border-color:var(--sos);color:var(--sos-ink);display:inline-flex;align-items:center;gap:6px}
+.btn.sos:hover{filter:brightness(1.08);color:var(--sos-ink);border-color:var(--sos)}
+.nav-r .sos-nav{background:var(--sos);border:1px solid #ffffff40;color:#fff;border-radius:999px;width:36px;height:34px;padding:0;display:inline-grid;place-items:center;cursor:pointer}
+.nav-r .sos-nav:hover{filter:brightness(1.12)}
+.nav-r .sos-nav:focus-visible{box-shadow:var(--focus-ring);outline:0}
+.sos-i{color:var(--sos)}
+.sos-bar{background:var(--sos);color:var(--sos-ink)}
+.sos-bar .wrap{display:grid;gap:2px;padding-block:6px}
+.sos-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:4px 0}
+.sos-dot{width:12px;height:12px;border-radius:50%;background:#fff;flex:none;box-shadow:0 0 0 0 #ffffffb3;animation:sosPulse 1.6s infinite}
+@keyframes sosPulse{0%{box-shadow:0 0 0 0 #ffffffb3}70%{box-shadow:0 0 0 10px #ffffff00}100%{box-shadow:0 0 0 0 #ffffff00}}
+@media (prefers-reduced-motion: reduce){.sos-dot{animation:none}}
+.sos-txt{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;min-width:0;flex:1 1 280px;font-size:14px;line-height:1.35}
+.sos-txt b{font:800 12px/1.2 var(--font-display);letter-spacing:.08em;text-transform:uppercase}
+.sos-txt span{font-weight:700;overflow-wrap:anywhere}
+.sos-txt small{opacity:.92;font-size:13px}
+.sos-acts{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sos-bar .btn{border-radius:999px}
+.sos-bar .sos-w{background:#fff;border-color:#fff;color:var(--sos);font-weight:700}
+.sos-bar .sos-w:hover{color:var(--sos);filter:brightness(.96)}
+.sos-bar .sos-o{background:transparent;border-color:#ffffffa6;color:#fff}
+.sos-bar .sos-o:hover,.sos-bar .sos-o.on{background:#fff;color:var(--sos);border-color:#fff}
+.sos-x{border:0;background:none;color:#fff;font-size:22px;line-height:1;width:32px;height:32px;border-radius:50%;cursor:pointer}
+.sos-x:hover{background:#ffffff26}
+.sos-x:focus-visible,.sos-bar .btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.sos-more-t{margin:0 0 4px 24px;font-size:12.5px;opacity:.9}
+.sos-lead{display:flex;gap:10px;align-items:flex-start;background:var(--sos-soft);border:1px solid var(--sos-line);color:var(--ink);border-radius:var(--radius-sm);padding:10px 12px;margin:0 0 14px;font-size:14px;line-height:1.45}
+.sos-lead .ico{color:var(--sos);flex:none;margin-top:1px}
+.sos-who{border:0;padding:0;margin:0 0 12px}
+.sos-who legend{font-weight:700;font-size:13px;margin-bottom:6px;padding:0}
+.sos-seg{display:flex;flex-wrap:wrap;gap:6px}
+.sos-seg label{position:relative;cursor:pointer}
+.sos-seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.sos-seg span{display:inline-block;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;font:600 13.5px/1.2 var(--font-body)}
+.sos-seg input:checked+span{background:var(--sos);border-color:var(--sos);color:var(--sos-ink)}
+.sos-seg input:focus-visible+span{box-shadow:var(--focus-ring)}
+.sos-pj{margin-bottom:10px}
+.sos-list{border:1px solid var(--line);border-radius:var(--radius-sm);padding:8px 10px;margin:0 0 14px;max-height:320px;overflow:auto;background:var(--surface-alt)}
+.sos-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-muted);font-weight:700;padding:2px 2px 6px}
+.sos-tools span{margin-right:auto}
+.sos-rows{display:grid;gap:4px}
+.sos-p{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);align-items:center;gap:6px 12px;padding:6px 8px;border-radius:var(--radius-sm);border:1px solid transparent}
+.sos-p.on{background:var(--surface);border-color:var(--line)}
+.sos-p label{display:flex;align-items:center;gap:9px;min-width:0;cursor:pointer}
+.sos-p label input{width:17px;height:17px;flex:none;accent-color:var(--sos)}
+.sos-n{display:grid;min-width:0}
+.sos-n b{font-size:14px;line-height:1.25}
+.sos-n small{font-size:12px;color:var(--ink-muted)}
+.sos-c{display:flex;align-items:center;gap:6px;justify-content:flex-end;min-width:0;flex-wrap:wrap}
+.sos-em{font:500 12.5px/1.3 var(--font-mono);color:var(--ink-muted);overflow-wrap:anywhere;text-align:right}
+.sos-in{border:1px solid var(--line);border-radius:var(--radius-sm);padding:6px 8px;font:inherit;font-size:13px;background:var(--surface);color:var(--ink);width:230px;max-width:100%}
+.sos-more{margin-top:8px}
+.sos-more summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--teal-700);padding:4px 2px}
+.sos-save{margin:10px 0 4px}
+.sos-sum{margin-top:10px;display:grid;gap:6px}
+.sos-k{margin:0;font-size:14px}
+.sos-card{border:1px solid var(--line);border-left:4px solid var(--sos);border-radius:var(--radius-sm);padding:12px 14px;background:var(--surface);display:grid;gap:6px}
+.sos-card h3{margin:0;font:800 18px/1.3 var(--font-display)}
+.sos-card p{margin:0}
+.sos-place{font-size:14px}
+.sos-h{margin:16px 0 8px;font:800 14px/1.3 var(--font-display)}
+.sos-send{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.sos-send .btn{display:inline-flex;align-items:center;gap:6px}
+.sos-to textarea{font:500 12.5px/1.45 var(--font-mono);resize:vertical}
+.mt-row.urgent{border-left:4px solid var(--sos)}
+.ag-card.urgent{border-color:var(--sos);box-shadow:inset 4px 0 0 var(--sos)}
+@media (max-width:640px){
+  .sos-p{grid-template-columns:1fr}
+  .sos-c{justify-content:flex-start;padding-left:26px}
+  .sos-em{text-align:left}
+  .sos-in{width:100%}
+  .sos-row{gap:8px}
+  .sos-acts{width:100%}
+}
+.hero-cta{margin:18px 0 0}
+.dir-cf{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;align-items:center}
+.dir-cf .dir-add{margin-top:0}
+.btn.sos-ghost{color:var(--sos);border-color:var(--sos-line);display:inline-flex;align-items:center;gap:5px}
+.btn.sos-ghost:hover{color:var(--sos);border-color:var(--sos)}
+.mt-g{font-size:12.5px;color:var(--ink-muted);margin-left:6px}
 </style>
 
 <header class="nav" id="nav"></header>
+<div id="sos-bar" class="sos-bar" role="region" aria-label="Reuniones de emergencia" hidden></div>
 <main id="view"><div class="wrap loading"><h2>Conectando con la base de datos del equipo…</h2><p>En unos segundos verás la cartera de proyectos, sus alertas y el avance actualizado.</p></div></main>
 <footer class="foot" id="foot"></footer>
 <div id="modal" hidden></div>
@@ -1356,6 +1441,8 @@ const initials = n => String(n || '?').split(/\s+/).filter(w => w && /^[A-Za-zÁ
 
 /* Íconos de la marca (línea 1.75, 24 px) */
 const ICONS = {"portafolio": "<rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"1.5\"/>", "alerta": "<path d=\"M12 3.8L21 19.5H3Z\"/><path d=\"M12 9.5v4.5\"/><path d=\"M12 16.9v.1\"/>", "cronograma": "<rect x=\"3\" y=\"4.5\" width=\"10\" height=\"3.2\" rx=\"1\"/><rect x=\"8\" y=\"10.4\" width=\"12.5\" height=\"3.2\" rx=\"1\"/><rect x=\"5.5\" y=\"16.3\" width=\"9\" height=\"3.2\" rx=\"1\"/>", "riesgo": "<path d=\"M12 3l7 3v5c0 4.6-3 8.1-7 10-4-1.9-7-5.4-7-10V6z\"/><path d=\"M12 8.2v4.3\"/><path d=\"M12 15.6v.1\"/>", "acuerdo": "<rect x=\"5\" y=\"4.5\" width=\"14\" height=\"16.5\" rx=\"2\"/><path d=\"M9.5 4.5V3h5v1.5\"/><path d=\"M8.6 13.1l2.4 2.4 4.4-4.9\"/>", "equipo": "<circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3.5 19.5c0-3.1 2.5-5.3 5.5-5.3s5.5 2.2 5.5 5.3\"/><circle cx=\"16.8\" cy=\"9\" r=\"2.6\"/><path d=\"M15.6 14.3c2.8-.2 4.9 1.8 4.9 4.7\"/>", "hito": "<path d=\"M12 3l6 6-6 6-6-6z\"/><path d=\"M12 15v6\"/>", "curva": "<path d=\"M3 18.5l6-6 4 3.2 8-9\"/><path d=\"M15.5 6.7H21v5.5\"/>", "cambio": "<path d=\"M4 8.5h14\"/><path d=\"M14.5 5l3.5 3.5-3.5 3.5\"/><path d=\"M20 15.5H6\"/><path d=\"M9.5 12L6 15.5 9.5 19\"/>", "asesor": "<path d=\"M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z\"/><path d=\"M18.5 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z\"/>"};
+ICONS.rayo = '<path d="M13.2 2.8L5 13.4h6.1l-1.3 7.8 8.2-10.6h-6.1z"/>';
+ICONS.correo = '<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.6 7.2l8.4 6 8.4-6"/>';
 const icon = (n, s = 24) => `<svg class="ico" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[n] || ''}</svg>`;
 const MARK = (s = 38, dia = 'var(--navy-900)') => `<svg width="${s}" height="${s}" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1BB0C4"/><path d="M28.89 16.21A9 9 0 1 0 31 22H23" fill="none" stroke="#FFFFFF" stroke-width="6.25"/><path d="M33 32.5L37.5 37L33 41.5L28.5 37Z" fill="${dia}"/></svg>`;
 
@@ -1795,7 +1882,7 @@ function teamNames(pid) {
    ========================================================= */
 function render() {
   MC = new Map();
-  renderNav(); renderFoot(); renderPlanReader();
+  renderNav(); renderFoot(); renderPlanReader(); renderSos();
   const v = $('#view');
   if (UI.view === 'guide') { v.innerHTML = viewGuide(); pushPresence(); return; }
   if (UI.view !== 'board') UI.wb.max = false;
@@ -1844,7 +1931,7 @@ function renderNav() {
       <details class="${UI.view === 'project' ? 'on' : ''}"><summary>Proyectos <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5L5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></summary><div class="dd">${dd}</div></details>
       <button data-act="go-guide" aria-current="${UI.view === 'guide'}" title="Guía PMBOK">Guía</button>
     </nav>
-    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${S.mode === 'live' && !canEdit() ? '<span class="pill">Solo lectura</span>' : ''}${canEdit() ? '<button class="btn pill np" data-act="new-project" title="Nuevo proyecto"><span class="np-plus" aria-hidden="true">+</span><span class="np-t">Nuevo proyecto</span></button>' : ''}${(() => { const sm = sessionMember(); return `<button class="nav-me" data-act="go-me" aria-current="${UI.view === 'me'}" title="${sm ? esc(sm.name) : 'Ingresar al intranet del equipo'}">${sm ? avatar(sm) : `<span class="ni">${icon('equipo', 15)}</span>`}${sm ? esc(String(mName(sm)).split(' ')[0]) : 'Intranet'}</button>`; })()}</div>
+    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${S.mode === 'live' && !canEdit() ? '<span class="pill">Solo lectura</span>' : ''}${canSchedule() ? `<button class="sos-nav" data-act="sos-new" title="Reunión de emergencia" aria-label="Convocar una reunión de emergencia">${icon('rayo', 17)}</button>` : ''}${canEdit() ? '<button class="btn pill np" data-act="new-project" title="Nuevo proyecto"><span class="np-plus" aria-hidden="true">+</span><span class="np-t">Nuevo proyecto</span></button>' : ''}${(() => { const sm = sessionMember(); return `<button class="nav-me" data-act="go-me" aria-current="${UI.view === 'me'}" title="${sm ? esc(sm.name) : 'Ingresar al intranet del equipo'}">${sm ? avatar(sm) : `<span class="ni">${icon('equipo', 15)}</span>`}${sm ? esc(String(mName(sm)).split(' ')[0]) : 'Intranet'}</button>`; })()}</div>
   </div>`;
 }
 function renderFoot() {
@@ -2020,6 +2107,7 @@ function viewProject(p) {
   const actions = [
     sample ? `<button class="round-wrap" data-act="ai" data-scope="${esc(p.id)}"><span class="round">${icon('asesor', 24)}</span><span>Informe de estado<br>con IA</span></button>` : '',
     canEdit() ? `<button class="btn primary" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '',
+    canSchedule() ? `<button class="btn sos" data-act="sos-new" data-pid="${esc(p.id)}" data-who="project">${icon('rayo', 17)}Reunión de emergencia</button>` : '',
     downloads ? `<button class="btn" data-act="export" data-id="${esc(p.id)}">Exportar datos</button>` : '',
     driveUrl(p.drive) ? `<a class="btn" href="${esc(driveUrl(p.drive))}" target="_blank" rel="noopener noreferrer">Carpeta en Drive ↗</a>` : '',
   ].join('');
@@ -2640,6 +2728,14 @@ document.addEventListener('click', e => {
     case 'mt-filter': UI.mtScope = el.dataset.v; render(); break;
     case 'mt-new': { if (!canSchedule()) break; const pre = {}; if (el.dataset.v) { const [d, t] = el.dataset.v.split(':').map(Number); pre.date = nextDateFor(d); pre.start = m2t(t); } if (el.dataset.scope) pre.scope = el.dataset.scope; else if (UI.view === 'team') pre.scope = UI.av.scope; openMeetingForm(null, pre); break; }
     case 'mt-edit': if (canSchedule()) openMeetingForm(el.dataset.id); break;
+    case 'sos-new': if (canSchedule()) openSosForm({ pid: el.dataset.pid || (UI.view === 'project' ? UI.pid : ''), who: el.dataset.who || '' }); break;
+    case 'sos-send': openSosSend(el.dataset.id); break;
+    case 'sos-all': sosMark(true); break;
+    case 'sos-none': sosMark(false); break;
+    case 'sos-hide': sosHide(el.dataset.id); renderSos(); break;
+    case 'sos-end': { const f = $('#sos-send-form'), mt = f && sosById(f.dataset.id); if (!mt || !mt.id || !canSchedule()) break; updateRec('meetings', mt.id, { status: 'Realizada' }).then(() => { closeModal(); toast('Reunión de emergencia marcada como realizada', 'ok'); logFeed(mt.pid || null, `cerró la reunión de emergencia «${mt.title}»`); }).catch(writeErr); break; }
+    case 'sos-copy': { const box = el.dataset.v === 'mails' ? $('#sos-to') : $('#sos-msg'); if (!box) break; copyText(box.value).then(ok => toast(ok ? (el.dataset.v === 'mails' ? 'Correos copiados' : 'Mensaje copiado') : 'No se pudo copiar: selecciona el texto y cópialo.', ok ? 'ok' : 'warn')); break; }
+    case 'sos-ics': { const f = $('#sos-send-form'), mt = f && sosById(f.dataset.id); if (!mt || !downloads) break; downloads.save({ filename: 'reunion_emergencia.ics', data: sosIcs(mt) }).catch(er => { const c = er && er.code; if (c && !/cancel|declin|denied|dismiss/i.test(c)) toast('No se pudo preparar la invitación.', 'warn'); }); break; }
     case 'mt-pick': { const f = $('#mt-form'); if (!f) break; const [d, a, dur] = el.dataset.v.split(':').map(Number); if (dowOf(f.elements.date.value) !== d) f.elements.date.value = nextDateFor(d); f.elements.start.value = m2t(a); f.elements.end.value = m2t(a + dur); mtFormCheck(); break; }
     case 'mt-del': { const f = $('#mt-form'), mt = f && (S.meetings || []).find(x => x.id === f.dataset.id), z = $('#del-zone'); if (!mt || !z) break; z.innerHTML = `<span>¿Eliminar?</span><button type="button" class="btn sm danger" data-act="mt-del-go" data-v="one">Solo esta</button>${mt.series ? '<button type="button" class="btn sm danger" data-act="mt-del-go" data-v="next">Esta y las siguientes</button>' : ''}<button type="button" class="btn sm" data-act="close-modal">No</button>`; break; }
     case 'mt-del-go': {
@@ -2753,6 +2849,7 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('input', e => {
   const t = e.target;
+  if (t.closest && t.closest('#sos-form')) { if (t.name !== 'p' && t.name !== 'who' && t.name !== 'pid') sosSum(); return; }
   if (t.closest && t.closest('#mt-form') && /^(start|end|date)$/.test(t.name)) { mtFormCheck(); return; }
   if (t.id === 'dir-q') { UI.dirQ = t.value; const pos = t.selectionStart; render(); const q = $('#dir-q'); if (q) { q.focus({ preventScroll: true }); try { q.setSelectionRange(pos, pos); } catch (er) { /* no aplica */ } } return; }
   if (t.id === 'of-range') { UI.of.min = +t.value || JORNADA.from; OF.dirty = true; OF.jump = true; ofClockPaint(false); return; }
@@ -2763,11 +2860,12 @@ document.addEventListener('input', e => {
   box.querySelector('.md-sem-out').innerHTML = `${pill(st.k, st.t)} <small>rango ${st.r}</small>`;
 });
 document.addEventListener('submit', e => {
-  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign }[f.id];
+  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign, 'sos-form': submitSos, 'sos-send-form': () => closeModal() }[f.id];
   if (!h) return; e.preventDefault(); h(f);
 });
 document.addEventListener('change', e => {
   const t = e.target;
+  if (t.closest && t.closest('#sos-form')) { sosChange(t); return; }
   if (t.dataset && t.dataset.pchk) {
     const [sid, bi, ri] = t.dataset.pchk.split(':'); const sec = (S.planSections || []).find(x => x.id === sid);
     if (!sec || !canEdit()) { t.checked = !t.checked; return; }
@@ -3454,7 +3552,7 @@ const scopeName = scope => (!scope || scope === 'all' ? 'Equipo completo' : ((pr
 /* reuniones */
 const meetingsAll = () => (S.meetings || []).slice().sort((a, b) => (String(a.date) + String(a.start)).localeCompare(String(b.date) + String(b.start)));
 const mtScope = mt => (mt.pid ? mt.pid : 'all');
-const attendeesOf = mt => scopeMembers(mtScope(mt));
+const attendeesOf = mt => (Array.isArray(mt.attendees) ? membersActive().filter(m => mt.attendees.includes(m.id)) : scopeMembers(mtScope(mt)));
 function mtAt(mt, which) { const d = parseD(mt.date); if (!d) return null; const n = t2m(which === 'end' ? mt.end : mt.start) || 0; return new Date(d.getFullYear(), d.getMonth(), d.getDate(), Math.floor(n / 60), n % 60); }
 function conflictsOf(mt) {
   const d = dowOf(mt.date), s = t2m(mt.start), e = t2m(mt.end); if (!d || s == null || e == null) return [];
@@ -3548,7 +3646,7 @@ function viewTeam() {
   const ms = membersActive(), withS = ms.filter(m => schedState(m) !== 'pend');
   const up = upcomingMeetings(meetingsAll());
   const next = up[0];
-  const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:20%"></span><div class="wrap"><div><p class="eyebrow">Equipo y agenda · DGP OGPL-UNMSM</p><h1 class="title">Horarios del equipo, horas libres en común y reuniones</h1><p class="lead">Cruza los horarios de clases de cada integrante, encuentra las franjas en que todos están libres y programa las reuniones de cada proyecto o del equipo completo. Las reuniones avisan si chocan con una clase.</p></div>
+  const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:20%"></span><div class="wrap"><div><p class="eyebrow">Equipo y agenda · DGP OGPL-UNMSM</p><h1 class="title">Horarios del equipo, horas libres en común y reuniones</h1><p class="lead">Cruza los horarios de clases de cada integrante, encuentra las franjas en que todos están libres y programa las reuniones de cada proyecto o del equipo completo. Las reuniones avisan si chocan con una clase.</p>${canSchedule() ? `<p class="hero-cta"><button class="btn sos" data-act="sos-new">${icon('rayo', 18)}Reunión de emergencia</button></p>` : ''}</div>
     <div class="blob"><h2>El equipo hoy</h2><div class="md-blob-k"><div><div class="k-val">${ms.length}</div><div class="k-label">Integrantes</div></div><div><div class="k-val">${withS.length}/${ms.length}</div><div class="k-label">Horarios cargados</div></div><div><div class="k-val">${up.length}</div><div class="k-label">Reuniones por venir</div></div><div><div class="k-val" style="font-size:20px">${next ? esc(whenTxt(next).split(' · ')[0]) : '—'}</div><div class="k-label">Próxima reunión</div></div></div></div></div></section>`;
   if (!S.loaded.has('members')) return hero + '<div class="wrap section"><div class="empty"><p>Cargando el equipo…</p></div></div>';
   const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'acc' ? teamAccess() : tab === 'dir' ? teamDirectory() : teamDisp();
@@ -3585,14 +3683,14 @@ function mtRow(mt, me, ro) {
   const d = parseD(mt.date);
   const st = mt.status && mt.status !== 'Programada' ? pill(mt.status === 'Realizada' ? 'ok' : mt.status === 'Cancelada' ? 'crit' : 'warn', mt.status) : '';
   const meBtns = me && !ro && isOpenMt(mt) && canEdit() ? `<span class="mt-rsvp">${['si', 'no'].map(v => `<button class="btn sm${conf[me.id] === v ? (v === 'si' ? ' ok-on' : ' no-on') : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('')}</span>` : '';
-  return `<article class="mt-row${mt.status === 'Cancelada' ? ' off' : ''}">
+  return `<article class="mt-row${mt.status === 'Cancelada' ? ' off' : ''}${isUrgent(mt) ? ' urgent' : ''}">
     <div class="mt-date">${d ? `<span>${DIAS3[(d.getDay() + 6) % 7]}</span><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span>` : '—'}</div>
-    <div class="mt-main"><p class="mt-top"><span class="mono">${esc(mt.start)}–${esc(mt.end)}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : '<span class="code-chip all">Equipo completo</span>'}${st}${FERIADOS[mt.date] ? pill('warn', 'Feriado') : ''}</p>
+    <div class="mt-main"><p class="mt-top"><span class="mono">${esc(mt.start)}–${esc(mt.end)}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : isUrgent(mt) && mt.who === 'people' ? '<span class="code-chip all">Personas elegidas</span>' : '<span class="code-chip all">Equipo completo</span>'}${isUrgent(mt) ? pill('crit', 'Emergencia') : ''}${st}${FERIADOS[mt.date] ? pill('warn', 'Feriado') : ''}</p>
       <h4>${esc(mt.title || 'Reunión')}</h4>
-      <p class="mt-att">${att.map(m => `<span class="mt-a${conf[m.id] === 'si' ? ' si' : conf[m.id] === 'no' ? ' no' : ''}" title="${esc(mName(m))}${conf[m.id] === 'si' ? ' · asistirá' : conf[m.id] === 'no' ? ' · no podrá' : ''}">${avatar(m, 'sm')}</span>`).join('')}<small>${esc(mt.place || 'Lugar por definir')}</small></p>
+      <p class="mt-att">${att.map(m => `<span class="mt-a${conf[m.id] === 'si' ? ' si' : conf[m.id] === 'no' ? ' no' : ''}" title="${esc(mName(m))}${conf[m.id] === 'si' ? ' · asistirá' : conf[m.id] === 'no' ? ' · no podrá' : ''}">${avatar(m, 'sm')}</span>`).join('')}${(mt.guests || []).length ? `<small class="mt-g">+ ${esc(mt.guests.map(g => g.name || g.email).join(', '))}</small>` : ''}<small>${esc(mt.place || 'Lugar por definir')}</small></p>
       ${cf.length ? `<p class="mt-cf">${icon('alerta', 16)}Choca con: ${cf.map(x => `${esc(mName(x.m))} (${esc(x.b.t)} ${m2t(x.b.s)}–${m2t(x.b.e)})`).join('; ')}</p>` : ''}
       ${mt.agenda ? `<details class="mt-ag"><summary>Agenda</summary><p>${fmtTxt(mt.agenda)}</p></details>` : ''}</div>
-    <div class="mt-acts">${meBtns}<a class="btn sm" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer" title="Agregar a Google Calendar para recibir avisos">Google Calendar ↗</a>${canSchedule() && !ro ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Editar</button>` : ''}</div></article>`;
+    <div class="mt-acts">${meBtns}<a class="btn sm" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer" title="Agregar a Google Calendar para recibir avisos">Google Calendar ↗</a>${isUrgent(mt) && !ro ? `<button class="btn sm sos" data-act="sos-send" data-id="${esc(mt.id)}">${canSchedule() ? 'Convocatoria' : 'Detalles'}</button>` : ''}${canSchedule() && !ro ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Editar</button>` : ''}</div></article>`;
 }
 function weekLabel(iso) { const d = parseD(iso); const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7)); const sun = new Date(mon); sun.setDate(mon.getDate() + 6); return `Semana del ${mon.getDate()} ${MES[mon.getMonth()]} al ${sun.getDate()} ${MES[sun.getMonth()]}`; }
 function meetingList(list, me, ro) {
@@ -3613,7 +3711,7 @@ function teamMeetings() {
   const ser = series.size ? `<div class="ser-list">${[...series.values()].map(L => { const a = L[0], g = gcalSeriesUrl(L); return `<div class="ser"><div><b>${esc(a.title)}</b><small>${esc(DIAS[dowOf(a.date) - 1])} ${esc(a.start)}–${esc(a.end)} · ${plural(L.length, 'fecha', 'fechas')} hasta el ${fmtD(L[L.length - 1].date)}</small></div>${g ? `<a class="btn sm" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Agregar la serie a Google Calendar ↗</a>` : '<small class="note">Tiene fechas movidas por feriados: agrégalas una por una o con el CSV.</small>'}</div>`; }).join('')}</div>` : '';
   return panel('Cronograma de reuniones', `${plural(up.length, 'reunión por venir', 'reuniones por venir')}${cfN ? ` · <b class="tone-crit">${plural(cfN, 'choca', 'chocan')} con alguna clase</b>` : ''}. Agrega las reuniones a Google Calendar para recibir los avisos en el celular.`,
     `${chips}${ser ? `<h3 class="sub-h">Series programadas</h3>${ser}` : ''}<h3 class="sub-h">Próximas reuniones</h3>${meetingList(up, null)}${past.length ? `<details class="mt-past"><summary>Reuniones anteriores o canceladas (${past.length})</summary>${meetingList(past, null)}</details>` : ''}`,
-    `${downloads && up.length ? '<button class="btn sm" data-act="mt-csv">Descargar CSV para Google Calendar</button>' : ''}${canSchedule() ? '<button class="btn sm primary" data-act="mt-new">Programar reunión</button>' : ''}`);
+    `${downloads && up.length ? '<button class="btn sm" data-act="mt-csv">Descargar CSV para Google Calendar</button>' : ''}${canSchedule() ? `<button class="btn sm sos" data-act="sos-new">${icon('rayo', 15)}Emergencia</button><button class="btn sm primary" data-act="mt-new">Programar reunión</button>` : ''}`);
 }
 function teamSchedules() {
   const ms = membersActive();
@@ -3630,6 +3728,265 @@ function teamAccess() {
     <p class="note" style="margin-top:12px"><b>Importante:</b> el ingreso identifica a cada integrante y personaliza su vista; no es una barrera de seguridad. Cualquier persona con acceso al sistema puede ver la cartera, así que no guardes aquí información confidencial. Para que un integrante pueda marcar tareas, confirmar reuniones o editar su horario, compártele el sistema desde claude.ai con permiso para interactuar.</p>`,
     canEdit() ? '<button class="btn sm primary" data-act="mem-new">Agregar integrante</button>' : '');
 }
+
+/* ---------- reuniones de emergencia ---------- */
+// Convocatoria inmediata a todo el equipo, a un proyecto completo o a personas elegidas.
+// Usa los correos del directorio y abre el envío por Gmail, Google Calendar, correo o WhatsApp.
+const SOS_DUR = [15, 30, 45, 60, 90];
+const isUrgent = mt => !!(mt && mt.urgent);
+const mailOk = s => /^[^\s@,;<>()"]+@[^\s@,;<>()"]+\.[a-z]{2,}$/i.test(String(s || '').trim());
+const sosStartNow = () => { const d = new Date(), n = d.getHours() * 60 + d.getMinutes(); return m2t(Math.min(23 * 60 + 30, Math.ceil(n / 5) * 5)); };
+const isUrl = s => /^https?:\/\/\S+$/i.test(String(s || '').trim());
+function sosPeople() {
+  return dirPeople().map(x => {
+    const em = x.m ? x.m.email : (x.assign.map(a => a.t && a.t.contact).find(mailOk) || '');
+    return Object.assign({}, x, { email: mailOk(em) ? String(em).trim().toLowerCase() : '', ok: x.m ? !!x.m.emailOk : false, pids: new Set(x.assign.map(a => a.p.id)) });
+  });
+}
+function sosDefaults(who, pid, P) {
+  if (who === 'all') return new Set(P.filter(x => x.m).map(x => x.key));
+  if (who === 'project' && pid) return new Set(P.filter(x => x.pids.has(pid)).map(x => x.key));
+  return new Set();
+}
+const sosInGroup = (x, st) => (st.who === 'all' ? !!x.m : st.pid ? x.pids.has(st.pid) : true);
+function sosListHtml(P) {
+  const st = UI.sos, main = P.filter(x => sosInGroup(x, st)), rest = P.filter(x => !sosInGroup(x, st));
+  const row = x => {
+    const on = st.checked.has(x.key), codes = [...x.pids].map(id => (projectById(id) || {}).code).filter(Boolean).sort().join(' · ');
+    const em = x.email ? `<span class="sos-em">${esc(x.email)}</span>${x.m && !x.ok ? '<span class="pill warn"><i></i>Por confirmar</span>' : ''}`
+      : `<input class="sos-in" name="em:${esc(x.key)}" value="${esc(st.typed[x.key] || '')}" placeholder="Sin correo: escríbelo" aria-label="Correo de ${esc(x.name)}" autocomplete="off" inputmode="email">`;
+    return `<div class="sos-p${on ? ' on' : ''}"><label><input type="checkbox" name="p" value="${esc(x.key)}"${on ? ' checked' : ''}>${dirAv(x)}<span class="sos-n"><b>${esc(x.m ? mName(x.m) : x.name)}</b><small>${esc(codes || 'Sin proyectos')}${x.m ? '' : ' · colaborador'}</small></span></label><span class="sos-c">${em}</span></div>`;
+  };
+  const empty = st.who === 'project' && !st.pid ? 'Elige el proyecto para ver a su equipo.' : 'No hay personas en este grupo.';
+  return `<div class="sos-tools"><span>${st.who === 'all' ? 'Integrantes del equipo' : st.pid ? `Equipo de ${esc((projectById(st.pid) || {}).code || '')}` : 'Personas de todos los proyectos'} · ${main.length}</span><button type="button" class="linkish" data-act="sos-all">Marcar a todos</button><button type="button" class="linkish" data-act="sos-none">Ninguno</button></div>
+    <div class="sos-rows">${main.map(row).join('') || `<p class="note">${empty}</p>`}</div>
+    ${rest.length ? `<details class="sos-more"${rest.some(x => st.checked.has(x.key)) ? ' open' : ''}><summary>Sumar a alguien más (${rest.length})</summary><div class="sos-rows">${rest.map(row).join('')}</div></details>` : ''}`;
+}
+function openSosForm(pre) {
+  if (!canSchedule()) return;
+  pre = pre || {};
+  const P = sosPeople(), pid = projectById(pre.pid) ? pre.pid : '', who = pre.who || (pid ? 'project' : 'all');
+  UI.sos = { who, pid, checked: sosDefaults(who, pid, P), typed: {} };
+  const body = `<p class="sos-lead">${icon('rayo', 18)}<span>Se convoca para hoy. Al convocar se abre el envío por Gmail o Google Calendar con los correos ya cargados, y el aviso aparece en vivo en el sistema.</span></p>
+    <fieldset class="sos-who"><legend>¿Con quiénes?</legend><div class="sos-seg">${[['all', 'Todo el equipo'], ['project', 'Un proyecto completo'], ['people', 'Personas elegidas']].map(([k, l]) => `<label><input type="radio" name="who" value="${k}"${who === k ? ' checked' : ''}><span>${l}</span></label>`).join('')}</div></fieldset>
+    <div class="sos-pj" id="sos-pj"${who === 'all' ? ' hidden' : ''}>${fld('Proyecto', `<select name="pid"><option value="">${who === 'people' ? 'Personas de todos los proyectos' : 'Elige el proyecto…'}</option>${projectsSorted().map(p => `<option value="${esc(p.id)}"${p.id === pid ? ' selected' : ''}>${esc(p.code)} · ${esc(p.name)}</option>`).join('')}</select>`, 1)}</div>
+    <div class="sos-list" id="sos-list">${sosListHtml(P)}</div>
+    <div class="fgrid">
+      ${fld('Otros correos', '<input name="extra" placeholder="nombre@unmsm.edu.pe, otro@gmail.com" autocomplete="off">', 1, 'Opcional. Sepáralos con comas.')}
+      ${fld('Motivo', `<input name="title" value="${esc(pre.title || 'Reunión de emergencia')}" required>`, 1)}
+      ${fld('Qué hay que resolver', '<textarea name="agenda" rows="2" placeholder="Qué pasó y qué se necesita decidir"></textarea>', 1)}
+      <div class="f2">${fld('Hoy a las', `<input type="time" name="start" value="${sosStartNow()}" step="300" required>`)}${fld('Duración', `<select name="dur">${SOS_DUR.map(n => `<option value="${n}"${n === 30 ? ' selected' : ''}>${durTxt(n)}</option>`).join('')}</select>`)}</div>
+      ${fld('Enlace de Meet o lugar', '<input name="place" placeholder="https://meet.google.com/… o sala de la OGPL" autocomplete="off">', 0, '<a class="linkish" href="https://meet.new" target="_blank" rel="noopener noreferrer">Crear una sala de Meet ↗</a> y pega aquí el enlace.')}
+    </div>
+    <label class="mini-c sos-save"><input type="checkbox" name="save" checked> Guardar en el directorio los correos que escribas aquí</label>
+    <div class="sos-sum" id="sos-sum" aria-live="polite"></div>`;
+  dlg('Reunión de emergencia', body, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn sos">Convocar ahora</button></div>', 'sos-form');
+  sosSum();
+}
+function sosRead(f) {
+  const st = UI.sos, P = sosPeople();
+  st.who = (f.querySelector('input[name=who]:checked') || {}).value || 'all';
+  st.pid = f.elements.pid ? f.elements.pid.value : '';
+  st.checked = new Set([...f.querySelectorAll('input[name=p]:checked')].map(c => c.value));
+  f.querySelectorAll('input.sos-in').forEach(i => { st.typed[i.name.slice(3)] = i.value.trim(); });
+  const sel = P.filter(x => st.checked.has(x.key));
+  const raw = String(f.elements.extra.value || '').split(/[\s,;]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
+  const s = t2m(f.elements.start.value), dur = +f.elements.dur.value || 30;
+  return { P, sel, extra: raw.filter(mailOk), bad: raw.filter(x => !mailOk(x)), s, e: s == null ? null : Math.min(s + dur, 23 * 60 + 59) };
+}
+const sosMailOf = (x, st) => x.email || (mailOk(st.typed[x.key]) ? st.typed[x.key].toLowerCase() : '');
+function sosSum() {
+  const f = $('#sos-form'), box = $('#sos-sum'); if (!f || !box) return;
+  const r = sosRead(f), st = UI.sos, mails = new Set(), miss = [];
+  r.sel.forEach(x => { const em = sosMailOf(x, st); if (em) mails.add(em); else miss.push(x); });
+  r.extra.forEach(e => mails.add(e));
+  const d = dowOf(isoD(today())), cf = [];
+  if (r.s != null) r.sel.filter(x => x.m).forEach(x => busyIn(x.m, d, r.s, r.e).forEach(b => cf.push(`${mName(x.m)} (${b.t}, ${m2t(b.s)}–${m2t(b.e)})`)));
+  box.innerHTML = `<p class="sos-k"><b>${plural(r.sel.length, 'persona', 'personas')}</b> · <b>${plural(mails.size, 'correo listo', 'correos listos')}</b>${r.s != null ? ` · hoy de ${m2t(r.s)} a ${m2t(r.e)}` : ''}</p>`
+    + (miss.length ? `<p class="cf-bad">${icon('alerta', 16)}Sin correo: ${esc(miss.map(x => (x.m ? mName(x.m) : x.name)).join(', '))}. Escríbelo en su fila o avísale por otro medio.</p>` : '')
+    + (r.bad.length ? `<p class="cf-bad">${icon('alerta', 16)}Revisa estos correos: ${esc(r.bad.join(', '))}.</p>` : '')
+    + (cf.length ? `<p class="note">A esa hora tienen clase: ${esc(cf.join('; '))}.</p>` : r.sel.some(x => x.m) && r.s != null ? '<p class="cf-ok">✓ Nadie de los convocados tiene clase a esa hora.</p>' : '');
+}
+function sosChange(t) {
+  const f = $('#sos-form'); if (!f) return;
+  if (t.name === 'who' || t.name === 'pid') {
+    const prevWho = UI.sos.who; sosRead(f); const st = UI.sos;
+    if (t.name === 'who') { const pj = $('#sos-pj'); if (pj) pj.hidden = st.who === 'all'; const o = f.elements.pid && f.elements.pid.options[0]; if (o) o.textContent = st.who === 'people' ? 'Personas de todos los proyectos' : 'Elige el proyecto…'; }
+    if (!(st.who === 'people' && (t.name === 'pid' || prevWho === 'people'))) st.checked = sosDefaults(st.who, st.pid, sosPeople());
+    $('#sos-list').innerHTML = sosListHtml(sosPeople());
+  } else if (t.name === 'p') { const row = t.closest('.sos-p'); if (row) row.classList.toggle('on', t.checked); }
+  sosSum();
+}
+function sosMark(on) {
+  const f = $('#sos-form'); if (!f) return;
+  const box = f.querySelector('#sos-list > .sos-rows'); if (!box) return;
+  box.querySelectorAll('input[name=p]').forEach(c => { c.checked = on; const row = c.closest('.sos-p'); if (row) row.classList.toggle('on', on); });
+  sosSum();
+}
+async function sosSaveEmails(sel, typed) {
+  for (const x of sel) {
+    const em = String(typed[x.key] || '').trim().toLowerCase();
+    if (x.email || !mailOk(em)) continue;
+    if (x.m) { if (!(S.members || []).some(m => m.id !== x.m.id && String(m.email || '').toLowerCase() === em)) await updateRec('members', x.m.id, { email: em, emailOk: false }); }
+    else for (const a of x.assign) if (a.t && !mailOk(a.t.contact)) await updateRec('team', a.t.id, { contact: em });
+  }
+}
+async function submitSos(f) {
+  if (!canSchedule()) return;
+  const r = sosRead(f), st = UI.sos, title = f.elements.title.value.trim();
+  if (!title) { formErr('Escribe el motivo de la reunión.'); return; }
+  if (st.who === 'project' && !st.pid) { formErr('Elige el proyecto.'); return; }
+  if (!r.sel.length && !r.extra.length) { formErr('Marca al menos a una persona o escribe un correo.'); return; }
+  if (r.s == null) { formErr('Indica la hora de inicio.'); return; }
+  if (r.bad.length) { formErr(`Revisa estos correos: ${r.bad.join(', ')}.`); return; }
+  const typo = r.sel.find(x => !x.email && st.typed[x.key] && !mailOk(st.typed[x.key]));
+  if (typo) { formErr(`El correo de ${typo.m ? mName(typo.m) : typo.name} no tiene un formato válido.`); return; }
+  const attendees = [], guests = [], emails = [];
+  r.sel.forEach(x => { const em = sosMailOf(x, st); if (x.m) attendees.push(x.m.id); else guests.push({ name: x.name, email: em }); if (em && !emails.includes(em)) emails.push(em); });
+  r.extra.forEach(e => { if (!emails.includes(e)) { emails.push(e); guests.push({ name: '', email: e }); } });
+  const org = sessionMember();
+  const data = { title, pid: st.who === 'all' ? '' : st.pid || '', date: isoD(today()), start: m2t(r.s), end: m2t(r.e), place: f.elements.place.value.trim(), agenda: f.elements.agenda.value.trim(), status: 'Programada', series: '', confirm: {}, urgent: true, kind: 'emergencia', who: st.who, attendees, guests, emails, organizer: org ? org.name : (S.me && S.me.name) || 'Dirección de proyectos', organizerEmail: org && mailOk(org.email) ? org.email : '', calledAt: new Date().toISOString() };
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    if (f.elements.save.checked) await sosSaveEmails(r.sel, st.typed);
+    const ref = await createRec('meetings', data);
+    const id = (ref && ref.id) || '';
+    (UI.sosMine = UI.sosMine || new Set()).add(id);
+    logFeed(data.pid || null, `convocó una reunión de emergencia «${title}» con ${plural(attendees.length + guests.length, 'persona', 'personas')}`);
+    toast('Reunión de emergencia convocada: envía ahora la convocatoria', 'ok');
+    openSosSend(Object.assign({ id }, data));
+  } catch (e) { btn.disabled = false; writeErr(e); }
+}
+// --- envío
+const sosById = id => (S.meetings || []).find(x => x.id === id) || (UI.sosLast && UI.sosLast.id === id ? UI.sosLast : null);
+function sosGroup(mt) { const p = mt.pid ? projectById(mt.pid) : null; return mt.who === 'people' ? (p ? `personas de ${p.code}` : 'personas elegidas') : p ? `equipo de ${p.code}` : 'todo el equipo'; }
+function sosNames(mt) { return attendeesOf(mt).map(m => m.name).concat((mt.guests || []).map(g => g.name || g.email).filter(Boolean)); }
+function sosRecipients(mt) {
+  const out = [], add = e => { e = String(e || '').trim().toLowerCase(); if (mailOk(e) && !out.includes(e)) out.push(e); };
+  (mt.emails || []).forEach(add); attendeesOf(mt).forEach(m => add(m.email)); (mt.guests || []).forEach(g => add(g.email));
+  return out;
+}
+function sosWhen(mt) { const n = dBetween(today(), parseD(mt.date)); return `${n === 0 ? 'hoy, ' : n === 1 ? 'mañana, ' : ''}${fmtDay(mt.date).toLowerCase()}, de ${mt.start} a ${mt.end} (hora de Lima)`; }
+const sosSubject = mt => `[URGENTE] ${mt.title}${mt.pid ? ` · ${(projectById(mt.pid) || {}).code || ''}` : ''} · ${dBetween(today(), parseD(mt.date)) === 0 ? 'hoy' : fmtDay(mt.date)} a las ${mt.start}`;
+function sosMsg(mt) {
+  const p = mt.pid ? projectById(mt.pid) : null;
+  const L = [`Reunión de emergencia: ${mt.title}`, '', `Cuándo: ${sosWhen(mt)}`, `Dónde: ${mt.place || 'te enviaremos el enlace o el lugar en breve'}`];
+  if (p) L.push(`Proyecto: ${p.code} · ${p.name}`);
+  L.push(`Convoca: ${mt.organizer || 'Dirección de proyectos'}`, `Participan: ${sosNames(mt).join(', ')}`);
+  if (mt.agenda) L.push('', 'Qué hay que resolver:', mt.agenda);
+  L.push('', 'Confirma tu asistencia respondiendo este mensaje o en el intranet de Gestión.', 'Gestión · DGP OGPL-UNMSM');
+  return L.join('\n');
+}
+const uenc = encodeURIComponent;
+const sosTitle = mt => `[URGENTE] ${mt.title}${mt.pid ? ` · ${(projectById(mt.pid) || {}).code || ''}` : ''}`;
+function sosLinks(mt) {
+  const R = sosRecipients(mt), msg = sosMsg(mt), sub = sosSubject(mt);
+  const d = String(mt.date).replace(/-/g, ''), s = String(mt.start).replace(':', '') + '00', e = String(mt.end).replace(':', '') + '00';
+  return {
+    R, msg, sub,
+    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${uenc(R.join(','))}&su=${uenc(sub)}&body=${uenc(msg)}`,
+    cal: `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${uenc(sosTitle(mt))}&dates=${d}T${s}/${d}T${e}&ctz=America/Lima&details=${uenc(msg)}&location=${uenc(mt.place || '')}&add=${uenc(R.join(','))}`,
+    mail: `mailto:${R.join(',')}?subject=${uenc(sub)}&body=${uenc(msg)}`,
+    wa: `https://wa.me/?text=${uenc(msg)}`,
+  };
+}
+function sosIcs(mt) {
+  const pad = n => String(n).padStart(2, '0');
+  const utc = x => `${x.getUTCFullYear()}${pad(x.getUTCMonth() + 1)}${pad(x.getUTCDate())}T${pad(x.getUTCHours())}${pad(x.getUTCMinutes())}00Z`;
+  const tx = s => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  const cn = s => `"${String(s || '').replace(/"/g, "'")}"`;
+  const fold = l => { const out = []; let s = l; while (s.length > 74) { out.push(s.slice(0, 74)); s = ' ' + s.slice(74); } out.push(s); return out.join('\r\n'); };
+  const { R, msg, sub } = sosLinks(mt), names = new Map();
+  attendeesOf(mt).forEach(m => { if (mailOk(m.email)) names.set(m.email.toLowerCase(), m.name); });
+  (mt.guests || []).forEach(g => { if (mailOk(g.email) && g.name) names.set(g.email.toLowerCase(), g.name); });
+  const org = mailOk(mt.organizerEmail);
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DGP OGPL-UNMSM//Gestion//ES', 'CALSCALE:GREGORIAN', `METHOD:${org ? 'REQUEST' : 'PUBLISH'}`, 'BEGIN:VEVENT',
+    `UID:${mt.id || Date.now().toString(36)}@gestion-dgp-ogpl`, `DTSTAMP:${utc(new Date())}`, `DTSTART:${utc(mtAt(mt, 'start'))}`, `DTEND:${utc(mtAt(mt, 'end'))}`,
+    `SUMMARY:${tx(sub)}`, `DESCRIPTION:${tx(msg)}`, `LOCATION:${tx(mt.place || '')}`, 'PRIORITY:1', 'STATUS:CONFIRMED']
+    .concat(org ? [`ORGANIZER;CN=${cn(mt.organizer)}:mailto:${mt.organizerEmail}`] : [])
+    .concat(R.map(e => `ATTENDEE;CN=${cn(names.get(e) || e)};ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${e}`))
+    .concat(['BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Reunión de emergencia', 'TRIGGER:-PT5M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR']);
+  return L.map(fold).join('\r\n') + '\r\n';
+}
+async function copyText(txt) {
+  try { await navigator.clipboard.writeText(txt); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0;left:0;top:0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (er) { ok = false; } ta.remove(); return ok;
+  }
+}
+function openSosSend(arg) {
+  const mt = typeof arg === 'string' ? sosById(arg) : arg; if (!mt) return;
+  UI.sosLast = mt;
+  const L = sosLinks(mt), admin = canSchedule(), att = attendeesOf(mt), conf = mt.confirm || {}, p = mt.pid ? projectById(mt.pid) : null;
+  const miss = att.filter(m => !mailOk(m.email)).map(mName).concat((mt.guests || []).filter(g => !mailOk(g.email)).map(g => g.name || 'Invitado'));
+  const me = sessionMember(), mine = me && att.some(a => a.id === me.id);
+  const body = `<div class="sos-card"><p class="mt-top">${pill('crit', 'Emergencia')}<span class="mono">${esc(whenTxt(mt))}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : ''}${mt.status && mt.status !== 'Programada' ? pill(mt.status === 'Realizada' ? 'ok' : 'idle', mt.status) : ''}</p>
+      <h3>${esc(mt.title)}</h3><p class="note">Convoca ${esc(mt.organizer || 'Dirección de proyectos')} · ${esc(sosGroup(mt))}</p>
+      <p class="sos-place">${isUrl(mt.place) ? `<a class="btn sm sos" href="${esc(mt.place)}" target="_blank" rel="noopener noreferrer">Unirse a la reunión ↗</a>` : esc(mt.place || 'Lugar o enlace por definir')}</p>
+      ${mt.agenda ? `<p>${fmtTxt(mt.agenda)}</p>` : ''}
+      <p class="mt-att">${att.map(m => `<span class="mt-a${conf[m.id] === 'si' ? ' si' : conf[m.id] === 'no' ? ' no' : ''}" title="${esc(mName(m))}${conf[m.id] === 'si' ? ' · asistirá' : conf[m.id] === 'no' ? ' · no podrá' : ''}">${avatar(m, 'sm')}</span>`).join('')}${(mt.guests || []).length ? `<small>+ ${esc(mt.guests.map(g => g.name || g.email).join(', '))}</small>` : ''}</p>
+      ${mine && canEdit() && isOpenMt(mt) ? `<p class="mt-rsvp">${['si', 'no'].map(v => `<button type="button" class="btn sm${conf[me.id] === v ? (v === 'si' ? ' ok-on' : ' no-on') : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('')}</p>` : ''}</div>
+    ${admin ? `<h4 class="sos-h">Envía la convocatoria</h4>
+    <div class="sos-send">
+      <a class="btn sos" href="${esc(L.gmail)}" target="_blank" rel="noopener noreferrer">${icon('correo', 18)}Enviar por Gmail ↗</a>
+      <a class="btn" href="${esc(L.cal)}" target="_blank" rel="noopener noreferrer">Invitación de Google Calendar ↗</a>
+      <a class="btn" href="${esc(L.mail)}">Abrir en mi correo</a>
+      <a class="btn" href="${esc(L.wa)}" target="_blank" rel="noopener noreferrer">Compartir por WhatsApp ↗</a>
+      <button type="button" class="btn" data-act="sos-copy" data-v="mails">Copiar correos</button>
+      <button type="button" class="btn" data-act="sos-copy" data-v="msg">Copiar mensaje</button>
+      ${downloads ? '<button type="button" class="btn" data-act="sos-ics">Descargar invitación (.ics)</button>' : ''}
+    </div>
+    <label class="f wide sos-to"><span>Para (${L.R.length})</span><textarea readonly rows="2" id="sos-to">${esc(L.R.join(', '))}</textarea></label>
+    ${miss.length ? `<p class="cf-bad">${icon('alerta', 16)}Sin correo: ${esc(miss.join(', '))}. Agrégalo en el Directorio o avísale por WhatsApp.</p>` : ''}
+    <p class="note">Gmail y Google Calendar se abren con los correos, el asunto y el mensaje ya escritos: revisa y pulsa Enviar o Guardar. En Google Calendar puedes sumar la videollamada de Meet antes de guardar; así cada persona recibe la invitación en su correo.</p>` : ''}
+    <textarea hidden id="sos-msg">${esc(L.msg)}</textarea>`;
+  const foot = `<div class="foot-r">${admin && mt.id && isOpenMt(mt) ? '<button type="button" class="btn" data-act="sos-end">Marcar como realizada</button>' : ''}<button type="button" class="btn primary" data-act="close-modal">Listo</button></div>`;
+  dlg('Reunión de emergencia', body, foot, 'sos-send-form');
+  $('#sos-send-form').dataset.id = mt.id || '';
+}
+// --- aviso en vivo
+function sosActive() {
+  const now = new Date(), lim = new Date(now.getTime() + 18 * 3600e3);
+  return meetingsAll().filter(mt => isUrgent(mt) && isOpenMt(mt) && mtAt(mt, 'end') && mtAt(mt, 'end') >= now && mtAt(mt, 'start') <= lim);
+}
+function sosHidden() { try { return JSON.parse(localStorage.getItem('dgp-sos-hide') || '[]'); } catch (e) { return []; } }
+function sosHide(id) { try { const h = sosHidden().filter(x => (S.meetings || []).some(mt => mt.id === x)); h.push(id); localStorage.setItem('dgp-sos-hide', JSON.stringify(h)); } catch (e) { /* sin almacenamiento */ } UI.sosHid = (UI.sosHid || new Set()).add(id); }
+function sosRel(mt) {
+  const s = mtAt(mt, 'start'), e = mtAt(mt, 'end'), n = Date.now();
+  if (n >= s) return n <= e ? `En curso hasta las ${mt.end}` : 'Terminó';
+  const m = Math.round((s - n) / 60000), dd = dBetween(today(), parseD(mt.date));
+  return m <= 1 ? 'Empieza ahora' : m < 60 ? `Empieza en ${m} min` : dd === 0 ? `Hoy a las ${mt.start}` : `${fmtDay(mt.date)} a las ${mt.start}`;
+}
+function sosWatch(list) {
+  if (!S.loaded.has('meetings')) return;
+  const me = sessionMember(), ids = list.map(mt => mt.id);
+  if (!UI.sosSeen) { UI.sosSeen = new Set(ids); return; }
+  list.forEach(mt => {
+    if (UI.sosSeen.has(mt.id)) return; UI.sosSeen.add(mt.id);
+    if (UI.sosMine && UI.sosMine.has(mt.id)) return;
+    if (me && !isAdmin() && !attendeesOf(mt).some(a => a.id === me.id)) return;
+    toast(`Reunión de emergencia: ${mt.title} · ${sosRel(mt).toLowerCase()}`, 'warn');
+  });
+}
+function renderSos() {
+  const bar = $('#sos-bar'); if (!bar) return;
+  const off = !S.loaded.has('meetings') || S.mode === 'offline' || (UI.view === 'office' && UI.of.max) || (UI.view === 'board' && UI.wb.max);
+  const me = sessionMember(), hid = sosHidden().concat([...(UI.sosHid || [])]);
+  const act = off ? [] : sosActive();
+  sosWatch(act);
+  const list = act.filter(mt => !hid.includes(mt.id) && (isAdmin() || !me || attendeesOf(mt).some(a => a.id === me.id)));
+  if (!list.length) { if (!bar.hidden) { bar.hidden = true; bar.innerHTML = ''; } return; }
+  const html = list.slice(0, 2).map(mt => {
+    const p = mt.pid ? projectById(mt.pid) : null, att = attendeesOf(mt), conf = mt.confirm || {}, n = att.length + (mt.guests || []).length;
+    const mine = me && att.some(a => a.id === me.id);
+    const live = Date.now() >= mtAt(mt, 'start').getTime();
+    return `<div class="sos-row${live ? ' sos-on' : ''}"><span class="sos-dot" aria-hidden="true"></span><p class="sos-txt"><b>Reunión de emergencia</b><span>${esc(mt.title)}</span><small>${esc(sosRel(mt))} · ${p ? esc(p.code) + ' · ' : ''}${plural(n, 'persona', 'personas')}${mine ? ' · te convocan' : ''}</small></p>
+      <span class="sos-acts">${isUrl(mt.place) ? `<a class="btn sm sos-w" href="${esc(mt.place)}" target="_blank" rel="noopener noreferrer">Unirse ↗</a>` : ''}${mine && canEdit() ? ['si', 'no'].map(v => `<button class="btn sm sos-o${conf[me.id] === v ? ' on' : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('') : ''}<button class="btn sm sos-o" data-act="sos-send" data-id="${esc(mt.id)}">${canSchedule() ? 'Convocatoria' : 'Detalles'}</button><button class="sos-x" data-act="sos-hide" data-id="${esc(mt.id)}" aria-label="Ocultar el aviso" title="Ocultar el aviso">×</button></span></div>`;
+  }).join('') + (list.length > 2 ? `<p class="sos-more-t">y ${plural(list.length - 2, 'reunión de emergencia más', 'reuniones de emergencia más')}</p>` : '');
+  bar.innerHTML = `<div class="wrap">${html}</div>`;
+  bar.hidden = false;
+}
+setInterval(() => { if (!document.hidden) renderSos(); }, 30000);
 
 /* ---------- directorio: todas las personas de todos los proyectos ---------- */
 function dirPeople() {
@@ -3658,14 +4015,14 @@ function teamDirectory() {
   const admin = canSchedule(), mode = UI.dirMode || 'people', q = normN(UI.dirQ || ''), all = dirPeople(), P = projectsSorted();
   const hit = x => !q || normN(`${x.name} ${x.role} ${x.email} ${x.assign.map(a => `${a.p.code} ${a.p.name} ${a.t ? a.t.role : ''}`).join(' ')}`).includes(q);
   const people = all.filter(hit), nAsg = (S.team || []).filter(t => projectById(t.pid)).length, nIn = all.filter(x => x.m && x.m.email).length;
-  const top = `<div class="dir-top"><div class="seg" role="group" aria-label="Vista del directorio"><button data-act="dir-mode" data-v="people" aria-pressed="${mode === 'people'}">Personas</button><button data-act="dir-mode" data-v="proj" aria-pressed="${mode === 'proj'}">Por proyecto</button></div><label class="dir-q"><span class="sr">Buscar en el directorio</span><input type="search" id="dir-q" placeholder="Buscar por nombre, rol, correo o proyecto" value="${esc(UI.dirQ || '')}" autocomplete="off"></label>${admin ? '<span class="dir-adm"><button class="btn sm" data-act="dir-assign">Asignar a un proyecto</button><button class="btn sm primary" data-act="mem-new">Agregar persona</button></span>' : ''}</div>`;
+  const top = `<div class="dir-top"><div class="seg" role="group" aria-label="Vista del directorio"><button data-act="dir-mode" data-v="people" aria-pressed="${mode === 'people'}">Personas</button><button data-act="dir-mode" data-v="proj" aria-pressed="${mode === 'proj'}">Por proyecto</button></div><label class="dir-q"><span class="sr">Buscar en el directorio</span><input type="search" id="dir-q" placeholder="Buscar por nombre, rol, correo o proyecto" value="${esc(UI.dirQ || '')}" autocomplete="off"></label>${admin ? `<span class="dir-adm"><button class="btn sm sos" data-act="sos-new">${icon('rayo', 15)}Reunión de emergencia</button><button class="btn sm" data-act="dir-assign">Asignar a un proyecto</button><button class="btn sm primary" data-act="mem-new">Agregar persona</button></span>` : ''}</div>`;
   let body;
   if (mode === 'proj') {
     body = `<div class="dir-cols">${P.map(p => {
       const rows = all.filter(hit).flatMap(x => x.assign.filter(a => a.p.id === p.id).map(a => ({ x, a })));
       return `<section class="dir-col"><header><button class="code-chip" data-act="go-project" data-id="${esc(p.id)}">${esc(p.code)}</button><div><h3>${esc(p.name)}</h3><small>${plural(rows.length, 'persona', 'personas')}${p.manager ? ` · dirige ${esc(p.manager)}` : ''}</small></div></header>
         ${rows.length ? `<ul>${rows.map(({ x, a }) => `<li>${dirAv(x)}<div><b>${esc(x.m ? mName(x.m) : x.name)}</b><small>${esc(a.mgr ? 'Director/a del proyecto' : (a.t.role || 'Sin rol definido'))}${a.t && num(a.t.dedication) ? ` · <span class="nw">${num(a.t.dedication)} %</span>` : ''}</small></div>${admin && a.t ? `<span class="dir-ra"><button class="icon-btn" data-act="edit" data-coll="team" data-id="${esc(a.t.id)}" aria-label="Editar el rol de ${esc(a.t.name)}">Editar</button><button class="dir-x" data-act="dir-unassign" data-id="${esc(a.t.id)}" aria-label="Quitar a ${esc(a.t.name)} de ${esc(p.code)}" title="Quitar">×</button></span>` : ''}</li>`).join('')}</ul>` : '<p class="note">Sin personas asignadas.</p>'}
-        ${admin ? `<button class="btn sm dir-add" data-act="dir-assign" data-pid="${esc(p.id)}">+ Agregar persona a ${esc(p.code)}</button>` : ''}</section>`;
+        ${admin ? `<div class="dir-cf"><button class="btn sm dir-add" data-act="dir-assign" data-pid="${esc(p.id)}">+ Agregar persona a ${esc(p.code)}</button><button class="btn sm sos-ghost" data-act="sos-new" data-pid="${esc(p.id)}" data-who="project" title="Reunión de emergencia con ${esc(p.code)}">${icon('rayo', 15)}Emergencia</button></div>` : ''}</section>`;
     }).join('')}</div>`;
   } else {
     body = people.length ? `<div class="dir-grid">${people.map(x => {
@@ -4005,11 +4362,11 @@ function meetingAlerts(p) {
 }
 function agendaBand() {
   const up = upcomingMeetings(meetingsAll(), 4); if (!up.length) return '';
-  return `<section class="section">${secTitle('Agenda del equipo', 'Próximas reuniones', 'Programadas en las franjas en que todos están libres. Agrégalas a tu Google Calendar para recibir los avisos.')}<div class="agenda">${up.map(mt => { const p = mt.pid ? projectById(mt.pid) : null, cf = conflictsOf(mt), d = parseD(mt.date), n = dBetween(today(), d); return `<article class="ag-card${n <= 1 ? ' soon' : ''}"><div class="mt-date"><span>${DIAS3[(d.getDay() + 6) % 7]}</span><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span></div><div><p class="mt-top"><span class="mono">${esc(mt.start)}–${esc(mt.end)}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : '<span class="code-chip all">Equipo completo</span>'}${n === 0 ? pill('crit', 'Hoy') : n === 1 ? pill('warn', 'Mañana') : ''}</p><h3>${esc(mt.title)}</h3><p class="note">${esc(attendeesOf(mt).map(mName).join(', '))}</p>${cf.length ? `<p class="mt-cf">${icon('alerta', 16)}Choca con la clase de ${esc([...new Set(cf.map(x => mName(x.m)))].join(', '))}</p>` : ''}<a class="linkish" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer">Agregar a Google Calendar ↗</a></div></article>`; }).join('')}</div><p style="text-align:center;margin-top:14px"><button class="btn" data-act="go-team" data-v="reun">Ver el cronograma completo</button></p></section>`;
+  return `<section class="section">${secTitle('Agenda del equipo', 'Próximas reuniones', 'Programadas en las franjas en que todos están libres. Agrégalas a tu Google Calendar para recibir los avisos.')}<div class="agenda">${up.map(mt => { const p = mt.pid ? projectById(mt.pid) : null, cf = conflictsOf(mt), d = parseD(mt.date), n = dBetween(today(), d); return `<article class="ag-card${n <= 1 ? ' soon' : ''}${isUrgent(mt) ? ' urgent' : ''}"><div class="mt-date"><span>${DIAS3[(d.getDay() + 6) % 7]}</span><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span></div><div><p class="mt-top"><span class="mono">${esc(mt.start)}–${esc(mt.end)}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : '<span class="code-chip all">Equipo completo</span>'}${isUrgent(mt) ? pill('crit', 'Emergencia') : ''}${n === 0 ? pill('crit', 'Hoy') : n === 1 ? pill('warn', 'Mañana') : ''}</p><h3>${esc(mt.title)}</h3><p class="note">${esc(attendeesOf(mt).map(mName).join(', '))}</p>${cf.length ? `<p class="mt-cf">${icon('alerta', 16)}Choca con la clase de ${esc([...new Set(cf.map(x => mName(x.m)))].join(', '))}</p>` : ''}<a class="linkish" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer">Agregar a Google Calendar ↗</a></div></article>`; }).join('')}</div><p style="text-align:center;margin-top:14px"><button class="btn" data-act="go-team" data-v="reun">Ver el cronograma completo</button>${canSchedule() ? ` <button class="btn sos" data-act="sos-new">${icon('rayo', 16)}Reunión de emergencia</button>` : ''}</p></section>`;
 }
 function projectMeetingsPanel(p) {
   const up = upcomingMeetings(meetingsAll()).filter(mt => mt.pid === p.id).slice(0, 4);
-  return panel('Reuniones del equipo del proyecto', `Participan: ${esc(membersOfProject(p.id).map(mName).join(', ') || 'sin integrantes registrados')}. Se programan en las franjas libres de todos.`, up.length ? meetingList(up, null) : '<div class="empty"><p>No hay reuniones programadas para este proyecto.</p></div>', `<button class="btn sm" data-act="go-team" data-v="disp" data-scope="${esc(p.id)}">Ver horas libres</button>${canSchedule() ? `<button class="btn sm primary" data-act="mt-new" data-scope="${esc(p.id)}">Programar reunión</button>` : ''}`);
+  return panel('Reuniones del equipo del proyecto', `Participan: ${esc(membersOfProject(p.id).map(mName).join(', ') || 'sin integrantes registrados')}. Se programan en las franjas libres de todos.`, up.length ? meetingList(up, null) : '<div class="empty"><p>No hay reuniones programadas para este proyecto.</p></div>', `<button class="btn sm" data-act="go-team" data-v="disp" data-scope="${esc(p.id)}">Ver horas libres</button>${canSchedule() ? `<button class="btn sm sos" data-act="sos-new" data-pid="${esc(p.id)}" data-who="project">${icon('rayo', 15)}Emergencia</button><button class="btn sm primary" data-act="mt-new" data-scope="${esc(p.id)}">Programar reunión</button>` : ''}`);
 }
 
 /* =========================================================
