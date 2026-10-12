@@ -1404,6 +1404,31 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .tr-p:has(input:checked){background:var(--surface);box-shadow:inset 0 0 0 1px var(--teal-700)}
 .tr-p input,.tr-keep input{width:17px;height:17px;flex:none;accent-color:var(--teal-700)}
 .tr-keep{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 10px;cursor:pointer}
+
+/* organigrama */
+.org{display:flex;flex-direction:column;align-items:center}
+.org-head{display:flex;flex-direction:column;align-items:center;width:100%}
+.org-box{background:var(--navy-900,#0E1E3A);border:1px solid var(--line);color:#fff;border-radius:var(--radius-md);padding:12px 18px;text-align:center;min-width:min(100%,340px);max-width:560px}
+.org-box.org-sub{box-shadow:inset 0 0 0 2px var(--teal-500)}
+.org-c{margin:0 0 6px;font:800 13px/1.3 var(--font-display);letter-spacing:.06em;text-transform:uppercase}
+.org-who{display:flex;gap:10px;align-items:center;justify-content:center;text-align:left}
+.org-who span,.org-p span{display:grid;min-width:0}
+.org-who small{opacity:.85;font-size:12px;overflow-wrap:anywhere}
+.org-who .org-n{opacity:1;color:var(--on-navy-muted)}
+.org-v{display:block;width:2px;height:18px;background:var(--line-strong,var(--ink-muted))}
+.org-areas{list-style:none;margin:0;padding:14px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;border-top:2px solid var(--line-strong,var(--ink-muted))}
+.org-area{display:flex;flex-direction:column;gap:8px;min-width:0}
+.org-a{margin:0;background:var(--surface-alt);border:1px solid var(--line);border-top:4px solid var(--teal-700);border-radius:var(--radius-sm);padding:10px;font:800 13.5px/1.3 var(--font-display);text-align:center}
+.org-ppl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.org-p{display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:var(--radius-sm);padding:8px 10px;background:var(--surface)}
+.org-p.org-lead{border-color:var(--teal-700);box-shadow:inset 3px 0 0 var(--teal-700)}
+.org-p b{font-size:14px;line-height:1.25}
+.org-cg{font-size:12.5px;color:var(--ink-muted)}
+.org-n{font-size:12px;color:var(--teal-700);font-weight:700}
+.me-org{margin:4px 0 0;font-weight:700;color:var(--teal-700)}
+.dir-org{margin:2px 0 0!important;font-size:12.5px!important;color:var(--teal-700)!important;font-weight:700}
+@media (max-width:900px){.org-areas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.org-areas{grid-template-columns:1fr}}
 </style>
 
 <header class="nav" id="nav"></header>
@@ -2494,6 +2519,17 @@ function tabInteresados(p) {
     + panel('Registro de interesados', 'Puntos llenos: compromiso actual (de Desconocedor a Líder). Anillo: compromiso deseado.', cards, addBtn('stakeholders'));
 }
 
+/* organigrama de la organización del proyecto (p.org), por ejemplo el de ROIC & Company en P05 */
+const orgLine = m => (m && m.org && m.org.cargo ? `${m.org.company ? m.org.company + ' · ' : ''}${m.org.cargo}${m.org.area && !/^Gerencia|^Subgerencia/.test(m.org.area) ? ' · ' + m.org.area : ''}` : '');
+function orgChart(p, m) {
+  const o = p.org; if (!o || !Array.isArray(o.areas)) return '';
+  const load = {}; (m ? m.leaves : []).forEach(t => { if (num(t.progress) < 100) membersAll().forEach(x => { if (memberMatches(x, t.owner)) load[x.id] = (load[x.id] || 0) + 1; }); });
+  const who = (id, fallback) => { const x = memberById(id); return x ? { av: avatar(x), name: x.name, email: x.email || '', id: x.id } : { av: `<span class="av-chip" style="--mc:var(--idle)" aria-hidden="true">${esc(initials(fallback || '?'))}</span>`, name: fallback || 'Por asignar', email: '', id: '' }; };
+  const pend = id => (m && id ? `<small class="org-n">${load[id] ? plural(load[id], 'pendiente', 'pendientes') + ' en ' + esc(p.code) : 'Sin pendientes en ' + esc(p.code)}</small>` : '');
+  const top = (o.top || []).map((t, i) => { const x = who(t.who, t.name); return `<div class="org-box org-top${i ? ' org-sub' : ''}"><p class="org-c">${esc(t.cargo)}</p><div class="org-who">${x.av}<span><b>${esc(x.name)}</b>${x.email ? `<small>${esc(x.email)}</small>` : ''}${pend(x.id)}</span></div></div>`; }).join('<span class="org-v" aria-hidden="true"></span>');
+  const areas = o.areas.map(a => `<li class="org-area"><p class="org-a">${esc(a.name)}</p><ul class="org-ppl">${(a.people || []).map(pp => { const x = who(pp.who, pp.name); return `<li class="org-p${pp.lead ? ' org-lead' : ''}">${x.av}<span><b>${esc(x.name)}</b><small class="org-cg">${esc(pp.cargo || '')}</small>${pend(x.id)}</span></li>`; }).join('')}</ul></li>`).join('');
+  return panel(o.title || 'Organigrama', `${esc(o.src || '')}${o.src ? '. ' : ''}Cada persona ve en su intranet los pendientes que le tocan según su cargo.`, `<div class="org"><div class="org-head">${top}</div><span class="org-v" aria-hidden="true"></span><ul class="org-areas">${areas}</ul></div>`);
+}
 function tabRecursos(p, m) {
   const team = of('team', p.id).slice().sort((a, b) => num(b.dedication) - num(a.dedication));
   const td = today();
@@ -2504,7 +2540,7 @@ function tabRecursos(p, m) {
   const load = {}; m.leaves.forEach(t => { if (num(t.progress) < 100 && t.owner) load[t.owner] = (load[t.owner] || 0) + 1; });
   const hBars = hList.length ? `<div class="hbars">${hList.map(([n, h]) => `<div class="hbar"><span class="lab" title="${esc(n)}">${esc(n)}</span><div class="trk"><span style="width:${(h / maxH * 100).toFixed(1)}%"></span></div><span class="num">${h.toFixed(1)} h</span></div>`).join('')}</div>` : `<div class="empty"><p>Sin horas registradas en los últimos 30 días. El equipo las registra en la pestaña «Bitácora y lecciones».</p></div>`;
   const cards = team.length ? `<div class="people">${team.map(t => `<article class="person"><div class="avatar" aria-hidden="true">${esc(initials(t.name))}</div><h3>${esc(t.name)}</h3><p class="role">${esc(t.role || '')}</p><div class="sep"></div><div class="meta"><span>Dedicación <b>${num(t.dedication) ? num(t.dedication) + '%' : '—'}</b></span><span>Act. abiertas <b>${load[t.name] || 0}</b></span><span>Horas 30 d <b>${(hrs[t.name] || 0).toFixed(0)}</b></span></div>${t.skills ? `<p class="txt">${esc(t.skills)}</p>` : ''}${canEdit() ? `<button class="icon-btn" data-act="edit" data-coll="team" data-id="${esc(t.id)}">Editar</button>` : ''}</article>`).join('')}</div>` : `<div class="empty"><p>Sin integrantes. Agrega a las personas del equipo para asignarles actividades, riesgos y acuerdos.</p>${addBtn('team')}</div>`;
-  return panel('Equipo del proyecto', 'Roles, dedicación, actividades abiertas a su cargo y horas registradas en la bitácora.', cards, addBtn('team'))
+  return orgChart(p, m) + panel('Equipo del proyecto', 'Roles, dedicación, actividades abiertas a su cargo y horas registradas en la bitácora.', cards, addBtn('team'))
     + panel('Horas reales (últimos 30 días)', 'Suma de horas registradas en la bitácora por persona.', hBars);
 }
 
@@ -4116,7 +4152,7 @@ function teamDirectory() {
   } else {
     body = people.length ? `<div class="dir-grid">${people.map(x => {
       const st = x.m ? schedState(x.m) : null;
-      return `<article class="dir-card${x.m ? '' : ' ext'}"><header>${dirAv(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.role || (x.assign[0] && x.assign[0].t ? x.assign[0].t.role : '') || '—')}</p></div></header>
+      return `<article class="dir-card${x.m ? '' : ' ext'}"><header>${dirAv(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.role || (x.assign[0] && x.assign[0].t ? x.assign[0].t.role : '') || '—')}</p>${x.m && orgLine(x.m) ? `<p class="dir-org">${esc(orgLine(x.m))}</p>` : ''}</div></header>
         <p class="dir-meta">${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : '<span class="note">Sin correo registrado</span>'}${x.m ? `${pill(SCHED_LBL[st][0], SCHED_LBL[st][1])}${x.m.email ? '<span class="pill ok"><i></i>Intranet</span>' : ''}` : '<span class="pill"><i></i>Colaborador sin registro</span>'}</p>
         <div class="dir-chips">${x.assign.length ? x.assign.map(a => dirChip(a, admin)).join('') : '<span class="note">Sin proyectos asignados.</span>'}</div>
         ${admin ? `<footer><button class="btn sm" data-act="dir-assign" data-key="${esc(x.key)}">Asignar a un proyecto</button>${x.m ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(x.m.id)}">Editar datos</button>` : `<button class="icon-btn" data-act="dir-register" data-key="${esc(x.key)}">Registrar en el equipo</button>`}</footer>` : ''}</article>`;
@@ -4395,7 +4431,7 @@ function viewMe() {
   const days = wkItems.some(i => i.d === 7) ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6];
   const banner = preview ? `<div class="me-preview">${icon('equipo', 18)}<span>Vista previa del intranet de <b>${esc(m.name)}</b>, tal como lo ve al ingresar.</span><button class="btn sm" data-act="view-as-exit">Salir de la vista previa</button></div>` : '';
   const mustChange = preview || !real ? '' : !canEdit() ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Modo de solo lectura.</b> Puedes ver tu información, pero para marcar avances, confirmar reuniones${real.mustChange ? ', cambiar la contraseña inicial' : ''} o editar tu horario, el director debe compartirte el sistema con permiso para interactuar.</span></div>` : real.mustChange ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Estás usando la contraseña inicial.</b> Cámbiala por una personal para proteger tu acceso.</span><button class="btn sm primary" data-act="pw-open">Cambiar contraseña</button></div>` : '';
-  const hero = `<section class="hero me-hero"><div class="wrap"><div class="me-id">${avatar(m, 'xl')}<div><p class="eyebrow">Intranet del equipo · ${esc(m.role || 'Integrante')}</p><h1 class="title">Hola, ${esc(String(mName(m)).split(' ')[0])}</h1><p class="lead">${esc(m.name)} · ${esc(m.email || '')}</p><p class="me-chips">${it.projs.map(x => `<button class="code-chip" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}</p><div class="hero-actions">${preview ? '' : `${canEdit() ? '<button class="btn sm" data-act="pw-open">Cambiar contraseña</button>' : ''}<button class="btn sm" data-act="logout">Cerrar sesión</button>`}</div></div></div>
+  const hero = `<section class="hero me-hero"><div class="wrap"><div class="me-id">${avatar(m, 'xl')}<div><p class="eyebrow">Intranet del equipo · ${esc(m.role || 'Integrante')}</p><h1 class="title">Hola, ${esc(String(mName(m)).split(' ')[0])}</h1><p class="lead">${esc(m.name)} · ${esc(m.email || '')}</p>${orgLine(m) ? `<p class="me-org">${esc(orgLine(m))}</p>` : ''}<p class="me-chips">${it.projs.map(x => `<button class="code-chip" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}</p><div class="hero-actions">${preview ? '' : `${canEdit() ? '<button class="btn sm" data-act="pw-open">Cambiar contraseña</button>' : ''}<button class="btn sm" data-act="logout">Cerrar sesión</button>`}</div></div></div>
     <div class="blob"><h2>Ahora mismo</h2><p class="me-now ${nowStatus(m).k}">${esc(nowStatus(m).t)}</p>${nxt ? `<p class="me-next"><small>Tu próxima reunión</small><b>${esc(nxt.title)}</b><span>${esc(whenTxt(nxt))}</span></p>` : '<p class="me-next"><small>Tu próxima reunión</small><b>Sin reuniones programadas</b></p>'}</div></div></section>`;
   const kpis = `<section class="section kband"><div class="kpis">${kpi('Mis proyectos', it.projs.length, esc(it.projs.map(x => x.p.code).join(' · ') || '—'), 'portafolio')}${kpi('Tareas pendientes', openT.length + openP.length, `${openT.length} del cronograma · ${openP.length} del plan`, 'cronograma')}${kpi('Vencidas', lateT.length, lateT.length ? 'Ponte al día esta semana' : 'Nada vencido', 'alerta')}${kpi('Acuerdos pendientes', openA.length, 'Compromisos de reuniones', 'acuerdo')}${kpi('Reuniones por venir', myMt.length, nxt ? esc(whenTxt(nxt)) : 'Sin reuniones', 'equipo')}</div></section>`;
   // proyectos y funciones
