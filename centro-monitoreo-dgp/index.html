@@ -1429,6 +1429,9 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .dir-org{margin:2px 0 0!important;font-size:12.5px!important;color:var(--teal-700)!important;font-weight:700}
 @media (max-width:900px){.org-areas{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.org-areas{grid-template-columns:1fr}}
+
+.ch-doc{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--line);border-left:4px solid var(--teal-700);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;background:var(--surface-alt)}
+.ch-doc>div{flex:1 1 220px;min-width:0}.ch-doc p{margin:0;overflow-wrap:anywhere}.ch-doc small{color:var(--ink-muted)}.ch-doc .ico{color:var(--teal-700)}
 </style>
 
 <header class="nav" id="nav"></header>
@@ -2350,7 +2353,9 @@ function tabGobernanza(p, m) {
   const aState = a => { if (a.status !== 'Pendiente') return pill(a.status === 'Cumplido' ? 'ok' : '', a.status); const d = parseD(a.due); if (d && d < td) return pill('crit', 'Vencido'); if (d && dBetween(td, d) <= 3) return pill('warn', 'Por vencer'); return pill('data', 'Pendiente'); };
   const changes = of('changes', p.id).slice().sort((a, b) => String(b.code || '').localeCompare(String(a.code || ''), 'es', { numeric: true }));
   const cTone = { Registrada: 'data', 'En análisis': 'warn', Aprobada: 'ok', Rechazada: 'crit', Implementada: 'ok' };
-  return plansPanel(p) + projectMeetingsPanel(p) + panel('Acta de constitución', 'Autoriza el proyecto y fija su propósito, objetivos y límites.', charter, canEdit() ? `<button class="btn sm" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '')
+  const ch = p.charter && typeof p.charter === 'object' ? p.charter : null;
+  const chDoc = ch ? `<div class="ch-doc">${icon('acuerdo', 20)}<div><p><b>${esc(ch.file || 'Project Charter')}</b>${ch.code ? ` · ${esc(ch.code)}` : ''}</p><small>Versión ${esc(ch.version || '—')}${ch.date ? ` del ${fmtD(ch.date)}` : ''}${ch.updated ? ` · editado el ${fmtD(ch.updated)}` : ''}${ch.status ? ` · ${esc(ch.status)}` : ''}</small></div>${ch.url && /^https:\/\//.test(ch.url) ? `<a class="btn sm" href="${esc(ch.url)}" target="_blank" rel="noopener noreferrer">Abrir en Drive</a>` : ''}</div>` : '';
+  return plansPanel(p) + projectMeetingsPanel(p) + panel('Acta de constitución', 'Autoriza el proyecto y fija su propósito, objetivos y límites.', chDoc + charter, canEdit() ? `<button class="btn sm" data-act="edit-project" data-id="${esc(p.id)}">Editar acta</button>` : '')
     + prioPanel(p)
     + panel('Acuerdos y compromisos de reuniones', `${plural(m.pendA.length, 'pendiente', 'pendientes')} · ${plural(m.lateA.length, 'vencido', 'vencidos')}. Marca «Cumplido» en cuanto se cierre un compromiso.`,
       regTable('agreements', agreements, [
