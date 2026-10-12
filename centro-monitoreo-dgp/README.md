@@ -1,4 +1,4 @@
-# Gestión · Centro de Monitoreo DGP
+# Sistema de Dirección de Gestión de Proyectos · DGP
 
 Sistema de dirección de proyectos de la OGPL-UNMSM basado en la Guía del PMBOK® 8.ª edición (2025), con prácticas de la 5.ª, 6.ª y 7.ª edición. Usa la identidad de marca **Gestión**, de la gestión de la dirección de proyectos (ver `../marca-gestion/`).
 
