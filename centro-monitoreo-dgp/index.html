@@ -1390,6 +1390,20 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .btn.sos-ghost{color:var(--sos);border-color:var(--sos-line);display:inline-flex;align-items:center;gap:5px}
 .btn.sos-ghost:hover{color:var(--sos);border-color:var(--sos)}
 .mt-g{font-size:12.5px;color:var(--ink-muted);margin-left:6px}
+
+/* transferir pendientes */
+.tr-btn{font-size:12.5px;font-weight:700;color:var(--teal-700)}
+.tr-tag{display:inline-block;background:var(--teal-100);color:var(--ink);border-radius:999px;padding:1px 8px;font-size:12px;font-weight:600}
+.tr-new{display:flex;gap:8px;align-items:center;background:var(--surface-alt);border:1px solid var(--line);border-left:4px solid var(--teal-700);border-radius:var(--radius-sm);padding:8px 12px;margin:0 0 10px;font-size:14px}
+.tr-help{margin:0 0 12px}
+.tr-card{border:1px solid var(--line);border-left:4px solid var(--teal-700);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;background:var(--surface)}
+.tr-card p{margin:0}.tr-name{font-weight:700;margin:2px 0 4px!important}
+.tr-who{border:0;padding:0;margin:8px 0 10px}.tr-who legend{font-weight:700;font-size:13px;margin-bottom:6px;padding:0}
+.tr-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px;border:1px solid var(--line);border-radius:var(--radius-sm);padding:6px;background:var(--surface-alt);max-height:260px;overflow:auto}
+.tr-p{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--radius-sm);cursor:pointer;min-width:0}
+.tr-p:has(input:checked){background:var(--surface);box-shadow:inset 0 0 0 1px var(--teal-700)}
+.tr-p input,.tr-keep input{width:17px;height:17px;flex:none;accent-color:var(--teal-700)}
+.tr-keep{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 10px;cursor:pointer}
 </style>
 
 <header class="nav" id="nav"></header>
@@ -2730,6 +2744,7 @@ document.addEventListener('click', e => {
     case 'mt-edit': if (canSchedule()) openMeetingForm(el.dataset.id); break;
     case 'sos-new': if (canSchedule()) openSosForm({ pid: el.dataset.pid || (UI.view === 'project' ? UI.pid : ''), who: el.dataset.who || '' }); break;
     case 'sos-send': openSosSend(el.dataset.id); break;
+    case 'tr-open': if (canEdit()) openTransfer(el.dataset.k, el.dataset.id); break;
     case 'sos-all': sosMark(true); break;
     case 'sos-none': sosMark(false); break;
     case 'sos-hide': sosHide(el.dataset.id); renderSos(); break;
@@ -2860,7 +2875,7 @@ document.addEventListener('input', e => {
   box.querySelector('.md-sem-out').innerHTML = `${pill(st.k, st.t)} <small>rango ${st.r}</small>`;
 });
 document.addEventListener('submit', e => {
-  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign, 'sos-form': submitSos, 'sos-send-form': () => closeModal() }[f.id];
+  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign, 'sos-form': submitSos, 'tr-form': submitTransfer, 'tr-done-form': () => closeModal(), 'sos-send-form': () => closeModal() }[f.id];
   if (!h) return; e.preventDefault(); h(f);
 });
 document.addEventListener('change', e => {
@@ -3988,6 +4003,80 @@ function renderSos() {
 }
 setInterval(() => { if (!document.hidden) renderSos(); }, 30000);
 
+/* ---------- transferir un pendiente que no le corresponde a quien lo ve ---------- */
+const TR_COLL = { t: 'tasks', a: 'agreements', r: 'risks' };
+const joinNames = ns => (ns.length < 2 ? ns.join('') : `${ns.slice(0, -1).join(', ')} y ${ns[ns.length - 1]}`);
+function trItem(k, id) {
+  if (k === 'p') {
+    const [sid, bi, ri] = String(id).split(':'), sec = (S.planSections || []).find(x => x.id === sid), b = sec && (sec.blocks || [])[+bi], r = b && (b.rows || [])[+ri];
+    if (!r) return null;
+    const ci = (b.head || []).findIndex(h => /responsable/i.test(h)); if (ci < 0) return null;
+    const ti = Math.max(0, (b.head || []).findIndex(h => /actividad|tarea|descrip/i.test(h))), pl = (S.plans || []).find(x => x.id === sec.plan);
+    return { k, id, pid: sec.pid || (pl && pl.pid) || '', name: String(r[ti] || '').replace(/\*\*/g, ''), owner: r[ci], where: (pl && pl.code) || 'Plan de gestión', sid, bi: +bi, ri: +ri, ci, log: ((b.tr || {})[ri]) ? [b.tr[ri]] : [] };
+  }
+  const rec = (S[TR_COLL[k]] || []).find(x => x.id === id); if (!rec) return null;
+  return { k, id, pid: rec.pid, name: k === 't' ? `${rec.wbs ? rec.wbs + ' · ' : ''}${rec.name}` : k === 'a' ? rec.text : rec.title, owner: rec.owner, where: k === 't' ? 'Cronograma' : k === 'a' ? 'Acuerdo de reunión' : 'Riesgo', log: Array.isArray(rec.transfers) ? rec.transfers : [] };
+}
+const trLast = it => (it && it.log.length ? it.log[it.log.length - 1] : null);
+// etiqueta para quien recibió el pendiente: «Te lo transfirió Karla · 12 oct»
+function trTag(it, m) {
+  const x = trLast(it); if (!x || !m) return '';
+  const mine = (x.toIds || []).includes(m.id) || (x.to || []).some(n => memberMatches(m, n));
+  if (!mine || x.fromId === m.id) return '';
+  return ` · <span class="tr-tag" title="${esc(x.note || '')}">Te lo transfirió ${esc(String(x.from || '').split(' ')[0])}${x.at ? ' el ' + fmtD(String(x.at).slice(0, 10)) : ''}${x.note ? ': «' + esc(x.note) + '»' : ''}</span>`;
+}
+const trBtn = (k, id) => ` · <button class="linkish tr-btn" data-act="tr-open" data-k="${k}" data-id="${esc(id)}">No me corresponde</button>`;
+function trRecent(m, it) {
+  const lim = Date.now() - 7 * 864e5, out = [];
+  it.tasks.forEach(t => out.push(trItem('t', t.id))); it.agreements.forEach(a => out.push(trItem('a', a.id))); it.risks.forEach(r => out.push(trItem('r', r.id))); it.plan.forEach(x => out.push(trItem('p', `${x.sec.id}:${x.bi}:${x.ri}`)));
+  return out.filter(x => { const l = trLast(x); return l && trTag(x, m) && Date.parse(l.at) >= lim; }).length;
+}
+function openTransfer(k, id) {
+  const it = trItem(k, id), m = curMember(); if (!it || !m) return;
+  const P = dirPeople().filter(x => !(x.m && x.m.id === m.id));
+  const inP = x => it.pid && x.assign.some(a => a.p.id === it.pid);
+  const pre = x => !isGroupOwner(it.owner) && (x.m ? memberMatches(x.m, it.owner) : normN(it.owner).includes(normN(x.name)));
+  const row = x => `<label class="tr-p"><input type="checkbox" name="to" value="${esc(x.key)}"${pre(x) ? ' checked' : ''}>${dirAv(x)}<span class="sos-n"><b>${esc(x.name)}</b><small>${esc([x.assign.map(a => a.p.code).join(' · '), (x.assign.find(a => a.p.id === it.pid && a.t) || {}).t ? x.assign.find(a => a.p.id === it.pid && a.t).t.role : x.role].filter(Boolean).join(' · ') || '—')}</small></span></label>`;
+  const a = P.filter(inP), b = P.filter(x => !inP(x)), p = projectById(it.pid);
+  const group = isGroupOwner(it.owner) || !memberMatches(m, it.owner);
+  const body = `<div class="tr-card"><p class="mini-h">${esc(p ? p.code + ' · ' : '')}${esc(it.where)}</p><p class="tr-name">${fmtTxt(it.name)}</p><p class="note">Responsable ahora: <b>${esc(it.owner || '—')}</b></p></div>
+    <p class="note">${group ? 'Este pendiente está a nombre de un grupo o de un rol compartido, por eso lo ve más de una persona. Al transferirlo, solo lo verán en su intranet las personas que elijas.' : 'Elige a quién le corresponde. Saldrá de tu intranet y aparecerá en el de esa persona.'}</p>
+    <fieldset class="tr-who"><legend>¿Quién se encarga?</legend>${a.length ? `<p class="mini-h">Equipo de ${esc(p ? p.code : 'este proyecto')}</p><div class="tr-list">${a.map(row).join('')}</div>` : ''}${b.length ? `<details class="sos-more"${a.length ? '' : ' open'}><summary>Otras personas del equipo (${b.length})</summary><div class="tr-list">${b.map(row).join('')}</div></details>` : ''}</fieldset>
+    <label class="tr-keep"><input type="checkbox" name="keep"> Sigo también yo como responsable</label>
+    ${fld('Mensaje para la persona (opcional)', '<input name="note" maxlength="300" placeholder="Por ejemplo: esto lo ve Karla porque lleva la página web">', 1)}`;
+  dlg('Transferir pendiente', body, '<button type="button" class="btn" data-act="close-modal">Cancelar</button><button class="btn primary" type="submit">Transferir</button>', 'tr-form');
+  const f = $('#tr-form'); f.dataset.k = k; f.dataset.id = id; f.dataset.mid = m.id;
+}
+async function submitTransfer(f) {
+  const it = trItem(f.dataset.k, f.dataset.id), m = membersAll().find(x => x.id === f.dataset.mid);
+  if (!it || !m || !canEdit()) { closeModal(); return; }
+  const P = dirPeople(), sel = [...f.querySelectorAll('input[name=to]:checked')].map(i => P.find(x => x.key === i.value)).filter(Boolean);
+  if (!sel.length) { formErr('Elige al menos a una persona.'); return; }
+  const keep = f.elements.keep.checked, names = sel.map(x => (x.m ? x.m.name : x.name));
+  const owner = joinNames((keep ? [m.name] : []).concat(names)), note = String(f.elements.note.value || '').trim().slice(0, 300);
+  const by = sessionMember();
+  const entry = { from: m.name, fromId: m.id, to: names, toIds: sel.filter(x => x.m).map(x => x.m.id), prev: String(it.owner || ''), note, by: by && by.id !== m.id ? by.name : '', at: new Date().toISOString() };
+  const btn = f.querySelector('[type=submit]'); if (btn) btn.disabled = true;
+  try {
+    if (it.k === 'p') {
+      const sec = (S.planSections || []).find(x => x.id === it.sid), blocks = JSON.parse(JSON.stringify(sec.blocks || [])), b = blocks[it.bi];
+      if (!b || !b.rows[it.ri]) throw new Error('row');
+      b.rows[it.ri][it.ci] = owner; b.tr = Object.assign({}, b.tr || {}, { [it.ri]: entry });
+      await updateRec('planSections', it.sid, { blocks });
+    } else {
+      await updateRec(TR_COLL[it.k], it.id, { owner, transfers: it.log.concat([entry]).slice(-10) });
+    }
+  } catch (e) { if (btn) btn.disabled = false; writeErr(e); return; }
+  logFeed(it.pid || null, `transfirió «${String(it.name).slice(0, 70)}» a ${joinNames(names)}${keep ? ' (sigue también ' + m.name + ')' : ''}`);
+  toast(`Pendiente transferido a ${joinNames(names.map(n => n.split(' ')[0]))}`, 'ok');
+  const mails = sel.map(x => x.email).filter(mailOk), p = projectById(it.pid);
+  if (!mails.length) { closeModal(); return; }
+  const sub = `Te transfirieron un pendiente${p ? ' de ' + p.code : ''}: ${String(it.name).replace(/\*\*/g, '').slice(0, 80)}`;
+  const msg = `Hola:\n\n${m.name} te transfirió este pendiente en Gestión porque te corresponde:\n\n${p ? p.code + ' · ' : ''}${it.where}\n${String(it.name).replace(/\*\*/g, '')}\n${note ? '\nMensaje: ' + note + '\n' : ''}\nYa aparece en tu intranet del equipo.\n\nGestión · DGP OGPL-UNMSM`;
+  const gm = `https://mail.google.com/mail/?view=cm&fs=1&to=${uenc(mails.join(','))}&su=${uenc(sub)}&body=${uenc(msg)}`;
+  dlg('Pendiente transferido', `<p>Ya está en el intranet de <b>${esc(joinNames(names))}</b>.</p><p class="note">¿Le avisas por correo? Se abre el mensaje listo para enviar a ${esc(mails.join(', '))}.</p><div class="sos-send"><a class="btn primary" href="${esc(gm)}" target="_blank" rel="noopener noreferrer">${icon('correo', 16)}Avisar por Gmail</a><a class="btn" href="mailto:${mails.map(uenc).join(',')}?subject=${uenc(sub)}&body=${uenc(msg)}">Otro programa de correo</a></div>`, '<button class="btn" type="submit">Listo</button>', 'tr-done-form');
+}
+
 /* ---------- directorio: todas las personas de todos los proyectos ---------- */
 function dirPeople() {
   const people = membersActive().map(m => ({ key: 'm:' + m.id, m, name: m.name, role: m.role || '', email: m.email || '', assign: [] }));
@@ -4298,7 +4387,7 @@ function viewMe() {
   const openA = it.agreements.filter(a => a.status === 'Pendiente'), openP = it.plan.filter(x => !x.done);
   const myMt = upcomingMeetings(meetingsAll()).filter(mt => attendeesOf(mt).some(x => x.id === m.id));
   const nxt = myMt[0];
-  const ed = canEdit() && !preview;
+  const ed = canEdit() && !preview, trOk = canEdit() && (!preview || isAdmin());
   // semana actual (el domingo se muestra la semana que empieza): clases y reuniones
   const sunday = td.getDay() === 0, mon = new Date(td); mon.setDate(td.getDate() + (sunday ? 1 : -((td.getDay() + 6) % 7)));
   const dates = {}, wkItems = classItems(m);
@@ -4316,14 +4405,15 @@ function viewMe() {
   const funcs = fx ? `<div class="me-fx"><p class="mini-h">Según el plan ${esc(fx.pl.code || '')} (sección 7.2)</p>${fx.blocks.map((b, bi) => prBlock(b, fx.sec.id, bi)).join('')}</div>` : '<p class="note">Tus funciones detalladas aparecerán aquí cuando el plan de gestión de tu proyecto las incluya en la sección 7.2.</p>';
   const raci = rc ? `<div class="me-raci"><p class="mini-h">Tu papel en la matriz RACI (${esc(rc.pl.code || '')}, columna «${esc(m.raci)}»)</p>${[['R', 'Lo haces'], ['A', 'Lo apruebas'], ['C', 'Te consultan'], ['I', 'Te informan']].filter(([k]) => rc.g[k].length).map(([k, l]) => `<div class="raci-g"><b class="raci-k ${k}">${k}</b><div><small>${l}</small><p>${rc.g[k].map(esc).join(' · ')}</p></div></div>`).join('')}</div>` : '';
   // pendientes
-  const tRow = t => { const st = taskState(t, td), p = projectById(t.pid); return `<li class="pd ${st.k}"><label class="pd-ck"><input type="checkbox" data-quick="done" data-id="${esc(t.id)}"${num(t.progress) >= 100 ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como hecha"></label><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> <span class="mono">${esc(t.wbs || '')}</span> ${esc(t.name)}</p><small>${pill(st.tone, st.label)} ${t.end ? `Fin ${fmtD(t.end)}` : ''} · ${Math.round(num(t.progress))}%</small></div></li>`; };
-  const pRow = x => `<li class="pd ${x.done ? 'done' : ''}"><label class="pd-ck"><input type="checkbox" data-pchk="${esc(x.sec.id)}:${x.bi}:${x.ri}"${x.done ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como cumplida"></label><div><p><span class="code-chip">${esc(x.pl.code || 'Plan')}</span> ${fmtTxt(x.text)}</p><small>${x.date ? esc(x.date) : ''}${x.done ? ` · cumplida el ${fmtD(x.done)}` : ''} · <button class="linkish" data-act="open-plan" data-id="${esc(x.pl.id)}">ver en el plan</button></small></div></li>`;
-  const aRow = a => { const p = projectById(a.pid), d = parseD(a.due), late = a.status === 'Pendiente' && d && d < td; return `<li class="pd ${a.status === 'Pendiente' ? (late ? 'late' : '') : 'done'}">${a.status === 'Pendiente' && ed ? `<button class="icon-btn" data-act="agree-done" data-id="${esc(a.id)}">Cumplido</button>` : `<span class="pd-ok">${a.status === 'Pendiente' ? '•' : '✓'}</span>`}<div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(a.text)}</p><small>${a.due ? `${late ? '<b class="tone-crit">Venció</b>' : 'Vence'} ${fmtD(a.due)} · ` : ''}${esc(a.meeting || '')}</small></div></li>`; };
+  const tRow = t => { const st = taskState(t, td), p = projectById(t.pid); return `<li class="pd ${st.k}"><label class="pd-ck"><input type="checkbox" data-quick="done" data-id="${esc(t.id)}"${num(t.progress) >= 100 ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como hecha"></label><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> <span class="mono">${esc(t.wbs || '')}</span> ${esc(t.name)}</p><small>${pill(st.tone, st.label)} ${t.end ? `Fin ${fmtD(t.end)}` : ''} · ${Math.round(num(t.progress))}%${trTag(trItem('t', t.id), m)}${trOk && num(t.progress) < 100 ? trBtn('t', t.id) : ''}</small></div></li>`; };
+  const pRow = x => `<li class="pd ${x.done ? 'done' : ''}"><label class="pd-ck"><input type="checkbox" data-pchk="${esc(x.sec.id)}:${x.bi}:${x.ri}"${x.done ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como cumplida"></label><div><p><span class="code-chip">${esc(x.pl.code || 'Plan')}</span> ${fmtTxt(x.text)}</p><small>${x.date ? esc(x.date) : ''}${x.done ? ` · cumplida el ${fmtD(x.done)}` : ''} · <button class="linkish" data-act="open-plan" data-id="${esc(x.pl.id)}">ver en el plan</button>${trTag(trItem('p', `${x.sec.id}:${x.bi}:${x.ri}`), m)}${trOk && !x.done ? trBtn('p', `${x.sec.id}:${x.bi}:${x.ri}`) : ''}</small></div></li>`;
+  const aRow = a => { const p = projectById(a.pid), d = parseD(a.due), late = a.status === 'Pendiente' && d && d < td; return `<li class="pd ${a.status === 'Pendiente' ? (late ? 'late' : '') : 'done'}">${a.status === 'Pendiente' && ed ? `<button class="icon-btn" data-act="agree-done" data-id="${esc(a.id)}">Cumplido</button>` : `<span class="pd-ok">${a.status === 'Pendiente' ? '•' : '✓'}</span>`}<div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(a.text)}</p><small>${a.due ? `${late ? '<b class="tone-crit">Venció</b>' : 'Vence'} ${fmtD(a.due)} · ` : ''}${esc(a.meeting || '')}${trTag(trItem('a', a.id), m)}${trOk && a.status === 'Pendiente' ? trBtn('a', a.id) : ''}</small></div></li>`; };
   const tasksOpen = openT.slice().sort((a, b) => String(a.end || '9').localeCompare(String(b.end || '9')));
-  const pend = `<div class="me-cols"><div><h3 class="sub-h">Del cronograma <small>${openT.length} pendientes</small></h3>${tasksOpen.length ? `<ul class="pd-list">${tasksOpen.map(tRow).join('')}</ul>` : '<p class="note">No tienes tareas pendientes asignadas en los cronogramas.</p>'}</div>
+  const trN = trRecent(m, it);
+  const pend = `${trN ? `<p class="tr-new">${icon('equipo', 16)}<span>${trN === 1 ? 'Esta semana te transfirieron 1 pendiente' : `Esta semana te transfirieron ${trN} pendientes`}: aparecen marcados con «Te lo transfirió…».</span></p>` : ''}${trOk && (it.tasks.length + it.agreements.length + it.plan.length) ? '<p class="note tr-help">¿Ves algo que no te corresponde? Usa «No me corresponde» para pasárselo a quien se encarga: saldrá de tu intranet y aparecerá en el suyo.</p>' : ''}<div class="me-cols"><div><h3 class="sub-h">Del cronograma <small>${openT.length} pendientes</small></h3>${tasksOpen.length ? `<ul class="pd-list">${tasksOpen.map(tRow).join('')}</ul>` : '<p class="note">No tienes tareas pendientes asignadas en los cronogramas.</p>'}</div>
     <div><h3 class="sub-h">Del plan de gestión <small>${openP.length} pendientes</small></h3>${it.plan.length ? `<ul class="pd-list">${it.plan.map(pRow).join('')}</ul>` : '<p class="note">No hay actividades del plan a tu nombre.</p>'}</div>
     <div><h3 class="sub-h">Acuerdos de reuniones <small>${openA.length} pendientes</small></h3>${it.agreements.length ? `<ul class="pd-list">${it.agreements.slice().sort((a, b) => (a.status === 'Pendiente' ? 0 : 1) - (b.status === 'Pendiente' ? 0 : 1)).map(aRow).join('')}</ul>` : '<p class="note">No tienes acuerdos a tu nombre.</p>'}</div></div>`;
-  const risks = it.risks.length ? panel('Mis riesgos', 'Riesgos de los que eres dueño: revisa su respuesta y su próxima fecha de revisión.', `<ul class="pd-list">${it.risks.map(r => { const p = projectById(r.pid); return `<li class="pd"><span class="pd-ok">${riskScore(r)}</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(r.title)}</p><small>${esc(r.strategy || 'Sin estrategia')} · ${esc(r.status || '')}${r.due ? ` · revisión ${fmtD(r.due)}` : ''}</small></div></li>`; }).join('')}</ul>`) : '';
+  const risks = it.risks.length ? panel('Mis riesgos', 'Riesgos de los que eres dueño: revisa su respuesta y su próxima fecha de revisión.', `<ul class="pd-list">${it.risks.map(r => { const p = projectById(r.pid); return `<li class="pd"><span class="pd-ok">${riskScore(r)}</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(r.title)}</p><small>${esc(r.strategy || 'Sin estrategia')} · ${esc(r.status || '')}${r.due ? ` · revisión ${fmtD(r.due)}` : ''}${trTag(trItem('r', r.id), m)}${trOk ? trBtn('r', r.id) : ''}</small></div></li>`; }).join('')}</ul>`) : '';
   // reuniones
   const mts = panel('Mis reuniones', `${myMt.length > 6 ? `Las próximas 6 de ${myMt.length}. ` : ''}Confirma tu asistencia y agrégalas a tu Google Calendar para recibir los avisos.`, meetingList(myMt.slice(0, 6), m, preview), `${downloads && myMt.length ? '<button class="btn sm" data-act="me-csv">Descargar mis reuniones (CSV)</button>' : ''}<button class="btn sm" data-act="go-team" data-v="reun">Ver el cronograma completo</button>`);
   // bitácora
