@@ -4510,6 +4510,8 @@ UI.of = { sel: null, sim: false, day: 1, min: 600, play: false, speed: 10, list:
 const OF = { ok: false, fail: '', raf: 0, last: 0, t: 0, ver: -1, av: new Map(), seats: new Map(), deskOf: new Map(), pick: [], scr: {}, walls: [], lamps: null, leds: [], top: new Map(), stKey: '', placed: false, dirty: true, clockKey: '', vis: true, drawAt: 0, hoverAt: 0, mtSeat: new Map() };
 // zonas de la sede: [x1, z1, x2, z2] en metros; puerta sobre el pasillo
 const OF_Z = {
+  ger: { n: 'Gerencia General', s: 'ROIC & Company · Gerente General', c: 0x6D4C41, b: [-24, -11, -16, -2], door: [-20, -2], cam: [-20, -6.2, 21] },
+  mkt: { n: 'Área de Marketing y Comunicaciones', s: 'ROIC & Company · marca, redes y página web', c: 0xAD1457, b: [-24, 2, -16, 11], door: [-20, 2], cam: [-20, 6.4, 21] },
   dir: { n: 'Dirección de proyectos', s: 'Cartera y decisiones · DGP', c: 0x2F6FB3, b: [-16, -11, -5, -2], door: [-10.5, -2], cam: [-10.5, -6.2, 23] },
   sala: { n: 'Sala de reuniones', s: 'Reuniones del cronograma', c: 0x14315F, b: [-5, -11, 5, -2], door: [0, -2], cam: [0, -6.4, 22] },
   lab: { n: 'Laboratorio SIGPRO', s: 'Desarrollo y automatización', c: 0x0A7E90, b: [5, -11, 16, -2], door: [10.5, -2], cam: [10.5, -6.2, 23] },
@@ -4518,14 +4520,16 @@ const OF_Z = {
   cowork: { n: 'Coworking', s: 'Puestos para nuevos integrantes', c: 0x7A879C, b: [12, 2, 16, 11], door: [14, 2], cam: [14, 6.4, 17] },
   aula: { n: 'Aulas FCM', s: 'Clases del equipo', c: 0x7A4FB3, b: [20, -7, 31, 7], door: [20, 0], cam: [25.5, 0, 25] },
 };
-const OF_ALL = [7.5, 0, 0];
+const OF_ALL = [3.5, 0, 0];
 const OF_ST = { desk: ['ok', 'En su puesto'], class: ['warn', 'En clase'], meeting: ['info', 'En reunión'], away: ['idle', 'Fuera de la oficina'] };
 const OF_TOUR = [
   ['all', 'La sede virtual de la DGP', 'La oficina física replicada en 3D: las áreas de trabajo, la sala de reuniones y el pabellón de aulas de la FCM, unidos por el pasillo principal. Todo se mueve con los datos reales del sistema.'],
+  ['ger', 'Gerencia General', 'La oficina del gerente general de ROIC & Company, al costado de la Dirección de proyectos, con una puerta interior que las comunica.'],
   ['dir', 'Dirección de proyectos', 'El puesto del director de los proyectos. La pantalla muestra la cartera en vivo: semáforo, avance real frente al planificado y alertas.'],
   ['proc', 'Racionalización · Procesos', 'El equipo de P01 levanta, diagrama y documenta los procedimientos. La pizarra muestra el avance de P01 y sus próximas actividades.'],
   ['acred', 'Acreditación FCM', 'El equipo de P04 redacta el plan de gestión, revisa la documentación y ordena las evidencias para la certificación y la acreditación.'],
   ['lab', 'Laboratorio SIGPRO', 'Desarrollo y automatización: los módulos de SIGPRO y la integración de las actas digitales.'],
+  ['mkt', 'Área de Marketing y Comunicaciones', 'La oficina del Área de Marketing y Comunicaciones de ROIC & Company: marca, redes sociales, página web y calendario editorial.'],
   ['sala', 'Sala de reuniones', 'Cuando el cronograma marca una reunión, los participantes caminan hasta aquí. La pantalla muestra la reunión en curso o la próxima.'],
   ['aula', 'Aulas FCM', 'Cuando alguien tiene clase según su horario, va al pabellón de aulas. Mientras tanto, su agente de IA sigue trabajando en su puesto: es la figura turquesa.'],
   ['all', 'Los agentes de IA', 'Toca a cualquier integrante para ver qué está haciendo y pedirle trabajo a su agente: informes, actas, guías o planes, preparados con Claude a partir de los datos del sistema.'],
@@ -4571,6 +4575,9 @@ function ofQueue(m) {
   return L;
 }
 function ofZoneOf(m) {
+  const area = String((m.org && m.org.area) || '');
+  if (/^Gerencia General/i.test(area)) return 'ger';
+  if (/Marketing/i.test(area)) return 'mkt';
   const role = normN(`${m.role || ''} ${m.planRoles || ''}`), codes = projectsOf(m).map(x => String(x.p.code || '').toUpperCase());
   if (m.admin || /director|lider|senior/.test(role)) return 'dir';
   if (/desarroll|full ?stack|sigpro|programad|sistemas|automatiz|inteligencia artificial/.test(role)) return 'lab';
@@ -4595,7 +4602,7 @@ function ofRecalc() {
 }
 
 /* ---------- cuadrícula para que los avatares caminen sin atravesar muebles ---------- */
-function ofGridInit() { const g = { x0: -26, z0: -15, cs: 0.4 }; g.w = Math.ceil((35 - g.x0) / g.cs); g.h = Math.ceil((15 - g.z0) / g.cs); g.c = new Uint8Array(g.w * g.h); OF.grid = g; }
+function ofGridInit() { const g = { x0: -36, z0: -15, cs: 0.4 }; g.w = Math.ceil((35 - g.x0) / g.cs); g.h = Math.ceil((15 - g.z0) / g.cs); g.c = new Uint8Array(g.w * g.h); OF.grid = g; }
 function ofBlock(x1, z1, x2, z2, pad) {
   const g = OF.grid, p = pad == null ? 0.12 : pad;
   const i1 = Math.max(0, Math.floor((Math.min(x1, x2) - p - g.x0) / g.cs)), i2 = Math.min(g.w - 1, Math.floor((Math.max(x1, x2) + p - g.x0) / g.cs));
@@ -4675,10 +4682,10 @@ function ofBuild() {
   OF.mk = { geo, mat, mesh, box, cyl, add };
   // suelo, losas y caminos
   const ground = new T.Mesh(new T.PlaneGeometry(260, 190), M.grass); ground.rotation.x = -Math.PI / 2; ground.position.set(8, -0.06, 0); ground.receiveShadow = true; scene.add(ground); OF.ground = ground;
-  box(32.4, 0.3, 22.4, M.floor, 0, -0.15, 0, { noCast: true });
+  box(32.4, 0.3, 22.4, M.floor, 0, -0.15, 0, { noCast: true }); box(8.2, 0.3, 22.4, M.floor, -20.1, -0.15, 0, { noCast: true });
   box(11.4, 0.3, 14.4, M.floor, 25.5, -0.15, 0, { noCast: true });
-  box(4.2, 0.08, 2.6, M.walk, 18, -0.03, 0, { noCast: true }); box(9, 0.08, 2.6, M.walk, -20.4, -0.03, 0, { noCast: true });
-  box(32, 0.012, 4, M.hall, 0, 0.006, 0, { noCast: true });
+  box(4.2, 0.08, 2.6, M.walk, 18, -0.03, 0, { noCast: true }); box(9, 0.08, 2.6, M.walk, -28.4, -0.03, 0, { noCast: true });
+  box(32, 0.012, 4, M.hall, 0, 0.006, 0, { noCast: true }); box(8, 0.012, 4, M.hall, -20, 0.006, 0, { noCast: true });
   Object.entries(OF_Z).forEach(([k, z]) => {
     const [x1, z1, x2, z2] = z.b, c = new T.Color(0xEFE3D1).lerp(new T.Color(z.c), k === 'aula' ? 0.1 : 0.13);
     const rug = box(x2 - x1 - 0.3, 0.012, z2 - z1 - 0.3, mat(c), (x1 + x2) / 2, 0.008, (z1 + z2) / 2, { noCast: true });
@@ -4693,10 +4700,11 @@ function ofBuild() {
     OF.walls.push({ up, cap, m: [m2, capM], nx, nz, k: 1 });
     ofBlock(Math.min(x1, x2), Math.min(z1, z2), Math.max(x1, x2), Math.max(z1, z2), 0.22);
   };
-  wall(-16.1, -11, 16.1, -11, 0, -1); wall(-16.1, 11, 16.1, 11, 0, 1);
-  wall(-16, -11, -16, -1.3, -1, 0); wall(-16, 1.3, -16, 11, -1, 0); wall(16, -11, 16, -1.3, 1, 0); wall(16, 1.3, 16, 11, 1, 0);
+  wall(-24.1, -11, 16.1, -11, 0, -1); wall(-24.1, 11, 16.1, 11, 0, 1);
+  wall(-24, -11, -24, -1.3, -1, 0); wall(-24, 1.3, -24, 11, -1, 0);
+  wall(-16, -11, -16, -6.9, -1, 0); wall(-16, -5.1, -16, -2, -1, 0); wall(-16, 2, -16, 11, -1, 0); wall(16, -11, 16, -1.3, 1, 0); wall(16, 1.3, 16, 11, 1, 0);
   wall(19.9, -7, 31.1, -7, 0, -1); wall(19.9, 7, 31.1, 7, 0, 1); wall(20, -7, 20, -1.3, -1, 0); wall(20, 1.3, 20, 7, -1, 0); wall(31, -7, 31, 7, 1, 0);
-  box(0.2, 0.6, 2.8, M.wall, -16, 2.75, 0, { noCast: true }); box(0.2, 0.6, 2.8, M.wall, 16, 2.75, 0, { noCast: true }); box(0.2, 0.6, 2.8, M.wall, 20, 2.75, 0, { noCast: true });
+  box(0.2, 0.6, 2.8, M.wall, -24, 2.75, 0, { noCast: true }); box(0.2, 0.6, 1.8, M.wall, -16, 2.75, -6, { noCast: true }); box(0.2, 0.6, 2.8, M.wall, 16, 2.75, 0, { noCast: true }); box(0.2, 0.6, 2.8, M.wall, 20, 2.75, 0, { noCast: true });
   // tabiques de vidrio con puertas
   const glass = (a1, b1, a2, b2, gaps) => {
     const horiz = b1 === b2, from = horiz ? a1 : b1, to = horiz ? a2 : b2, segs = []; let cur = from;
@@ -4707,8 +4715,8 @@ function ofBuild() {
       if (horiz) ofBlock(s1, b1 - 0.05, s2, b1 + 0.05, 0.16); else ofBlock(a1 - 0.05, s1, a1 + 0.05, s2, 0.16);
     });
   };
-  glass(-16, -2, 16, -2, [[-11.4, -9.6], [-0.9, 0.9], [9.6, 11.4]]);
-  glass(-16, 2, 16, 2, [[-9.4, -7.6], [4.6, 6.4], [13.1, 14.9]]);
+  glass(-24, -2, 16, -2, [[-20.9, -19.1], [-11.4, -9.6], [-0.9, 0.9], [9.6, 11.4]]);
+  glass(-24, 2, 16, 2, [[-20.9, -19.1], [-9.4, -7.6], [4.6, 6.4], [13.1, 14.9]]);
   glass(-5, -11, -5, -2); glass(5, -11, 5, -2); glass(-1, 2, -1, 11); glass(12, 2, 12, 11);
   // mobiliario
   const plant = (x, z, s) => { s = s || 1; cyl(0.2 * s, 0.16 * s, 0.4 * s, M.pot, x, 0.2 * s, z); mesh(geo('ico' + s, () => new T.IcosahedronGeometry(0.42 * s, 0)), Math.random() > 0.5 ? M.leaf : M.leaf2, x, 0.72 * s, z); ofBlock(x - 0.25, z - 0.25, x + 0.25, z + 0.25); };
@@ -4756,6 +4764,19 @@ function ofBuild() {
   box(0.4, 2.1, 1.9, M.shelf, -15.7, 1.05, -3.9); ofBlock(-15.9, -4.9, -15.5, -2.9);
   for (let i = 0; i < 12; i++) box(0.26, 0.32, 0.12, mat([0x2F6FB3, 0x1A7049, 0xA65310, 0x0A7E90, 0xB8352C, 0x14315F][i % 6]), -15.62, 0.42 + Math.floor(i / 6) * 0.62, -4.65 + (i % 6) * 0.3, { noCast: true });
   plant(-15.3, -10.3); plant(-5.7, -10.3); plant(-5.7, -2.7, 0.8);
+  // Gerencia General (oficina individual al costado de la Dirección)
+  desk('ger', -20, -5.3, Math.PI, { w: 1.9 });
+  chair(-20.55, -7.3, 0); chair(-19.45, -7.3, 0);
+  box(0.4, 2.1, 1.9, M.shelf, -23.7, 1.05, -8.6); ofBlock(-23.9, -9.6, -23.5, -7.6);
+  for (let i = 0; i < 10; i++) box(0.26, 0.32, 0.12, mat([0x6D4C41, 0x14315F, 0x2F6FB3, 0xA65310, 0x1A7049][i % 5]), -23.62, 0.42 + Math.floor(i / 5) * 0.62, -9.25 + (i % 5) * 0.3, { noCast: true });
+  box(2.0, 0.42, 0.8, M.seat, -20, 0.21, -10.25); box(2.0, 0.5, 0.16, M.back, -20, 0.55, -10.6, { noCast: true }); ofBlock(-21.05, -10.7, -18.95, -9.8);
+  plant(-23.3, -2.7, 0.8); plant(-16.7, -10.3);
+  // Área de Marketing y Comunicaciones (oficina individual)
+  desk('mkt', -20, 6.7, Math.PI, { w: 1.6 });
+  box(2.6, 1.5, 0.06, M.board, -20, 1.55, 10.85, { noCast: true }); ofBlock(-21.3, 10.7, -18.7, 10.95);
+  [[-20.9, 0x1BB0C4], [-20.3, 0xAD1457], [-19.7, 0xE7B24F], [-19.1, 0x5BC98F]].forEach(([x, c], i) => box(0.42, 0.42, 0.01, mat(c), x, 1.75 - (i % 2) * 0.5, 10.81, { noCast: true }));
+  cyl(0.45, 0.45, 0.05, M.wood, -22.5, 0.74, 9.2); cyl(0.06, 0.1, 0.72, M.steel, -22.5, 0.36, 9.2); ofBlock(-23, 8.7, -22, 9.7); chair(-22.5, 8.3, 0);
+  plant(-23.3, 2.7, 0.8); plant(-16.7, 10.3);
   // Sala de reuniones
   box(4.4, 0.06, 1.5, M.wood, 0, 0.74, -6.5); box(0.5, 0.72, 0.9, M.steel, -1.3, 0.36, -6.5); box(0.5, 0.72, 0.9, M.steel, 1.3, 0.36, -6.5); ofBlock(-2.2, -7.25, 2.2, -5.75, 0.05);
   const meetSeat = (x, z, ry) => { const i = [...OF.seats.values()].filter(s => s.kind === 'meet').length; chair(x, z, ry); OF.seats.set('s:' + i, { key: 's:' + i, kind: 'meet', zone: 'sala', x, z, r: ry }); };
@@ -4788,11 +4809,11 @@ function ofBuild() {
   [[23, 0.7], [28, 0.7]].forEach(([x, z]) => lamp(x, z));
   // exteriores: árboles, faroles y bancas
   const tree = (x, z, s) => { s = s || 1; cyl(0.12 * s, 0.16 * s, 1.4 * s, M.trunk, x, 0.7 * s, z); mesh(geo('tree' + s, () => new T.IcosahedronGeometry(1.1 * s, 1)), Math.random() > 0.5 ? M.canopy : M.canopy2, x, 2.0 * s, z); ofBlock(x - 0.3, z - 0.3, x + 0.3, z + 0.3); };
-  [[-21, -8], [-21, 7.5], [-24.5, -3.5], [-6, -14.2], [6, -14.2], [-13, 14.2], [3, 14.2], [12.5, 14.2], [18.2, -6.5], [18.2, 6.5], [33.5, -5], [33.5, 4.5], [24, 10.5], [29, -10.5], [21, -10.2], [-26, 6], [36, 0]].forEach(([x, z], i) => tree(x, z, i % 3 ? 1 : 1.25));
-  [[17, 1.7], [19, -1.7], [-18, 1.7], [-22, -1.7]].forEach(([x, z]) => { cyl(0.05, 0.06, 3.0, M.steel, x, 1.5, z); mesh(geo('lampball', () => new T.SphereGeometry(0.18, 14, 10)), M.lamp, x, 3.05, z, { noCast: true }); });
+  [[-29, -8], [-29, 7.5], [-32.5, -3.5], [-6, -14.2], [6, -14.2], [-13, 14.2], [3, 14.2], [12.5, 14.2], [18.2, -6.5], [18.2, 6.5], [33.5, -5], [33.5, 4.5], [24, 10.5], [29, -10.5], [21, -10.2], [-34, 6], [36, 0]].forEach(([x, z], i) => tree(x, z, i % 3 ? 1 : 1.25));
+  [[17, 1.7], [19, -1.7], [-26, 1.7], [-30, -1.7]].forEach(([x, z]) => { cyl(0.05, 0.06, 3.0, M.steel, x, 1.5, z); mesh(geo('lampball', () => new T.SphereGeometry(0.18, 14, 10)), M.lamp, x, 3.05, z, { noCast: true }); });
   [[22.5, 9], [27.5, 9]].forEach(([x, z]) => { box(1.6, 0.08, 0.45, M.wood, x, 0.45, z); box(0.08, 0.45, 0.4, M.steel, x - 0.65, 0.22, z); box(0.08, 0.45, 0.4, M.steel, x + 0.65, 0.22, z); });
   // puntos fuera de la sede (llegada y salida) y puestos de pie de respaldo
-  OF.seats.set('home', { key: 'home', kind: 'home', zone: 'out', x: -23.5, z: 0, r: -Math.PI / 2 });
+  OF.seats.set('home', { key: 'home', kind: 'home', zone: 'out', x: -31.5, z: 0, r: -Math.PI / 2 });
   for (let i = 0; i < 8; i++) OF.seats.set('p:' + i, { key: 'p:' + i, kind: 'stand', zone: 'hall', x: 2 + i * 1.6, z: 0.9, r: Math.PI });
   // pantallas y letreros con datos vivos
   const screen = (id, w, h, cw, ch, x, y, z, ry, zone, frame) => {
@@ -4808,7 +4829,7 @@ function ofBuild() {
   box(0.06, 1.9, 3.3, M.board, -0.45, 1.55, 8.4, { noCast: true }); box(0.06, 0.8, 0.06, M.steel, -0.45, 0.4, 7.0); box(0.06, 0.8, 0.06, M.steel, -0.45, 0.4, 9.8); ofBlock(-0.6, 6.7, -0.3, 10.1);
   screen('p04', 3.1, 1.7, 1024, 562, -0.41, 1.6, 8.4, Math.PI / 2, 'acred', false);
   screen('aula', 5.2, 2.0, 1024, 394, 25.5, 1.75, -6.86, 0, 'aula');
-  screen('logo', 3.2, 0.62, 1024, 198, -15.88, 2.72, 0, Math.PI / 2, 'dir', false);
+  screen('logo', 3.2, 0.62, 1024, 198, -23.88, 2.72, 0, Math.PI / 2, 'dir', false);
   // letreros colgantes de cada zona (dos caras)
   const sign = (k, x, y, z) => {
     const z0 = OF_Z[k], c = document.createElement('canvas'); c.width = 1024; c.height = 150; const tex = ofTexOf(c); ofDrawSign(c, z0);
@@ -4816,7 +4837,7 @@ function ofBuild() {
     [0, Math.PI].forEach(ry => { const pl = new T.Mesh(geo('sign', () => new T.PlaneGeometry(4.2, 0.62)), m); pl.position.set(x, y, z); pl.rotation.y = ry; pl.translateZ(0.02); pl.userData = { kind: 'zone', id: k }; scene.add(pl); OF.pick.push(pl); });
     box(4.3, 0.7, 0.03, M.cap, x, y, z, { noCast: true }); [-1.8, 1.8].forEach(dx => cyl(0.008, 0.008, 3.3 - y - 0.35, M.steel, x + dx, y + 0.35 + (3.3 - y - 0.35) / 2, z, { noCast: true }));
   };
-  sign('dir', -10.5, 2.75, -2.4); sign('sala', 0, 2.75, -2.4); sign('lab', 10.5, 2.75, -2.4);
+  sign('ger', -20, 2.75, -2.4); sign('mkt', -20, 2.75, 2.45); sign('dir', -10.5, 2.75, -2.4); sign('sala', 0, 2.75, -2.4); sign('lab', 10.5, 2.75, -2.4);
   sign('proc', -8.5, 2.75, 2.45); sign('acred', 5.5, 2.75, 2.45); sign('cowork', 14, 2.75, 2.45);
   sign('aula', 25.5, 2.75, 6.6);
   OF.ok = true;
@@ -4958,7 +4979,7 @@ const OF_TONE = { ok: '#5BC98F', warn: '#E7B24F', crit: '#F27C72', idle: '#A6B4C
 function ofDrawSign(c, z) {
   const x = c.getContext('2d'), W = c.width, H = c.height;
   x.fillStyle = '#0B1D3A'; x.fillRect(0, 0, W, H); x.fillStyle = '#' + z.c.toString(16).padStart(6, '0'); x.fillRect(0, 0, 18, H);
-  x.fillStyle = '#FFFFFF'; x.font = `800 54px ${OF_FD}`; x.textBaseline = 'middle'; x.fillText(ofFitTxt(x, z.n.toUpperCase(), W - 80), 48, 58);
+  x.fillStyle = '#FFFFFF'; x.textBaseline = 'middle'; let fz = 54; x.font = `800 ${fz}px ${OF_FD}`; while (fz > 32 && x.measureText(z.n.toUpperCase()).width > W - 80) { fz -= 2; x.font = `800 ${fz}px ${OF_FD}`; } x.fillText(ofFitTxt(x, z.n.toUpperCase(), W - 80), 48, 58);
   x.fillStyle = '#1BB0C4'; x.font = `600 32px ${OF_FB}`; x.fillText(ofFitTxt(x, z.s, W - 80), 48, 112);
 }
 function ofHead(x, W, title, sub, bg, fg, ac) {
@@ -5072,7 +5093,7 @@ const ofAsp = () => { const st = OF.stage || $('#of-stage'); return st && st.cli
 const ofTh0 = asp => (asp < 1.15 ? Math.PI / 2 - 0.12 : 0.62);
 function ofFitD(th, asp) {
   const rx = Math.cos(th), rz = -Math.sin(th), fx = -Math.sin(th), fz = -Math.cos(th); let w0 = Infinity, w1 = -Infinity, d0 = Infinity, d1 = -Infinity;
-  [-17, 32].forEach(x => [-12.5, 12.5].forEach(z => { const r = x * rx + z * rz, f = x * fx + z * fz; w0 = Math.min(w0, r); w1 = Math.max(w1, r); d0 = Math.min(d0, f); d1 = Math.max(d1, f); }));
+  [-25, 32].forEach(x => [-12.5, 12.5].forEach(z => { const r = x * rx + z * rz, f = x * fx + z * fz; w0 = Math.min(w0, r); w1 = Math.max(w1, r); d0 = Math.min(d0, f); d1 = Math.max(d1, f); }));
   const t = Math.tan(16 * Math.PI / 180);
   return clamp(Math.max((w1 - w0) / 2 / (t * asp), (d1 - d0) * 0.6 / 2 / t) * 1.02, 30, 130);
 }
@@ -5386,6 +5407,8 @@ function ofPanelHtml() {
   else if (k === 'acred') extra = projBlock('P04');
   else if (k === 'lab') extra = projBlock('P03') + projBlock('P01');
   else if (k === 'aula') { const now = membersActive().map(m => ({ m, b: busyOf(m, N.dow).find(b => N.min >= b.s && N.min < b.e) })).filter(q => q.b); extra = `<div class="of-sec"><h4>En clase ahora</h4>${now.length ? `<ul class="of-ul">${now.map(q => `<li><b>${esc(mName(q.m))}</b> ${esc(q.b.t)} · hasta las ${m2t(q.b.e)}</li>`).join('')}</ul>` : '<p class="note">Nadie del equipo está en clase en este momento.</p>'}<p class="of-pa"><button class="btn sm" data-act="go-team" data-v="hor">Ver los horarios</button></p></div>`; }
+  else if (k === 'mkt') extra = projBlock('P05');
+  else if (k === 'ger') extra = projBlock('P05');
   else if (k === 'cowork') extra = `<div class="of-sec"><p class="note">Puestos libres para los integrantes que se sumen. Al registrarlos en Equipo → Accesos aparecen aquí o en el área de su proyecto.</p></div>`;
   return `<header class="of-ph"><span class="of-zc" style="--zc:#${z.c.toString(16).padStart(6, '0')}"></span><div><h3>${esc(z.n)}</h3><p>${esc(z.s)}</p></div>${close}</header>
     <div class="of-sec"><h4>Quiénes trabajan aquí</h4>${ms.length ? `<ul class="of-who">${ms.map(m => `<li><button class="linkish" data-act="of-sel" data-v="m:${esc(m.id)}">${avatar(m, 'sm')}${esc(mName(m))}</button>${ofStatusLine(m)}</li>`).join('')}</ul>` : '<p class="note">Nadie en este momento.</p>'}</div>${extra}`;
