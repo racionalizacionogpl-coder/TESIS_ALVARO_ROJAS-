@@ -1145,6 +1145,10 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--surface-alt)}
 .seg button{border:0;background:none;border-radius:999px;padding:7px 12px;font:700 12.5px/1 var(--font-body);color:var(--ink-muted);cursor:pointer;white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.of-site{flex-wrap:wrap}
+.of-orgsw{display:grid;gap:6px}.of-orgsw .seg{justify-self:start;flex-wrap:wrap}.of-orgsw .note{margin:0}
+.of-cg{margin:0 0 8px;font-size:13.5px;line-height:1.4}
+.of-tag.ai small{font-weight:600;opacity:.75;margin-left:2px}
 .of-time{display:inline-flex;align-items:baseline;gap:8px;font-size:14px;white-space:nowrap}
 .of-time .mono{font:600 15px var(--font-mono);color:var(--teal-700)}
 .of-sim{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
@@ -1417,9 +1421,9 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .org-who small{opacity:.85;font-size:12px;overflow-wrap:anywhere}
 .org-who .org-n{opacity:1;color:var(--on-navy-muted)}
 .org-v{display:block;width:2px;height:18px;background:var(--line-strong,var(--ink-muted))}
-.org-areas{list-style:none;margin:0;padding:14px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;border-top:2px solid var(--line-strong,var(--ink-muted))}
+.org-areas{list-style:none;margin:0;padding:14px 0 0;display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:12px;width:100%;border-top:2px solid var(--line-strong,var(--ink-muted))}
 .org-area{display:flex;flex-direction:column;gap:8px;min-width:0}
-.org-a{margin:0;background:var(--surface-alt);border:1px solid var(--line);border-top:4px solid var(--teal-700);border-radius:var(--radius-sm);padding:10px;font:800 13.5px/1.3 var(--font-display);text-align:center}
+.org-a{margin:0;background:var(--surface-alt);border:1px solid var(--line);border-top:4px solid var(--oc,var(--teal-700));border-radius:var(--radius-sm);padding:10px;font:800 13.5px/1.3 var(--font-display);text-align:center}
 .org-ppl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .org-p{display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:var(--radius-sm);padding:8px 10px;background:var(--surface)}
 .org-p.org-lead{border-color:var(--teal-700);box-shadow:inset 3px 0 0 var(--teal-700)}
@@ -1428,8 +1432,26 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .org-n{font-size:12px;color:var(--teal-700);font-weight:700}
 .me-org{margin:4px 0 0;font-weight:700;color:var(--teal-700)}
 .dir-org{margin:2px 0 0!important;font-size:12.5px!important;color:var(--teal-700)!important;font-weight:700}
-@media (max-width:900px){.org-areas{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.org-areas{grid-template-columns:1fr}}
+.org-box.org-vac{background:var(--surface-alt);color:var(--ink);border-style:dashed}
+.org-box.org-vac .org-who small{opacity:1;color:var(--ink-muted)}
+.org-fn{font-size:12px;line-height:1.35;color:var(--ink-muted)}
+.org .org-pj{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;justify-content:flex-start}.org .org-pj .code-chip{flex:none}
+.org-col{width:100%;margin-top:18px;padding-top:12px;border-top:1px dashed var(--line-strong,var(--line))}
+.org-col-h{margin:0 0 8px;font:800 13.5px/1.3 var(--font-display)}
+.org-col-h small{font:600 12.5px/1.3 var(--font-body,inherit);color:var(--ink-muted);margin-left:6px}
+.org-col .org-ppl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.org-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--oc,var(--teal-700));margin-right:7px;vertical-align:baseline;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.55)}
+.org-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.org-sum{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 14px;font-size:14px;color:var(--ink-muted)}.org-sum b{color:var(--ink)}
+.org-dual td{vertical-align:top}.org-dual .code-chip{margin:0 4px 4px 0}.org-dual small{display:block;color:var(--ink-muted)}
+.me-orgg{margin-top:18px}.me-orgg:first-child{margin-top:0}
+.me-org-h{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:0 0 10px;font:800 17px/1.25 var(--font-display)}
+.me-org-h small{font:600 13.5px/1.3 var(--font-body,inherit);color:var(--ink-muted)}
+.me-fxo+.me-fxo{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.me-cargo{margin:0 0 8px}.me-roles{margin:4px 0 0;padding-left:18px;line-height:1.6;font-size:14px}
+.me-ofil{margin:0 0 12px}
+.pcard .org-tag{display:flex;align-items:center;font-size:12.5px;font-weight:700;color:var(--ink-muted);margin:2px 0 0}
+@media (max-width:900px){.org-areas{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}}
 
 .ch-doc{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--line);border-left:4px solid var(--teal-700);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;background:var(--surface-alt)}
 .ch-doc>div{flex:1 1 220px;min-width:0}.ch-doc p{margin:0;overflow-wrap:anywhere}.ch-doc small{color:var(--ink-muted)}.ch-doc .ico{color:var(--teal-700)}
@@ -1520,6 +1542,7 @@ const PROJECT_FIELDS = [
   { k: 'code', l: 'Código', t: 'text', req: 1, ph: 'P05' },
   { k: 'name', l: 'Nombre del proyecto', t: 'text', req: 1, wide: 1 },
   { k: 'unit', l: 'Unidad responsable', t: 'text' },
+  { k: 'orgId', l: 'Organización que lo ejecuta', t: 'select', oFn: () => orgsList().map(o => [o.id, o.name]), hint: 'Define en qué organigrama y en qué sede de la oficina 3D se trabaja el proyecto.' },
   { k: 'sponsor', l: 'Patrocinador', t: 'text' },
   { k: 'manager', l: 'Director/a del proyecto', t: 'text' },
   { k: 'phase', l: 'Área de enfoque actual', t: 'select', o: OPT.phase, d: 'Inicio', req: 1 },
@@ -1658,7 +1681,7 @@ const COLL = {
     { k: 'action', l: 'Recomendación para próximos proyectos', t: 'textarea', wide: 1 },
   ] },
 };
-const LISTS = ['projects', ...Object.keys(COLL), 'planSections', 'members', 'meetings', 'agentRuns'];
+const LISTS = ['projects', ...Object.keys(COLL), 'planSections', 'members', 'meetings', 'agentRuns', 'orgs'];
 
 /* =========================================================
    Estado
@@ -2053,6 +2076,8 @@ function viewPortfolio() {
   const featId = focus && focus.score > 0 ? focus.x.p.id : null;
   const ms = nextMilestones(P.map(p => p.id), 3);
   const td = today();
+  const OL = orgsList().filter(o => P.some(p => projOrgId(p) === o.id)), pfO = OL.some(o => o.id === UI.pfOrg) ? UI.pfOrg : 'all';
+  const pfChips = OL.length > 1 ? `<div class="chips org-tabs" role="group" aria-label="Filtrar la cartera por organización"><button class="chip${pfO === 'all' ? ' on' : ''}" data-act="pf-org" data-v="all" aria-pressed="${pfO === 'all'}">Todas (${P.length})</button>${OL.map(o => `<button class="chip${pfO === o.id ? ' on' : ''}" data-act="pf-org" data-v="${esc(o.id)}" aria-pressed="${pfO === o.id}">${orgDot(o)}${esc(o.name)} (${P.filter(p => projOrgId(p) === o.id).length})</button>`).join('')}</div>` : '';
   const events = ms.length ? `<div class="events">${ms.map(({ t, d, p }) => `<article class="event"><div class="ev-date">${icon('hito', 26)}<b>${String(d.getDate()).padStart(2, '0')}</b><span>${MES[d.getMonth()]} ${d.getFullYear()}</span></div><div class="ev-body"><p class="eyebrow" style="margin:0">${esc(p.code)} · Hito ${esc(t.wbs)}</p><h3>${esc(t.name)}</h3><p class="note">${esc(p.name)}${t.owner ? ` · Responsable: ${esc(t.owner)}` : ''}</p><div class="ev-actions"><button class="btn primary sm" data-act="go-project" data-id="${esc(p.id)}" data-tab="cronograma">Ver cronograma</button><span class="btn accent sm" role="note">${dBetween(td, d) === 0 ? 'Hoy' : 'En ' + plural(dBetween(td, d), 'día', 'días')}</span></div></div></article>`).join('')}</div>` : `<div class="empty"><p>No hay hitos pendientes con fecha. Márcalos como tipo «Hito» en el cronograma de cada proyecto.</p></div>`;
   return hero + `<div class="wrap">
     <section class="section kband"><div class="kpis">
@@ -2064,7 +2089,7 @@ function viewPortfolio() {
     </div></section>
     ${UI.ai.portfolio ? `<section class="section">${aiPanel('portfolio')}</section>` : ''}
     ${agendaBand()}${officeTeaser()}
-    <section class="section">${secTitle('Proyectos en cartera', 'Cartera', 'La tarjeta destacada es el proyecto que hoy exige más atención.')}<div class="cards">${all.map(x => cardProject(x, x.p.id === featId)).join('')}</div></section>
+    <section class="section">${secTitle('Proyectos en cartera', 'Cartera', 'La tarjeta destacada es el proyecto que hoy exige más atención.')}${pfChips}<div class="cards">${all.filter(x => pfO === 'all' || projOrgId(x.p) === pfO).map(x => cardProject(x, x.p.id === featId)).join('')}</div></section>
     <section class="section">${secTitle('Panel de control', 'Monitoreo y control')}<div class="split">
       ${panel('Alertas en tiempo real', 'Ordenadas por severidad. Se generan solas a partir del cronograma, los riesgos, los acuerdos y los cambios.', alertList(alerts, true))}
       ${panel('Matriz impacto–esfuerzo', 'Priorización de la cartera con los 8 criterios de la matriz DGP. Corte en 3, el punto medio de la escala.', matrixSVG(all) + prioList())}
@@ -2077,6 +2102,7 @@ function cardProject({ p, m }, feat) {
   return `<article class="pcard${feat ? ' feat' : ''}" tabindex="0" role="link" data-act="go-project" data-id="${esc(p.id)}" aria-label="Abrir ${esc(p.code)} ${esc(p.name)}">
     ${feat ? '<span class="feat-tag">Requiere atención</span>' : ''}
     <div class="pcard-top"><span class="code-chip">${esc(p.code || '—')}</span>${pill(m.health.tone, m.health.label)}</div>
+    ${orgById(projOrgId(p)) ? `<p class="org-tag">${orgDot(orgById(projOrgId(p)))}${esc(orgById(projOrgId(p)).name)}</p>` : ''}
     <h3>${esc(p.name || 'Sin nombre')}</h3>
     ${stepper(p)}
     <div>${progressBar(m.realPct, m.planPct)}</div>
@@ -2158,7 +2184,7 @@ function viewProject(p) {
   const right = tg ? countdownHTML(tg.date, tg.title, `${fmtD(tg.date)} · ${esc(p.code)}`, tg.kind) : `<section class="cd"><p class="cd-eyebrow">Próximo hito</p><p class="cd-title">Sin hitos pendientes</p><p class="cd-sub">Marca actividades como «Hito» en el cronograma para ver aquí la cuenta regresiva.</p></section>`;
   const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:3%;top:20%"></span><div class="wrap">
     <div><p class="eyebrow">${esc(p.code || '')}${p.unit ? ' · ' + esc(p.unit) : ''}</p><h1 class="title">${esc(p.name || 'Sin nombre')}</h1>
-      <div class="facts">${pill(m.health.tone, m.health.label)}${p.manager ? `<span>Dirige <b>${esc(p.manager)}</b></span>` : ''}${p.sponsor ? `<span>Patrocina <b>${esc(p.sponsor)}</b></span>` : ''}${p.start || p.end ? `<span>${fmtD(p.start)} → <b>${fmtD(p.end)}</b></span>` : ''}${p.approach ? `<span>Enfoque <b>${esc(p.approach)}</b></span>` : ''}</div>
+      <div class="facts">${pill(m.health.tone, m.health.label)}${orgById(projOrgId(p)) ? `<span>${orgDot(orgById(projOrgId(p)))}Ejecuta <b>${esc(orgById(projOrgId(p)).name)}</b></span>` : ''}${p.manager ? `<span>Dirige <b>${esc(p.manager)}</b></span>` : ''}${p.sponsor ? `<span>Patrocina <b>${esc(p.sponsor)}</b></span>` : ''}${p.start || p.end ? `<span>${fmtD(p.start)} → <b>${fmtD(p.end)}</b></span>` : ''}${p.approach ? `<span>Enfoque <b>${esc(p.approach)}</b></span>` : ''}</div>
       ${stepsOf(p).length ? `<div class="p-model"><span>En el modelo</span>${stepsOf(p).map(k => stepChip(k)).join('')}</div>` : ''}
       <div class="hero-actions">${actions}</div></div>
     <div>${right}</div>
@@ -2525,16 +2551,99 @@ function tabInteresados(p) {
     + panel('Registro de interesados', 'Puntos llenos: compromiso actual (de Desconocedor a Líder). Anillo: compromiso deseado.', cards, addBtn('stakeholders'));
 }
 
-/* organigrama de la organización del proyecto (p.org), por ejemplo el de ROIC & Company en P05 */
-const orgLine = m => (m && m.org && m.org.cargo ? `${m.org.company ? m.org.company + ' · ' : ''}${m.org.cargo}${m.org.area && !/^Gerencia|^Subgerencia/.test(m.org.area) ? ' · ' + m.org.area : ''}` : '');
+/* =========================================================
+   Organizaciones: San Marcos (OGPL) y ROIC & Company, cada una con su organigrama
+   ========================================================= */
+// cada organización es un documento de la colección «orgs»: unidades de dirección (top) y áreas con su personal (areas)
+const orgsList = () => (S.orgs || []).filter(o => o && o.name).slice().sort((a, b) => (+a.order || 99) - (+b.order || 99));
+const orgById = id => (S.orgs || []).find(o => o.id === id && o.name) || null;
+const orgName = o => (o ? o.short || o.name : '');
+const orgColor = o => (o && /^#[0-9a-f]{6}$/i.test(o.color || '') ? o.color : '#14315F');
+const orgDot = o => `<i class="org-dot" style="--oc:${esc(orgColor(o))}" aria-hidden="true"></i>`;
+function orgPeople(o) {
+  const out = []; if (!o) return out;
+  (o.top || []).forEach((t, i) => out.push({ who: t.who || '', name: t.name || '', cargo: t.role || (t.unit ? t.cargo : '') || '', area: t.unit || t.cargo || '', fn: t.fn || '', zone: t.zone || '', top: i + 1, lead: true }));
+  (o.areas || []).forEach(a => (a.people || []).forEach(pp => out.push({ who: pp.who || '', name: pp.name || '', cargo: pp.cargo || '', area: a.name || '', fn: pp.fn || '', zone: pp.zone || a.zone || '', top: 0, lead: !!pp.lead })));
+  return out;
+}
+// cargos de la persona en cada organización, según los organigramas
+// sin organigramas registrados, se usa el cargo guardado en la ficha del integrante (m.org)
+const memberOrgs = m => (!m ? [] : orgsList().length ? orgsList().map(o => { const e = orgPeople(o).find(x => x.who === m.id); return e ? Object.assign({ org: o }, e) : null; }).filter(Boolean)
+  : m.org && m.org.cargo ? [{ org: { id: '', name: m.org.company || '', short: m.org.company || '' }, who: m.id, cargo: m.org.cargo, area: m.org.area || '', top: /^Gerencia|^Subgerencia/.test(m.org.area || '') ? 1 : 0, lead: false }] : []);
+// organización que ejecuta el proyecto: la del acta; si falta, se deduce de la unidad responsable
+function projOrgId(p) {
+  if (!p) return '';
+  if (p.orgId && orgById(p.orgId)) return p.orgId;
+  const L = orgsList(), txt = normN(`${p.unit || ''} ${p.sponsor || ''}`);
+  const hit = L.find(o => (o.keys || []).some(k => normN(k) && txt.includes(normN(k))));
+  return hit ? hit.id : '';
+}
+const projsOfOrg = id => projectsSorted().filter(p => projOrgId(p) === id);
+// organizaciones donde la persona tiene puesto: las de su cargo; si no figura en un organigrama, las de sus proyectos
+function memberSites(m) {
+  const os = memberOrgs(m).map(e => e.org.id); if (os.length) return os;
+  return [...new Set(projectsOf(m).map(x => projOrgId(x.p)).filter(Boolean))];
+}
+const orgSim = (area, cargo) => { const w = normN(area).replace(/^(area|subgerencia|gerencia|oficina) (de |del )?/, '').split(' ')[0]; return !w || normN(cargo).includes(w); };
+const orgLineOf = e => `${orgName(e.org)} · ${e.cargo || e.area}${e.org.dept ? ' · ' + e.org.dept : e.area && e.cargo && !orgSim(e.area, e.cargo) ? ' · ' + e.area : ''}`;
+const orgLines = m => memberOrgs(m).map(orgLineOf);
+// pendientes abiertos de la persona en los proyectos de una organización (o de un proyecto)
+function orgLoad(o, pid) {
+  const load = {}, pids = new Set(pid ? [pid] : projsOfOrg(o.id).map(p => p.id));
+  membersActive().forEach(x => { const n = ofQueue(x).filter(q => pids.has(q.pid)).length; if (n) load[x.id] = n; });
+  return load;
+}
+// quienes trabajan en proyectos de la organización sin figurar en su organigrama
+function orgCollab(o) {
+  const inChart = new Set(orgPeople(o).map(e => e.who).filter(Boolean)), P = projsOfOrg(o.id), out = new Map();
+  P.forEach(p => {
+    (S.team || []).filter(t => t.pid === p.id).forEach(t => {
+      const m = t.memberId ? memberById(t.memberId) : membersAll().find(x => memberMatches(x, t.name));
+      const key = m ? m.id : 'n:' + normN(t.name); if (m && inChart.has(m.id)) return;
+      if (!out.has(key)) out.set(key, { m, name: m ? m.name : t.name, roles: [] });
+      out.get(key).roles.push({ p, role: t.role || '' });
+    });
+  });
+  return [...out.values()];
+}
+function orgChartHtml(o, opt) {
+  opt = opt || {};
+  const load = orgLoad(o, opt.p ? opt.p.id : ''), ownP = projsOfOrg(o.id), where = opt.p ? opt.p.code : orgName(o);
+  const who = (id, fallback) => { const x = id && memberById(id); return x ? { av: avatar(x), name: x.name, email: x.email || '', id: x.id } : { av: `<span class="av-chip" style="--mc:var(--idle)" aria-hidden="true">${id ? esc(initials(fallback || '?')) : '—'}</span>`, name: fallback || 'Por asignar', email: '', id: '' }; };
+  const pend = id => (id && opt.load !== false ? `<small class="org-n">${load[id] ? plural(load[id], 'pendiente', 'pendientes') + ' en ' + esc(where) : 'Sin pendientes en ' + esc(where)}</small>` : '');
+  const codes = id => { if (!id || opt.p) return ''; const m = memberById(id), L = m ? projectsOf(m).filter(x => projOrgId(x.p) === o.id) : []; return L.length ? `<span class="org-pj">${L.map(x => `<button class="code-chip" data-act="go-project" data-id="${esc(x.p.id)}" title="${esc(x.p.name)}${x.role ? ' · ' + esc(x.role) : ''}">${esc(x.p.code)}</button>`).join('')}</span>` : ''; };
+  const top = (o.top || []).map((t, i) => { const x = who(t.who, t.name); return `<div class="org-box org-top${i ? ' org-sub' : ''}${x.id ? '' : ' org-vac'}"><p class="org-c">${esc(t.unit || t.cargo || '')}</p><div class="org-who">${x.av}<span><b>${esc(x.name)}</b>${t.unit && t.cargo ? `<small>${esc(t.cargo)}</small>` : ''}${t.fn ? `<small>${esc(t.fn)}</small>` : ''}${x.email ? `<small>${esc(x.email)}</small>` : ''}${!x.id && t.note ? `<small>${esc(t.note)}</small>` : ''}${pend(x.id)}${codes(x.id)}</span></div></div>`; }).join('<span class="org-v" aria-hidden="true"></span>');
+  const areas = (o.areas || []).map(a => `<li class="org-area"><p class="org-a">${esc(a.name)}</p><ul class="org-ppl">${(a.people || []).map(pp => { const x = who(pp.who, pp.name); return `<li class="org-p${pp.lead ? ' org-lead' : ''}">${x.av}<span><b>${esc(x.name)}</b><small class="org-cg">${esc(pp.cargo || '')}</small>${pp.fn ? `<small class="org-fn">${esc(pp.fn)}</small>` : ''}${pend(x.id)}${codes(x.id)}</span></li>`; }).join('')}</ul></li>`).join('');
+  const col = opt.p ? orgCollab(o).filter(c => c.roles.some(r => r.p.id === opt.p.id)) : orgCollab(o);
+  const colH = col.length ? `<div class="org-col"><p class="org-col-h">${opt.p ? 'También trabajan en ' + esc(opt.p.code) : 'Colaboran en sus proyectos'} <small>sin cargo en este organigrama</small></p><ul class="org-ppl">${col.map(c => { const oo = c.m ? memberOrgs(c.m) : []; return `<li class="org-p">${c.m ? avatar(c.m) : `<span class="av-chip" style="--mc:var(--idle)" aria-hidden="true">${esc(initials(c.name))}</span>`}<span><b>${esc(c.m ? c.m.name : c.name)}</b><small class="org-cg">${esc(oo.length ? oo.map(e => `${orgName(e.org)} · ${e.cargo}`).join(' / ') : 'Equipo del proyecto')}</small>${c.roles.filter(r => !opt.p || r.p.id === opt.p.id).map(r => `<small class="org-fn"><b>${esc(r.p.code)}</b> ${esc(r.role || 'Sin rol definido')}</small>`).join('')}${c.m ? pend(c.m.id) : ''}</span></li>`; }).join('')}</ul></div>` : '';
+  const n = Math.max(1, Math.min(4, (o.areas || []).length));
+  const body = `${opt.pre || ''}<div class="org" style="--oc:${esc(orgColor(o))}"><div class="org-head">${top}</div>${areas ? `<span class="org-v" aria-hidden="true"></span><ul class="org-areas" style="--n:${n}">${areas}</ul>` : ''}${colH}</div>`;
+  if (opt.bare) return body;
+  return panel(o.title || 'Organigrama · ' + o.name, `${esc(o.src || '')}${o.src ? '. ' : ''}${opt.p ? `${esc(opt.p.code)} lo ejecuta ${esc(o.name)}. ` : ownP.length ? `Proyectos: ${ownP.map(p => esc(p.code)).join(' · ')}. ` : ''}Cada persona ve en su intranet los pendientes que le tocan según su cargo.`, body);
+}
+// organigrama de la organización que ejecuta el proyecto
 function orgChart(p, m) {
-  const o = p.org; if (!o || !Array.isArray(o.areas)) return '';
-  const load = {}; (m ? m.leaves : []).forEach(t => { if (num(t.progress) < 100) membersAll().forEach(x => { if (memberMatches(x, t.owner)) load[x.id] = (load[x.id] || 0) + 1; }); });
-  const who = (id, fallback) => { const x = memberById(id); return x ? { av: avatar(x), name: x.name, email: x.email || '', id: x.id } : { av: `<span class="av-chip" style="--mc:var(--idle)" aria-hidden="true">${esc(initials(fallback || '?'))}</span>`, name: fallback || 'Por asignar', email: '', id: '' }; };
-  const pend = id => (m && id ? `<small class="org-n">${load[id] ? plural(load[id], 'pendiente', 'pendientes') + ' en ' + esc(p.code) : 'Sin pendientes en ' + esc(p.code)}</small>` : '');
-  const top = (o.top || []).map((t, i) => { const x = who(t.who, t.name); return `<div class="org-box org-top${i ? ' org-sub' : ''}"><p class="org-c">${esc(t.cargo)}</p><div class="org-who">${x.av}<span><b>${esc(x.name)}</b>${x.email ? `<small>${esc(x.email)}</small>` : ''}${pend(x.id)}</span></div></div>`; }).join('<span class="org-v" aria-hidden="true"></span>');
-  const areas = o.areas.map(a => `<li class="org-area"><p class="org-a">${esc(a.name)}</p><ul class="org-ppl">${(a.people || []).map(pp => { const x = who(pp.who, pp.name); return `<li class="org-p${pp.lead ? ' org-lead' : ''}">${x.av}<span><b>${esc(x.name)}</b><small class="org-cg">${esc(pp.cargo || '')}</small>${pend(x.id)}</span></li>`; }).join('')}</ul></li>`).join('');
-  return panel(o.title || 'Organigrama', `${esc(o.src || '')}${o.src ? '. ' : ''}Cada persona ve en su intranet los pendientes que le tocan según su cargo.`, `<div class="org"><div class="org-head">${top}</div><span class="org-v" aria-hidden="true"></span><ul class="org-areas">${areas}</ul></div>`);
+  const o = orgById(projOrgId(p)) || (p.org && Array.isArray(p.org.areas) ? Object.assign({ id: '' }, p.org) : null);
+  return o ? orgChartHtml(o, { p, m }) : '';
+}
+// Equipo → Organigramas: uno por organización y quienes trabajan en ambas, con sus funciones separadas
+function teamOrgs() {
+  const L = orgsList();
+  if (!L.length) return panel('Organigramas', '', '<div class="empty"><p>Aún no hay organizaciones registradas en el sistema.</p></div>');
+  const cur = L.some(o => o.id === UI.orgTab) ? UI.orgTab : 'all';
+  const chips = `<div class="chips org-tabs" role="group" aria-label="Organización"><button class="chip${cur === 'all' ? ' on' : ''}" data-act="org-tab" data-v="all" aria-pressed="${cur === 'all'}">Ambas organizaciones</button>${L.map(o => `<button class="chip${cur === o.id ? ' on' : ''}" data-act="org-tab" data-v="${esc(o.id)}" aria-pressed="${cur === o.id}">${orgDot(o)}${esc(o.name)}</button>`).join('')}<button class="chip" data-act="go-office-site" data-v="${esc(cur === 'all' ? L[0].id : cur)}">Ver en la oficina 3D</button></div>`;
+  const charts = L.filter(o => cur === 'all' || o.id === cur).map(o => {
+    const ppl = orgPeople(o).filter(e => e.who && memberById(e.who)), P = projsOfOrg(o.id);
+    const pre = `<p class="org-sum"><span>${orgDot(o)}<b>${esc(o.name)}</b>${o.desc ? ' · ' + esc(o.desc) : ''}</span><span><b>${new Set(ppl.map(e => e.who)).size}</b> personas en el organigrama</span><span>Proyectos: ${P.length ? P.map(p => `<button class="code-chip" data-act="go-project" data-id="${esc(p.id)}" title="${esc(p.name)}">${esc(p.code)}</button>`).join(' ') : '—'}</span>${o.sharedNote ? `<span>${esc(o.sharedNote)}</span>` : ''}</p>`;
+    return `<div style="margin-top:18px">${orgChartHtml(o, { pre })}</div>`;
+  }).join('');
+  const dual = membersActive().map(m => ({ m, oo: memberOrgs(m) })).filter(x => x.oo.length > 1);
+  const cell = (x, o) => {
+    const e = x.oo.find(y => y.org.id === o.id), pr = projectsOf(x.m).filter(y => projOrgId(y.p) === o.id), q = ofQueue(x.m).filter(y => projOrgId(projectById(y.pid)) === o.id), late = q.filter(y => y.late).length;
+    return `<td class="wrap">${e ? `<b>${esc(e.cargo || e.area)}</b>${e.area && e.cargo && !orgSim(e.area, e.cargo) ? `<small>${esc(e.area)}</small>` : ''}` : '<small>Sin cargo</small>'}${pr.length ? `<p style="margin:6px 0 2px">${pr.map(y => `<button class="code-chip" data-act="go-project" data-id="${esc(y.p.id)}" title="${esc(y.p.name)}">${esc(y.p.code)}</button>`).join('')}</p>${pr.map(y => `<small><b>${esc(y.p.code)}</b> ${esc(y.role || '—')}</small>`).join('')}` : ''}<small>${plural(q.length, 'pendiente abierto', 'pendientes abiertos')}${late ? ` · <b class="tone-crit">${late} vencido${late === 1 ? '' : 's'}</b>` : ''}</small></td>`;
+  };
+  const dualP = dual.length && cur === 'all' ? `<div style="margin-top:18px">${panel('Quienes trabajan en las dos organizaciones', 'Su cargo, sus proyectos y sus pendientes, separados por organización. En la oficina 3D tienen un puesto en cada sede: cuando están en una, su agente de IA cubre el otro puesto.', `<div class="tbl"><table class="org-dual"><thead><tr><th>Persona</th>${L.map(o => `<th>${orgDot(o)}${esc(orgName(o))}</th>`).join('')}</tr></thead><tbody>${dual.map(x => `<tr><td class="wrap"><span class="mem-n">${avatar(x.m, 'sm')}<span><b>${esc(x.m.name)}</b><small>${esc(x.m.email || '')}</small></span></span></td>${L.map(o => cell(x, o)).join('')}</tr>`).join('')}</tbody></table></div>`)}</div>` : '';
+  return chips + charts + dualP;
 }
 function tabRecursos(p, m) {
   const team = of('team', p.id).slice().sort((a, b) => num(b.dedication) - num(a.dedication));
@@ -2624,7 +2733,7 @@ function projectPayload(p) {
   const m = metrics(p), td = today();
   const pick = (o, ks) => Object.fromEntries(ks.filter(k => o[k] !== undefined && o[k] !== '').map(k => [k, o[k]]));
   return {
-    proyecto: pick(p, ['code', 'name', 'unit', 'sponsor', 'manager', 'phase', 'approach', 'start', 'end', 'budget', 'purpose', 'objective', 'success', 'scopeIn', 'scopeOut', 'assumptions', 'constraints']),
+    proyecto: pick(p, ['code', 'name', 'unit', 'orgId', 'sponsor', 'manager', 'phase', 'approach', 'start', 'end', 'budget', 'purpose', 'objective', 'success', 'scopeIn', 'scopeOut', 'assumptions', 'constraints']),
     salud: { semaforo: m.health.label, motivos: m.why },
     indicadores: { avancePlanificadoPct: m.planPct && +m.planPct.toFixed(1), avanceRealPct: m.realPct && +m.realPct.toFixed(1), SPI: m.SPI && +m.SPI.toFixed(2), CPI: m.CPI && +m.CPI.toFixed(2), BAC: m.budget, PV: Math.round(m.PV), EV: Math.round(m.EV), AC: Math.round(m.AC), EAC: m.EAC && Math.round(m.EAC), actividades: m.leaves.length, completadas: m.done },
     actividadesVencidas: m.late.slice(0, 12).map(({ t, st }) => ({ edt: t.wbs, nombre: t.name, responsable: t.owner, fin: t.end, avance: num(t.progress), diasVencida: st.days })),
@@ -2700,7 +2809,7 @@ function openForm(coll, id) {
     const fid = `f-${coll}-${f.k}`;
     let ctl;
     if (f.t === 'textarea') ctl = `<textarea id="${fid}" name="${f.k}" rows="3">${esc(v)}</textarea>`;
-    else if (f.t === 'select') ctl = `<select id="${fid}" name="${f.k}">${f.req ? '' : '<option value="">—</option>'}${f.o.map(o => `<option value="${esc(o)}"${String(o) === String(v) ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+    else if (f.t === 'select') ctl = `<select id="${fid}" name="${f.k}">${f.req ? '' : '<option value="">—</option>'}${(f.oFn ? f.oFn() : f.o.map(o => [o, o])).map(([o, l]) => `<option value="${esc(o)}"${String(o) === String(v) ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
     else ctl = `<input id="${fid}" name="${f.k}" type="${f.t === 'number' ? 'number' : f.t === 'date' ? 'date' : 'text'}" value="${esc(v)}"${f.min != null ? ` min="${f.min}"` : ''}${f.max != null ? ` max="${f.max}"` : ''}${f.t === 'number' ? ' step="any" inputmode="decimal"' : ''}${f.ph ? ` placeholder="${esc(f.ph)}"` : ''}${f.dl ? ' list="dl-team" autocomplete="off"' : ''}>`;
     html += `<label class="f${f.wide ? ' wide' : ''}" for="${fid}"><span>${esc(f.l)}${f.req ? ' <b class="req" aria-hidden="true">*</b>' : ''}</span>${ctl}${f.hint ? `<small>${esc(f.hint)}</small>` : ''}</label>`;
   }
@@ -2780,6 +2889,9 @@ document.addEventListener('click', e => {
     case 'go-team': if (el.dataset.v) UI.teamTab = el.dataset.v; if (el.dataset.scope) UI.av.scope = el.dataset.scope; go('team'); break;
     case 'go-me': go('me'); break;
     case 'team-tab': UI.teamTab = el.dataset.v; persistUI(); render(); break;
+    case 'me-org': UI.meOrg = el.dataset.v; render(); break;
+    case 'org-tab': UI.orgTab = el.dataset.v; render(); break;
+    case 'pf-org': UI.pfOrg = el.dataset.v; render(); break;
     case 'av-scope': UI.av.scope = el.dataset.v; render(); break;
     case 'mt-filter': UI.mtScope = el.dataset.v; render(); break;
     case 'mt-new': { if (!canSchedule()) break; const pre = {}; if (el.dataset.v) { const [d, t] = el.dataset.v.split(':').map(Number); pre.date = nextDateFor(d); pre.start = m2t(t); } if (el.dataset.scope) pre.scope = el.dataset.scope; else if (UI.view === 'team') pre.scope = UI.av.scope; openMeetingForm(null, pre); break; }
@@ -3698,7 +3810,7 @@ const classItems = m => (m.schedule || []).map(b => ({ d: +b.d, s: t2m(b.s), e: 
 
 /* ---------- vista Equipo ---------- */
 function viewTeam() {
-  const tabs = [['dir', 'Directorio'], ['disp', 'Disponibilidad común'], ['reun', 'Cronograma de reuniones'], ['hor', 'Horarios']].concat(isAdmin() ? [['acc', 'Accesos al intranet']] : []);
+  const tabs = [['dir', 'Directorio'], ['org', 'Organigramas'], ['disp', 'Disponibilidad común'], ['reun', 'Cronograma de reuniones'], ['hor', 'Horarios']].concat(isAdmin() ? [['acc', 'Accesos al intranet']] : []);
   const tab = tabs.some(t => t[0] === UI.teamTab) ? UI.teamTab : 'disp';
   const ms = membersActive(), withS = ms.filter(m => schedState(m) !== 'pend');
   const up = upcomingMeetings(meetingsAll());
@@ -3706,7 +3818,7 @@ function viewTeam() {
   const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:20%"></span><div class="wrap"><div><p class="eyebrow">Equipo y agenda · DGP OGPL-UNMSM</p><h1 class="title">Horarios del equipo, horas libres en común y reuniones</h1><p class="lead">Cruza los horarios de clases de cada integrante, encuentra las franjas en que todos están libres y programa las reuniones de cada proyecto o del equipo completo. Las reuniones avisan si chocan con una clase.</p>${canSchedule() ? `<p class="hero-cta"><button class="btn sos" data-act="sos-new">${icon('rayo', 18)}Reunión de emergencia</button></p>` : ''}</div>
     <div class="blob"><h2>El equipo hoy</h2><div class="md-blob-k"><div><div class="k-val">${ms.length}</div><div class="k-label">Integrantes</div></div><div><div class="k-val">${withS.length}/${ms.length}</div><div class="k-label">Horarios cargados</div></div><div><div class="k-val">${up.length}</div><div class="k-label">Reuniones por venir</div></div><div><div class="k-val" style="font-size:20px">${next ? esc(whenTxt(next).split(' · ')[0]) : '—'}</div><div class="k-label">Próxima reunión</div></div></div></div></div></section>`;
   if (!S.loaded.has('members')) return hero + '<div class="wrap section"><div class="empty"><p>Cargando el equipo…</p></div></div>';
-  const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'acc' ? teamAccess() : tab === 'dir' ? teamDirectory() : teamDisp();
+  const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'acc' ? teamAccess() : tab === 'dir' ? teamDirectory() : tab === 'org' ? teamOrgs() : teamDisp();
   return hero + `<div class="wrap"><div class="tabs" role="tablist" aria-label="Secciones del equipo">${tabs.map(([k, l]) => `<button class="tab" role="tab" aria-selected="${tab === k}" data-act="team-tab" data-v="${k}">${esc(l)}</button>`).join('')}</div>${body}</div>`;
 }
 function scopeChips(cur, act) {
@@ -4158,7 +4270,7 @@ function teamDirectory() {
   } else {
     body = people.length ? `<div class="dir-grid">${people.map(x => {
       const st = x.m ? schedState(x.m) : null;
-      return `<article class="dir-card${x.m ? '' : ' ext'}"><header>${dirAv(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.role || (x.assign[0] && x.assign[0].t ? x.assign[0].t.role : '') || '—')}</p>${x.m && orgLine(x.m) ? `<p class="dir-org">${esc(orgLine(x.m))}</p>` : ''}</div></header>
+      return `<article class="dir-card${x.m ? '' : ' ext'}"><header>${dirAv(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.role || (x.assign[0] && x.assign[0].t ? x.assign[0].t.role : '') || '—')}</p>${x.m ? memberOrgs(x.m).map(e => `<p class="dir-org">${orgDot(e.org)}${esc(orgLineOf(e))}</p>`).join('') : ''}</div></header>
         <p class="dir-meta">${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : '<span class="note">Sin correo registrado</span>'}${x.m ? `${pill(SCHED_LBL[st][0], SCHED_LBL[st][1])}${x.m.email ? '<span class="pill ok"><i></i>Intranet</span>' : ''}` : '<span class="pill"><i></i>Colaborador sin registro</span>'}</p>
         <div class="dir-chips">${x.assign.length ? x.assign.map(a => dirChip(a, admin)).join('') : '<span class="note">Sin proyectos asignados.</span>'}</div>
         ${admin ? `<footer><button class="btn sm" data-act="dir-assign" data-key="${esc(x.key)}">Asignar a un proyecto</button>${x.m ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(x.m.id)}">Editar datos</button>` : `<button class="icon-btn" data-act="dir-register" data-key="${esc(x.key)}">Registrar en el equipo</button>`}</footer>` : ''}</article>`;
@@ -4437,25 +4549,38 @@ function viewMe() {
   const days = wkItems.some(i => i.d === 7) ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6];
   const banner = preview ? `<div class="me-preview">${icon('equipo', 18)}<span>Vista previa del intranet de <b>${esc(m.name)}</b>, tal como lo ve al ingresar.</span><button class="btn sm" data-act="view-as-exit">Salir de la vista previa</button></div>` : '';
   const mustChange = preview || !real ? '' : !canEdit() ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Modo de solo lectura.</b> Puedes ver tu información, pero para marcar avances, confirmar reuniones${real.mustChange ? ', cambiar la contraseña inicial' : ''} o editar tu horario, el director debe compartirte el sistema con permiso para interactuar.</span></div>` : real.mustChange ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Estás usando la contraseña inicial.</b> Cámbiala por una personal para proteger tu acceso.</span><button class="btn sm primary" data-act="pw-open">Cambiar contraseña</button></div>` : '';
-  const hero = `<section class="hero me-hero"><div class="wrap"><div class="me-id">${avatar(m, 'xl')}<div><p class="eyebrow">Intranet del equipo · ${esc(m.role || 'Integrante')}</p><h1 class="title">Hola, ${esc(String(mName(m)).split(' ')[0])}</h1><p class="lead">${esc(m.name)} · ${esc(m.email || '')}</p>${orgLine(m) ? `<p class="me-org">${esc(orgLine(m))}</p>` : ''}<p class="me-chips">${it.projs.map(x => `<button class="code-chip" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}</p><div class="hero-actions">${preview ? '' : `${canEdit() ? '<button class="btn sm" data-act="pw-open">Cambiar contraseña</button>' : ''}<button class="btn sm" data-act="logout">Cerrar sesión</button>`}</div></div></div>
+  const hero = `<section class="hero me-hero"><div class="wrap"><div class="me-id">${avatar(m, 'xl')}<div><p class="eyebrow">Intranet del equipo · ${esc(m.role || 'Integrante')}</p><h1 class="title">Hola, ${esc(String(mName(m)).split(' ')[0])}</h1><p class="lead">${esc(m.name)} · ${esc(m.email || '')}</p>${memberOrgs(m).map(e => `<p class="me-org">${orgDot(e.org)}${esc(orgLineOf(e))}</p>`).join('')}<p class="me-chips">${it.projs.map(x => `<button class="code-chip" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}</p><div class="hero-actions">${preview ? '' : `${canEdit() ? '<button class="btn sm" data-act="pw-open">Cambiar contraseña</button>' : ''}<button class="btn sm" data-act="logout">Cerrar sesión</button>`}</div></div></div>
     <div class="blob"><h2>Ahora mismo</h2><p class="me-now ${nowStatus(m).k}">${esc(nowStatus(m).t)}</p>${nxt ? `<p class="me-next"><small>Tu próxima reunión</small><b>${esc(nxt.title)}</b><span>${esc(whenTxt(nxt))}</span></p>` : '<p class="me-next"><small>Tu próxima reunión</small><b>Sin reuniones programadas</b></p>'}</div></div></section>`;
   const kpis = `<section class="section kband"><div class="kpis">${kpi('Mis proyectos', it.projs.length, esc(it.projs.map(x => x.p.code).join(' · ') || '—'), 'portafolio')}${kpi('Tareas pendientes', openT.length + openP.length, `${openT.length} del cronograma · ${openP.length} del plan`, 'cronograma')}${kpi('Vencidas', lateT.length, lateT.length ? 'Ponte al día esta semana' : 'Nada vencido', 'alerta')}${kpi('Acuerdos pendientes', openA.length, 'Compromisos de reuniones', 'acuerdo')}${kpi('Reuniones por venir', myMt.length, nxt ? esc(whenTxt(nxt)) : 'Sin reuniones', 'equipo')}</div></section>`;
   // proyectos y funciones
   const fx = myPlanFunctions(m, it.pids), rc = myRaci(m, it.pids);
-  const projCards = it.projs.map(({ p, role, dedication }) => { const mm = S.loaded.has('tasks') ? metrics(p) : null; return `<article class="me-proj"><header><span class="code-chip">${esc(p.code)}</span>${mm ? pill(mm.health.tone, mm.health.label) : ''}</header><h3>${esc(p.name)}</h3><p class="me-role"><small>Tu rol</small>${esc(role || '—')}${dedication ? ` · ${dedication}% de dedicación` : ''}</p>${mm ? `<div class="me-bar"><span style="width:${clamp(mm.realPct || 0, 0, 100).toFixed(0)}%"></span></div><p class="note num">Avance real ${pct(mm.realPct)} · planificado ${pct(mm.planPct)} · área de enfoque: ${esc(p.phase || '—')}</p>` : ''}<div class="me-acts"><button class="btn sm" data-act="go-project" data-id="${esc(p.id)}">Abrir el proyecto</button>${driveUrl(p.drive) ? `<a class="btn sm" href="${esc(driveUrl(p.drive))}" target="_blank" rel="noopener noreferrer">Carpeta en Drive ↗</a>` : ''}${(S.plans || []).filter(pl => pl.pid === p.id && secsOf(pl.id).length).map(pl => `<button class="btn sm" data-act="open-plan" data-id="${esc(pl.id)}">Plan ${esc(String(pl.phase || '').split(' · ')[0])}</button>`).join('')}</div></article>`; }).join('');
+  const card = ({ p, role, dedication }) => { const mm = S.loaded.has('tasks') ? metrics(p) : null; return `<article class="me-proj"><header><span class="code-chip">${esc(p.code)}</span>${mm ? pill(mm.health.tone, mm.health.label) : ''}</header><h3>${esc(p.name)}</h3><p class="me-role"><small>Tu rol</small>${esc(role || '—')}${dedication ? ` · ${dedication}% de dedicación` : ''}</p>${mm ? `<div class="me-bar"><span style="width:${clamp(mm.realPct || 0, 0, 100).toFixed(0)}%"></span></div><p class="note num">Avance real ${pct(mm.realPct)} · planificado ${pct(mm.planPct)} · área de enfoque: ${esc(p.phase || '—')}</p>` : ''}<div class="me-acts"><button class="btn sm" data-act="go-project" data-id="${esc(p.id)}">Abrir el proyecto</button>${driveUrl(p.drive) ? `<a class="btn sm" href="${esc(driveUrl(p.drive))}" target="_blank" rel="noopener noreferrer">Carpeta en Drive ↗</a>` : ''}${(S.plans || []).filter(pl => pl.pid === p.id && secsOf(pl.id).length).map(pl => `<button class="btn sm" data-act="open-plan" data-id="${esc(pl.id)}">Plan ${esc(String(pl.phase || '').split(' · ')[0])}</button>`).join('')}</div></article>`; };
+  // San Marcos y ROIC & Company: proyectos, cargo y funciones de cada organización por separado
+  const mo = memberOrgs(m), groups = orgsList().map(o => ({ o, e: mo.find(x => x.org.id === o.id) || null, projs: it.projs.filter(x => projOrgId(x.p) === o.id) })).filter(g => g.e || g.projs.length);
+  const loose = it.projs.filter(x => !groups.some(g => g.projs.includes(x)));
+  const byOrg = groups.length > 1 || (groups.length === 1 && mo.length);
+  const projCards = byOrg ? groups.map(g => `<div class="me-orgg"><h3 class="me-org-h">${orgDot(g.o)}${esc(g.o.name)}<small>${g.e ? esc(orgLineOf(g.e).split(' · ').slice(1).join(' · ')) : 'Colaboras en sus proyectos'}</small></h3>${g.projs.length ? `<div class="me-projs">${g.projs.map(card).join('')}</div>` : '<p class="note">Aún no figuras en el equipo de sus proyectos.</p>'}</div>`).join('') + (loose.length ? `<div class="me-orgg"><div class="me-projs">${loose.map(card).join('')}</div></div>` : '') : it.projs.length ? `<div class="me-projs">${it.projs.map(card).join('')}</div>` : '';
   const extra = it.extra.length ? `<p class="note" style="margin-top:10px">También tienes compromisos en: ${it.extra.map(p => `<button class="linkish" data-act="go-project" data-id="${esc(p.id)}">${esc(p.code)}</button>`).join(', ')}.</p>` : '';
-  const funcs = fx ? `<div class="me-fx"><p class="mini-h">Según el plan ${esc(fx.pl.code || '')} (sección 7.2)</p>${fx.blocks.map((b, bi) => prBlock(b, fx.sec.id, bi)).join('')}</div>` : '<p class="note">Tus funciones detalladas aparecerán aquí cuando el plan de gestión de tu proyecto las incluya en la sección 7.2.</p>';
+  const fxHtml = f => `<div class="me-fx"><p class="mini-h">Según el plan ${esc(f.pl.code || '')} (sección 7.2)</p>${f.blocks.map((b, bi) => prBlock(b, f.sec.id, bi)).join('')}</div>`;
+  const fnBlock = g => { const f = myPlanFunctions(m, new Set(g.projs.map(x => x.p.id))); return `<div class="me-fxo">${groups.length > 1 ? `<p class="me-org-h">${orgDot(g.o)}${esc(orgName(g.o))}</p>` : ''}${g.e ? `<p class="me-cargo"><b>${esc(g.e.cargo || g.e.area)}</b>${g.e.area && g.e.cargo && !orgSim(g.e.area, g.e.cargo) ? ' · ' + esc(g.e.area) : ''}</p>` : ''}${f ? fxHtml(f) : ''}${g.projs.length ? `<p class="mini-h">Tu rol en sus proyectos</p><ul class="me-roles">${g.projs.map(x => `<li><b>${esc(x.p.code)}</b> ${esc(x.role || '—')}</li>`).join('')}</ul>` : ''}</div>`; };
+  const funcs = groups.length ? groups.map(fnBlock).join('') + (fx ? '' : '<p class="note" style="margin-top:10px">Tus funciones detalladas aparecerán aquí cuando el plan de gestión de tu proyecto las incluya en la sección 7.2.</p>') : fx ? fxHtml(fx) : '<p class="note">Tus funciones detalladas aparecerán aquí cuando el plan de gestión de tu proyecto las incluya en la sección 7.2.</p>';
   const raci = rc ? `<div class="me-raci"><p class="mini-h">Tu papel en la matriz RACI (${esc(rc.pl.code || '')}, columna «${esc(m.raci)}»)</p>${[['R', 'Lo haces'], ['A', 'Lo apruebas'], ['C', 'Te consultan'], ['I', 'Te informan']].filter(([k]) => rc.g[k].length).map(([k, l]) => `<div class="raci-g"><b class="raci-k ${k}">${k}</b><div><small>${l}</small><p>${rc.g[k].map(esc).join(' · ')}</p></div></div>`).join('')}</div>` : '';
   // pendientes
   const tRow = t => { const st = taskState(t, td), p = projectById(t.pid); return `<li class="pd ${st.k}"><label class="pd-ck"><input type="checkbox" data-quick="done" data-id="${esc(t.id)}"${num(t.progress) >= 100 ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como hecha"></label><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> <span class="mono">${esc(t.wbs || '')}</span> ${esc(t.name)}</p><small>${pill(st.tone, st.label)} ${t.end ? `Fin ${fmtD(t.end)}` : ''} · ${Math.round(num(t.progress))}%${trTag(trItem('t', t.id), m)}${trOk && num(t.progress) < 100 ? trBtn('t', t.id) : ''}</small></div></li>`; };
   const pRow = x => `<li class="pd ${x.done ? 'done' : ''}"><label class="pd-ck"><input type="checkbox" data-pchk="${esc(x.sec.id)}:${x.bi}:${x.ri}"${x.done ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como cumplida"></label><div><p><span class="code-chip">${esc(x.pl.code || 'Plan')}</span> ${fmtTxt(x.text)}</p><small>${x.date ? esc(x.date) : ''}${x.done ? ` · cumplida el ${fmtD(x.done)}` : ''} · <button class="linkish" data-act="open-plan" data-id="${esc(x.pl.id)}">ver en el plan</button>${trTag(trItem('p', `${x.sec.id}:${x.bi}:${x.ri}`), m)}${trOk && !x.done ? trBtn('p', `${x.sec.id}:${x.bi}:${x.ri}`) : ''}</small></div></li>`;
   const aRow = a => { const p = projectById(a.pid), d = parseD(a.due), late = a.status === 'Pendiente' && d && d < td; return `<li class="pd ${a.status === 'Pendiente' ? (late ? 'late' : '') : 'done'}">${a.status === 'Pendiente' && ed ? `<button class="icon-btn" data-act="agree-done" data-id="${esc(a.id)}">Cumplido</button>` : `<span class="pd-ok">${a.status === 'Pendiente' ? '•' : '✓'}</span>`}<div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(a.text)}</p><small>${a.due ? `${late ? '<b class="tone-crit">Venció</b>' : 'Vence'} ${fmtD(a.due)} · ` : ''}${esc(a.meeting || '')}${trTag(trItem('a', a.id), m)}${trOk && a.status === 'Pendiente' ? trBtn('a', a.id) : ''}</small></div></li>`; };
-  const tasksOpen = openT.slice().sort((a, b) => String(a.end || '9').localeCompare(String(b.end || '9')));
+  const itOrg = pid => projOrgId(projectById(pid));
+  const orgsIn = [...new Set([...openT, ...openA, ...it.risks].map(x => itOrg(x.pid)).concat(openP.map(x => itOrg(x.pl.pid))).filter(Boolean))];
+  const fo = orgsIn.length > 1 && orgsIn.includes(UI.meOrg) ? UI.meOrg : 'all', inO = pid => fo === 'all' || itOrg(pid) === fo;
+  const cntO = id => [...openT, ...openA].filter(x => itOrg(x.pid) === id).length + openP.filter(x => itOrg(x.pl.pid) === id).length;
+  const ofil = orgsIn.length > 1 ? `<div class="chips me-ofil" role="group" aria-label="Filtrar los pendientes por organización"><button class="chip${fo === 'all' ? ' on' : ''}" data-act="me-org" data-v="all" aria-pressed="${fo === 'all'}">Todas (${openT.length + openA.length + openP.length})</button>${orgsList().filter(o => orgsIn.includes(o.id)).map(o => `<button class="chip${fo === o.id ? ' on' : ''}" data-act="me-org" data-v="${esc(o.id)}" aria-pressed="${fo === o.id}">${orgDot(o)}${esc(orgName(o))} (${cntO(o.id)})</button>`).join('')}</div>` : '';
+  const tasksOpen = openT.filter(t => inO(t.pid)).sort((a, b) => String(a.end || '9').localeCompare(String(b.end || '9')));
+  const planL = it.plan.filter(x => inO(x.pl.pid)), agrL = it.agreements.filter(a => inO(a.pid));
   const trN = trRecent(m, it);
-  const pend = `${trN ? `<p class="tr-new">${icon('equipo', 16)}<span>${trN === 1 ? 'Esta semana te transfirieron 1 pendiente' : `Esta semana te transfirieron ${trN} pendientes`}: aparecen marcados con «Te lo transfirió…».</span></p>` : ''}${trOk && (it.tasks.length + it.agreements.length + it.plan.length) ? '<p class="note tr-help">¿Ves algo que no te corresponde? Usa «No me corresponde» para pasárselo a quien se encarga: saldrá de tu intranet y aparecerá en el suyo.</p>' : ''}<div class="me-cols"><div><h3 class="sub-h">Del cronograma <small>${openT.length} pendientes</small></h3>${tasksOpen.length ? `<ul class="pd-list">${tasksOpen.map(tRow).join('')}</ul>` : '<p class="note">No tienes tareas pendientes asignadas en los cronogramas.</p>'}</div>
-    <div><h3 class="sub-h">Del plan de gestión <small>${openP.length} pendientes</small></h3>${it.plan.length ? `<ul class="pd-list">${it.plan.map(pRow).join('')}</ul>` : '<p class="note">No hay actividades del plan a tu nombre.</p>'}</div>
-    <div><h3 class="sub-h">Acuerdos de reuniones <small>${openA.length} pendientes</small></h3>${it.agreements.length ? `<ul class="pd-list">${it.agreements.slice().sort((a, b) => (a.status === 'Pendiente' ? 0 : 1) - (b.status === 'Pendiente' ? 0 : 1)).map(aRow).join('')}</ul>` : '<p class="note">No tienes acuerdos a tu nombre.</p>'}</div></div>`;
-  const risks = it.risks.length ? panel('Mis riesgos', 'Riesgos de los que eres dueño: revisa su respuesta y su próxima fecha de revisión.', `<ul class="pd-list">${it.risks.map(r => { const p = projectById(r.pid); return `<li class="pd"><span class="pd-ok">${riskScore(r)}</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(r.title)}</p><small>${esc(r.strategy || 'Sin estrategia')} · ${esc(r.status || '')}${r.due ? ` · revisión ${fmtD(r.due)}` : ''}${trTag(trItem('r', r.id), m)}${trOk ? trBtn('r', r.id) : ''}</small></div></li>`; }).join('')}</ul>`) : '';
+  const pend = `${trN ? `<p class="tr-new">${icon('equipo', 16)}<span>${trN === 1 ? 'Esta semana te transfirieron 1 pendiente' : `Esta semana te transfirieron ${trN} pendientes`}: aparecen marcados con «Te lo transfirió…».</span></p>` : ''}${trOk && (it.tasks.length + it.agreements.length + it.plan.length) ? '<p class="note tr-help">¿Ves algo que no te corresponde? Usa «No me corresponde» para pasárselo a quien se encarga: saldrá de tu intranet y aparecerá en el suyo.</p>' : ''}${ofil}<div class="me-cols"><div><h3 class="sub-h">Del cronograma <small>${tasksOpen.length} pendientes</small></h3>${tasksOpen.length ? `<ul class="pd-list">${tasksOpen.map(tRow).join('')}</ul>` : '<p class="note">No tienes tareas pendientes asignadas en los cronogramas.</p>'}</div>
+    <div><h3 class="sub-h">Del plan de gestión <small>${planL.filter(x => !x.done).length} pendientes</small></h3>${planL.length ? `<ul class="pd-list">${planL.map(pRow).join('')}</ul>` : '<p class="note">No hay actividades del plan a tu nombre.</p>'}</div>
+    <div><h3 class="sub-h">Acuerdos de reuniones <small>${agrL.filter(a => a.status === 'Pendiente').length} pendientes</small></h3>${agrL.length ? `<ul class="pd-list">${agrL.slice().sort((a, b) => (a.status === 'Pendiente' ? 0 : 1) - (b.status === 'Pendiente' ? 0 : 1)).map(aRow).join('')}</ul>` : '<p class="note">No tienes acuerdos a tu nombre.</p>'}</div></div>`;
+  const risks = it.risks.filter(r => inO(r.pid)).length ? panel('Mis riesgos', 'Riesgos de los que eres dueño: revisa su respuesta y su próxima fecha de revisión.', `<ul class="pd-list">${it.risks.filter(r => inO(r.pid)).map(r => { const p = projectById(r.pid); return `<li class="pd"><span class="pd-ok">${riskScore(r)}</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(r.title)}</p><small>${esc(r.strategy || 'Sin estrategia')} · ${esc(r.status || '')}${r.due ? ` · revisión ${fmtD(r.due)}` : ''}${trTag(trItem('r', r.id), m)}${trOk ? trBtn('r', r.id) : ''}</small></div></li>`; }).join('')}</ul>`) : '';
   // reuniones
   const mts = panel('Mis reuniones', `${myMt.length > 6 ? `Las próximas 6 de ${myMt.length}. ` : ''}Confirma tu asistencia y agrégalas a tu Google Calendar para recibir los avisos.`, meetingList(myMt.slice(0, 6), m, preview), `${downloads && myMt.length ? '<button class="btn sm" data-act="me-csv">Descargar mis reuniones (CSV)</button>' : ''}<button class="btn sm" data-act="go-team" data-v="reun">Ver el cronograma completo</button>`);
   // bitácora
@@ -4465,7 +4590,7 @@ function viewMe() {
   // equipo
   const dir = `<ul class="dir">${membersActive().map(x => { const ns = nowStatus(x); return `<li>${avatar(x)}<div><b>${esc(x.name)}</b><small>${esc(x.role || '')}</small><small>${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : ''}</small></div><span class="ns ${ns.k}">${esc(ns.t)}</span></li>`; }).join('')}</ul>`;
   return banner + mustChange + hero + `<div class="wrap">${kpis}
-    <section class="section">${secTitle('Mis proyectos y funciones', 'Qué te toca', 'Tu rol en cada proyecto, tus funciones según el plan de gestión y tu lugar en la matriz de responsabilidades.')}<div class="me-projs">${projCards || '<div class="empty"><p>Aún no figuras en el equipo de ningún proyecto.</p></div>'}</div>${extra}<div class="split" style="margin-top:20px">${panel('Mis funciones', '', funcs)}${raci ? panel('Mis responsabilidades', '', raci) : panel('Mis responsabilidades', '', '<p class="note">Tu papel en la matriz RACI aparecerá cuando tu columna esté definida en el plan.</p>')}</div></section>
+    <section class="section">${secTitle('Mis proyectos y funciones', 'Qué te toca', 'Tu rol en cada proyecto, tus funciones según el plan de gestión y tu lugar en la matriz de responsabilidades.')}${projCards || '<div class="me-projs"><div class="empty"><p>Aún no figuras en el equipo de ningún proyecto.</p></div></div>'}${extra}<div class="split" style="margin-top:20px">${panel('Mis funciones', '', funcs)}${raci ? panel('Mis responsabilidades', '', raci) : panel('Mis responsabilidades', '', '<p class="note">Tu papel en la matriz RACI aparecerá cuando tu columna esté definida en el plan.</p>')}</div></section>
     <section class="section">${secTitle('Mis pendientes', 'Para hacer', 'Marca lo que terminas: se actualiza el cronograma, el plan y el tablero de todo el equipo.')}${panel('Pendientes asignados a mí', '', pend)}${risks ? `<div style="margin-top:20px">${risks}</div>` : ''}</section>
     <section class="section">${secTitle('Mi semana', 'Agenda', sunday ? 'Tus clases y tus reuniones de la semana que empieza mañana.' : 'Tus clases y tus reuniones de esta semana.')}${panel('Clases y reuniones', 'Gris: clases. Turquesa: reuniones del equipo.', weekCal(days, wkItems, { from: 8 * 60, to: 22 * 60, today: sunday ? 0 : ((td.getDay() + 6) % 7) + 1, dates }), canEditMember(m) && !preview ? `<button class="btn sm" data-act="sched-edit" data-id="${esc(m.id)}">Editar mi horario</button>` : '')}<div style="margin-top:20px">${mts}</div></section>
     <section class="section">${secTitle('Bitácora y equipo', 'Día a día')}<div class="split">${panel('Bitácora de trabajo', 'Registra en un minuto lo que avanzaste; alimenta la bitácora del proyecto.', logs)}${panel('Equipo', '¿Quién está libre ahora? Según su horario de clases.', dir)}</div></section>
@@ -4502,38 +4627,67 @@ function projectMeetingsPanel(p) {
 }
 
 /* =========================================================
-   Oficina virtual 3D: la sede física replicada, con el equipo y sus agentes de IA
+   Oficina virtual 3D: las dos sedes (San Marcos y ROIC & Company), con el equipo y sus agentes de IA
    ========================================================= */
 // motor 3D: primero la copia publicada junto al sistema; si no está disponible, la CDN
 const OF_URLS = ['vendor/three.module.min.js', 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js'];
 let T3 = null, ofLoading = null, ofAgentCtl = null;
-UI.of = { sel: null, sim: false, day: 1, min: 600, play: false, speed: 10, list: false, max: false, tour: -1, follow: null, ag: null };
-const OF = { ok: false, fail: '', raf: 0, last: 0, t: 0, ver: -1, av: new Map(), seats: new Map(), deskOf: new Map(), pick: [], scr: {}, walls: [], lamps: null, leds: [], top: new Map(), stKey: '', placed: false, dirty: true, clockKey: '', vis: true, drawAt: 0, hoverAt: 0, mtSeat: new Map() };
+UI.of = { sel: null, sim: false, day: 1, min: 600, play: false, speed: 10, list: false, max: false, tour: -1, follow: null, ag: null, site: '', porg: '' };
+const OF = { ok: false, fail: '', raf: 0, last: 0, t: 0, ver: -1, av: new Map(), seats: new Map(), desks: new Map(), owner: new Map(), pick: [], scr: {}, walls: [], lamps: null, leds: [], top: new Map(), stKey: '', placed: false, dirty: true, clockKey: '', vis: true, drawAt: 0, hoverAt: 0, sunX: 7, viewSite: '', paintK: {} };
+const OF_DMAX = 165;
+// las dos sedes: la Oficina de Racionalización de la OGPL, dentro de San Marcos, y la oficina de ROIC & Company, al otro lado de la avenida
+const OF_SITES = {
+  unmsm: { n: 'San Marcos', t: 'San Marcos', b: [-17, -12.5, 32, 12.5], c: [7.5, 0], home: 'home', meet: 's', nMeet: 10, stand: 'p' },
+  roic: { n: 'ROIC & Company', t: 'ROIC', b: [43, -12.5, 77, 12.5], c: [60, 0], home: 'rhome', meet: 'rs', nMeet: 10, stand: 'rp' },
+};
+const OF_BOTH = { b: [-17, -13, 77, 13], c: [30, 0] };
+const ofSiteOk = k => (OF_SITES[k] ? k : 'unmsm');
+const ofSiteShort = k => orgName(orgById(k)) || (OF_SITES[k] || OF_SITES.unmsm).n;
+const ofView = k => { if (k === 'all') k = UI.of.site || 'unmsm'; return k === 'both' ? OF_BOTH : OF_SITES[k] || OF_SITES.unmsm; };
+// sedes donde la persona tiene puesto (las de sus organizaciones); sin datos, San Marcos
+function ofSitesOf(m) { const L = memberSites(m).filter(k => OF_SITES[k]); return L.length ? L : ['unmsm']; }
+const ofDesk = (mid, site) => { const L = OF.desks.get(mid) || []; const d = site ? L.find(x => x.site === site) : L[0]; return d ? d.key : ''; };
+// sede que se está mirando, según la cámara (con margen para no parpadear en la avenida)
+const ofViewSite = () => { const tx = OF.c ? OF.c.tx : 0; if (tx > 40) OF.viewSite = 'roic'; else if (tx < 34) OF.viewSite = 'unmsm'; return OF.viewSite || 'unmsm'; };
+function ofSiteDefault() { const sm = sessionMember(); if (sm) { const L = ofSitesOf(sm); if (L.length === 1) return L[0]; } return 'unmsm'; }
+// proyectos que patrocina la Jefatura de la OGPL (encabeza el organigrama de San Marcos)
+const ofJefeCodes = () => projectsSorted().filter(p => /jefatura de la ogpl/i.test(normN(p.sponsor || ''))).map(p => p.code);
 // zonas de la sede: [x1, z1, x2, z2] en metros; puerta sobre el pasillo
 const OF_Z = {
-  ger: { n: 'Gerencia General', s: 'ROIC & Company · Gerente General', c: 0x6D4C41, b: [-24, -11, -16, -2], door: [-20, -2], cam: [-20, -6.2, 21] },
-  mkt: { n: 'Área de Marketing y Comunicaciones', s: 'ROIC & Company · marca, redes y página web', c: 0xAD1457, b: [-24, 2, -16, 11], door: [-20, 2], cam: [-20, 6.4, 21] },
-  dir: { n: 'Dirección de proyectos', s: 'Cartera y decisiones · DGP', c: 0x2F6FB3, b: [-16, -11, -5, -2], door: [-10.5, -2], cam: [-10.5, -6.2, 23] },
-  sala: { n: 'Sala de reuniones', s: 'Reuniones del cronograma', c: 0x14315F, b: [-5, -11, 5, -2], door: [0, -2], cam: [0, -6.4, 22] },
-  lab: { n: 'Laboratorio SIGPRO', s: 'Desarrollo y automatización', c: 0x0A7E90, b: [5, -11, 16, -2], door: [10.5, -2], cam: [10.5, -6.2, 23] },
-  proc: { n: 'Racionalización · Procesos', s: 'P01 Gestión por procesos', c: 0x1A7049, b: [-16, 2, -1, 11], door: [-8.5, 2], cam: [-8.5, 6.4, 25] },
-  acred: { n: 'Acreditación FCM', s: 'P04 Certificación y acreditación', c: 0xA65310, b: [-1, 2, 12, 11], door: [5.5, 2], cam: [5.5, 6.4, 25] },
-  cowork: { n: 'Coworking', s: 'Puestos para nuevos integrantes', c: 0x7A879C, b: [12, 2, 16, 11], door: [14, 2], cam: [14, 6.4, 17] },
-  aula: { n: 'Aulas FCM', s: 'Clases del equipo', c: 0x7A4FB3, b: [20, -7, 31, 7], door: [20, 0], cam: [25.5, 0, 25] },
+  // San Marcos · Oficina de Racionalización (OGPL)
+  dir: { site: 'unmsm', n: 'Dirección de proyectos', s: 'Analista Senior · cartera de San Marcos', c: 0x2F6FB3, b: [-16, -11, -5, -2], door: [-10.5, -2], cam: [-10.5, -6.2, 23] },
+  sala: { site: 'unmsm', n: 'Sala de reuniones', s: 'Reuniones de los proyectos de San Marcos', c: 0x14315F, b: [-5, -11, 5, -2], door: [0, -2], cam: [0, -6.4, 22] },
+  lab: { site: 'unmsm', n: 'Laboratorio SIGPRO', s: 'Programador full-stack · desarrollo y automatización', c: 0x0A7E90, b: [5, -11, 16, -2], door: [10.5, -2], cam: [10.5, -6.2, 23], projs: ['P03', 'P01'] },
+  proc: { site: 'unmsm', n: 'Racionalización · Analistas', s: 'Gestión por procesos (P01)', c: 0x1A7049, b: [-16, 2, -1, 11], door: [-8.5, 2], cam: [-8.5, 6.4, 25], projs: ['P01'] },
+  jefe: { site: 'unmsm', n: 'Jefatura de la OGPL', s: 'Encabeza el organigrama de San Marcos', c: 0x7B2233, b: [-1, 2, 12, 11], door: [5.5, 2], cam: [5.5, 6.4, 25] },
+  cowork: { site: 'unmsm', n: 'Coworking', s: 'Puestos para nuevos integrantes', c: 0x7A879C, b: [12, 2, 16, 11], door: [14, 2], cam: [14, 6.4, 17] },
+  aula: { site: 'unmsm', n: 'Aulas FCM', s: 'Clases del equipo', c: 0x7A4FB3, b: [20, -7, 31, 7], door: [20, 0], cam: [25.5, 0, 25] },
+  // ROIC & Company
+  rger: { site: 'roic', n: 'Gerencia General', s: 'ROIC & Company · Gerente General', c: 0x6D4C41, b: [44, -11, 52, -2], door: [48, -2], cam: [48, -6.2, 21] },
+  rsub: { site: 'roic', n: 'Subgerencia de Operaciones', s: 'y Estrategia Corporativa · Subgerente', c: 0x2F6FB3, b: [52, -11, 60, -2], door: [56, -2], cam: [56, -6.2, 21] },
+  rsala: { site: 'roic', n: 'Sala de reuniones ROIC', s: 'Reuniones de los proyectos de ROIC', c: 0x14315F, b: [60, -11, 69, -2], door: [64.5, -2], cam: [64.5, -6.4, 22] },
+  rpry: { site: 'roic', n: 'Área de Dirección de Proyectos', s: 'Presencia Digital B2B (P05)', c: 0xA65310, b: [69, -11, 76, -2], door: [72.5, -2], cam: [72.5, -6.2, 20], projs: ['P05'] },
+  rtd: { site: 'roic', n: 'Área de Transformación Digital', s: 'Automatización, innovación y desarrollo', c: 0x0A7E90, b: [44, 2, 56, 11], door: [50, 2], cam: [50, 6.4, 23], projs: ['P05'] },
+  rproc: { site: 'roic', n: 'Área de Procesos', s: 'Gestión por procesos', c: 0x1A7049, b: [56, 2, 62, 11], door: [59, 2], cam: [59, 6.4, 19], projs: ['P05'] },
+  rmkt: { site: 'roic', n: 'Área de Marketing y Comunicaciones', s: 'Marca, redes sociales y página web', c: 0xAD1457, b: [62, 2, 68, 11], door: [65, 2], cam: [65, 6.4, 19], projs: ['P05'] },
+  rp04: { site: 'roic', n: 'Proyecto P04 · Acreditación FCM', s: 'Equipo de la acreditación y la ISO 9001', c: 0xC77700, b: [68, 2, 76, 11], door: [72, 2], cam: [72, 6.4, 20], projs: ['P04'] },
 };
-const OF_ALL = [3.5, 0, 0];
+// si el área preferida no tiene puestos libres
+const OF_FALL = { unmsm: ['cowork', 'proc', 'lab'], roic: ['rp04', 'rpry', 'rproc', 'rtd'] };
 const OF_ST = { desk: ['ok', 'En su puesto'], class: ['warn', 'En clase'], meeting: ['info', 'En reunión'], away: ['idle', 'Fuera de la oficina'] };
 const OF_TOUR = [
-  ['all', 'La sede virtual de la DGP', 'La oficina física replicada en 3D: las áreas de trabajo, la sala de reuniones y el pabellón de aulas de la FCM, unidos por el pasillo principal. Todo se mueve con los datos reales del sistema.'],
-  ['ger', 'Gerencia General', 'La oficina del gerente general de ROIC & Company, al costado de la Dirección de proyectos, con una puerta interior que las comunica.'],
-  ['dir', 'Dirección de proyectos', 'El puesto del director de los proyectos. La pantalla muestra la cartera en vivo: semáforo, avance real frente al planificado y alertas.'],
-  ['proc', 'Racionalización · Procesos', 'El equipo de P01 levanta, diagrama y documenta los procedimientos. La pizarra muestra el avance de P01 y sus próximas actividades.'],
-  ['acred', 'Acreditación FCM', 'El equipo de P04 redacta el plan de gestión, revisa la documentación y ordena las evidencias para la certificación y la acreditación.'],
-  ['lab', 'Laboratorio SIGPRO', 'Desarrollo y automatización: los módulos de SIGPRO y la integración de las actas digitales.'],
-  ['mkt', 'Área de Marketing y Comunicaciones', 'La oficina del Área de Marketing y Comunicaciones de ROIC & Company: marca, redes sociales, página web y calendario editorial.'],
-  ['sala', 'Sala de reuniones', 'Cuando el cronograma marca una reunión, los participantes caminan hasta aquí. La pantalla muestra la reunión en curso o la próxima.'],
+  ['both', 'Dos organizaciones, dos sedes', 'A la izquierda, la Oficina de Racionalización de la OGPL, dentro de la Ciudad Universitaria de San Marcos; cruzando la avenida, la oficina de ROIC & Company. Quienes trabajan en ambas tienen un puesto en cada sede: mientras están en una, su agente de IA cubre el otro.'],
+  ['dir', 'San Marcos · Dirección de proyectos', 'El puesto del Analista Senior, que dirige los proyectos de la Oficina de Racionalización. La pantalla muestra la cartera de San Marcos en vivo: semáforo, avance real frente al planificado y alertas.'],
+  ['proc', 'San Marcos · Analistas de racionalización', 'Los analistas levantan, diagraman y documentan los procedimientos de P01. La pizarra muestra su avance y sus próximas actividades.'],
+  ['lab', 'San Marcos · Laboratorio SIGPRO', 'El programador full-stack desarrolla SIGPRO y la integración de las actas digitales.'],
+  ['jefe', 'San Marcos · Jefatura de la OGPL', () => `Encabeza el organigrama de San Marcos${ofJefeCodes().length ? ' y patrocina ' + ofJefeCodes().join(' y ') : ''}. Aún no está registrada como integrante del sistema, por eso su puesto aparece libre.`],
   ['aula', 'Aulas FCM', 'Cuando alguien tiene clase según su horario, va al pabellón de aulas. Mientras tanto, su agente de IA sigue trabajando en su puesto: es la figura turquesa.'],
-  ['all', 'Los agentes de IA', 'Toca a cualquier integrante para ver qué está haciendo y pedirle trabajo a su agente: informes, actas, guías o planes, preparados con Claude a partir de los datos del sistema.'],
+  ['roic', 'ROIC & Company', () => { const o = orgById('roic'), dd = o ? (o.sharedDays || []).map(n => DIAS[n - 1].toLowerCase() + 's').join(' y ') : ''; return `La consultora tiene su propia oficina, con las áreas de su organigrama.${dd ? ` Quienes también trabajan en San Marcos vienen los ${dd}.` : ''}${o && o.sharedNote ? ' ' + o.sharedNote : ''}`; }],
+  ['rger', 'ROIC · Gerencia General', 'La oficina del gerente general y, a su costado, la Subgerencia de Operaciones y Estrategia Corporativa, comunicadas por una puerta interior.'],
+  ['rtd', 'ROIC · Transformación Digital', 'Automatización, innovación y desarrollo: el líder y programador full-stack con los consultores junior del área.'],
+  ['rmkt', 'ROIC · Marketing y Comunicaciones', 'Marca, redes sociales, página web y calendario editorial de la consultora.'],
+  ['rp04', 'ROIC · Proyecto P04', 'El equipo de la acreditación y la certificación ISO 9001 de la FCM, proyecto que ROIC & Company ejecuta como unidad ejecutora.'],
+  ['both', 'Los agentes de IA', 'Toca a cualquier integrante para ver qué hace en cada organización y pedirle trabajo a su agente: informes, actas, guías o planes, preparados con Claude a partir de los datos del sistema.'],
 ];
 const ofReduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ofDarkUI = () => { const t = document.documentElement.dataset.theme; return t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches); };
@@ -4575,26 +4729,62 @@ function ofQueue(m) {
   L.sort((a, b) => (b.late - a.late) || String(a.d || '9999').localeCompare(String(b.d || '9999')));
   return L;
 }
-function ofZoneOf(m) {
-  const area = String((m.org && m.org.area) || '');
-  if (/^Gerencia General/i.test(area)) return 'ger';
-  if (/Marketing/i.test(area)) return 'mkt';
-  const role = normN(`${m.role || ''} ${m.planRoles || ''}`), codes = projectsOf(m).map(x => String(x.p.code || '').toUpperCase());
-  if (m.admin || /director|lider|senior/.test(role)) return 'dir';
-  if (/desarroll|full ?stack|sigpro|programad|sistemas|automatiz|inteligencia artificial/.test(role)) return 'lab';
-  if (codes.includes('P04') && !codes.includes('P01')) return 'acred';
-  if (codes.includes('P01')) return 'proc';
-  if (codes.includes('P04')) return 'acred';
+// área de cada persona en cada sede: según su cargo en el organigrama de esa organización y sus proyectos
+function ofZoneFor(m, site, e) {
+  const txt = normN(e ? `${e.area} ${e.cargo}` : '');
+  if (site === 'roic') {
+    if (/gerencia general|gerente general/.test(txt)) return 'rger';
+    if (/subgerencia|subgerente/.test(txt)) return 'rsub';
+    if (/marketing|comunicacion/.test(txt)) return 'rmkt';
+    if (/transformacion|automatiz|innovacion|programador|full ?stack/.test(txt)) return 'rtd';
+    if (/proceso/.test(txt)) return 'rproc';
+    if (/proyecto/.test(txt)) return 'rpry';
+    return projectsOf(m).some(x => String(x.p.code).toUpperCase() === 'P04' && projOrgId(x.p) === 'roic') ? 'rp04' : 'rpry';
+  }
+  const role = normN(`${txt} ${m.role || ''} ${m.planRoles || ''}`);
+  if (/jefatura|jefe de la ogpl/.test(txt)) return 'jefe';
+  if (/analista senior|lider|director/.test(role) || m.admin) return 'dir';
+  if (/desarroll|full ?stack|sigpro|programad|sistemas/.test(role)) return 'lab';
+  if (/analista|racionalizacion/.test(role) || projectsOf(m).some(x => String(x.p.code).toUpperCase() === 'P01')) return 'proc';
   return 'cowork';
 }
+// sede donde está físicamente la persona: quienes trabajan en ambas organizaciones van a la que marca su día
+// (sharedDays del organigrama; para ROIC, los sábados, según el supuesto de P05); la reunión, en la sede de su proyecto
+function ofSiteNow(m, st, N) {
+  if (st && st.k === 'meeting') return ofMtSite(st.mt);
+  if (st && st.k === 'class') return 'unmsm';
+  const sites = ofSitesOf(m); if (sites.length < 2) return sites[0];
+  const days = k => ((orgById(k) || {}).sharedDays || []).map(Number);
+  return sites.find(k => days(k).includes(N.dow)) || sites.find(k => !days(k).length) || sites[0];
+}
+function ofMtSite(mt) {
+  const p = mt && mt.pid ? projectById(mt.pid) : null, k = p ? projOrgId(p) : '';
+  if (OF_SITES[k]) return k;
+  const att = mt ? attendeesOf(mt) : [];
+  return att.length && att.every(x => !ofSitesOf(x).includes('unmsm')) ? 'roic' : 'unmsm';
+}
+// cola de trabajo de la persona en una sede: lo de los proyectos de esa organización y lo que no pertenece a sus otras organizaciones
+function ofQ(mid, site) {
+  const m = memberById(mid), L = OF.top.get(mid) || (m ? ofQueue(m) : []);
+  const sites = m ? ofSitesOf(m) : []; if (!site || sites.length < 2) return L;
+  return L.filter(q => { const k = projOrgId(projectById(q.pid)); return k === site || !sites.includes(k); });
+}
 function ofAssign() {
-  const used = new Set(); OF.deskOf.clear();
-  const seats = z => [...OF.seats.values()].filter(s => s.kind === 'desk' && s.zone === z);
-  membersActive().forEach(m => {
-    const pref = ofZoneOf(m);
-    for (const z of [pref, 'cowork', 'proc', 'acred', 'lab']) { const s = seats(z).find(x => !used.has(x.key)); if (s) { used.add(s.key); OF.deskOf.set(m.id, s.key); return; } }
-    const s = [...OF.seats.values()].find(x => x.kind === 'stand' && !used.has(x.key)); if (s) { used.add(s.key); OF.deskOf.set(m.id, s.key); }
+  const used = new Set(); OF.desks.clear(); OF.owner.clear();
+  const free = (z, own) => [...OF.seats.values()].filter(s => s.kind === 'desk' && s.zone === z && (!s.reserved || own) && !used.has(s.key));
+  const jobs = [];
+  membersActive().forEach(m => { const mo = memberOrgs(m); ofSitesOf(m).forEach(site => { const e = mo.find(x => x.org.id === site) || null; jobs.push({ m, site, z: ofZoneFor(m, site, e), w: e ? (e.lead ? 2 : 1) : 0 }); }); });
+  // primero quienes dirigen: el líder del área ocupa el puesto principal
+  jobs.sort((a, b) => b.w - a.w).forEach(j => {
+    let s = null;
+    for (const z of [j.z, ...OF_FALL[j.site]]) { s = free(z, z === j.z)[0]; if (s) break; }
+    if (!s) s = [...OF.seats.values()].find(x => x.kind === 'stand' && x.site === j.site && !used.has(x.key));
+    if (!s) return;
+    used.add(s.key); OF.owner.set(s.key, j.m.id);
+    if (!OF.desks.has(j.m.id)) OF.desks.set(j.m.id, []);
+    OF.desks.get(j.m.id).push({ site: j.site, key: s.key });
   });
+  const so = Object.keys(OF_SITES); OF.desks.forEach(L => L.sort((a, b) => so.indexOf(a.site) - so.indexOf(b.site)));
 }
 function ofRecalc() {
   OF.ver = S.ver; OF.top.clear();
@@ -4603,7 +4793,7 @@ function ofRecalc() {
 }
 
 /* ---------- cuadrícula para que los avatares caminen sin atravesar muebles ---------- */
-function ofGridInit() { const g = { x0: -36, z0: -15, cs: 0.4 }; g.w = Math.ceil((35 - g.x0) / g.cs); g.h = Math.ceil((15 - g.z0) / g.cs); g.c = new Uint8Array(g.w * g.h); OF.grid = g; }
+function ofGridInit() { const g = { x0: -36, z0: -16, cs: 0.4 }; g.w = Math.ceil((84 - g.x0) / g.cs); g.h = Math.ceil((16 - g.z0) / g.cs); g.c = new Uint8Array(g.w * g.h); OF.grid = g; }
 function ofBlock(x1, z1, x2, z2, pad) {
   const g = OF.grid, p = pad == null ? 0.12 : pad;
   const i1 = Math.max(0, Math.floor((Math.min(x1, x2) - p - g.x0) / g.cs)), i2 = Math.min(g.w - 1, Math.floor((Math.max(x1, x2) + p - g.x0) / g.cs));
@@ -4656,24 +4846,25 @@ function ofBuild() {
   r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   r.shadowMap.enabled = true; r.shadowMap.type = T.PCFSoftShadowMap;
   r.domElement.className = 'of-canvas'; r.domElement.setAttribute('role', 'img');
-  r.domElement.setAttribute('aria-label', 'Vista 3D de la oficina con los integrantes del equipo. Usa la vista de lista para la misma información en texto.');
-  const cam = new T.PerspectiveCamera(32, 1, 0.5, 420);
+  r.domElement.setAttribute('aria-label', 'Vista 3D de las dos sedes, San Marcos y ROIC & Company, con los integrantes del equipo. Usa la vista de lista para la misma información en texto.');
+  const cam = new T.PerspectiveCamera(32, 1, 0.5, 460);
   Object.assign(OF, { r, scene, cam3: cam, ray: new T.Raycaster(), ndc: new T.Vector2(), v3: new T.Vector3() });
   ofGridInit();
   const hemi = new T.HemisphereLight(0xffffff, 0xb6c2cf, 1.5), sun = new T.DirectionalLight(0xffffff, 2.4);
   sun.castShadow = true; sun.shadow.mapSize.set(innerWidth < 700 ? 1024 : 2048, innerWidth < 700 ? 1024 : 2048);
-  Object.assign(sun.shadow.camera, { left: -36, right: 36, top: 30, bottom: -30, near: 1, far: 160 }); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
-  sun.target.position.set(7, 0, 0); scene.add(hemi, sun, sun.target); OF.hemi = hemi; OF.sun = sun;
+  Object.assign(sun.shadow.camera, { left: -36, right: 36, top: 30, bottom: -30, near: 1, far: 170 }); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
+  sun.target.position.set(7, 0, 0); scene.add(hemi, sun, sun.target); OF.hemi = hemi; OF.sun = sun; OF.sunX = 7; OF.shW = 36;
   scene.fog = new T.Fog(0xe6eff4, 95, 190);
   // materiales y geometrías compartidas
   const GC = new Map(), geo = (k, f) => { if (!GC.has(k)) GC.set(k, f()); return GC.get(k); };
   const mat = (c, o) => new T.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.85, metalness: 0 }, o || {}));
   const M = OF.M = {
-    floor: mat(0xEFE3D1), hall: mat(0xE3E8EE), wall: mat(0xF7F8FA), curb: mat(0xD5DBE3), cap: mat(0x14315F), glass: mat(0xCDEFF5, { transparent: true, opacity: 0.24, roughness: 0.1, depthWrite: false }), rail: mat(0x8E9BAA, { metalness: 0.45, roughness: 0.4 }),
+    floor: mat(0xEFE3D1), floor2: mat(0xE8E4DD), hall: mat(0xE3E8EE), wall: mat(0xF7F8FA), curb: mat(0xD5DBE3), cap: mat(0x14315F), glass: mat(0xCDEFF5, { transparent: true, opacity: 0.24, roughness: 0.1, depthWrite: false }), rail: mat(0x8E9BAA, { metalness: 0.45, roughness: 0.4 }),
     wood: mat(0xCFA57A, { roughness: 0.7 }), steel: mat(0x2B3A52, { roughness: 0.5, metalness: 0.3 }), white: mat(0xF3F1EC), seat: mat(0x1E3E72), back: mat(0x14315F), monitor: mat(0x1B2433, { roughness: 0.4 }),
     pot: mat(0xECE7DF), leaf: mat(0x3E9B63, { flatShading: true }), leaf2: mat(0x2E7D4F, { flatShading: true }), shelf: mat(0xE6DFD3), rack: mat(0x1D2734, { roughness: 0.5 }),
     grass: mat(0xDCE8E1), walk: mat(0xE8E3DA), trunk: mat(0x8A6A4F), canopy: mat(0x5DAF7A, { flatShading: true }), canopy2: mat(0x4C9A69, { flatShading: true }), board: mat(0xF8FAFC, { roughness: 0.6 }),
     lamp: new T.MeshStandardMaterial({ color: 0xFFF4DD, emissive: 0xFFE2A8, emissiveIntensity: 0.3, side: T.DoubleSide }), shade: mat(0x14315F), chalk: mat(0x24433A),
+    road: mat(0x5E646C, { roughness: 0.95 }), paint: mat(0xF4F4F0), hedge: mat(0x3F8C5C, { flatShading: true }), capR: mat(0x263238),
   };
   OF.lamps = M.lamp;
   const add = (o, parent) => { (parent || scene).add(o); return o; };
@@ -4681,31 +4872,38 @@ function ofBuild() {
   const box = (w, h, d, m, x, y, z, o) => mesh(geo(`b${w}|${h}|${d}`, () => new T.BoxGeometry(w, h, d)), m, x, y, z, o);
   const cyl = (rt, rb, h, m, x, y, z, o) => mesh(geo(`c${rt}|${rb}|${h}`, () => new T.CylinderGeometry(rt, rb, h, 18)), m, x, y, z, o);
   OF.mk = { geo, mat, mesh, box, cyl, add };
-  // suelo, losas y caminos
-  const ground = new T.Mesh(new T.PlaneGeometry(260, 190), M.grass); ground.rotation.x = -Math.PI / 2; ground.position.set(8, -0.06, 0); ground.receiveShadow = true; scene.add(ground); OF.ground = ground;
-  box(32.4, 0.3, 22.4, M.floor, 0, -0.15, 0, { noCast: true }); box(8.2, 0.3, 22.4, M.floor, -20.1, -0.15, 0, { noCast: true });
-  box(11.4, 0.3, 14.4, M.floor, 25.5, -0.15, 0, { noCast: true });
-  box(4.2, 0.08, 2.6, M.walk, 18, -0.03, 0, { noCast: true }); box(9, 0.08, 2.6, M.walk, -28.4, -0.03, 0, { noCast: true });
-  box(32, 0.012, 4, M.hall, 0, 0.006, 0, { noCast: true }); box(8, 0.012, 4, M.hall, -20, 0.006, 0, { noCast: true });
+  // suelo, losas, caminos y la avenida entre la Ciudad Universitaria y la oficina de ROIC
+  const ground = new T.Mesh(new T.PlaneGeometry(340, 210), M.grass); ground.rotation.x = -Math.PI / 2; ground.position.set(30, -0.06, 0); ground.receiveShadow = true; scene.add(ground); OF.ground = ground;
+  box(32.4, 0.3, 22.4, M.floor, 0, -0.15, 0, { noCast: true }); box(11.4, 0.3, 14.4, M.floor, 25.5, -0.15, 0, { noCast: true }); box(32.4, 0.3, 22.4, M.floor2, 60, -0.15, 0, { noCast: true });
+  box(4.2, 0.08, 2.6, M.walk, 18, -0.03, 0, { noCast: true }); box(9, 0.08, 2.6, M.walk, -20.4, -0.03, 0, { noCast: true }); box(2.8, 0.08, 2.6, M.walk, 32.3, -0.03, 0, { noCast: true }); box(2.8, 0.08, 2.6, M.walk, 42.6, -0.03, 0, { noCast: true });
+  box(32, 0.012, 4, M.hall, 0, 0.006, 0, { noCast: true }); box(32, 0.012, 4, M.hall, 60, 0.006, 0, { noCast: true });
+  box(6, 0.04, 150, M.road, 38, 0, 0, { noCast: true });
+  for (let z = -72; z <= 72; z += 4) if (Math.abs(z) > 3) box(0.16, 0.012, 2, M.paint, 38, 0.026, z, { noCast: true });
+  for (let x = 35.5; x <= 40.6; x += 1) box(0.5, 0.012, 2.6, M.paint, x, 0.026, 0, { noCast: true });
   Object.entries(OF_Z).forEach(([k, z]) => {
-    const [x1, z1, x2, z2] = z.b, c = new T.Color(0xEFE3D1).lerp(new T.Color(z.c), k === 'aula' ? 0.1 : 0.13);
+    const [x1, z1, x2, z2] = z.b, c = new T.Color(z.site === 'roic' ? 0xE8E4DD : 0xEFE3D1).lerp(new T.Color(z.c), k === 'aula' ? 0.1 : 0.13);
     const rug = box(x2 - x1 - 0.3, 0.012, z2 - z1 - 0.3, mat(c), (x1 + x2) / 2, 0.008, (z1 + z2) / 2, { noCast: true });
     rug.userData = { kind: 'zone', id: k }; OF.pick.push(rug);
   });
   // muros exteriores: la parte alta se oculta cuando mira a la cámara (vista en corte)
-  const wall = (x1, z1, x2, z2, nx, nz) => {
+  const wall = (x1, z1, x2, z2, nx, nz, capC) => {
     const L = Math.hypot(x2 - x1, z2 - z1), cx = (x1 + x2) / 2, cz = (z1 + z2) / 2, ry = Math.abs(x2 - x1) > Math.abs(z2 - z1) ? 0 : Math.PI / 2;
     box(L, 0.32, 0.24, M.curb, cx, 0.16, cz, { ry, noCast: true });
     const m2 = mat(0xF7F8FA, { transparent: true, opacity: 1 }), up = box(L, 2.68, 0.2, m2, cx, 1.66, cz, { ry });
-    const capM = mat(0x14315F, { transparent: true, opacity: 1 }), cap = box(L, 0.08, 0.24, capM, cx, 3.04, cz, { ry, noCast: true });
-    OF.walls.push({ up, cap, m: [m2, capM], nx, nz, k: 1 });
+    const capM = mat(capC || 0x14315F, { transparent: true, opacity: 1 }), cap = box(L, 0.08, 0.24, capM, cx, 3.04, cz, { ry, noCast: true });
+    const w = { up, cap, m: [m2, capM], nx, nz, k: 1 }; OF.walls.push(w);
     ofBlock(Math.min(x1, x2), Math.min(z1, z2), Math.max(x1, x2), Math.max(z1, z2), 0.22);
+    return w;
   };
-  wall(-24.1, -11, 16.1, -11, 0, -1); wall(-24.1, 11, 16.1, 11, 0, 1);
-  wall(-24, -11, -24, -1.3, -1, 0); wall(-24, 1.3, -24, 11, -1, 0);
-  wall(-16, -11, -16, -6.9, -1, 0); wall(-16, -5.1, -16, -2, -1, 0); wall(-16, 2, -16, 11, -1, 0); wall(16, -11, 16, -1.3, 1, 0); wall(16, 1.3, 16, 11, 1, 0);
-  wall(19.9, -7, 31.1, -7, 0, -1); wall(19.9, 7, 31.1, 7, 0, 1); wall(20, -7, 20, -1.3, -1, 0); wall(20, 1.3, 20, 7, -1, 0); wall(31, -7, 31, 7, 1, 0);
-  box(0.2, 0.6, 2.8, M.wall, -24, 2.75, 0, { noCast: true }); box(0.2, 0.6, 1.8, M.wall, -16, 2.75, -6, { noCast: true }); box(0.2, 0.6, 2.8, M.wall, 16, 2.75, 0, { noCast: true }); box(0.2, 0.6, 2.8, M.wall, 20, 2.75, 0, { noCast: true });
+  // San Marcos · Oficina de Racionalización (OGPL): entrada al oeste y salida al pabellón de aulas
+  const wNU = wall(-16.1, -11, 16.1, -11, 0, -1); wall(-16.1, 11, 16.1, 11, 0, 1);
+  wall(-16, -11, -16, -1.3, -1, 0); wall(-16, 1.3, -16, 11, -1, 0); wall(16, -11, 16, -1.3, 1, 0); wall(16, 1.3, 16, 11, 1, 0);
+  wall(19.9, -7, 31.1, -7, 0, -1); wall(19.9, 7, 31.1, 7, 0, 1); wall(20, -7, 20, -1.3, -1, 0); wall(20, 1.3, 20, 7, -1, 0); wall(31, -7, 31, -1.3, 1, 0); wall(31, 1.3, 31, 7, 1, 0);
+  [-16, 16, 20, 31].forEach(x => box(0.2, 0.6, 2.8, M.wall, x, 2.75, 0, { noCast: true }));
+  // ROIC & Company: entrada al oeste, frente a la avenida
+  const RC = 0x263238, wNR = wall(43.9, -11, 76.1, -11, 0, -1, RC); wall(43.9, 11, 76.1, 11, 0, 1, RC);
+  wall(44, -11, 44, -1.3, -1, 0, RC); wall(44, 1.3, 44, 11, -1, 0, RC); wall(76, -11, 76, 11, 1, 0, RC);
+  box(0.2, 0.6, 2.8, M.wall, 44, 2.75, 0, { noCast: true });
   // tabiques de vidrio con puertas
   const glass = (a1, b1, a2, b2, gaps) => {
     const horiz = b1 === b2, from = horiz ? a1 : b1, to = horiz ? a2 : b2, segs = []; let cur = from;
@@ -4716,9 +4914,13 @@ function ofBuild() {
       if (horiz) ofBlock(s1, b1 - 0.05, s2, b1 + 0.05, 0.16); else ofBlock(a1 - 0.05, s1, a1 + 0.05, s2, 0.16);
     });
   };
-  glass(-24, -2, 16, -2, [[-20.9, -19.1], [-11.4, -9.6], [-0.9, 0.9], [9.6, 11.4]]);
-  glass(-24, 2, 16, 2, [[-20.9, -19.1], [-9.4, -7.6], [4.6, 6.4], [13.1, 14.9]]);
+  glass(-16, -2, 16, -2, [[-11.4, -9.6], [-0.9, 0.9], [9.6, 11.4]]);
+  glass(-16, 2, 16, 2, [[-9.4, -7.6], [4.6, 6.4], [13.1, 14.9]]);
   glass(-5, -11, -5, -2); glass(5, -11, 5, -2); glass(-1, 2, -1, 11); glass(12, 2, 12, 11);
+  glass(44, -2, 76, -2, [[47.1, 48.9], [55.1, 56.9], [63.6, 65.4], [71.6, 73.4]]);
+  glass(44, 2, 76, 2, [[49.1, 50.9], [58.1, 59.9], [64.1, 65.9], [71.1, 72.9]]);
+  glass(52, -11, 52, -2, [[-6.9, -5.1]]); glass(60, -11, 60, -2); glass(69, -11, 69, -2);
+  glass(56, 2, 56, 11); glass(62, 2, 62, 11); glass(68, 2, 68, 11);
   // mobiliario
   const plant = (x, z, s) => { s = s || 1; cyl(0.2 * s, 0.16 * s, 0.4 * s, M.pot, x, 0.2 * s, z); mesh(geo('ico' + s, () => new T.IcosahedronGeometry(0.42 * s, 0)), Math.random() > 0.5 ? M.leaf : M.leaf2, x, 0.72 * s, z); ofBlock(x - 0.25, z - 0.25, x + 0.25, z + 0.25); };
   const chair = (x, z, ry, p) => {
@@ -4727,6 +4929,7 @@ function ofBuild() {
     return g;
   };
   const lamp = (x, z) => { cyl(0.012, 0.012, 0.5, M.steel, x, 2.75, z, { noCast: true }); mesh(geo('shade', () => new T.CylinderGeometry(0.1, 0.26, 0.2, 18, 1, true)), M.shade, x, 2.42, z, { noCast: true }).material.side = T.DoubleSide; mesh(geo('bulb', () => new T.CircleGeometry(0.22, 18)), M.lamp, x, 2.33, z, { noCast: true }).rotation.x = Math.PI / 2; };
+  const books = (n, x0, z0, dx, dz, cols) => { for (let i = 0; i < n; i++) box(dz ? 0.26 : 0.11, 0.32, dz ? 0.12 : 0.26, mat(cols[i % cols.length]), x0 + (i % 5) * dx, 0.42 + Math.floor(i / 5) * 0.62, z0 + (i % 5) * dz, { noCast: true }); };
   // puesto de trabajo: el asiento mira hacia el escritorio (ry = π: mira al norte)
   let deskN = 0;
   const desk = (zone, x, z, ry, o) => {
@@ -4754,46 +4957,41 @@ function ofBuild() {
     ofBlock(cx - hw, cz - hd, cx + hw, cz + hd, 0.06);
     if (!o.noLamp) lamp(cx, cz);
     const key = `d:${zone}:${deskN++}`;
-    OF.seats.set(key, { key, kind: 'desk', zone, x, z, r: ry, screen, orb, orbM, group: g });
+    OF.seats.set(key, { key, kind: 'desk', zone, site: (OF_Z[zone] || {}).site || 'unmsm', reserved: !!o.reserved, x, z, r: ry, screen, orb, orbM, group: g });
     g.traverse(ch => { if (ch.isMesh) { ch.userData = { kind: 'desk', seat: key }; OF.pick.push(ch); } });
     return key;
   };
-  // Dirección
+  const meetSeat = (pre, zone, site, x, z, ry) => { const i = [...OF.seats.values()].filter(s => s.kind === 'meet' && s.site === site).length; chair(x, z, ry); OF.seats.set(pre + ':' + i, { key: pre + ':' + i, kind: 'meet', zone, site, x, z, r: ry }); };
+  const meetRoom = (pre, zone, site, cx) => {
+    box(4.4, 0.06, 1.5, M.wood, cx, 0.74, -6.5); box(0.5, 0.72, 0.9, M.steel, cx - 1.3, 0.36, -6.5); box(0.5, 0.72, 0.9, M.steel, cx + 1.3, 0.36, -6.5); ofBlock(cx - 2.2, -7.25, cx + 2.2, -5.75, 0.05);
+    [-1.65, -0.55, 0.55, 1.65].forEach(dx => meetSeat(pre, zone, site, cx + dx, -7.75, 0)); [-1.65, -0.55, 0.55, 1.65].forEach(dx => meetSeat(pre, zone, site, cx + dx, -5.25, Math.PI)); meetSeat(pre, zone, site, cx - 2.75, -6.5, Math.PI / 2); meetSeat(pre, zone, site, cx + 2.75, -6.5, -Math.PI / 2);
+    lamp(cx - 1.1, -6.5); lamp(cx + 1.1, -6.5);
+  };
+  const BK = [0x2F6FB3, 0x1A7049, 0xA65310, 0x0A7E90, 0xB8352C, 0x14315F];
+  /* ===== San Marcos · Oficina de Racionalización (OGPL) ===== */
+  // Dirección de proyectos (Analista Senior)
   desk('dir', -10.5, -5.3, Math.PI, { w: 1.8 });
   cyl(0.65, 0.65, 0.05, M.wood, -13.9, 0.74, -8.4); cyl(0.08, 0.12, 0.72, M.steel, -13.9, 0.36, -8.4); ofBlock(-14.6, -9.1, -13.2, -7.7);
   chair(-13.9, -7.4, Math.PI); chair(-14.9, -8.6, Math.PI / 2); chair(-12.9, -8.6, -Math.PI / 2);
   box(0.4, 2.1, 1.9, M.shelf, -15.7, 1.05, -3.9); ofBlock(-15.9, -4.9, -15.5, -2.9);
-  for (let i = 0; i < 12; i++) box(0.26, 0.32, 0.12, mat([0x2F6FB3, 0x1A7049, 0xA65310, 0x0A7E90, 0xB8352C, 0x14315F][i % 6]), -15.62, 0.42 + Math.floor(i / 6) * 0.62, -4.65 + (i % 6) * 0.3, { noCast: true });
+  for (let i = 0; i < 12; i++) box(0.26, 0.32, 0.12, mat(BK[i % 6]), -15.62, 0.42 + Math.floor(i / 6) * 0.62, -4.65 + (i % 6) * 0.3, { noCast: true });
   plant(-15.3, -10.3); plant(-5.7, -10.3); plant(-5.7, -2.7, 0.8);
-  // Gerencia General (oficina individual al costado de la Dirección)
-  desk('ger', -20, -5.3, Math.PI, { w: 1.9 });
-  chair(-20.55, -7.3, 0); chair(-19.45, -7.3, 0);
-  box(0.4, 2.1, 1.9, M.shelf, -23.7, 1.05, -8.6); ofBlock(-23.9, -9.6, -23.5, -7.6);
-  for (let i = 0; i < 10; i++) box(0.26, 0.32, 0.12, mat([0x6D4C41, 0x14315F, 0x2F6FB3, 0xA65310, 0x1A7049][i % 5]), -23.62, 0.42 + Math.floor(i / 5) * 0.62, -9.25 + (i % 5) * 0.3, { noCast: true });
-  box(2.0, 0.42, 0.8, M.seat, -20, 0.21, -10.25); box(2.0, 0.5, 0.16, M.back, -20, 0.55, -10.6, { noCast: true }); ofBlock(-21.05, -10.7, -18.95, -9.8);
-  plant(-23.3, -2.7, 0.8); plant(-16.7, -10.3);
-  // Área de Marketing y Comunicaciones (oficina individual)
-  desk('mkt', -20, 6.7, Math.PI, { w: 1.6 });
-  box(2.6, 1.5, 0.06, M.board, -20, 1.55, 10.85, { noCast: true }); ofBlock(-21.3, 10.7, -18.7, 10.95);
-  [[-20.9, 0x1BB0C4], [-20.3, 0xAD1457], [-19.7, 0xE7B24F], [-19.1, 0x5BC98F]].forEach(([x, c], i) => box(0.42, 0.42, 0.01, mat(c), x, 1.75 - (i % 2) * 0.5, 10.81, { noCast: true }));
-  cyl(0.45, 0.45, 0.05, M.wood, -22.5, 0.74, 9.2); cyl(0.06, 0.1, 0.72, M.steel, -22.5, 0.36, 9.2); ofBlock(-23, 8.7, -22, 9.7); chair(-22.5, 8.3, 0);
-  plant(-23.3, 2.7, 0.8); plant(-16.7, 10.3);
   // Sala de reuniones
-  box(4.4, 0.06, 1.5, M.wood, 0, 0.74, -6.5); box(0.5, 0.72, 0.9, M.steel, -1.3, 0.36, -6.5); box(0.5, 0.72, 0.9, M.steel, 1.3, 0.36, -6.5); ofBlock(-2.2, -7.25, 2.2, -5.75, 0.05);
-  const meetSeat = (x, z, ry) => { const i = [...OF.seats.values()].filter(s => s.kind === 'meet').length; chair(x, z, ry); OF.seats.set('s:' + i, { key: 's:' + i, kind: 'meet', zone: 'sala', x, z, r: ry }); };
-  [-1.65, -0.55, 0.55, 1.65].forEach(x => meetSeat(x, -7.75, 0)); [-1.65, -0.55, 0.55, 1.65].forEach(x => meetSeat(x, -5.25, Math.PI)); meetSeat(-2.75, -6.5, Math.PI / 2); meetSeat(2.75, -6.5, -Math.PI / 2);
-  lamp(-1.1, -6.5); lamp(1.1, -6.5); plant(-4.4, -10.3); plant(4.4, -10.3);
+  meetRoom('s', 'sala', 'unmsm', 0); plant(-4.4, -10.3); plant(4.4, -10.3);
   // Laboratorio SIGPRO
   desk('lab', 8.2, -5.3, Math.PI, { triple: true, w: 2.0 }); desk('lab', 11.8, -5.3, Math.PI);
   [13.5, 14.3, 15.1].forEach((x, i) => { box(0.72, 2.0, 0.9, M.rack, x, 1.0, -10.1); for (let k = 0; k < 6; k++) { const led = box(0.05, 0.03, 0.02, new T.MeshStandardMaterial({ color: 0x0b1d3a, emissive: k % 3 ? 0x5BC98F : 0x1BB0C4, emissiveIntensity: 1.4 }), x - 0.22 + (k % 2) * 0.1, 0.45 + Math.floor(k / 2) * 0.5, -9.64, { noCast: true }); OF.leds.push({ m: led.material, ph: i * 1.7 + k }); } });
   ofBlock(13.1, -10.6, 15.5, -9.6); plant(5.7, -10.3); plant(5.7, -2.7, 0.8);
-  // Racionalización · Procesos
+  // Racionalización · Analistas
   [-13.2, -10.2, -7.2, -4.2].forEach(x => desk('proc', x, 6.7, Math.PI));
   [[-14.2, 10.3], [-13.1, 10.3]].forEach(([x, z]) => { box(1.0, 1.3, 0.6, M.curb, x, 0.65, z); ofBlock(x - 0.5, z - 0.3, x + 0.5, z + 0.3); });
   plant(-1.7, 10.3); plant(-15.3, 2.7, 0.8); plant(-2.6, 2.7, 0.8);
-  // Acreditación FCM
-  [1.0, 4.0, 7.0, 10.0].forEach(x => desk('acred', x, 6.7, Math.PI));
-  [3.2, 6.2].forEach(x => { box(1.9, 1.8, 0.4, M.shelf, x, 0.9, 10.3); for (let i = 0; i < 14; i++) box(0.11, 0.34, 0.3, mat([0xA65310, 0x2F6FB3, 0x1A7049, 0xB8352C, 0x7A4FB3, 0x0A7E90, 0xE7B24F][i % 7]), x - 0.8 + (i % 7) * 0.26, 0.35 + Math.floor(i / 7) * 0.8, 10.3, { noCast: true }); ofBlock(x - 1, 10.05, x + 1, 10.55); });
+  // Jefatura de la OGPL: encabeza el organigrama de San Marcos; su puesto queda reservado
+  desk('jefe', 5.5, 6.7, Math.PI, { w: 1.9, reserved: true });
+  chair(4.95, 4.75, 0); chair(6.05, 4.75, 0);
+  box(1.9, 1.8, 0.4, M.shelf, 9.4, 0.9, 10.3); for (let i = 0; i < 14; i++) box(0.11, 0.34, 0.3, mat([0x7B2233, 0x2F6FB3, 0x1A7049, 0xA65310, 0x14315F, 0x0A7E90, 0xE7B24F][i % 7]), 8.6 + (i % 7) * 0.26, 0.35 + Math.floor(i / 7) * 0.8, 10.3, { noCast: true }); ofBlock(8.4, 10.05, 10.4, 10.55);
+  box(2.0, 0.42, 0.8, M.seat, 3.0, 0.21, 10.25); box(2.0, 0.5, 0.16, M.back, 3.0, 0.55, 10.6, { noCast: true }); ofBlock(1.95, 9.8, 4.05, 10.7);
+  box(0.06, 1.9, 3.3, M.board, -0.45, 1.55, 8.4, { noCast: true }); box(0.06, 0.8, 0.06, M.steel, -0.45, 0.4, 7.0); box(0.06, 0.8, 0.06, M.steel, -0.45, 0.4, 9.8); ofBlock(-0.6, 6.7, -0.3, 10.1);
   plant(11.3, 10.3); plant(-0.3, 2.7, 0.8);
   // Coworking
   desk('cowork', 13.15, 6.7, Math.PI, { w: 1.2 }); desk('cowork', 14.95, 6.7, Math.PI, { w: 1.2 }); plant(15.4, 10.3);
@@ -4805,32 +5003,90 @@ function ofBuild() {
   let ai = 0;
   [-2.3, 0.7, 3.7].forEach(z => [22.6, 24.6, 26.6, 28.6].forEach(x => {
     box(0.9, 0.04, 0.5, M.wood, x, 0.72, z - 0.55); box(0.04, 0.7, 0.44, M.steel, x - 0.4, 0.35, z - 0.55); box(0.04, 0.7, 0.44, M.steel, x + 0.4, 0.35, z - 0.55); ofBlock(x - 0.48, z - 0.82, x + 0.48, z - 0.3, 0.04);
-    chair(x, z, Math.PI); OF.seats.set('a:' + ai, { key: 'a:' + ai, kind: 'class', zone: 'aula', x, z, r: Math.PI }); ai++;
+    chair(x, z, Math.PI); OF.seats.set('a:' + ai, { key: 'a:' + ai, kind: 'class', zone: 'aula', site: 'unmsm', x, z, r: Math.PI }); ai++;
   }));
   [[23, 0.7], [28, 0.7]].forEach(([x, z]) => lamp(x, z));
-  // exteriores: árboles, faroles y bancas
+  /* ===== ROIC & Company ===== */
+  // Gerencia General
+  desk('rger', 48, -5.3, Math.PI, { w: 1.9 });
+  chair(47.45, -7.3, 0); chair(48.55, -7.3, 0);
+  box(1.9, 2.1, 0.4, M.shelf, 46.0, 1.05, -10.7); ofBlock(45.0, -10.95, 47.0, -10.45); books(10, 45.3, -10.62, 0.3, 0, [0x6D4C41, 0x14315F, 0x2F6FB3, 0xA65310, 0x1A7049]);
+  box(2.0, 0.42, 0.8, M.seat, 50.2, 0.21, -10.25); box(2.0, 0.5, 0.16, M.back, 50.2, 0.55, -10.6, { noCast: true }); ofBlock(49.15, -10.7, 51.25, -9.8);
+  plant(51.4, -2.7, 0.8); plant(44.7, -2.7, 0.8);
+  // Subgerencia de Operaciones y Estrategia Corporativa (comunicada con la Gerencia por una puerta interior)
+  desk('rsub', 56, -5.3, Math.PI, { w: 1.8 });
+  cyl(0.55, 0.55, 0.05, M.wood, 58.6, 0.74, -8.6); cyl(0.07, 0.11, 0.72, M.steel, 58.6, 0.36, -8.6); ofBlock(58.05, -9.15, 59.15, -8.05); chair(58.6, -7.7, Math.PI); chair(57.6, -8.8, Math.PI / 2);
+  plant(52.6, -10.3); plant(59.4, -2.7, 0.8);
+  // Sala de reuniones de ROIC
+  meetRoom('rs', 'rsala', 'roic', 64.5); plant(60.6, -10.3); plant(68.4, -10.3);
+  // Área de Dirección de Proyectos
+  desk('rpry', 71, -5.3, Math.PI); desk('rpry', 74.2, -5.3, Math.PI, { w: 1.2 });
+  plant(75.4, -10.3); plant(69.6, -2.7, 0.8);
+  // Área de Transformación Digital
+  desk('rtd', 47.2, 6.7, Math.PI, { triple: true, w: 2.0 }); desk('rtd', 50.8, 6.7, Math.PI); desk('rtd', 53.8, 6.7, Math.PI);
+  plant(55.4, 10.3); plant(44.7, 10.3);
+  // Área de Procesos
+  desk('rproc', 57.6, 6.7, Math.PI, { w: 1.2 }); desk('rproc', 60.4, 6.7, Math.PI, { w: 1.2 });
+  box(1.0, 1.3, 0.6, M.curb, 59, 0.65, 10.3); ofBlock(58.5, 10.0, 59.5, 10.6); plant(61.4, 10.3);
+  // Área de Marketing y Comunicaciones
+  desk('rmkt', 65, 6.7, Math.PI, { w: 1.6 });
+  box(2.6, 1.5, 0.06, M.board, 65, 1.55, 10.85, { noCast: true }); ofBlock(63.7, 10.7, 66.3, 10.95);
+  [[64.1, 0x1BB0C4], [64.7, 0xAD1457], [65.3, 0xE7B24F], [65.9, 0x5BC98F]].forEach(([x, c], i) => box(0.42, 0.42, 0.01, mat(c), x, 1.75 - (i % 2) * 0.5, 10.81, { noCast: true }));
+  plant(62.6, 10.3); plant(67.4, 2.7, 0.8);
+  // Proyecto P04 · Acreditación FCM (equipo del proyecto que ejecuta ROIC)
+  [70.0, 72.4, 74.8].forEach(x => desk('rp04', x, 6.7, Math.PI, { w: 1.3 }));
+  box(0.06, 1.9, 3.3, M.board, 68.45, 1.55, 8.6, { noCast: true }); box(0.06, 0.8, 0.06, M.steel, 68.45, 0.4, 7.2); box(0.06, 0.8, 0.06, M.steel, 68.45, 0.4, 10.0); ofBlock(68.3, 6.9, 68.6, 10.3);
+  plant(75.4, 10.3);
+  // recepción
+  box(2.2, 1.05, 0.62, M.white, 46.6, 0.52, 1.25); box(2.3, 0.05, 0.72, M.wood, 46.6, 1.07, 1.25); ofBlock(45.45, 0.9, 47.75, 1.6);
+  plant(58, -1.4, 0.75); plant(66.5, 1.4, 0.75);
+  /* ===== exteriores: la entrada de la Ciudad Universitaria, árboles, faroles y bancas ===== */
+  [[-16, -2.4], [2.4, 16]].forEach(([a, b]) => { box(0.7, 0.9, b - a, M.hedge, 33.6, 0.45, (a + b) / 2); ofBlock(33.25, a, 33.95, b, 0.1); });
+  [-2.75, 2.75].forEach(z => { box(0.6, 2.8, 0.6, M.wall, 33.6, 1.4, z); ofBlock(33.3, z - 0.3, 33.9, z + 0.3); });
   const tree = (x, z, s) => { s = s || 1; cyl(0.12 * s, 0.16 * s, 1.4 * s, M.trunk, x, 0.7 * s, z); mesh(geo('tree' + s, () => new T.IcosahedronGeometry(1.1 * s, 1)), Math.random() > 0.5 ? M.canopy : M.canopy2, x, 2.0 * s, z); ofBlock(x - 0.3, z - 0.3, x + 0.3, z + 0.3); };
-  [[-29, -8], [-29, 7.5], [-32.5, -3.5], [-6, -14.2], [6, -14.2], [-13, 14.2], [3, 14.2], [12.5, 14.2], [18.2, -6.5], [18.2, 6.5], [33.5, -5], [33.5, 4.5], [24, 10.5], [29, -10.5], [21, -10.2], [-34, 6], [36, 0]].forEach(([x, z], i) => tree(x, z, i % 3 ? 1 : 1.25));
-  [[17, 1.7], [19, -1.7], [-26, 1.7], [-30, -1.7]].forEach(([x, z]) => { cyl(0.05, 0.06, 3.0, M.steel, x, 1.5, z); mesh(geo('lampball', () => new T.SphereGeometry(0.18, 14, 10)), M.lamp, x, 3.05, z, { noCast: true }); });
+  [[-21, -8], [-21, 7.5], [-25, -4.5], [-26, 6.5], [-6, -14.2], [6, -14.2], [-13, 14.2], [3, 14.2], [12.5, 14.2], [18.2, -6.5], [18.2, 6.5], [24, 10.5], [29, -10.5], [21, -10.2], [31.6, -11.5], [31.6, 11.5], [42.2, -8.5], [42.2, 8.5], [50, -14.2], [66, -14.2], [53, 14.2], [70, 14.2], [79.5, -6], [79.5, 6]].forEach(([x, z], i) => tree(x, z, i % 3 ? 1 : 1.25));
+  [[17, 1.7], [19, -1.7], [-18, 1.7], [-22, -1.7], [34.7, -6], [34.7, 6], [41.3, -6], [41.3, 6]].forEach(([x, z]) => { cyl(0.05, 0.06, 3.0, M.steel, x, 1.5, z); mesh(geo('lampball', () => new T.SphereGeometry(0.18, 14, 10)), M.lamp, x, 3.05, z, { noCast: true }); });
   [[22.5, 9], [27.5, 9]].forEach(([x, z]) => { box(1.6, 0.08, 0.45, M.wood, x, 0.45, z); box(0.08, 0.45, 0.4, M.steel, x - 0.65, 0.22, z); box(0.08, 0.45, 0.4, M.steel, x + 0.65, 0.22, z); });
-  // puntos fuera de la sede (llegada y salida) y puestos de pie de respaldo
-  OF.seats.set('home', { key: 'home', kind: 'home', zone: 'out', x: -31.5, z: 0, r: -Math.PI / 2 });
-  for (let i = 0; i < 8; i++) OF.seats.set('p:' + i, { key: 'p:' + i, kind: 'stand', zone: 'hall', x: 2 + i * 1.6, z: 0.9, r: Math.PI });
+  // puntos fuera de cada sede (llegada y salida) y puestos de pie de respaldo
+  OF.seats.set('home', { key: 'home', kind: 'home', zone: 'out', site: 'unmsm', x: -23.5, z: 0, r: -Math.PI / 2 });
+  OF.seats.set('rhome', { key: 'rhome', kind: 'home', zone: 'out', site: 'roic', x: 38, z: 15.2, r: Math.PI });
+  for (let i = 0; i < 8; i++) OF.seats.set('p:' + i, { key: 'p:' + i, kind: 'stand', zone: 'hall', site: 'unmsm', x: 2 + i * 1.6, z: 0.9, r: Math.PI });
+  for (let i = 0; i < 6; i++) OF.seats.set('rp:' + i, { key: 'rp:' + i, kind: 'stand', zone: 'hall', site: 'roic', x: 51 + i * 1.6, z: -0.9, r: 0 });
   // pantallas y letreros con datos vivos
   const screen = (id, w, h, cw, ch, x, y, z, ry, zone, frame) => {
     const c = document.createElement('canvas'); c.width = cw; c.height = ch; const tex = ofTexOf(c);
     if (frame !== false) box(w + 0.14, h + 0.14, 0.06, M.monitor, x - Math.sin(ry) * 0.04, y, z - Math.cos(ry) * 0.04, { ry, noCast: true });
     const pl = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ map: tex, toneMapped: false })); pl.position.set(x, y, z); pl.rotation.y = ry; scene.add(pl);
     pl.userData = { kind: 'zone', id: zone }; OF.pick.push(pl); OF.scr[id] = { c, tex, mesh: pl };
+    return pl;
   };
   screen('wall', 5.6, 2.2, 1280, 503, -10.5, 1.9, -10.86, 0, 'dir');
+  screen('orgU', 3.4, 1.9, 1024, 572, -15.86, 1.78, -7.8, Math.PI / 2, 'dir');
   screen('sala', 3.4, 1.9, 1024, 572, 0, 1.75, -10.86, 0, 'sala');
   screen('lab', 3.6, 2.0, 1024, 569, 8.4, 1.9, -10.86, 0, 'lab');
   screen('p01', 4.4, 2.2, 1024, 512, -15.86, 1.7, 6.5, Math.PI / 2, 'proc');
-  box(0.06, 1.9, 3.3, M.board, -0.45, 1.55, 8.4, { noCast: true }); box(0.06, 0.8, 0.06, M.steel, -0.45, 0.4, 7.0); box(0.06, 0.8, 0.06, M.steel, -0.45, 0.4, 9.8); ofBlock(-0.6, 6.7, -0.3, 10.1);
-  screen('p04', 3.1, 1.7, 1024, 562, -0.41, 1.6, 8.4, Math.PI / 2, 'acred', false);
+  screen('p06', 3.1, 1.7, 1024, 562, -0.41, 1.6, 8.4, Math.PI / 2, 'jefe', false);
   screen('aula', 5.2, 2.0, 1024, 394, 25.5, 1.75, -6.86, 0, 'aula');
-  screen('logo', 3.2, 0.62, 1024, 198, -23.88, 2.72, 0, Math.PI / 2, 'dir', false);
+  screen('logo', 3.2, 0.62, 1024, 198, -15.88, 2.72, 0, Math.PI / 2, 'dir', false);
+  screen('rwall', 4.6, 1.81, 1280, 503, 55.4, 1.9, -10.86, 0, 'rsub');
+  screen('orgR', 3.0, 1.68, 1024, 572, 44.14, 1.78, -6.3, Math.PI / 2, 'rger');
+  screen('rsala', 3.4, 1.9, 1024, 572, 64.5, 1.75, -10.86, 0, 'rsala');
+  screen('p05', 3.1, 1.7, 1024, 562, 72.5, 1.75, -10.86, 0, 'rpry');
+  screen('rtd', 3.6, 2.0, 1024, 569, 44.14, 1.7, 6.9, Math.PI / 2, 'rtd');
+  screen('p04', 3.1, 1.7, 1024, 562, 68.49, 1.6, 8.6, Math.PI / 2, 'rp04', false);
+  screen('rlogo', 3.2, 0.62, 1024, 198, 44.12, 2.72, 0, Math.PI / 2, 'rger', false);
+  // letreros sobre el muro norte de cada edificio y en la puerta de la Ciudad Universitaria (dos caras)
+  const roofSign = (id, x, zone, wN) => {
+    const c = document.createElement('canvas'); c.width = 2048; c.height = 256; const tex = ofTexOf(c), m = new T.MeshBasicMaterial({ map: tex, toneMapped: false });
+    const back = box(11.2, 1.5, 0.06, M.cap, x, 3.9, -11, { noCast: true }), ex = [back];
+    [0, Math.PI].forEach(ry => { const pl = new T.Mesh(geo('roof', () => new T.PlaneGeometry(11, 1.375)), m); pl.position.set(x, 3.9, -11 + (ry ? -0.04 : 0.04)); pl.rotation.y = ry; pl.userData = { kind: 'zone', id: zone }; scene.add(pl); OF.pick.push(pl); ex.push(pl); });
+    OF.scr[id] = { c, tex, mesh: ex[1] }; wN.extra = ex;
+  };
+  roofSign('signU', 0, 'dir', wNU); roofSign('signR', 60, 'rger', wNR);
+  { const c = document.createElement('canvas'); c.width = 1024; c.height = 150; const tex = ofTexOf(c), m = new T.MeshBasicMaterial({ map: tex, toneMapped: false });
+    box(0.1, 0.86, 5.6, M.cap, 33.6, 3.1, 0, { noCast: true });
+    [Math.PI / 2, -Math.PI / 2].forEach(ry => { const pl = new T.Mesh(geo('gate', () => new T.PlaneGeometry(5.4, 0.79)), m); pl.position.set(33.6 + (ry > 0 ? 0.06 : -0.06), 3.1, 0); pl.rotation.y = ry; scene.add(pl); });
+    OF.scr.gate = { c, tex }; }
   // letreros colgantes de cada zona (dos caras)
   const sign = (k, x, y, z) => {
     const z0 = OF_Z[k], c = document.createElement('canvas'); c.width = 1024; c.height = 150; const tex = ofTexOf(c); ofDrawSign(c, z0);
@@ -4838,9 +5094,7 @@ function ofBuild() {
     [0, Math.PI].forEach(ry => { const pl = new T.Mesh(geo('sign', () => new T.PlaneGeometry(4.2, 0.62)), m); pl.position.set(x, y, z); pl.rotation.y = ry; pl.translateZ(0.02); pl.userData = { kind: 'zone', id: k }; scene.add(pl); OF.pick.push(pl); });
     box(4.3, 0.7, 0.03, M.cap, x, y, z, { noCast: true }); [-1.8, 1.8].forEach(dx => cyl(0.008, 0.008, 3.3 - y - 0.35, M.steel, x + dx, y + 0.35 + (3.3 - y - 0.35) / 2, z, { noCast: true }));
   };
-  sign('ger', -20, 2.75, -2.4); sign('mkt', -20, 2.75, 2.45); sign('dir', -10.5, 2.75, -2.4); sign('sala', 0, 2.75, -2.4); sign('lab', 10.5, 2.75, -2.4);
-  sign('proc', -8.5, 2.75, 2.45); sign('acred', 5.5, 2.75, 2.45); sign('cowork', 14, 2.75, 2.45);
-  sign('aula', 25.5, 2.75, 6.6);
+  Object.entries(OF_Z).forEach(([k, z]) => { if (k === 'aula') sign(k, 25.5, 2.75, 6.6); else sign(k, z.door[0], 2.75, z.door[1] < 0 ? -2.4 : 2.45); });
   OF.ok = true;
   ofAssign(); ofSyncAvatars();
   ofApplyTheme();
@@ -4874,24 +5128,39 @@ function ofRig(m, i, holoMat) {
 }
 function ofSyncAvatars() {
   if (!OF.ok) return;
-  const T = T3, ms = membersActive(), ids = new Set(ms.map(m => m.id));
-  OF.av.forEach((a, id) => { if (!ids.has(id)) { OF.scene.remove(a.rig.root, a.holo.root); OF.pick = OF.pick.filter(p => p !== a.rig.hit && p !== a.holo.hit); if (a.el) a.el.remove(); if (a.bub) a.bub.remove(); if (a.ai) a.ai.remove(); OF.av.delete(id); } });
+  const ms = membersActive(), ids = new Set(ms.map(m => m.id));
+  OF.av.forEach((a, id) => { if (!ids.has(id)) ofDropAvatar(a); });
   ofAssign();
   ms.forEach((m, i) => {
     let a = OF.av.get(m.id);
     if (!a) {
-      const holoMat = new T.MeshBasicMaterial({ color: 0x45D6E6, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending });
-      const rig = ofRig(m, i), holo = ofRig(m, i, holoMat);
-      rig.hit.userData = { kind: 'member', id: m.id }; holo.hit.userData = { kind: 'member', id: m.id, holo: true };
-      OF.scene.add(rig.root, holo.root); OF.pick.push(rig.hit, holo.hit);
-      a = { id: m.id, i, m, rig, holo, holoMat, x: OF.seats.get('home').x, z: OF.seats.get('home').z, rot: 0, face: 0, sitK: 0, holoK: 0, mode: 'gone', path: [], pi: 0, goal: '', ph: Math.random() * 6, mi: 0, msgT: Math.random() * 4, st: null };
+      const rig = ofRig(m, i), h0 = OF.seats.get(OF_SITES[ofSitesOf(m)[0]].home);
+      rig.hit.userData = { kind: 'member', id: m.id }; OF.scene.add(rig.root); OF.pick.push(rig.hit);
+      a = { id: m.id, i, m, rig, holos: [], x: h0.x, z: h0.z, rot: 0, face: 0, sitK: 0, mode: 'gone', path: [], pi: 0, goal: '', ph: Math.random() * 6, mi: 0, msgT: Math.random() * 4, st: null, site: '' };
       rig.root.visible = false; OF.av.set(m.id, a);
     }
     a.m = m; a.i = i; a.rig.shirt.color.set(m.color || '#0A7E90');
-    const s = OF.seats.get(OF.deskOf.get(m.id));
-    if (s) { a.holo.root.position.set(s.x, 0, s.z); a.holo.root.rotation.y = s.r; }
+    // un agente de IA (holograma) por cada puesto de la persona: en San Marcos, en ROIC o en ambas sedes
+    const want = OF.desks.get(m.id) || [];
+    a.holos = a.holos.filter(h => { const ok = want.some(dk => dk.key === h.key); if (!ok) ofDropHolo(h); return ok; });
+    want.forEach(dk => { if (!a.holos.some(h => h.key === dk.key)) a.holos.push(ofMakeHolo(a, dk)); });
+    a.holos.forEach(h => { const s = OF.seats.get(h.key); if (s) { h.rig.root.position.set(s.x, 0, s.z); h.rig.root.rotation.y = s.r; } h.site = (s && s.site) || h.site; });
   });
   OF.dirty = true;
+}
+function ofMakeHolo(a, dk) {
+  const T = T3, mat = new T.MeshBasicMaterial({ color: 0x45D6E6, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending });
+  const rig = ofRig(a.m, a.i, mat); rig.hit.userData = { kind: 'member', id: a.id, holo: dk.key };
+  OF.scene.add(rig.root); OF.pick.push(rig.hit); rig.root.visible = false;
+  return { key: dk.key, site: dk.site, rig, mat, k: 0, el: null };
+}
+function ofDropHolo(h) { OF.scene.remove(h.rig.root); OF.pick = OF.pick.filter(p => p !== h.rig.hit); if (h.el) h.el.remove(); }
+function ofDropAvatar(a) { OF.scene.remove(a.rig.root); OF.pick = OF.pick.filter(p => p !== a.rig.hit); a.holos.forEach(ofDropHolo); if (a.el) a.el.remove(); if (a.bub) a.bub.remove(); OF.av.delete(a.id); }
+// posición de la persona: donde está; si no está en ninguna sede, la de su agente en la sede pedida o la que se mira
+function ofAvPos(a, site) {
+  if (a.rig.root.visible) return [a.x, a.z];
+  const hv = a.holos.filter(h => h.k > 0.03), h = hv.find(x => x.site === site) || hv.find(x => x.site === ofViewSite()) || hv[0] || a.holos.find(x => x.site === site) || a.holos[0];
+  return h ? [h.rig.root.position.x, h.rig.root.position.z] : [a.x, a.z];
 }
 const ofLerp = (a, b, k) => a + (b - a) * k;
 const ofAng = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; return d; };
@@ -4912,25 +5181,30 @@ function ofSeatOf(key) { return OF.seats.get(key); }
 function ofGo(a, key, tp) {
   a.goal = key; const s = ofSeatOf(key); if (!s) return;
   if (tp || ofReduced()) { a.x = s.x; a.z = s.z; a.face = a.rot = s.r; a.mode = s.kind === 'home' ? 'gone' : 'sit'; a.sitK = s.kind === 'stand' || s.kind === 'home' ? 0 : 1; a.rig.root.visible = s.kind !== 'home'; a.path = []; return; }
-  if (a.mode === 'gone') { const h = ofSeatOf('home'); a.x = h.x; a.z = h.z; a.rig.root.visible = true; a.sitK = 0; }
+  // llega desde el acceso más cercano a su destino: el de San Marcos o la avenida, frente a ROIC
+  if (a.mode === 'gone') { const h = ['home', 'rhome'].map(ofSeatOf).filter(Boolean).sort((p, q) => Math.hypot(p.x - s.x, p.z - s.z) - Math.hypot(q.x - s.x, q.z - s.z))[0]; a.x = h.x; a.z = h.z; a.rig.root.visible = true; a.sitK = 0; }
   a.path = ofPath(a.x, a.z, s.x, s.z); a.pi = 0; a.mode = 'walk';
 }
 function ofApplyStatuses(N) {
-  OF.dirty = false; OF.mtSeat.clear();
-  let ci = 0, si = 0;
+  OF.dirty = false;
+  let ci = 0; const mi = {};
   [...OF.av.values()].sort((p, q) => p.i - q.i).forEach(a => {
-    const st = ofStatus(a.m, N), prev = a.st; a.st = st;
+    const st = ofStatus(a.m, N), prev = a.st, site = ofSiteOk(ofSiteNow(a.m, st, N)), S0 = OF_SITES[site]; a.st = st;
     let key;
-    if (st.k === 'desk') key = OF.deskOf.get(a.id) || 'p:0';
+    if (st.k === 'desk') key = ofDesk(a.id, site) || ofDesk(a.id) || S0.stand + ':0';
     else if (st.k === 'class') key = 'a:' + Math.min(11, ci++);
-    else if (st.k === 'meeting') key = 's:' + Math.min(9, si++);
-    else key = 'home';
+    else if (st.k === 'meeting') { mi[site] = (mi[site] || 0) + 1; key = S0.meet + ':' + Math.min(S0.nMeet - 1, mi[site] - 1); }
+    else key = S0.home;
     if (key !== a.goal) ofGo(a, key, !OF.placed || OF.jump);
-    if (!prev || prev.k !== st.k || prev.d !== st.d) { a.mi = 0; a.msgT = 0; }
+    if (!prev || prev.k !== st.k || prev.d !== st.d || a.site !== site) { a.mi = 0; a.msgT = 0; }
+    a.site = site;
     ofTagText(a);
   });
   OF.placed = true; OF.jump = false;
   ofPulsePaint(); ofDrawAll(false);
+  // el panel abierto y la lista muestran quién está dónde ahora
+  if (UI.of.sel) ofPanelPaint();
+  const lv = $('#of-listv'); if (lv && !lv.hidden) lv.innerHTML = ofListHtml();
 }
 function ofAvatarsStep(dt) {
   const red = ofReduced(), simFast = UI.of.sim && UI.of.play;
@@ -4954,15 +5228,16 @@ function ofAvatarsStep(dt) {
     const st = a.st ? a.st.k : 'away', walking = a.mode === 'walk' && a.sitK < 0.05;
     const act = walking ? 'walk' : st === 'meeting' ? 'talk' : st === 'class' ? 'write' : a.mode === 'sit' && a.sitK > 0.5 ? 'type' : 'idle';
     if (rig.root.visible) ofPose(rig, a.sitK, a.ph, act, OF.t + a.i * 0.7, red);
-    // el agente de IA ocupa el puesto cuando la persona no está sentada en él
-    const atDesk = a.mode === 'sit' && a.goal === OF.deskOf.get(a.id) && a.sitK > 0.6;
+    // el agente de IA ocupa cada puesto de la persona mientras ella no está sentada en él
     const busy = UI.of.ag && UI.of.ag.mid === a.id && UI.of.ag.busy;
-    a.holoK += ((atDesk ? 0 : 1) - a.holoK) * (1 - Math.exp(-dt * 2.5));
-    a.holoMat.opacity = a.holoK * (busy ? 0.6 : 0.42) * (red ? 1 : 0.86 + 0.14 * Math.sin(OF.t * 5 + a.i));
-    const ds = ofSeatOf(OF.deskOf.get(a.id)); a.holo.root.visible = a.holoK > 0.03 && !!ds && ds.kind === 'desk';
-    if (a.holo.root.visible) ofPose(a.holo, 1, 0, 'type', OF.t * (busy ? 1.6 : 1) + a.i, red);
-    const s = ofSeatOf(OF.deskOf.get(a.id));
-    if (s && s.orb) { s.orb.rotation.y += dt * (busy ? 4 : 1.2); s.orb.position.y = 1.5 + (red ? 0 : Math.sin(OF.t * 2 + a.i) * 0.04); s.orbM.emissiveIntensity = busy ? 2.4 + Math.sin(OF.t * 9) : 0.7 + a.holoK * 0.9; }
+    a.holos.forEach((h, hi) => {
+      const atDesk = a.mode === 'sit' && a.goal === h.key && a.sitK > 0.6, s = ofSeatOf(h.key), ph = a.i + hi * 2.3;
+      h.k += ((atDesk ? 0 : 1) - h.k) * (1 - Math.exp(-dt * 2.5));
+      h.mat.opacity = h.k * (busy ? 0.6 : 0.42) * (red ? 1 : 0.86 + 0.14 * Math.sin(OF.t * 5 + ph));
+      h.rig.root.visible = h.k > 0.03 && !!s && s.kind === 'desk';
+      if (h.rig.root.visible) ofPose(h.rig, 1, 0, 'type', OF.t * (busy ? 1.6 : 1) + ph, red);
+      if (s && s.orb) { s.orb.rotation.y += dt * (busy ? 4 : 1.2); s.orb.position.y = 1.5 + (red ? 0 : Math.sin(OF.t * 2 + ph) * 0.04); s.orbM.emissiveIntensity = busy ? 2.4 + Math.sin(OF.t * 9) : 0.7 + h.k * 0.9; }
+    });
   });
 }
 
@@ -4993,13 +5268,20 @@ function ofDrawAll(force) {
   const now = Date.now(); if (!force && now - OF.drawAt < 1500) { OF.drawPending = true; return; }
   OF.drawAt = now; OF.drawPending = false;
   const N = ofNow();
-  try { ofDrawWall(N); ofDrawSala(N); ofDrawLab(); ofDrawBoard('p01', 'P01'); ofDrawBoard('p04', 'P04'); ofDrawAula(N); ofDrawLogo(); ofDrawDesks(); } catch (e) { /* una pantalla no debe detener la escena */ }
-  Object.values(OF.scr).forEach(s => { s.tex.needsUpdate = true; });
+  // cada pantalla por separado: una con error no debe detener las demás ni la escena
+  [() => ofDrawWall(N, 'wall', 'unmsm'), () => ofDrawWall(N, 'rwall', 'roic'), () => ofDrawSala(N, 'sala', 'unmsm'), () => ofDrawSala(N, 'rsala', 'roic'), () => ofDrawLab('lab', 'unmsm'), () => ofDrawLab('rtd', 'roic'),
+    () => ofDrawBoard('p01', 'P01'), () => ofDrawBoard('p06', 'P06'), () => ofDrawBoard('p05', 'P05'), () => ofDrawBoard('p04', 'P04'), () => ofDrawAula(N), () => ofDrawLogo(), () => ofDrawOrg('orgU', 'unmsm'), () => ofDrawOrg('orgR', 'roic'), () => ofDrawDesks()]
+    .forEach(f => { try { f(); } catch (e) { /* sin datos para esta pantalla */ } });
+  Object.entries(OF.scr).forEach(([k, s]) => { if (!OF_STATIC.has(k)) s.tex.needsUpdate = true; });
 }
-function ofDrawWall(N) {
-  const s = OF.scr.wall; if (!s) return; const x = s.c.getContext('2d'), W = s.c.width;
-  ofHead(x, W, 'CARTERA DGP · EN VIVO', `${fmtDay(isoD(N.date))} · ${m2t(Math.floor(N.min))}`, '#0B1D3A', '#B8C6DB', '#1BB0C4');
-  const P = projectsSorted().slice(0, 4), loaded = S.loaded.has('tasks');
+// letreros y organigramas: se vuelven a subir a la tarjeta gráfica solo cuando cambian
+const OF_STATIC = new Set(['signU', 'signR', 'gate', 'logo', 'rlogo', 'orgU', 'orgR']);
+// proyectos de cada sede (sin organigramas registrados, todos en San Marcos)
+const ofSiteProjects = site => (orgsList().length ? projsOfOrg(site) : site === 'unmsm' ? projectsSorted() : []);
+function ofDrawWall(N, id, site) {
+  const s = OF.scr[id]; if (!s) return; const x = s.c.getContext('2d'), W = s.c.width;
+  ofHead(x, W, `CARTERA ${site === 'roic' ? 'ROIC & COMPANY' : 'SAN MARCOS · OGPL'} · EN VIVO`, `${fmtDay(isoD(N.date))} · ${m2t(Math.floor(N.min))}`, '#0B1D3A', '#B8C6DB', '#1BB0C4');
+  const P = ofSiteProjects(site).slice(0, 4), loaded = S.loaded.has('tasks');
   P.forEach((p, i) => {
     const y = 96 + i * 92, m = loaded ? metrics(p) : null, tone = m ? (OF_TONE[m.health.tone] || OF_TONE.idle) : OF_TONE.idle;
     x.fillStyle = 'rgba(255,255,255,.06)'; ofRR(x, 32, y, W - 64, 80, 14); x.fill();
@@ -5012,27 +5294,28 @@ function ofDrawWall(N) {
     x.fillStyle = '#FFFFFF'; x.fillRect(bx + bw * pp / 100 - 2, y + 24, 4, 30);
     x.fillStyle = tone; ofRR(x, 1086, y + 22, 150, 36, 18); x.fill(); x.fillStyle = '#061127'; x.font = `800 19px ${OF_FB}`; x.fillText(ofFitTxt(x, m ? m.health.label : '—', 130), 1100, y + 47);
   });
-  if (!P.length) { x.fillStyle = '#B8C6DB'; x.font = `600 30px ${OF_FB}`; x.fillText('Aún no hay proyectos registrados.', 40, 160); }
+  if (!P.length) { x.fillStyle = '#B8C6DB'; x.font = `600 30px ${OF_FB}`; x.fillText('Aún no hay proyectos registrados en esta organización.', 40, 160); }
 }
-function ofDrawSala(N) {
-  const s = OF.scr.sala; if (!s) return; const x = s.c.getContext('2d'), W = s.c.width, iso = isoD(N.date);
-  const all = meetingsAll().filter(isOpenMt);
+function ofDrawSala(N, id, site) {
+  const s = OF.scr[id]; if (!s) return; const x = s.c.getContext('2d'), W = s.c.width, iso = isoD(N.date);
+  const all = meetingsAll().filter(isOpenMt).filter(mt => ofMtSite(mt) === site);
   const cur = all.find(mt => mt.date === iso && t2m(mt.start) <= N.min && N.min < t2m(mt.end));
   const nx = cur || all.find(mt => mt.date > iso || (mt.date === iso && t2m(mt.start) > N.min));
-  ofHead(x, W, cur ? 'REUNIÓN EN CURSO' : 'PRÓXIMA REUNIÓN', m2t(Math.floor(N.min)), '#14315F', '#B8C6DB', cur ? '#F27C72' : '#1BB0C4');
+  ofHead(x, W, cur ? 'REUNIÓN EN CURSO' : 'PRÓXIMA REUNIÓN', `${site === 'roic' ? 'ROIC' : 'San Marcos'} · ${m2t(Math.floor(N.min))}`, '#14315F', '#B8C6DB', cur ? '#F27C72' : '#1BB0C4');
   if (!nx) { x.fillStyle = '#FFFFFF'; x.font = `700 40px ${OF_FB}`; x.fillText('Sin reuniones programadas', 40, 170); return; }
   x.fillStyle = '#FFFFFF'; x.font = `800 40px ${OF_FD}`; ofWrapTxt(x, nx.title, W - 80, 2).forEach((l, i) => x.fillText(l, 40, 128 + i * 48));
-  x.fillStyle = '#1BB0C4'; x.font = `700 30px ${OF_FB}`; x.fillText(`${fmtDay(nx.date)} · ${nx.start}–${nx.end} · ${scopeName(mtScope(nx))}`, 40, 236);
+  x.fillStyle = '#1BB0C4'; x.font = `700 30px ${OF_FB}`; x.fillText(ofFitTxt(x, `${fmtDay(nx.date)} · ${nx.start}–${nx.end} · ${scopeName(mtScope(nx))}`, W - 80), 40, 236);
   x.fillStyle = '#B8C6DB'; x.font = `500 25px ${OF_FB}`; x.fillText(ofFitTxt(x, 'Participan: ' + attendeesOf(nx).map(mName).join(', '), W - 80), 40, 280);
   const ag = String(nx.agenda || '').split(/\s*(?=\d+\.\s)/).map(t => t.trim()).filter(Boolean).slice(0, 4);
   x.fillStyle = '#E8EEF7'; x.font = `500 26px ${OF_FB}`; ag.forEach((l, i) => x.fillText(ofFitTxt(x, l, W - 80), 40, 340 + i * 44));
 }
-function ofDrawLab() {
-  const s = OF.scr.lab; if (!s) return; const x = s.c.getContext('2d'), W = s.c.width;
-  ofHead(x, W, 'SIGPRO · LABORATORIO', '', '#071226', '#B8C6DB', '#5BC98F');
-  const devs = membersActive().filter(m => ofZoneOf(m) === 'lab'), L = devs.flatMap(m => (OF.top.get(m.id) || []).map(q => Object.assign({ who: mName(m) }, q)));
+function ofDrawLab(id, site) {
+  const s = OF.scr[id]; if (!s) return; const x = s.c.getContext('2d'), W = s.c.width, zone = site === 'roic' ? 'rtd' : 'lab';
+  ofHead(x, W, site === 'roic' ? 'TRANSFORMACIÓN DIGITAL · ROIC' : 'SIGPRO · LABORATORIO', '', '#071226', '#B8C6DB', '#5BC98F');
+  const devs = [...OF.owner.entries()].filter(([k]) => (OF.seats.get(k) || {}).zone === zone).map(([, mid]) => memberById(mid)).filter(Boolean);
+  const L = devs.flatMap(m => ofQ(m.id, site).map(q => Object.assign({ who: mName(m) }, q)));
   x.font = `500 24px ${OF_FM}`;
-  if (!L.length) { x.fillStyle = '#5BC98F'; x.fillText('> sin pendientes de desarrollo registrados', 40, 130); return; }
+  if (!L.length) { x.fillStyle = '#5BC98F'; x.fillText(site === 'roic' ? '> sin pendientes del área registrados' : '> sin pendientes de desarrollo registrados', 40, 130); return; }
   L.slice(0, 7).forEach((q, i) => { x.fillStyle = q.late ? '#F27C72' : '#5BC98F'; x.fillText(ofFitTxt(x, `> ${q.c ? q.c + ' ' : ''}${q.t}${q.d ? ' · ' + fmtD(q.d) : ''}`, W - 80), 40, 120 + i * 58); });
   x.fillStyle = '#A6B4CA'; x.font = `500 20px ${OF_FM}`; x.fillText(`${L.length} pendientes · ${L.filter(q => q.late).length} vencidos`, 40, 535);
 }
@@ -5066,18 +5349,66 @@ function ofDrawAula(N) {
   }
 }
 function ofDrawLogo() {
-  const s = OF.scr.logo; if (!s || s.done) return; s.done = true; const x = s.c.getContext('2d'), W = s.c.width, H = s.c.height;
-  x.fillStyle = '#0B1D3A'; x.fillRect(0, 0, W, H); x.fillStyle = '#1BB0C4'; ofRR(x, 34, 34, 130, 130, 26); x.fill();
-  x.fillStyle = '#FFFFFF'; x.font = `900 84px ${OF_FD}`; x.fillText('G', 70, 130);
-  x.font = `800 46px ${OF_FD}`; x.fillText(ofFitTxt(x, 'SISTEMA DE DIRECCIÓN DE', W - 220), 196, 84); x.fillText(ofFitTxt(x, 'GESTIÓN DE PROYECTOS', W - 220), 196, 132); x.font = `800 70px ${OF_FD}`; x.fillStyle = '#1BB0C4'; x.font = `700 30px ${OF_FB}`; x.fillText('DGP · OGPL-UNMSM', 200, 178);
+  const oU = orgById('unmsm'), oR = orgById('roic'), key = JSON.stringify([oU && [oU.name, oU.dept, oU.desc], oR && [oR.name, oR.desc]]);
+  if (OF.logoK === key) return; OF.logoK = key;
+  ['logo', 'rlogo', 'signU', 'signR', 'gate'].forEach(k => { if (OF.scr[k]) OF.scr[k].tex.needsUpdate = true; });
+  const badge = (x, ch, bg) => { x.fillStyle = bg; ofRR(x, 34, 34, 130, 130, 26); x.fill(); x.fillStyle = '#FFFFFF'; x.font = `900 84px ${OF_FD}`; x.fillText(ch, ch === 'R' ? 72 : 70, 130); };
+  let s = OF.scr.logo;
+  if (s) { const x = s.c.getContext('2d'), W = s.c.width, H = s.c.height; x.textBaseline = 'alphabetic'; x.fillStyle = '#0B1D3A'; x.fillRect(0, 0, W, H); badge(x, 'G', '#1BB0C4'); x.fillStyle = '#FFFFFF'; x.font = `800 46px ${OF_FD}`; x.fillText(ofFitTxt(x, 'SISTEMA DE DIRECCIÓN DE', W - 220), 196, 84); x.fillText(ofFitTxt(x, 'GESTIÓN DE PROYECTOS', W - 220), 196, 132); x.fillStyle = '#1BB0C4'; x.font = `700 30px ${OF_FB}`; x.fillText(ofFitTxt(x, oU && oU.dept ? oU.dept : 'DGP · OGPL-UNMSM', W - 220), 200, 178); }
+  s = OF.scr.rlogo;
+  if (s) { const x = s.c.getContext('2d'), W = s.c.width, H = s.c.height; x.textBaseline = 'alphabetic'; x.fillStyle = '#1F2A30'; x.fillRect(0, 0, W, H); badge(x, 'R', '#C77700'); x.fillStyle = '#FFFFFF'; x.font = `800 64px ${OF_FD}`; x.fillText(ofFitTxt(x, (oR ? oR.name : 'ROIC & Company').toUpperCase(), W - 220), 196, 104); x.fillStyle = '#F1B95B'; x.font = `700 30px ${OF_FB}`; x.fillText(ofFitTxt(x, oR && oR.desc ? oR.desc : 'Consultora en gestión por procesos', W - 220), 200, 160); }
+  const roof = (id, t, sub, bg, ac) => { const r = OF.scr[id]; if (!r) return; const x = r.c.getContext('2d'), W = r.c.width, H = r.c.height; x.textBaseline = 'alphabetic'; x.fillStyle = bg; x.fillRect(0, 0, W, H); x.fillStyle = ac; x.fillRect(0, H - 14, W, 14); x.fillStyle = '#FFFFFF'; let fz = 104; x.font = `900 ${fz}px ${OF_FD}`; while (fz > 56 && x.measureText(t).width > W - 120) { fz -= 4; x.font = `900 ${fz}px ${OF_FD}`; } x.textAlign = 'center'; x.fillText(ofFitTxt(x, t, W - 120), W / 2, 128); x.fillStyle = ac; x.font = `700 50px ${OF_FB}`; x.fillText(ofFitTxt(x, sub, W - 160), W / 2, 206); x.textAlign = 'left'; };
+  roof('signU', (oU ? oU.name : 'Universidad Nacional Mayor de San Marcos').toUpperCase(), oU && oU.dept ? oU.dept : 'Oficina General de Planificación', '#14315F', '#1BB0C4');
+  roof('signR', (oR ? oR.name : 'ROIC & Company').toUpperCase(), oR && oR.desc ? oR.desc : 'Consultora en gestión por procesos', '#1F2A30', '#F1B95B');
+  const g = OF.scr.gate;
+  if (g) { const x = g.c.getContext('2d'), W = g.c.width, H = g.c.height; x.fillStyle = '#14315F'; x.fillRect(0, 0, W, H); x.fillStyle = '#FFFFFF'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = `800 52px ${OF_FD}`; x.fillText('CIUDAD UNIVERSITARIA', W / 2, 56); x.fillStyle = '#1BB0C4'; x.font = `600 32px ${OF_FB}`; x.fillText(ofFitTxt(x, oU ? oU.name : 'Universidad Nacional Mayor de San Marcos', W - 60), W / 2, 112); x.textAlign = 'left'; x.textBaseline = 'alphabetic'; }
+}
+// organigrama de cada organización, en la pared de su sede
+function ofDrawOrg(id, site) {
+  const s = OF.scr[id]; if (!s) return; const o = orgById(site), key = `${S.ver}|${o ? o.name : ''}`; if (s.k === key) return; s.k = key; s.tex.needsUpdate = true;
+  const x = s.c.getContext('2d'), W = s.c.width, H = s.c.height, oc = orgColor(o), nm = w => { const m = w && memberById(w); return m ? mName(m) : ''; };
+  x.textBaseline = 'alphabetic'; x.fillStyle = '#F8FAFC'; x.fillRect(0, 0, W, H); x.strokeStyle = '#C9D3DE'; x.lineWidth = 8; x.strokeRect(4, 4, W - 8, H - 8);
+  x.fillStyle = oc; x.fillRect(8, 8, W - 16, 10);
+  x.fillStyle = '#14315F'; x.font = `800 28px ${OF_FD}`; x.fillText(ofFitTxt(x, 'ORGANIGRAMA · ' + (o ? o.name : ofSiteShort(site)).toUpperCase(), W - 80), 40, 58);
+  if (!o) { x.fillStyle = '#55657E'; x.font = `600 24px ${OF_FB}`; x.fillText('El organigrama aparecerá cuando se registre en el sistema.', 40, 120); return; }
+  const bw = 540, bh = 60; let y = 78;
+  (o.top || []).forEach(t => {
+    const bx = (W - bw) / 2, vac = !(t.who && memberById(t.who));
+    x.fillStyle = vac ? '#E8EEF4' : '#0E1E3A'; ofRR(x, bx, y, bw, bh, 12); x.fill();
+    if (vac) { x.setLineDash([8, 6]); x.strokeStyle = '#7C8CA6'; x.lineWidth = 2; ofRR(x, bx, y, bw, bh, 12); x.stroke(); x.setLineDash([]); }
+    x.fillStyle = vac ? '#55657E' : '#1BB0C4'; x.font = `800 16px ${OF_FD}`; x.fillText(ofFitTxt(x, String(t.unit || t.cargo || '').toUpperCase(), bw - 32), bx + 16, y + 24);
+    x.fillStyle = vac ? '#14315F' : '#FFFFFF'; x.font = `700 21px ${OF_FB}`; x.fillText(ofFitTxt(x, `${nm(t.who) || t.name || 'Por asignar'}${t.unit && t.cargo ? ' · ' + t.cargo : ''}`, bw - 32), bx + 16, y + 49);
+    y += bh; x.fillStyle = '#9AA8BA'; x.fillRect(W / 2 - 1, y, 2, 16); y += 16;
+  });
+  const A = o.areas || [], n = Math.max(1, A.length), gap = 14, cw = (W - 80 - gap * (n - 1)) / n, sm = n > 3;
+  if (n > 1) { x.fillStyle = '#9AA8BA'; x.fillRect(40 + cw / 2, y, W - 80 - cw, 2); }
+  y += 12;
+  A.forEach((a, i) => {
+    const cx = 40 + i * (cw + gap);
+    x.fillStyle = '#9AA8BA'; x.fillRect(cx + cw / 2 - 1, y - 12, 2, 12);
+    x.fillStyle = '#E8EEF4'; ofRR(x, cx, y, cw, 44, 8); x.fill(); x.fillStyle = oc; x.fillRect(cx, y, cw, 5);
+    x.fillStyle = '#14315F'; x.font = `800 ${sm ? 15 : 17}px ${OF_FD}`; x.fillText(ofFitTxt(x, String(a.name || '').replace(/^Área de /, ''), cw - 16), cx + 8, y + 31);
+    let py = y + 54;
+    (a.people || []).forEach(pp => {
+      if (py + 56 > H - 10) return;
+      x.fillStyle = '#FFFFFF'; ofRR(x, cx, py, cw, 56, 8); x.fill(); x.strokeStyle = pp.lead ? oc : '#C9D3DE'; x.lineWidth = pp.lead ? 3 : 1.5; ofRR(x, cx, py, cw, 56, 8); x.stroke();
+      x.fillStyle = '#0F2240'; x.font = `700 ${sm ? 17 : 19}px ${OF_FB}`; x.fillText(ofFitTxt(x, nm(pp.who) || pp.name || '—', cw - 16), cx + 8, py + 24);
+      x.fillStyle = '#55657E'; x.font = `600 ${sm ? 14 : 16}px ${OF_FB}`; x.fillText(ofFitTxt(x, pp.cargo || '', cw - 16), cx + 8, py + 46);
+      py += 62;
+    });
+  });
 }
 function ofDrawDesks() {
-  const owner = new Map(); OF.deskOf.forEach((k, mid) => owner.set(k, mid));
   OF.seats.forEach(s => {
-    if (!s.screen) return; const mid = owner.get(s.key), a = mid && OF.av.get(mid), x = s.screen.c.getContext('2d'), W = 320, H = 192;
-    if (!a) { x.fillStyle = '#1B2433'; x.fillRect(0, 0, W, H); x.fillStyle = '#7C8CA6'; x.font = `600 22px ${OF_FB}`; x.fillText('Puesto disponible', 24, 104); s.orb.visible = false; }
-    else {
-      s.orb.visible = true; const q = (OF.top.get(mid) || [])[0], ai = a.holoK > 0.5 || (a.st && a.st.k !== 'desk');
+    if (!s.screen) return; const mid = OF.owner.get(s.key), a = mid && OF.av.get(mid), x = s.screen.c.getContext('2d'), W = 320, H = 192;
+    x.textBaseline = 'alphabetic';
+    if (!a) {
+      x.fillStyle = '#1B2433'; x.fillRect(0, 0, W, H); s.orb.visible = false;
+      if (s.reserved) { const jc = ofJefeCodes(); x.fillStyle = '#E8EEF7'; x.font = `800 19px ${OF_FD}`; x.fillText('JEFATURA DE LA OGPL', 18, 58); x.fillStyle = '#A6B4CA'; x.font = `600 19px ${OF_FB}`; x.fillText('No registrada en el sistema', 18, 96); if (jc.length) x.fillText(ofFitTxt(x, 'Patrocina ' + jc.join(' y '), W - 30), 18, 128); }
+      else { x.fillStyle = '#7C8CA6'; x.font = `600 22px ${OF_FB}`; x.fillText('Puesto disponible', 24, 104); }
+    } else {
+      s.orb.visible = true;
+      const h = a.holos.find(y => y.key === s.key), q = ofQ(mid, s.site)[0], ai = h ? h.k > 0.5 : !(a.goal === s.key && a.mode === 'sit');
       x.fillStyle = ai ? '#0B3B47' : '#F4F7FA'; x.fillRect(0, 0, W, H);
       x.fillStyle = ai ? '#1BB0C4' : '#14315F'; x.fillRect(0, 0, W, 40); x.fillStyle = '#FFFFFF'; x.font = `800 19px ${OF_FD}`; x.fillText(ofFitTxt(x, ai ? `AGENTE IA · ${mName(a.m).split(' ')[0].toUpperCase()}` : mName(a.m).toUpperCase(), W - 30), 14, 28);
       x.fillStyle = ai ? '#E8EEF7' : '#0F2240'; x.font = `600 22px ${OF_FB}`;
@@ -5092,38 +5423,58 @@ function ofDrawDesks() {
 /* ---------- cámara y entrada ---------- */
 const ofAsp = () => { const st = OF.stage || $('#of-stage'); return st && st.clientHeight ? st.clientWidth / st.clientHeight : 1.8; };
 const ofTh0 = asp => (asp < 1.15 ? Math.PI / 2 - 0.12 : 0.62);
-function ofFitD(th, asp) {
-  const rx = Math.cos(th), rz = -Math.sin(th), fx = -Math.sin(th), fz = -Math.cos(th); let w0 = Infinity, w1 = -Infinity, d0 = Infinity, d1 = -Infinity;
-  [-25, 32].forEach(x => [-12.5, 12.5].forEach(z => { const r = x * rx + z * rz, f = x * fx + z * fz; w0 = Math.min(w0, r); w1 = Math.max(w1, r); d0 = Math.min(d0, f); d1 = Math.max(d1, f); }));
-  const t = Math.tan(16 * Math.PI / 180);
-  return clamp(Math.max((w1 - w0) / 2 / (t * asp), (d1 - d0) * 0.6 / 2 / t) * 1.02, 30, 130);
+function ofFitD(th, asp, b, c) {
+  // distancia mínima para que todo el rectángulo (con la altura de los muros) entre en el encuadre de la cámara en perspectiva
+  b = b || OF_SITES.unmsm.b; c = c || [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
+  const ph = 0.92, t = Math.tan(16 * Math.PI / 180), pts = [];
+  [b[0], b[2]].forEach(x => [b[1], b[3]].forEach(z => [0, 3.2].forEach(y => pts.push([x, y, z]))));
+  const fits = dd => {
+    const sp = Math.sin(ph), px = c[0] + dd * sp * Math.sin(th), py = dd * Math.cos(ph) + 0.8, pz = c[1] + dd * sp * Math.cos(th);
+    let fx = c[0] - px, fy = 0.8 - py, fz = c[1] - pz; const fl = Math.hypot(fx, fy, fz); fx /= fl; fy /= fl; fz /= fl;
+    let rx = -fz, rz = fx; const rl = Math.hypot(rx, rz) || 1; rx /= rl; rz /= rl;
+    const ux = -rz * fy, uy = rz * fx - rx * fz, uz = rx * fy;
+    return pts.every(([x, y, z]) => { const dx = x - px, dy = y - py, dz = z - pz, zv = dx * fx + dy * fy + dz * fz; if (zv <= 0.5) return false; return Math.abs((dx * rx + dz * rz) / (zv * t * asp)) <= 0.97 && Math.abs((dx * ux + dy * uy + dz * uz) / (zv * t)) <= 0.95; });
+  };
+  let lo = 20, hi = OF_DMAX; if (!fits(hi)) return hi;
+  for (let i = 0; i < 22; i++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid; }
+  return clamp(hi, 30, OF_DMAX);
 }
-function ofCamInit() { const asp = ofAsp(), th = ofTh0(asp); OF.c = { tx: OF_ALL[0], tz: OF_ALL[1], th, ph: 0.92, d: ofFitD(th, asp) }; OF.g = Object.assign({}, OF.c); }
+function ofCamInit() { const asp = ofAsp(), th = ofTh0(asp), v = ofView('all'); OF.c = { tx: v.c[0], tz: v.c[1], th, ph: 0.92, d: ofFitD(th, asp, v.b, v.c) }; OF.g = Object.assign({}, OF.c); OF.viewSite = ''; OF.userCam = false; }
 function ofCamApply() { const c = OF.c, cam = OF.cam3, sp = Math.sin(c.ph); cam.position.set(c.tx + c.d * sp * Math.sin(c.th), c.d * Math.cos(c.ph) + 0.8, c.tz + c.d * sp * Math.cos(c.th)); cam.lookAt(c.tx, 0.8, c.tz); }
 function ofCamStep(dt) {
   const c = OF.c, g = OF.g, k = ofReduced() ? 1 : 1 - Math.exp(-dt * 4.5);
-  if (UI.of.follow) { const a = OF.av.get(UI.of.follow); if (a) { const sh = ofShift(); g.tx = (a.rig.root.visible ? a.x : a.holo.root.position.x) + Math.cos(g.th) * sh; g.tz = (a.rig.root.visible ? a.z : a.holo.root.position.z) - Math.sin(g.th) * sh; } }
+  if (UI.of.follow) { const a = OF.av.get(UI.of.follow); if (a) { const sh = ofShift(), pos = ofAvPos(a, UI.of.porg); g.tx = pos[0] + Math.cos(g.th) * sh; g.tz = pos[1] - Math.sin(g.th) * sh; } }
   c.tx += (g.tx - c.tx) * k; c.tz += (g.tz - c.tz) * k; c.d += (g.d - c.d) * k; c.th += ofAng(c.th, g.th) * k; c.ph += (g.ph - c.ph) * k;
   ofCamApply();
+  // la luz del sol y la niebla acompañan a la cámara: así ambas sedes tienen sombras y se ven completas
+  const w = c.d > 95 ? 60 : 36;
+  if (Math.abs(c.tx - OF.sunX) > 5 || w !== OF.shW) { OF.sunX = c.tx; if (w !== OF.shW) { OF.shW = w; Object.assign(OF.sun.shadow.camera, { left: -w, right: w }); OF.sun.shadow.camera.updateProjectionMatrix(); } ofSunPlace(); }
+  OF.scene.fog.near = Math.max(95, c.d * 1.05); OF.scene.fog.far = Math.max(190, c.d * 2.1);
 }
-function ofClampCam(g) { g.tx = clamp(g.tx, -24, 34); g.tz = clamp(g.tz, -16, 16); g.d = clamp(g.d, 7, 130); g.ph = clamp(g.ph, 0.42, 1.25); }
+function ofClampCam(g) { g.tx = clamp(g.tx, -24, 84); g.tz = clamp(g.tz, -16, 16); g.d = clamp(g.d, 7, OF_DMAX); g.ph = clamp(g.ph, 0.42, 1.25); }
 function ofFly(zone) {
   if (!OF.c) return; UI.of.follow = null;
   const z = OF_Z[zone], asp = ofAsp();
-  if (!z) { const th = ofTh0(asp); Object.assign(OF.g, { tx: OF_ALL[0], tz: OF_ALL[1], d: ofFitD(th, asp), th, ph: 0.92 }); }
+  OF.userCam = false;
+  if (!z) { const th = ofTh0(asp), v = ofView(zone); Object.assign(OF.g, { tx: v.c[0], tz: v.c[1], d: ofFitD(th, asp, v.b, v.c), th, ph: 0.92 }); }
   else Object.assign(OF.g, { tx: z.cam[0], tz: z.cam[1], d: z.cam[2] * (asp < 1.15 ? 1.6 : 1), ph: 0.88 });
 }
 function ofWallsStep(dt) {
   const vx = Math.sin(OF.c.th), vz = Math.cos(OF.c.th);
-  OF.walls.forEach(w => { const hide = w.nx * vx + w.nz * vz > 0.2; w.k += ((hide ? 0 : 1) - w.k) * (1 - Math.exp(-dt * 6)); w.m[0].opacity = w.k; w.m[1].opacity = w.k; w.m[0].depthWrite = w.k > 0.95; w.up.visible = w.cap.visible = w.k > 0.03; w.up.castShadow = w.k > 0.5; });
+  OF.walls.forEach(w => { const hide = w.nx * vx + w.nz * vz > 0.2; w.k += ((hide ? 0 : 1) - w.k) * (1 - Math.exp(-dt * 6)); w.m[0].opacity = w.k; w.m[1].opacity = w.k; w.m[0].depthWrite = w.k > 0.95; w.up.visible = w.cap.visible = w.k > 0.03; w.up.castShadow = w.k > 0.5; if (w.extra) w.extra.forEach(o => { o.visible = w.k > 0.5; }); });
 }
 function ofPickAt(cx, cy) {
   const cv = OF.r.domElement, b = cv.getBoundingClientRect();
   OF.ndc.set(((cx - b.left) / b.width) * 2 - 1, -((cy - b.top) / b.height) * 2 + 1); OF.ray.setFromCamera(OF.ndc, OF.cam3);
+  OF.pickSite = '';
   for (const h of OF.ray.intersectObjects(OF.pick, false)) {
     const u = h.object.userData; if (!u || !u.kind) continue;
-    if (u.kind === 'member') { const a = OF.av.get(u.id); if (!a || (u.holo ? !a.holo.root.visible : !a.rig.root.visible)) continue; return 'm:' + u.id; }
-    if (u.kind === 'desk') { let mid = null; OF.deskOf.forEach((k, id) => { if (k === u.seat) mid = id; }); return mid ? 'm:' + mid : 'z:' + (OF.seats.get(u.seat) || {}).zone; }
+    if (u.kind === 'member') {
+      const a = OF.av.get(u.id); if (!a) continue;
+      if (u.holo) { const ho = a.holos.find(x => x.key === u.holo); if (!ho || !ho.rig.root.visible) continue; OF.pickSite = ho.site; return 'm:' + u.id; }
+      if (!a.rig.root.visible) continue; OF.pickSite = a.site; return 'm:' + u.id;
+    }
+    if (u.kind === 'desk') { const mid = OF.owner.get(u.seat), s = OF.seats.get(u.seat) || {}; if (mid) { OF.pickSite = s.site || ''; return 'm:' + mid; } return 'z:' + s.zone; }
     if (u.kind === 'zone') return 'z:' + u.id;
   }
   return null;
@@ -5144,34 +5495,34 @@ function ofBindInput(cv) {
     const g = OF.g, c = OF.c;
     if (P.pts.size === 2 && P.pinch) {
       const [a, b] = [...P.pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]), an = Math.atan2(b[1] - a[1], b[0] - a[0]);
-      c.d = g.d = clamp(g.d * P.pinch / Math.max(1, d), 7, 130); c.th = g.th = g.th - (an - P.ang); P.pinch = d; P.ang = an; P.moved = true; UI.of.follow = null; return;
+      c.d = g.d = clamp(g.d * P.pinch / Math.max(1, d), 7, OF_DMAX); OF.userCam = true; c.th = g.th = g.th - (an - P.ang); P.pinch = d; P.ang = an; P.moved = true; UI.of.follow = null; return;
     }
     const dx = e.clientX - P.x, dy = e.clientY - P.y; if (!P.moved && Math.hypot(dx, dy) < 5) return;
-    P.moved = true; P.x = e.clientX; P.y = e.clientY; cv.classList.add('drag'); UI.of.follow = null;
+    P.moved = true; P.x = e.clientX; P.y = e.clientY; cv.classList.add('drag'); UI.of.follow = null; OF.userCam = true;
     if (P.mode === 'rot') { c.th = g.th = g.th - dx * 0.008; c.ph = g.ph = clamp(g.ph - dy * 0.005, 0.42, 1.25); return; }
     const k = wpp(), rx = Math.cos(c.th), rz = -Math.sin(c.th), fx = -Math.sin(c.th), fz = -Math.cos(c.th), f = 1 / Math.max(0.35, Math.cos(c.ph));
     g.tx -= (dx * rx) * k; g.tz -= (dx * rz) * k; g.tx += (dy * fx) * k * f; g.tz += (dy * fz) * k * f; ofClampCam(g); c.tx = g.tx; c.tz = g.tz;
   });
   const up = e => {
     P.pts.delete(e.pointerId); if (P.pts.size < 2) P.pinch = 0;
-    if (!P.pts.size) { P.down = false; cv.classList.remove('drag'); if (!P.moved && e.type === 'pointerup') { const k = ofPickAt(e.clientX, e.clientY); if (k) ofSelect(k, true); } }
+    if (!P.pts.size) { P.down = false; cv.classList.remove('drag'); if (!P.moved && e.type === 'pointerup') { const k = ofPickAt(e.clientX, e.clientY); if (k) ofSelect(k, true, OF.pickSite); } }
   };
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
-  cv.addEventListener('wheel', e => { e.preventDefault(); const g = OF.g; g.d = clamp(g.d * Math.exp(e.deltaY * (e.ctrlKey ? 0.01 : 0.0012)), 7, 130); }, { passive: false });
+  cv.addEventListener('wheel', e => { e.preventDefault(); OF.userCam = true; const g = OF.g; g.d = clamp(g.d * Math.exp(e.deltaY * (e.ctrlKey ? 0.01 : 0.0012)), 7, OF_DMAX); }, { passive: false });
 }
 function ofHover(k) {
-  OF.av.forEach(a => { const on = k === 'm:' + a.id; if (a.el) a.el.classList.toggle('hov', on); if (a.ai) a.ai.classList.toggle('hov', on); });
+  OF.av.forEach(a => { const on = k === 'm:' + a.id; if (a.el) a.el.classList.toggle('hov', on); a.holos.forEach(h => { if (h.el) h.el.classList.toggle('hov', on); }); });
 }
 function ofKey(e) {
   if (!OF.g) return false; const g = OF.g, s = 2.4, th = OF.c.th;
-  const mv = (fx, fz) => { g.tx += fx; g.tz += fz; ofClampCam(g); UI.of.follow = null; };
+  const mv = (fx, fz) => { g.tx += fx; g.tz += fz; ofClampCam(g); UI.of.follow = null; OF.userCam = true; };
   switch (e.key) {
     case 'ArrowUp': mv(-Math.sin(th) * s, -Math.cos(th) * s); break;
     case 'ArrowDown': mv(Math.sin(th) * s, Math.cos(th) * s); break;
     case 'ArrowLeft': mv(-Math.cos(th) * s, Math.sin(th) * s); break;
     case 'ArrowRight': mv(Math.cos(th) * s, -Math.sin(th) * s); break;
-    case '+': case '=': g.d = clamp(g.d / 1.25, 7, 130); break;
-    case '-': case '_': g.d = clamp(g.d * 1.25, 7, 130); break;
+    case '+': case '=': g.d = clamp(g.d / 1.25, 7, OF_DMAX); break;
+    case '-': case '_': g.d = clamp(g.d * 1.25, 7, OF_DMAX); break;
     case 'q': case 'Q': g.th += Math.PI / 4; break;
     case 'e': case 'E': g.th -= Math.PI / 4; break;
     case '0': case 'Home': ofFly('all'); break;
@@ -5182,21 +5533,28 @@ function ofKey(e) {
 
 /* ---------- etiquetas sobre los avatares ---------- */
 function ofTagText(a) {
-  const st = a.st || { k: 'away', t: '' }, first = String(mName(a.m)).split(' ')[0], online = ofOnline().has(a.id), me = sessionMember();
+  const st = a.st || { k: 'away', t: '' }, first = String(mName(a.m)).split(' ')[0], online = ofOnline().has(a.id), me = sessionMember(), two = a.holos.length > 1, here = two && a.site && (st.k === 'desk' || st.k === 'meeting');
   if (!a.el) return;
   a.el.className = `of-tag ${st.k}${online ? ' on' : ''}${UI.of.sel === 'm:' + a.id ? ' sel' : ''}`;
-  a.el.innerHTML = `<span class="av-chip sm" style="--mc:${esc(a.m.color || 'var(--teal-600)')}">${esc(initials(mName(a.m)))}</span><span class="of-tx"><b>${esc(first)}${me && me.id === a.id ? ' (tú)' : ''}</b><small><i class="of-dot ${st.k}"></i>${esc(st.t)}</small></span>`;
-  a.el.setAttribute('aria-label', `${a.m.name}: ${st.t}${st.d ? ', ' + st.d : ''}. Ver detalle y su agente de IA`);
-  a.ai.innerHTML = `<span class="of-ai-i">IA</span>Agente de ${esc(first)}`; a.tw = 0; a.bw = 0;
-  a.ai.setAttribute('aria-label', `Agente de IA de ${a.m.name}: trabajando en su puesto`);
+  a.el.innerHTML = `<span class="av-chip sm" style="--mc:${esc(a.m.color || 'var(--teal-600)')}">${esc(initials(mName(a.m)))}</span><span class="of-tx"><b>${esc(first)}${me && me.id === a.id ? ' (tú)' : ''}</b><small><i class="of-dot ${st.k}"></i>${esc(st.t)}${here ? ' · ' + esc(OF_SITES[a.site].t) : ''}</small></span>`;
+  a.el.setAttribute('aria-label', `${a.m.name}: ${st.t}${here ? ' en ' + ofSiteShort(a.site) : ''}${st.d ? ', ' + st.d : ''}. Ver detalle y su agente de IA`);
+  a.holos.forEach(h => {
+    if (!h.el) return;
+    h.el.innerHTML = `<span class="of-ai-i">IA</span>Agente de ${esc(first)}${two ? ` <small>${esc(OF_SITES[h.site].t)}</small>` : ''}`;
+    h.el.setAttribute('aria-label', `Agente de IA de ${a.m.name}: cubre su puesto en ${ofSiteShort(h.site)}`);
+    h.el.classList.toggle('sel', UI.of.sel === 'm:' + a.id);
+  });
+  a.tw = 0; a.bw = 0;
   a.msgs = ofMsgs(a);
 }
 function ofMsgs(a) {
-  const st = a.st || {}, L = OF.top.get(a.id) || [], out = [], q = L[0];
+  const st = a.st || {}, site = a.site, L = ofQ(a.id, site), out = [], q = L[0], two = a.holos.length > 1;
   if (st.k === 'class') out.push(`En clase: ${st.d} · hasta las ${m2t(st.until)}`);
-  else if (st.k === 'meeting') out.push(`Reunión: ${st.d}`);
+  else if (st.k === 'meeting') out.push(`Reunión${two ? ' en ' + ofSiteShort(site) : ''}: ${st.d}`);
   else if (st.k === 'away') out.push(st.d);
   if (q) out.push(`${st.k === 'desk' ? '' : 'Su agente avanza: '}${q.c ? q.c + ' · ' : ''}${q.t}`);
+  // quien trabaja en ambas organizaciones: lo que su agente avanza en la otra sede
+  if (two) a.holos.filter(h => !(st.k === 'desk' && h.site === site)).forEach(h => { if (h.site === site && st.k !== 'desk') return; const q2 = ofQ(a.id, h.site)[0]; out.push(`En ${ofSiteShort(h.site)}, su agente de IA ${q2 ? 'avanza: ' + (q2.c ? q2.c + ' · ' : '') + q2.t : 'cubre su puesto'}`); });
   const nm = upcomingMeetings(meetingsAll()).find(mt => attendeesOf(mt).some(x => x.id === a.id));
   if (nm) out.push(`Próxima reunión: ${whenTxt(nm)}`);
   if (st.k === 'desk' && st.d) out.push(st.d);
@@ -5206,15 +5564,22 @@ function ofMsgs(a) {
 function ofLabelsSync() {
   const box = $('#of-labels'); if (!box) return;
   OF.av.forEach(a => {
-    if (a.el && box.contains(a.el)) return;
-    a.el = document.createElement('button'); a.el.type = 'button'; a.el.dataset.act = 'of-sel'; a.el.dataset.v = 'm:' + a.id;
-    a.bub = document.createElement('div'); a.bub.className = 'of-bub'; a.bub.setAttribute('aria-hidden', 'true');
-    a.ai = document.createElement('button'); a.ai.type = 'button'; a.ai.className = 'of-tag ai'; a.ai.dataset.act = 'of-sel'; a.ai.dataset.v = 'm:' + a.id;
-    box.append(a.el, a.bub, a.ai); ofTagText(a);
+    let fresh = false;
+    if (!(a.el && box.contains(a.el))) {
+      a.el = document.createElement('button'); a.el.type = 'button'; a.el.dataset.act = 'of-sel'; a.el.dataset.v = 'm:' + a.id;
+      a.bub = document.createElement('div'); a.bub.className = 'of-bub'; a.bub.setAttribute('aria-hidden', 'true');
+      box.append(a.el, a.bub); fresh = true;
+    }
+    a.holos.forEach(h => {
+      if (h.el && box.contains(h.el)) return;
+      h.el = document.createElement('button'); h.el.type = 'button'; h.el.className = 'of-tag ai'; h.el.dataset.act = 'of-sel'; h.el.dataset.v = 'm:' + a.id; h.el.dataset.site = h.site;
+      box.append(h.el); fresh = true;
+    });
+    if (fresh) ofTagText(a);
   });
 }
 function ofLabelsStep(dt) {
-  const st = OF.stage; if (!st) return; const W = st.clientWidth, H = st.clientHeight, v = OF.v3, d = OF.c.d, far = d > 40, near = d < 26;
+  const st = OF.stage; if (!st) return; const W = st.clientWidth, H = st.clientHeight, v = OF.v3, d = OF.c.d, far = d > 40, near = d < 26, vs = ofViewSite();
   if (OF.labels) OF.labels.classList.toggle('far', far);
   const proj = (x, z, y) => { v.set(x, y, z).project(OF.cam3); const sx = (v.x + 1) / 2 * W, sy = (1 - v.y) / 2 * H; return { sx, sy, sz: v.z, vis: v.z < 1 && sx > -60 && sx < W + 60 && sy > -40 && sy < H + 60 }; };
   const place = (el, p, top) => { el.style.visibility = 'visible'; el.style.transform = `translate(${p.sx.toFixed(1)}px,${p.sy.toFixed(1)}px)`; el.style.zIndex = String(top ? 3000 : 1000 - Math.round(p.sz * 900)); };
@@ -5223,12 +5588,16 @@ function ofLabelsStep(dt) {
   OF.av.forEach(a => {
     if (!a.el) return;
     a.msgT -= dt; if (a.msgT <= 0) { a.msgT = 6.5; a.mi = (a.mi + 1) % Math.max(1, (a.msgs || []).length); a.bub.textContent = (a.msgs || [])[a.mi] || ''; a.bw = 0; }
-    const human = a.rig.root.visible, hp = a.holo.root.position;
-    const p = human ? proj(a.x, a.z, 2.2 - a.sitK * 0.45) : a.holo.root.visible ? proj(hp.x, hp.z, 1.85) : null;
+    // la etiqueta principal sigue a la persona; si no está en ninguna sede, a su agente en la sede que se mira
+    const human = a.rig.root.visible, hv = a.holos.filter(h => h.rig.root.visible), host = human ? null : hv.find(h => h.site === vs) || hv[0] || null;
+    const p = human ? proj(a.x, a.z, 2.2 - a.sitK * 0.45) : host ? proj(host.rig.root.position.x, host.rig.root.position.z, 1.85) : null;
     a.el.classList.toggle('ghost', !human);
     if (p && p.vis) { place(a.el, p, sel(a)); L.push({ a, p }); } else { hide(a.el); hide(a.bub); }
-    const pa = human && a.holo.root.visible && a.holoK > 0.35 && !far ? proj(hp.x, hp.z, 1.78) : null;
-    if (pa && pa.vis) place(a.ai, pa); else hide(a.ai);
+    a.holos.forEach(h => {
+      if (!h.el) return;
+      const pa = h !== host && h.rig.root.visible && h.k > 0.35 && !far ? proj(h.rig.root.position.x, h.rig.root.position.z, 1.78) : null;
+      if (pa && pa.vis) place(h.el, pa); else hide(h.el);
+    });
   });
   // sin amontonar: primero el seleccionado y luego los más cercanos a la cámara
   const boxes = [], hit = r => boxes.some(b => r[0] < b[2] && r[2] > b[0] && r[1] < b[3] && r[3] > b[1]);
@@ -5253,14 +5622,20 @@ const ofOnline = () => new Set((S.peers || []).map(p => p && p.presence && p.pre
 /* ---------- ciclo de dibujo ---------- */
 function ofSky(N) {
   const h = N.min / 60, day = h < 6 || h > 19.6 ? 0 : h < 8 ? (h - 6) / 2 : h > 17.6 ? (19.6 - h) / 2 : 1, T = T3;
-  const a = clamp((h - 6) / 14, 0, 1) * Math.PI;
-  OF.sun.position.set(7 + Math.cos(a) * 42, 14 + Math.sin(a) * 40 * (0.35 + 0.65 * day), 26);
+  OF.sunA = clamp((h - 6) / 14, 0, 1) * Math.PI; OF.sunDay = day; ofSunPlace();
   OF.sun.intensity = 0.3 + 2.2 * day; OF.sun.color.setHex(0xffffff).lerp(new T.Color(0xFFC48A), (1 - day) * 0.7);
   OF.hemi.intensity = 0.62 + 0.95 * day; OF.lamps.emissiveIntensity = 0.25 + 1.9 * (1 - day);
   const dark = ofDarkUI(), skyDay = new T.Color(dark ? 0x0D1A30 : 0xE8F0F5), skyNight = new T.Color(dark ? 0x070E1C : 0xCFDAE6), sky = skyNight.clone().lerp(skyDay, day);
   OF.scene.background = sky; OF.scene.fog.color.copy(sky);
   OF.M.grass.color.setHex(dark ? 0x173049 : 0xDCE8E1).lerp(new T.Color(dark ? 0x0D1B2E : 0x9FB2A6), (1 - day) * 0.6);
+  OF.M.road.color.setHex(dark ? 0x0B1424 : 0x5E646C).lerp(new T.Color(dark ? 0x070D18 : 0x3E434A), (1 - day) * 0.6);
   OF.night = 1 - day;
+}
+// el sol se ubica respecto de la sede que se mira
+function ofSunPlace() {
+  const cx = OF.sunX, a = OF.sunA || 0, day = OF.sunDay == null ? 1 : OF.sunDay;
+  OF.sun.position.set(cx + Math.cos(a) * 42, 14 + Math.sin(a) * 40 * (0.35 + 0.65 * day), 26);
+  OF.sun.target.position.set(cx, 0, 0);
 }
 function ofApplyTheme() { if (OF.ok) ofSky(ofNow()); }
 function ofLoop(ts) {
@@ -5275,6 +5650,8 @@ function ofLoop(ts) {
   if (OF.drawPending && Date.now() - OF.drawAt > 1500) ofDrawAll(true);
   if ((OF.clockAt = (OF.clockAt || 0) + dt) > 0.25) { OF.clockAt = 0; ofClockPaint(false); }
   ofCamStep(dt); ofWallsStep(dt); ofAvatarsStep(dt);
+  // al acercarse a una sede, las zonas y el organigrama de abajo pasan a esa sede
+  if (OF.userCam && OF.c.d < 75 && UI.of.tour < 0) { const vs = ofViewSite(); if (UI.of.site !== vs) { UI.of.site = vs; ofSitePaint(); } }
   OF.leds.forEach(l => { l.m.emissiveIntensity = 0.6 + Math.max(0, Math.sin(OF.t * 3 + l.ph * 2.1)) * 1.4; });
   OF.r.render(OF.scene, OF.cam3);
   ofLabelsStep(dt);
@@ -5291,13 +5668,14 @@ function ofResize() {
 function officeTeaser() {
   const ms = membersActive(); if (!ms.length) return '';
   const N = ofNow(), c = { desk: 0, class: 0, meeting: 0, away: 0 }; ms.forEach(m => { c[ofStatus(m, N).k]++; });
-  return `<section class="section"><div class="of-teaser"><div><p class="eyebrow">Oficina virtual 3D</p><h2>El equipo, en su oficina, ahora mismo</h2><p>${c.away === ms.length ? `Fuera del horario de trabajo: los agentes de IA de los ${ms.length} integrantes cubren sus puestos. Entra, simula cualquier día de la semana y pídele trabajo al agente de cualquiera.` : `${plural(c.desk, 'integrante en su puesto', 'integrantes en su puesto')} · ${c.class} en clase · ${c.meeting} en reunión. Mientras alguien no está, su agente de IA sigue con sus funciones. Entra, toca a cualquiera y pídele trabajo a su agente.`}</p></div><div class="of-teaser-av" aria-hidden="true">${ms.slice(0, 7).map(m => avatar(m)).join('')}</div><button class="btn primary" data-act="go-office">Entrar a la oficina 3D</button></div></section>`;
+  return `<section class="section"><div class="of-teaser"><div><p class="eyebrow">Oficina virtual 3D · San Marcos y ROIC & Company</p><h2>Las dos organizaciones, en sus oficinas, ahora mismo</h2><p>${c.away === ms.length ? `Fuera del horario de trabajo: los agentes de IA de los ${ms.length} integrantes cubren sus puestos en San Marcos y en ROIC & Company. Entra, simula cualquier día de la semana y pídele trabajo al agente de cualquiera.` : `${plural(c.desk, 'integrante en su puesto', 'integrantes en su puesto')} · ${c.class} en clase · ${c.meeting} en reunión. Quienes trabajan en ambas organizaciones tienen un puesto en cada sede: mientras están en una, su agente de IA cubre el otro.`}</p></div><div class="of-teaser-av" aria-hidden="true">${ms.slice(0, 7).map(m => avatar(m)).join('')}</div><button class="btn primary" data-act="go-office">Entrar a la oficina 3D</button></div></section>`;
 }
 function viewOffice() {
-  const O = UI.of, zones = [['all', 'Toda la sede']].concat(Object.entries(OF_Z).filter(([k]) => k !== 'cowork').map(([k, z]) => [k, z.n]));
-  return `<section class="hero of-hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:22%"></span><div class="wrap"><div><p class="eyebrow">Oficina virtual 3D · DGP OGPL-UNMSM</p><h1 class="title">La oficina del equipo, en vivo</h1><p class="lead">La sede física replicada en 3D. Cada integrante aparece donde está según su horario real: en su puesto, en clase o en una reunión. Cuando no está, su agente de IA sigue con sus funciones. Toca a cualquiera para ver qué hace y pedirle trabajo a su agente.</p><div class="of-zones" aria-label="Ir a una zona">${zones.map(([k, l]) => `<button class="wb-chip" data-act="of-zone" data-v="${k}" style="--wc:#${(OF_Z[k] ? OF_Z[k].c : 0x0B1D3A).toString(16).padStart(6, '0')}">${esc(l)}</button>`).join('')}</div></div></div></section>
+  const O = UI.of; if (!O.site) O.site = ofSiteDefault();
+  return `<section class="hero of-hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:22%"></span><div class="wrap"><div><p class="eyebrow">Oficina virtual 3D · San Marcos y ROIC & Company</p><h1 class="title">Dos organizaciones, dos sedes, en vivo</h1><p class="lead">A la izquierda, la Oficina de Racionalización de la OGPL, dentro de la Ciudad Universitaria de San Marcos; al otro lado de la avenida, la oficina de ROIC & Company. Cada integrante aparece donde está según su horario real: en su puesto, en clase o en una reunión. Quienes trabajan en ambas organizaciones tienen un puesto en cada sede y, mientras están en una, su agente de IA cubre el otro. Toca a cualquiera para ver qué hace en cada organización y pedirle trabajo a su agente.</p><div class="of-zones" id="of-zones" aria-label="Ir a una zona">${ofZonesHtml()}</div></div></div></section>
   <div class="of-shell"><div class="of${O.max ? ' max' : ''}" id="of">
     <div class="of-top"><div class="of-bar" role="toolbar" aria-label="Controles de la oficina">
+      <span class="seg of-site" id="of-site" role="group" aria-label="Sede">${ofSiteSwHtml()}</span>
       <button class="btn sm primary" data-act="of-tour">${O.tour >= 0 ? 'Salir del recorrido' : 'Recorrido guiado'}</button>
       <button class="btn sm" data-act="of-zone" data-v="all">Vista general</button>
       <span class="of-grp"><button class="btn sm" data-act="of-rot" data-v="1" aria-label="Girar a la izquierda" title="Girar (Q)">⟲</button><button class="btn sm" data-act="of-rot" data-v="-1" aria-label="Girar a la derecha" title="Girar (E)">⟳</button></span>
@@ -5305,7 +5683,7 @@ function viewOffice() {
       <button class="btn sm${O.list ? ' on' : ''}" data-act="of-list" aria-pressed="${O.list}">Vista de lista</button>
       <button class="btn sm" data-act="of-max" id="of-maxb">${O.max ? 'Salir de pantalla completa' : 'Pantalla completa'}</button>
     </div><div class="of-clock" id="of-clock">${ofClockHtml()}</div></div>
-    <div class="of-stage" id="of-stage" tabindex="0" aria-label="Oficina 3D. Arrastra para moverte, usa la rueda o pellizca para acercar, Q y E giran la vista, las flechas desplazan.">
+    <div class="of-stage" id="of-stage" tabindex="0" aria-label="Oficina 3D con las dos sedes. Arrastra para moverte, usa la rueda o pellizca para acercar, Q y E giran la vista, las flechas desplazan.">
       <div class="of-load" id="of-load">${OF.fail ? `<p>${esc(OF.fail)}</p><button class="btn sm" data-act="of-retry">Reintentar</button>` : '<span class="of-spin" aria-hidden="true"></span><p>Cargando la oficina 3D…</p>'}</div>
       <div class="of-labels" id="of-labels"></div>
       <aside class="of-panel" id="of-panel" aria-live="polite"${O.sel ? '' : ' hidden'}>${ofPanelHtml()}</aside>
@@ -5316,9 +5694,29 @@ function viewOffice() {
     <div class="of-listv" id="of-listv"${O.list || OF.fail ? '' : ' hidden'}>${ofListHtml()}</div>
   </div></div>
   <div class="wrap">
+    <section class="section" id="of-orgsec">${ofOrgSecHtml()}</section>
     <section class="section">${secTitle('Producción de los agentes de IA', 'Trabajo de los agentes', 'Borradores preparados por los agentes de cada integrante con los datos del sistema. Cada persona revisa y decide qué usar.')}<div id="of-feed">${ofFeedHtml()}</div></section>
     <section class="section">${secTitle('Cómo se replica la organización', 'Del espacio físico al virtual')}${ofHowHtml()}</section>
   </div>`;
+}
+// zonas de la sede elegida, el selector de sede y el organigrama que acompaña a la vista 3D
+function ofZonesHtml() {
+  const k = UI.of.site || 'unmsm', both = k === 'both';
+  const Z = Object.entries(OF_Z).filter(([zk, z]) => zk !== 'cowork' && (both || z.site === k));
+  const lead = both ? [['both', 'Ambas sedes', 0x0B1D3A]] : [['all', k === 'roic' ? 'Toda la oficina de ROIC' : 'Toda la sede de San Marcos', 0x0B1D3A]];
+  return lead.concat(Z.map(([zk, z]) => [zk, both ? `${OF_SITES[z.site].t} · ${z.n}` : z.n, z.c])).map(([zk, l, c]) => `<button class="wb-chip" data-act="of-zone" data-v="${zk}" style="--wc:#${c.toString(16).padStart(6, '0')}">${esc(l)}</button>`).join('');
+}
+function ofSiteSwHtml() {
+  const k = UI.of.site || 'unmsm';
+  return [['unmsm', ofSiteShort('unmsm')], ['roic', ofSiteShort('roic')], ['both', 'Ambas']].map(([v, l]) => `<button data-act="of-site" data-v="${v}" aria-pressed="${k === v}">${esc(l)}</button>`).join('');
+}
+function ofOrgSecHtml() {
+  const L = orgsList().filter(o => OF_SITES[o.id]); if (!L.length) return '';
+  const k = OF_SITES[UI.of.site] ? UI.of.site : '', show = k ? L.filter(o => o.id === k) : L;
+  return secTitle(k ? `Organigrama de ${ofSiteShort(k)}` : 'Organigramas de las dos sedes', 'Organización', 'Cada sede refleja su propio organigrama: los puestos de la oficina 3D siguen el cargo de cada persona en esa organización.') + show.map(o => `<div style="margin-top:14px">${orgChartHtml(o)}</div>`).join('') + `<p style="margin-top:12px"><button class="btn sm" data-act="go-orgchart" data-v="${esc(k || 'all')}">Ver los organigramas y las funciones en Equipo</button></p>`;
+}
+function ofSitePaint() {
+  [['#of-zones', ofZonesHtml], ['#of-site', ofSiteSwHtml], ['#of-orgsec', ofOrgSecHtml]].forEach(([sel, f]) => { const el = $(sel); if (!el) return; const h = f(); if (OF.paintK[sel] !== h || !el.innerHTML) { OF.paintK[sel] = h; el.innerHTML = h; } });
 }
 function ofClockHtml() {
   const O = UI.of, N = ofNow();
@@ -5336,30 +5734,41 @@ function ofClockPaint(full) {
   if (r && document.activeElement !== r) r.value = String(Math.floor(UI.of.min));
 }
 function ofCounts() {
-  const c = { desk: 0, class: 0, meeting: 0, away: 0, ai: 0 };
-  OF.av.forEach(a => { const k = a.st ? a.st.k : 'away'; c[k]++; if (k !== 'desk') c.ai++; });
-  if (!OF.av.size) { const N = ofNow(); membersActive().forEach(m => { const k = ofStatus(m, N).k; c[k]++; if (k !== 'desk') c.ai++; }); }
+  const c = { desk: 0, class: 0, meeting: 0, away: 0, ai: 0, here: {} }, N = ofNow();
+  membersActive().forEach(m => {
+    const a = OF.av.get(m.id), st = (a && a.st) || ofStatus(m, N), k = st.k, site = (a && a.site) || ofSiteNow(m, st, N);
+    c[k]++; if (k === 'desk' || k === 'meeting') c.here[site] = (c.here[site] || 0) + 1;
+    // agentes que cubren: un puesto por sede, menos el que la persona ocupa
+    const n = a && a.holos.length ? a.holos.length : ofSitesOf(m).length; c.ai += n - (k === 'desk' ? 1 : 0);
+  });
   const seen = new Set(); let pend = 0, late = 0;
   OF.top.forEach(L => L.forEach(q => { const k = q.k + ':' + q.id; if (seen.has(k)) return; seen.add(k); pend++; if (q.late) late++; }));
   return Object.assign(c, { pend, late, online: ofOnline().size });
 }
 function ofPulseHtml() {
   const c = ofCounts(), it = (n, l, k) => `<div class="of-p ${k || ''}"><b class="num">${n}</b><span>${l}</span></div>`;
-  return `<p class="of-p-t">Pulso de la oficina</p>${it(c.desk, 'en su puesto', 'ok')}${it(c.class, 'en clase', 'warn')}${it(c.meeting, 'en reunión', 'info')}${it(c.away, 'fuera de la oficina', 'idle')}${it(c.ai, 'agentes de IA cubriendo', 'ai')}${it(c.pend, 'pendientes del equipo')}${it(c.late, 'vencidos', c.late ? 'crit' : '')}${it(c.online, 'conectados ahora')}`;
+  return `<p class="of-p-t">Pulso de las dos sedes</p>${it(c.desk, 'en su puesto', 'ok')}${it(c.class, 'en clase', 'warn')}${it(c.meeting, 'en reunión', 'info')}${it(c.away, 'fuera de la oficina', 'idle')}${it(c.here.unmsm || 0, 'en San Marcos')}${it(c.here.roic || 0, 'en ROIC & Company')}${it(c.ai, 'agentes de IA cubriendo', 'ai')}${it(c.pend, 'pendientes del equipo')}${it(c.late, 'vencidos', c.late ? 'crit' : '')}${it(c.online, 'conectados ahora')}`;
 }
 function ofPulsePaint() { const el = $('#of-pulse'); if (el) el.innerHTML = ofPulseHtml(); }
 function ofCapHtml() {
-  const i = UI.of.tour; if (i < 0) return ''; const [, t, b] = OF_TOUR[i];
+  const i = UI.of.tour; if (i < 0) return ''; const [, t, b0] = OF_TOUR[i], b = typeof b0 === 'function' ? b0() : b0;
   return `<div><small>Parada ${i + 1} de ${OF_TOUR.length}</small><h3>${esc(t)}</h3><p>${esc(b)}</p></div><div class="of-cap-a"><button class="btn sm" data-act="of-tour-go" data-v="${i - 1}"${i ? '' : ' disabled'}>Anterior</button>${i < OF_TOUR.length - 1 ? `<button class="btn sm primary" data-act="of-tour-go" data-v="${i + 1}">Siguiente</button>` : '<button class="btn sm primary" data-act="of-tour">Terminar</button>'}</div>`;
 }
-function ofZoneMembers(k) { return membersActive().filter(m => { const a = OF.av.get(m.id), s = a && OF.seats.get(a.goal); return (s && s.zone === k) || (OF.seats.get(OF.deskOf.get(m.id)) || {}).zone === k; }); }
+function ofZoneMembers(k) { return membersActive().filter(m => { const a = OF.av.get(m.id), s = a && OF.seats.get(a.goal); return (s && s.zone === k) || (OF.desks.get(m.id) || []).some(dk => (OF.seats.get(dk.key) || {}).zone === k); }); }
 function ofStatusLine(m) {
-  const a = OF.av.get(m.id), st = (a && a.st) || ofStatus(m, ofNow());
-  return `<span class="of-stl ${st.k}"><i class="of-dot ${st.k}"></i>${esc(st.t)}${st.d ? ` · ${esc(st.d)}` : ''}${st.until ? ` · hasta las ${m2t(st.until)}` : ''}</span>`;
+  const a = OF.av.get(m.id), N = ofNow(), st = (a && a.st) || ofStatus(m, N), site = (a && a.site) || ofSiteNow(m, st, N), here = ofSitesOf(m).length > 1 && (st.k === 'desk' || st.k === 'meeting');
+  return `<span class="of-stl ${st.k}"><i class="of-dot ${st.k}"></i>${esc(st.t)}${here ? ` en ${esc(ofSiteShort(site))}` : ''}${st.d ? ` · ${esc(st.d)}` : ''}${st.until ? ` · hasta las ${m2t(st.until)}` : ''}</span>`;
 }
-function ofActions(m) {
-  const r = normN(`${m.role || ''} ${m.planRoles || ''}`), A = [];
-  if (m.admin || /director|lider|senior/.test(r)) A.push(['cartera', 'Informe ejecutivo de la cartera', 'Redacta un informe ejecutivo breve del estado de la cartera de proyectos que dirige: logros, alertas y decisiones que necesita tomar esta semana.'], ['agenda', 'Agenda de la próxima reunión', 'Prepara la agenda detallada de su próxima reunión del cronograma: objetivo, puntos con tiempos, decisiones a tomar y materiales previos.'], ['riesgos', 'Riesgos que piden decisión', 'Revisa sus riesgos y pendientes vencidos y propón qué decisiones o escalamientos necesita hacer, en orden de prioridad.']);
+// organización con la que se ve a la persona en el panel: la elegida, la de la sede donde está o la primera
+function ofPorg(m) {
+  const sites = ofSitesOf(m), a = OF.av.get(m.id);
+  return sites.includes(UI.of.porg) ? UI.of.porg : a && sites.includes(a.site) ? a.site : sites[0];
+}
+function ofActions(m, po) {
+  // las funciones del agente siguen el cargo de la persona en la organización elegida
+  const sites = ofSitesOf(m), e = memberOrgs(m).find(x => x.org.id === po), main = sites.find(k => !((orgById(k) || {}).sharedDays || []).length) || sites[0];
+  const r = normN(`${sites.length < 2 || !po || po === main ? `${m.role || ''} ${m.planRoles || ''}` : ''} ${e ? e.cargo + ' ' + e.area : ''}`), A = [];
+  if (m.admin || /director|senior|gerente|analista lider/.test(r)) A.push(['cartera', 'Informe ejecutivo de la cartera', 'Redacta un informe ejecutivo breve del estado de la cartera de proyectos que dirige: logros, alertas y decisiones que necesita tomar esta semana.'], ['agenda', 'Agenda de la próxima reunión', 'Prepara la agenda detallada de su próxima reunión del cronograma: objetivo, puntos con tiempos, decisiones a tomar y materiales previos.'], ['riesgos', 'Riesgos que piden decisión', 'Revisa sus riesgos y pendientes vencidos y propón qué decisiones o escalamientos necesita hacer, en orden de prioridad.']);
   if (/relevamiento|levantamiento/.test(r)) A.push(['guia', 'Guía de entrevista As-Is', 'Prepara una guía de entrevista para el levantamiento del estado actual (As-Is) de un procedimiento con el jefe de la unidad orgánica y el dueño del proceso: objetivos, preguntas por etapa del proceso, documentos a pedir y cierre.'], ['acta', 'Borrador de acta de visita', 'Redacta una plantilla de acta de visita de levantamiento de procesos con sus secciones (datos, participantes, procedimientos revisados, hallazgos, acuerdos y firmas), lista para completar.']);
   if (/documentacion|seguimiento/.test(r)) A.push(['proc', 'Estructura de procedimiento', 'Propón la estructura de un procedimiento documentado según la norma técnica de gestión por procesos (objetivo, alcance, base legal, definiciones, responsables, descripción de actividades, registros e indicadores), con una breve explicación de cada sección.'], ['obs', 'Control de observaciones', 'Prepara una tabla para el control de observaciones de los procedimientos (código, observación, responsable, fecha, estado) y un texto breve para el informe semanal de seguimiento.']);
   if (/plan de gestion|redaccion/.test(r)) A.push(['seccion', 'Siguiente sección del plan P04', 'Propón el contenido de la siguiente sección del plan de gestión del proyecto P04 (acreditación de la FCM) según el PMBOK 7, con un esquema y párrafos de borrador.']);
@@ -5375,21 +5784,25 @@ function ofPanelHtml() {
   const close = '<button class="icon-btn of-x" data-act="of-close" aria-label="Cerrar el panel">Cerrar</button>';
   if (s.startsWith('m:')) {
     const m = memberById(s.slice(2)); if (!m) return '';
-    const L = OF.top.get(m.id) || ofQueue(m), it = myItems(m), fx = myPlanFunctions(m, it.pids), first = String(mName(m)).split(' ')[0];
+    // quien trabaja en ambas organizaciones se ve por separado: cargo, funciones, pendientes y agente de cada una
+    const sites = ofSitesOf(m), two = sites.length > 1, po = ofPorg(m), mo = memberOrgs(m), e = mo.find(x => x.org.id === po) || null;
+    const L = ofQ(m.id, po), it = myItems(m), projs = it.projs.filter(x => !two || projOrgId(x.p) === po), fx = myPlanFunctions(m, new Set(projs.map(x => x.p.id))), first = String(mName(m)).split(' ')[0];
     const funcs = fx ? fx.blocks.flatMap(b => b.t === 'ul' || b.t === 'ol' ? b.items || [] : []).slice(0, 6) : [];
-    const ag = UI.of.ag && UI.of.ag.mid === m.id ? UI.of.ag : null, runs = (S.agentRuns || []).filter(r => r.member === m.id).sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt))).slice(0, 4);
-    const acts = ofActions(m);
-    return `<header class="of-ph">${avatar(m, 'lg')}<div><h3>${esc(m.name)}</h3><p>${esc(m.role || 'Integrante')}</p></div>${close}</header>
-      <p class="of-st">${ofStatusLine(m)}</p>
-      <div class="of-sec"><h4>Haciendo ahora</h4>${L[0] ? `<p class="of-now"><span class="code-chip">${esc(L[0].c || '—')}</span> ${fmtTxt(L[0].t)}${L[0].d ? ` <small class="${L[0].late ? 'tone-crit' : ''}">${L[0].late ? 'venció' : 'vence'} ${fmtD(L[0].d)}</small>` : ''}</p>` : '<p class="note">No tiene pendientes registrados a su nombre.</p>'}</div>
-      <div class="of-sec of-agent"><h4><span class="of-ai-i">IA</span>Su agente de IA</h4><p class="note">Replica sus funciones con Claude a partir de su plan de gestión, sus pendientes y sus reuniones. Prepara borradores; ${esc(first)} los revisa antes de usarlos.</p>
+    const ag = UI.of.ag && UI.of.ag.mid === m.id ? UI.of.ag : null, runs = (S.agentRuns || []).filter(r => r.member === m.id && (!two || !r.pid || projOrgId(projectById(r.pid)) === po)).sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt))).slice(0, 4);
+    const acts = ofActions(m, po), oname = ofSiteShort(po);
+    const sw = two ? `<div class="of-sec of-orgsw"><div class="seg" role="group" aria-label="Ver su trabajo en">${sites.map(k => `<button data-act="of-porg" data-v="${esc(k)}" aria-pressed="${k === po}">${esc(ofSiteShort(k))}</button>`).join('')}</div><p class="note">Trabaja en las dos organizaciones. Mostrando su cargo, sus funciones y sus pendientes en ${esc(oname)}.</p></div>` : '';
+    const cargo = e ? `<p class="of-cg">${orgDot(e.org)}<b>${esc(e.cargo || e.area)}</b>${e.area && e.cargo && !orgSim(e.area, e.cargo) ? ` · ${esc(e.area)}` : ''}${e.org.dept ? ` · ${esc(e.org.dept)}` : ''}</p>` : '';
+    return `<header class="of-ph">${avatar(m, 'lg')}<div><h3>${esc(m.name)}</h3><p>${esc(e ? orgName(e.org) + ' · ' + (e.cargo || e.area) : (m.role || 'Integrante'))}</p></div>${close}</header>
+      <p class="of-st">${ofStatusLine(m)}</p>${sw}
+      <div class="of-sec"><h4>Haciendo ahora${two ? ` en ${esc(oname)}` : ''}</h4>${L[0] ? `<p class="of-now"><span class="code-chip">${esc(L[0].c || '—')}</span> ${fmtTxt(L[0].t)}${L[0].d ? ` <small class="${L[0].late ? 'tone-crit' : ''}">${L[0].late ? 'venció' : 'vence'} ${fmtD(L[0].d)}</small>` : ''}</p>` : '<p class="note">No tiene pendientes registrados a su nombre.</p>'}</div>
+      <div class="of-sec of-agent"><h4><span class="of-ai-i">IA</span>Su agente de IA${two ? ` en ${esc(oname)}` : ''}</h4><p class="note">Replica sus funciones${two ? ` en ${esc(oname)}` : ''} con Claude a partir de su cargo, su plan de gestión, sus pendientes y sus reuniones. Prepara borradores; ${esc(first)} los revisa antes de usarlos.</p>
         ${sample ? `<div class="of-acts">${acts.map(a => `<button class="btn sm" data-act="of-agent" data-v="${esc(a.k)}"${ag && ag.busy ? ' disabled' : ''}>${esc(a.t)}</button>`).join('')}</div>
         <form class="of-ask" id="of-ask-form" novalidate><label class="sr" for="of-q">Pedido para el agente</label><input id="of-q" name="q" maxlength="400" placeholder="Pídele otra tarea a su agente…" autocomplete="off"><button class="btn sm primary" type="submit"${ag && ag.busy ? ' disabled' : ''}>Pedir</button></form>
         ${ag ? `<div class="of-out-h"><b>${esc(ag.title)}</b>${ag.busy ? '<span class="of-spin sm" aria-hidden="true"></span><button class="btn sm" data-act="of-agent-stop">Detener</button>' : ''}</div><div class="of-out ai-body" id="of-agent-out">${ag.text ? mdLite(ag.text) : '<p class="note">El agente está revisando sus datos…</p>'}</div>${ag.error ? `<p class="note tone-crit">${esc(ag.error)}</p>` : ''}${!ag.busy && ag.text ? `<div class="of-out-a">${canEdit() ? `<button class="btn sm primary" data-act="of-agent-save"${ag.saved ? ' disabled' : ''}>${ag.saved ? 'Guardado' : 'Guardar en la producción'}</button>` : ''}${downloads ? '<button class="btn sm" data-act="of-agent-dl">Descargar (.md)</button>' : ''}<button class="btn sm" data-act="of-agent-copy">Copiar</button></div>` : ''}` : ''}` : '<p class="note">Los agentes de IA no están disponibles para tu cuenta en esta vista.</p>'}</div>
-      <div class="of-sec"><h4>Sus funciones</h4>${funcs.length ? `<ul class="of-ul">${funcs.map(f => `<li>${fmtTxt(f)}</li>`).join('')}</ul><p class="note">Según el plan ${esc(fx.pl.code || '')}, sección 7.2.</p>` : `<p>${esc(m.role || 'Sin funciones registradas en un plan de gestión.')}</p>`}</div>
-      <div class="of-sec"><h4>Cola de trabajo <small>${L.length}</small></h4>${L.length ? `<ol class="of-q">${L.slice(0, 6).map(q => `<li class="${q.late ? 'late' : ''}"><span class="code-chip">${esc(q.c || '—')}</span> ${fmtTxt(q.t)}${q.d ? ` <small>${fmtD(q.d)}</small>` : ''}</li>`).join('')}</ol>` : '<p class="note">Sin pendientes.</p>'}</div>
+      <div class="of-sec"><h4>Sus funciones${two ? ` en ${esc(oname)}` : ''}</h4>${cargo}${funcs.length ? `<ul class="of-ul">${funcs.map(f => `<li>${fmtTxt(f)}</li>`).join('')}</ul><p class="note">Según el plan ${esc(fx.pl.code || '')}, sección 7.2.</p>` : ''}${projs.length ? `<p class="note">Su rol en los proyectos${two ? ` de ${esc(oname)}` : ''}:</p><ul class="of-ul">${projs.map(x => `<li><b>${esc(x.p.code)}</b> ${esc(x.role || '—')}</li>`).join('')}</ul>` : ''}${!cargo && !funcs.length && !projs.length ? `<p>${esc(m.role || 'Sin funciones registradas en un plan de gestión.')}</p>` : ''}</div>
+      <div class="of-sec"><h4>Cola de trabajo${two ? ` en ${esc(oname)}` : ''} <small>${L.length}</small></h4>${L.length ? `<ol class="of-q">${L.slice(0, 6).map(q => `<li class="${q.late ? 'late' : ''}"><span class="code-chip">${esc(q.c || '—')}</span> ${fmtTxt(q.t)}${q.d ? ` <small>${fmtD(q.d)}</small>` : ''}</li>`).join('')}</ol>` : '<p class="note">Sin pendientes.</p>'}</div>
       ${runs.length ? `<div class="of-sec"><h4>Trabajos guardados de su agente</h4><ul class="of-runs">${runs.map(r => `<li><button class="linkish" data-act="of-run" data-v="${esc(r.id)}">${esc(r.title)}</button> <small>${fmtD(String(r.createdAt).slice(0, 10))}</small></li>`).join('')}</ul></div>` : ''}
-      <footer class="of-pf"><button class="btn sm" data-act="of-follow" aria-pressed="${UI.of.follow === m.id}">${UI.of.follow === m.id ? 'Dejar de seguir' : 'Seguir con la cámara'}</button>${projectsOf(m).map(x => `<button class="btn sm" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}${isAdmin() ? `<button class="btn sm" data-act="view-as" data-id="${esc(m.id)}">Su intranet</button>` : ''}</footer>`;
+      <footer class="of-pf"><button class="btn sm" data-act="of-follow" aria-pressed="${UI.of.follow === m.id}">${UI.of.follow === m.id ? 'Dejar de seguir' : 'Seguir con la cámara'}</button>${projs.map(x => `<button class="btn sm" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}${e ? `<button class="btn sm" data-act="go-orgchart" data-v="${esc(po)}">Organigrama</button>` : ''}${isAdmin() ? `<button class="btn sm" data-act="view-as" data-id="${esc(m.id)}">Su intranet</button>` : ''}</footer>`;
   }
   if (s.startsWith('r:')) {
     const r = (S.agentRuns || []).find(x => x.id === s.slice(2)); if (!r) return '';
@@ -5399,20 +5812,18 @@ function ofPanelHtml() {
       <footer class="of-pf">${m ? `<button class="btn sm" data-act="of-sel" data-v="m:${esc(m.id)}">Ver a ${esc(String(mName(m)).split(' ')[0])}</button>` : ''}${downloads ? `<button class="btn sm" data-act="of-run-dl" data-v="${esc(r.id)}">Descargar (.md)</button>` : ''}${mine ? `<button class="btn sm danger" data-act="of-run-del" data-v="${esc(r.id)}">Eliminar</button>` : ''}</footer>`;
   }
   const k = s.slice(2), z = OF_Z[k]; if (!z) return '';
-  const ms = ofZoneMembers(k), N = ofNow();
+  const ms = ofZoneMembers(k), N = ofNow(), P = ofSiteProjects(z.site);
   let extra = '';
   const projBlock = code => { const p = projectsSorted().find(q => String(q.code).toUpperCase() === code); if (!p) return ''; const m = S.loaded.has('tasks') ? metrics(p) : null; return `<div class="of-sec"><h4>${esc(p.code)} · ${esc(p.name)}</h4>${m ? `<p>${pill(m.health.tone, m.health.label)} Avance real ${pct(m.realPct)} · planificado ${pct(m.planPct)} · ${m.late.length} vencidas</p>` : ''}<p class="of-pa"><button class="btn sm" data-act="go-project" data-id="${esc(p.id)}">Abrir ${esc(p.code)}</button>${(S.plans || []).filter(pl => pl.pid === p.id && secsOf(pl.id).length).map(pl => `<button class="btn sm" data-act="open-plan" data-id="${esc(pl.id)}">Plan ${esc(String(pl.phase || '').split(' · ')[0])}</button>`).join('')}</p></div>`; };
-  if (k === 'dir') extra = `<div class="of-sec"><h4>Cartera</h4><ul class="of-ul">${projectsSorted().map(p => { const m = S.loaded.has('tasks') ? metrics(p) : null; return `<li><b>${esc(p.code)}</b> ${esc(p.name)} ${m ? pill(m.health.tone, m.health.label) : ''}</li>`; }).join('')}</ul><p class="of-pa"><button class="btn sm" data-act="go-portfolio">Ir al portafolio</button></p></div>`;
-  else if (k === 'sala') { const up = upcomingMeetings(meetingsAll()).slice(0, 4); extra = `<div class="of-sec"><h4>Próximas reuniones</h4>${up.length ? `<ul class="of-ul">${up.map(mt => `<li><b>${esc(whenTxt(mt))}</b> ${esc(mt.title)} <a class="linkish" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer">Google Calendar ↗</a></li>`).join('')}</ul>` : '<p class="note">Sin reuniones programadas.</p>'}<p class="of-pa"><button class="btn sm" data-act="go-team" data-v="reun">Ver el cronograma</button></p></div>`; }
-  else if (k === 'proc') extra = projBlock('P01');
-  else if (k === 'acred') extra = projBlock('P04');
-  else if (k === 'lab') extra = projBlock('P03') + projBlock('P01');
+  const cartera = `<div class="of-sec"><h4>Cartera de ${esc(ofSiteShort(z.site))}</h4>${P.length ? `<ul class="of-ul">${P.map(p => { const m = S.loaded.has('tasks') ? metrics(p) : null; return `<li><b>${esc(p.code)}</b> ${esc(p.name)} ${m ? pill(m.health.tone, m.health.label) : ''}</li>`; }).join('')}</ul>` : '<p class="note">Sin proyectos registrados en esta organización.</p>'}<p class="of-pa"><button class="btn sm" data-act="go-portfolio">Ir al portafolio</button><button class="btn sm" data-act="go-orgchart" data-v="${esc(z.site)}">Organigrama</button></p></div>`;
+  if (k === 'dir' || k === 'rger' || k === 'rsub') extra = cartera;
+  else if (k === 'sala' || k === 'rsala') { const up = upcomingMeetings(meetingsAll()).filter(mt => ofMtSite(mt) === z.site).slice(0, 4); extra = `<div class="of-sec"><h4>Próximas reuniones en ${esc(ofSiteShort(z.site))}</h4>${up.length ? `<ul class="of-ul">${up.map(mt => `<li><b>${esc(whenTxt(mt))}</b> ${esc(mt.title)} <a class="linkish" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer">Google Calendar ↗</a></li>`).join('')}</ul>` : '<p class="note">Sin reuniones programadas en esta sede.</p>'}<p class="of-pa"><button class="btn sm" data-act="go-team" data-v="reun">Ver el cronograma</button></p></div>`; }
+  else if (k === 'jefe') { const jc = ofJefeCodes(); extra = `<div class="of-sec"><p class="note">La Jefatura de la OGPL encabeza el organigrama de San Marcos${jc.length ? ` y patrocina ${esc(jc.join(' y '))}` : ''}. Aún no está registrada como integrante del sistema, por eso su puesto aparece libre.</p><p class="of-pa"><button class="btn sm" data-act="go-orgchart" data-v="unmsm">Organigrama de San Marcos</button></p></div>${jc.map(projBlock).join('')}`; }
   else if (k === 'aula') { const now = membersActive().map(m => ({ m, b: busyOf(m, N.dow).find(b => N.min >= b.s && N.min < b.e) })).filter(q => q.b); extra = `<div class="of-sec"><h4>En clase ahora</h4>${now.length ? `<ul class="of-ul">${now.map(q => `<li><b>${esc(mName(q.m))}</b> ${esc(q.b.t)} · hasta las ${m2t(q.b.e)}</li>`).join('')}</ul>` : '<p class="note">Nadie del equipo está en clase en este momento.</p>'}<p class="of-pa"><button class="btn sm" data-act="go-team" data-v="hor">Ver los horarios</button></p></div>`; }
-  else if (k === 'mkt') extra = projBlock('P05');
-  else if (k === 'ger') extra = projBlock('P05');
-  else if (k === 'cowork') extra = `<div class="of-sec"><p class="note">Puestos libres para los integrantes que se sumen. Al registrarlos en Equipo → Accesos aparecen aquí o en el área de su proyecto.</p></div>`;
-  return `<header class="of-ph"><span class="of-zc" style="--zc:#${z.c.toString(16).padStart(6, '0')}"></span><div><h3>${esc(z.n)}</h3><p>${esc(z.s)}</p></div>${close}</header>
-    <div class="of-sec"><h4>Quiénes trabajan aquí</h4>${ms.length ? `<ul class="of-who">${ms.map(m => `<li><button class="linkish" data-act="of-sel" data-v="m:${esc(m.id)}">${avatar(m, 'sm')}${esc(mName(m))}</button>${ofStatusLine(m)}</li>`).join('')}</ul>` : '<p class="note">Nadie en este momento.</p>'}</div>${extra}`;
+  else if (k === 'cowork') extra = `<div class="of-sec"><p class="note">Puestos libres para los integrantes que se sumen. Al registrarlos en Equipo → Accesos aparecen aquí o en el área de su cargo.</p></div>`;
+  else if (z.projs) extra = z.projs.map(projBlock).join('');
+  return `<header class="of-ph"><span class="of-zc" style="--zc:#${z.c.toString(16).padStart(6, '0')}"></span><div><h3>${esc(z.n)}</h3><p>${esc(z.s)} · ${esc(ofSiteShort(z.site))}</p></div>${close}</header>
+    <div class="of-sec"><h4>Quiénes trabajan aquí</h4>${ms.length ? `<ul class="of-who">${ms.map(m => `<li><button class="linkish" data-act="of-sel" data-v="m:${esc(m.id)}" data-site="${esc(z.site)}">${avatar(m, 'sm')}${esc(mName(m))}</button>${ofStatusLine(m)}</li>`).join('')}</ul>` : `<p class="note">${k === 'jefe' ? 'Puesto de la Jefatura de la OGPL, sin integrante registrado.' : 'Nadie en este momento.'}</p>`}</div>${extra}`;
 }
 function ofPanelPaint() {
   const p = $('#of-panel'); if (!p) return;
@@ -5428,11 +5839,16 @@ function ofFeedHtml() {
 }
 function ofListHtml() {
   const N = ofNow();
-  return `${OF.fail ? `<p class="note" style="margin-bottom:10px">${esc(OF.fail)} Mientras tanto, esta es la misma información en texto.</p>` : ''}<div class="tbl"><table><thead><tr><th>Integrante</th><th>Puesto</th><th>Ahora</th><th>Haciendo</th><th><span class="sr">Abrir</span></th></tr></thead><tbody>${membersActive().map(m => { const a = OF.av.get(m.id), st = (a && a.st) || ofStatus(m, N), q = (OF.top.get(m.id) || [])[0], z = OF_Z[(OF.seats.get(OF.deskOf.get(m.id)) || {}).zone || ofZoneOf(m)]; return `<tr><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b><small>${esc(m.role || '')}</small></span></span></td><td>${esc(z ? z.n : '—')}</td><td>${ofStatusLine(m)}${st.k !== 'desk' ? '<br><small class="of-ai-t">Su agente de IA cubre su puesto</small>' : ''}</td><td class="wrap">${q ? `${esc(q.c || '')} · ${esc(q.t)}` : '—'}</td><td><button class="icon-btn" data-act="of-sel" data-v="m:${esc(m.id)}">Abrir</button></td></tr>`; }).join('')}</tbody></table></div>`;
+  return `${OF.fail ? `<p class="note" style="margin-bottom:10px">${esc(OF.fail)} Mientras tanto, esta es la misma información en texto.</p>` : ''}<div class="tbl"><table><thead><tr><th>Integrante</th><th>Puestos</th><th>Ahora</th><th>Haciendo</th><th><span class="sr">Abrir</span></th></tr></thead><tbody>${membersActive().map(m => {
+    const a = OF.av.get(m.id), st = (a && a.st) || ofStatus(m, N), site = (a && a.site) || ofSiteNow(m, st, N), q = ofQ(m.id, site)[0], sites = ofSitesOf(m), mo = memberOrgs(m);
+    const D = (OF.desks.get(m.id) || []).length ? OF.desks.get(m.id).map(dk => ({ site: dk.site, z: OF_Z[(OF.seats.get(dk.key) || {}).zone] })) : sites.map(k => ({ site: k, z: OF_Z[ofZoneFor(m, k, mo.find(x => x.org.id === k) || null)] }));
+    const other = sites.filter(k => !(st.k === 'desk' && k === site));
+    return `<tr><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b><small>${esc(mo.length ? mo.map(e => `${orgName(e.org)} · ${e.cargo || e.area}`).join(' / ') : m.role || '')}</small></span></span></td><td class="wrap">${D.map(x => `${sites.length > 1 ? `<b>${esc(OF_SITES[x.site].t)}:</b> ` : ''}${esc(x.z ? x.z.n : '—')}`).join('<br>')}</td><td>${ofStatusLine(m)}${other.length ? `<br><small class="of-ai-t">Su agente de IA cubre su puesto${sites.length > 1 ? ' en ' + esc(other.map(ofSiteShort).join(' y ')) : ''}</small>` : ''}</td><td class="wrap">${q ? `${esc(q.c || '')} · ${esc(q.t)}` : '—'}</td><td><button class="icon-btn" data-act="of-sel" data-v="m:${esc(m.id)}">Abrir</button></td></tr>`;
+  }).join('')}</tbody></table></div>`;
 }
 function ofHowHtml() {
-  const c = (t, b) => `<div class="gcard"><h3>${t}</h3><p>${b}</p></div>`;
-  return `<div class="guide-grid of-how">${c('Lo físico, en virtual', 'Cada área real tiene su lugar: Dirección de proyectos, Racionalización (P01), Acreditación FCM (P04), el Laboratorio SIGPRO, la sala de reuniones y las aulas de la FCM. Cada integrante tiene su puesto según su proyecto y su rol.')}${c('Los datos lo mueven', 'Los horarios de clases llevan a cada persona al aula; el cronograma de reuniones las lleva a la sala; las tareas, el plan y los acuerdos aparecen en sus burbujas y en sus monitores; el avance de cada proyecto se ve en las pantallas.')}${c('Un agente de IA por integrante', 'Cada agente replica las funciones de su integrante con Claude, usando su plan de gestión, sus pendientes y sus reuniones. Trabaja cuando se lo pides y entrega borradores; no envía, aprueba ni modifica nada por su cuenta.')}${c('Simula la semana', 'Con «Simular la semana» eliges un día y una hora, o reproduces el día completo, para ver quién está en su puesto, en clase o en reunión y cuándo coinciden todos.')}</div>`;
+  const c = (t, b) => `<div class="gcard"><h3>${t}</h3><p>${b}</p></div>`, oR = orgById('roic');
+  return `<div class="guide-grid of-how">${c('Dos organizaciones, dos sedes', 'San Marcos: la Oficina de Racionalización de la OGPL, con la Dirección de proyectos, los analistas, el Laboratorio SIGPRO, la Jefatura de la OGPL, la sala de reuniones y las aulas de la FCM. ROIC & Company: la Gerencia General, la Subgerencia, la sala de reuniones, sus áreas y el equipo de P04. Cada puesto sigue el cargo de la persona en el organigrama de esa organización.')}${c('Los datos lo mueven', `Los horarios de clases llevan a cada persona al aula; las reuniones, a la sala de la sede de su proyecto. Quien trabaja en ambas organizaciones está en San Marcos de lunes a viernes${oR && (oR.sharedDays || []).length ? ` y en ROIC los ${(oR.sharedDays || []).map(n => DIAS[n - 1].toLowerCase() + 's').join(' y ')}` : ''}${oR && oR.sharedNote ? ` (${esc(oR.sharedNote.replace(/\.$/, ''))})` : ''}. Sus pendientes se reparten según la organización de cada proyecto.`)}${c('Un agente de IA por puesto', 'Cada agente replica las funciones de su integrante en esa organización con Claude, usando su cargo, su plan de gestión, sus pendientes y sus reuniones. Trabaja cuando se lo pides y entrega borradores; no envía, aprueba ni modifica nada por su cuenta.')}${c('Simula la semana', 'Con «Simular la semana» eliges un día y una hora, o reproduces el día completo, para ver quién está en cada sede, en clase o en reunión y cuándo coinciden todos.')}</div>`;
 }
 
 /* ---------- montaje y actualización ---------- */
@@ -5451,7 +5867,8 @@ async function ofMount() {
   const s2 = $('#of-stage'); OF.stage = s2; OF.labels = $('#of-labels'); s2.insertBefore(OF.r.domElement, s2.firstChild);
   const ld = $('#of-load'); if (ld) ld.hidden = true;
   ofResize(); if (!OF.c) ofCamInit();
-  ofRecalc(); ofLabelsSync(); OF.av.forEach(ofTagText); ofSky(ofNow()); ofDrawAll(true); ofPanelPaint(); ofPulsePaint();
+  if (OF.flyTo) { ofFly(OF.flyTo); OF.flyTo = null; }
+  ofRecalc(); ofLabelsSync(); OF.av.forEach(ofTagText); ofSky(ofNow()); ofDrawAll(true); ofPanelPaint(); ofPulsePaint(); ofSitePaint();
   ofStart();
 }
 function ofFailPaint() {
@@ -5465,7 +5882,7 @@ function ofRefresh() {
   const mb = $('#of-maxb'); if (mb) mb.textContent = UI.of.max ? 'Salir de pantalla completa' : 'Pantalla completa';
   if (S.ver !== OF.ver) { if (OF.ok) ofRecalc(); else { OF.ver = S.ver; OF.top.clear(); membersActive().forEach(m => OF.top.set(m.id, ofQueue(m))); } }
   if (OF.ok) { ofLabelsSync(); OF.av.forEach(ofTagText); }
-  ofPulsePaint(); ofPanelPaint(); ofClockPaint(false);
+  ofPulsePaint(); ofPanelPaint(); ofClockPaint(false); ofSitePaint();
   const cap = $('#of-cap'); if (cap) { cap.hidden = UI.of.tour < 0; cap.innerHTML = ofCapHtml(); }
   const lv = $('#of-listv'); if (lv) { lv.hidden = !(UI.of.list || OF.fail); if (!lv.hidden) lv.innerHTML = ofListHtml(); }
   const lb = document.querySelector('[data-act="of-list"]'); if (lb) { lb.setAttribute('aria-pressed', String(UI.of.list)); lb.classList.toggle('on', UI.of.list); }
@@ -5478,10 +5895,12 @@ function ofShift() {
   const pw = Math.min(400, st.clientWidth - 24) + 12, visW = 2 * OF.g.d * Math.tan(16 * Math.PI / 180) * (st.clientWidth / Math.max(1, st.clientHeight));
   return (pw / 2) / st.clientWidth * visW;
 }
-function ofSelect(key, fly) {
+function ofSelect(key, fly, site) {
   UI.of.sel = key; UI.of.tour = -1;
+  if (key && key.startsWith('m:')) UI.of.porg = site || '';
+  if (key && key.startsWith('z:') && OF_Z[key.slice(2)] && UI.of.site !== 'both' && UI.of.site !== OF_Z[key.slice(2)].site) { UI.of.site = OF_Z[key.slice(2)].site; ofSitePaint(); }
   if (fly && OF.g && key) {
-    if (key.startsWith('m:')) { const a = OF.av.get(key.slice(2)); if (a) { const vis = a.rig.root.visible; Object.assign(OF.g, { tx: vis ? a.x : a.holo.root.position.x, tz: vis ? a.z : a.holo.root.position.z, d: Math.min(OF.g.d, 17) }); } }
+    if (key.startsWith('m:')) { const a = OF.av.get(key.slice(2)); if (a) { const pos = ofAvPos(a, site); OF.userCam = true; Object.assign(OF.g, { tx: pos[0], tz: pos[1], d: Math.min(OF.g.d, 17) }); } }
     else if (key.startsWith('z:')) ofFly(key.slice(2));
     const sh = ofShift(); OF.g.tx += Math.cos(OF.g.th) * sh; OF.g.tz -= Math.sin(OF.g.th) * sh;
   }
@@ -5489,23 +5908,28 @@ function ofSelect(key, fly) {
 }
 function ofTourGo(i) {
   if (i < 0 || i >= OF_TOUR.length) { UI.of.tour = -1; render(); return; }
-  UI.of.tour = i; UI.of.sel = null; ofFly(OF_TOUR[i][0]); render();
+  const k = OF_TOUR[i][0];
+  UI.of.tour = i; UI.of.sel = null; UI.of.site = k === 'both' ? 'both' : OF_SITES[k] ? k : OF_Z[k] ? OF_Z[k].site : UI.of.site;
+  ofFly(k); render();
 }
 
 /* ---------- agentes de IA (capacidad sample) ---------- */
 function ofAgentPrompt(m, a) {
-  const it = myItems(m), fx = myPlanFunctions(m, it.pids), L = (OF.top.get(m.id) || ofQueue(m)).slice(0, 12);
+  // el agente trabaja para la organización elegida en el panel: su cargo, sus proyectos y sus pendientes en ella
+  const po = ofPorg(m), o = orgById(po), two = ofSitesOf(m).length > 1, e = memberOrgs(m).find(x => x.org.id === po) || null;
+  const it = myItems(m), projs = it.projs.filter(x => !two || projOrgId(x.p) === po), fx = myPlanFunctions(m, new Set(projs.map(x => x.p.id))), L = ofQ(m.id, po).slice(0, 12);
   const funcs = fx ? fx.blocks.map(b => b.t === 'ul' || b.t === 'ol' ? (b.items || []).join(' | ') : String(b.text || '')).join(' ').replace(/\*\*/g, '').slice(0, 2400) : '';
   const mts = upcomingMeetings(meetingsAll()).filter(mt => attendeesOf(mt).some(x => x.id === m.id)).slice(0, 4).map(mt => ({ titulo: mt.title, fecha: mt.date, inicio: mt.start, fin: mt.end, agenda: mt.agenda }));
   const data = {
-    integrante: { nombre: m.name, cargo: m.role || '', proyectos: projectsOf(m).map(x => ({ codigo: x.p.code, nombre: x.p.name, rol: x.role, avanceRealPct: S.loaded.has('tasks') ? Math.round(metrics(x.p).realPct || 0) : null })) },
+    integrante: { nombre: m.name, organizacion: o ? o.name : '', cargo: e ? e.cargo : m.role || '', area: e ? e.area : '', otrosCargos: memberOrgs(m).filter(x => x.org.id !== po).map(x => ({ organizacion: x.org.name, cargo: x.cargo })), proyectos: projs.map(x => ({ codigo: x.p.code, nombre: x.p.name, rol: x.role, avanceRealPct: S.loaded.has('tasks') ? Math.round(metrics(x.p).realPct || 0) : null })) },
     funcionesSegunPlan: funcs || '(no registradas en un plan de gestión)',
     pendientes: L.map(q => ({ proyecto: q.c, tarea: q.t, fecha: q.d, vencido: q.late })),
     proximasReuniones: mts,
     clasesDeLaSemana: (m.schedule || []).map(b => `${DIAS[b.d - 1]} ${b.s}-${b.e} ${b.t}`),
   };
-  if (/cartera|riesgos/.test(a.k)) data.cartera = projectsSorted().map(p => { const x = metrics(p); return { codigo: p.code, nombre: p.name, semaforo: x.health.label, motivos: x.why, avanceRealPct: Math.round(x.realPct || 0), avancePlanPct: Math.round(x.planPct || 0), riesgosAltos: x.highR.map(r => r.title), vencidas: x.late.length }; });
-  return `Eres el agente de inteligencia artificial que replica las funciones de ${m.name} (${m.role || 'integrante del equipo'}) en la Dirección de Gestión de Proyectos (DGP) de la Oficina General de Planificación de la UNMSM. Preparas borradores para que ${String(mName(m)).split(' ')[0]} los revise; no reemplazas su criterio.
+  if (/cartera|riesgos/.test(a.k)) data.cartera = (o ? projsOfOrg(po) : projectsSorted()).map(p => { const x = metrics(p); return { codigo: p.code, nombre: p.name, semaforo: x.health.label, motivos: x.why, avanceRealPct: Math.round(x.realPct || 0), avancePlanPct: Math.round(x.planPct || 0), riesgosAltos: x.highR.map(r => r.title), vencidas: x.late.length }; });
+  const where = o ? `${o.name}${o.dept ? ' (' + o.dept + ')' : o.desc ? ' (' + o.desc + ')' : ''}` : 'la Dirección de Gestión de Proyectos (DGP) de la Oficina General de Planificación de la UNMSM';
+  return `Eres el agente de inteligencia artificial que replica las funciones de ${m.name} (${e ? e.cargo : m.role || 'integrante del equipo'}) en ${where}. Preparas borradores para que ${String(mName(m)).split(' ')[0]} los revise; no reemplazas su criterio.${two ? ` Trabaja también en otra organización; aquí solo atiendes lo de ${o ? o.name : 'esta organización'}.` : ''}
 Fecha de hoy: ${isoD(today())}.
 TAREA: ${a.p}
 Reglas: escribe en español claro y profesional; usa los datos dados y buenas prácticas reconocidas (PMBOK 7, BPMN 2.0, ISO 9001, norma técnica de gestión por procesos de la PCM) cuando corresponda; no inventes fechas, cifras, nombres ni acuerdos; si falta información, dilo en una línea al final. Formato: títulos con "## ", viñetas con "- ", negritas con **. Máximo 420 palabras.
@@ -5514,7 +5938,7 @@ DATOS: ${JSON.stringify(data)}`;
 async function ofAgentRun(mid, k, ask) {
   if (!sample) { toast('Los agentes de IA no están disponibles en esta vista.', 'warn'); return; }
   const m = memberById(mid); if (!m) return;
-  const a = k === 'custom' ? { k, t: ask.length > 60 ? ask.slice(0, 58) + '…' : ask, p: ask } : ofActions(m).find(x => x.k === k); if (!a) return;
+  const a = k === 'custom' ? { k, t: ask.length > 60 ? ask.slice(0, 58) + '…' : ask, p: ask } : ofActions(m, ofPorg(m)).find(x => x.k === k); if (!a) return;
   if (ofAgentCtl) ofAgentCtl.abort();
   const ctl = new AbortController(); ofAgentCtl = ctl;
   UI.of.ag = { mid, k, title: a.t, text: '', busy: true, error: '', saved: false, ask: k === 'custom' ? ask : '' };
@@ -5536,7 +5960,7 @@ let ofPaintRaf = 0;
 function ofAgentPaint() { if (ofPaintRaf) return; ofPaintRaf = requestAnimationFrame(() => { ofPaintRaf = 0; const o = $('#of-agent-out'); if (o && UI.of.ag) { const nearEnd = o.scrollHeight - o.scrollTop - o.clientHeight < 40; o.innerHTML = mdLite(UI.of.ag.text); if (nearEnd) o.scrollTop = o.scrollHeight; } }); }
 async function ofAgentSave() {
   const g = UI.of.ag; if (!g || !g.text || g.saved || !canEdit()) return;
-  const m = memberById(g.mid), pid = m ? ((projectsOf(m)[0] || {}).p || {}).id || '' : '';
+  const m = memberById(g.mid), po = m ? ofPorg(m) : '', pid = m ? ((projectsOf(m).find(x => projOrgId(x.p) === po) || projectsOf(m)[0] || {}).p || {}).id || '' : '';
   try { await createRec('agentRuns', { member: g.mid, title: g.title, action: g.k, ask: g.ask || '', text: g.text, pid }); g.saved = true; toast('Guardado en la producción de los agentes', 'ok'); logFeed(pid || null, `guardó el trabajo del agente de IA de ${m ? mName(m) : 'un integrante'}: «${g.title}»`); ofPanelPaint(); }
   catch (e) { writeErr(e); }
 }
@@ -5550,11 +5974,15 @@ function ofAsk(f) { const q = f.elements.q.value.trim(), s = UI.of.sel; if (!q |
 function ofClick(act, el) {
   switch (act) {
     case 'go-office': go('office'); return true;
-    case 'of-zone': UI.of.tour = -1; if (el.dataset.v !== 'all') ofSelect('z:' + el.dataset.v, true); else { ofFly('all'); UI.of.sel = null; UI.of.follow = null; ofPanelPaint(); OF.av.forEach(ofTagText); } if (!el.closest('#of')) { const o = $('#of'); if (o) o.scrollIntoView({ behavior: ofReduced() ? 'auto' : 'smooth', block: 'start' }); } render(); return true;
-    case 'of-sel': ofSelect(el.dataset.v, true); return true;
+    case 'of-zone': UI.of.tour = -1; if (el.dataset.v !== 'all' && el.dataset.v !== 'both') ofSelect('z:' + el.dataset.v, true); else { ofFly(el.dataset.v); UI.of.sel = null; UI.of.follow = null; ofPanelPaint(); OF.av.forEach(ofTagText); } if (!el.closest('#of')) { const o = $('#of'); if (o) o.scrollIntoView({ behavior: ofReduced() ? 'auto' : 'smooth', block: 'start' }); } render(); return true;
+    case 'of-sel': ofSelect(el.dataset.v, true, el.dataset.site || ''); return true;
+    case 'of-site': { const v = el.dataset.v; UI.of.site = v === 'both' ? 'both' : ofSiteOk(v); UI.of.tour = -1; UI.of.sel = null; UI.of.follow = null; ofFly(v === 'both' ? 'both' : 'all'); ofSitePaint(); ofPanelPaint(); OF.av.forEach(ofTagText); const cap = $('#of-cap'); if (cap) cap.hidden = true; const tb = document.querySelector('.of-bar [data-act="of-tour"]'); if (tb) tb.textContent = 'Recorrido guiado'; return true; }
+    case 'of-porg': { UI.of.porg = el.dataset.v; const a = OF.av.get((UI.of.sel || '').slice(2)); if (a && OF.g) { const pos = ofAvPos(a, UI.of.porg), sh = ofShift(); UI.of.follow = null; Object.assign(OF.g, { tx: pos[0] + Math.cos(OF.g.th) * sh, tz: pos[1] - Math.sin(OF.g.th) * sh }); } if (OF_SITES[UI.of.porg] && UI.of.site !== 'both' && UI.of.site !== UI.of.porg) { UI.of.site = UI.of.porg; ofSitePaint(); } ofPanelPaint(); return true; }
+    case 'go-office-site': UI.of.site = ofSiteOk(el.dataset.v); UI.of.sel = null; OF.flyTo = 'all'; go('office'); return true;
+    case 'go-orgchart': UI.orgTab = el.dataset.v || 'all'; UI.teamTab = 'org'; go('team'); return true;
     case 'of-close': UI.of.sel = null; UI.of.follow = null; OF.av.forEach(ofTagText); ofPanelPaint(); return true;
     case 'of-rot': if (OF.g) OF.g.th += (+el.dataset.v) * Math.PI / 4; return true;
-    case 'of-zoom': if (OF.g) OF.g.d = clamp(OF.g.d * (+el.dataset.v > 0 ? 1.3 : 1 / 1.3), 7, 130); return true;
+    case 'of-zoom': if (OF.g) OF.g.d = clamp(OF.g.d * (+el.dataset.v > 0 ? 1.3 : 1 / 1.3), 7, OF_DMAX); return true;
     case 'of-list': UI.of.list = !UI.of.list; render(); return true;
     case 'of-max': UI.of.max = !UI.of.max; render(); if (UI.of.max) { const s = $('#of-stage'); if (s) s.focus({ preventScroll: true }); } return true;
     case 'of-live': UI.of.sim = false; UI.of.play = false; OF.dirty = true; OF.jump = true; ofClockPaint(true); ofSky(ofNow()); return true;
