@@ -2305,6 +2305,7 @@ function prBlock(b, sid, bi) {
     case 'cap': return `<p class="pr-cap">${fmtTxt(b.text)}</p>`;
     case 'ul': case 'ol': return `<${b.t}>${(b.items || []).map(x => `<li>${fmtTxt(x)}</li>`).join('')}</${b.t}>`;
     case 'img': return `<figure class="pr-fig"><img src="${esc(b.src)}" alt="Figura del plan" loading="lazy"></figure>`;
+    case 'file': { const f = /^planes\/[\w.\-]+\.(xlsx|pdf|docx)$/i.test(String(b.src || '')) ? b.src : ''; return f ? `<p class="pr-file"><a class="btn sm" href="${esc(f)}" target="_blank" rel="noopener" download>${esc(b.label || 'Descargar archivo')}</a>${b.text ? ` <span class="note">${fmtTxt(b.text)}</span>` : ''}</p>` : ''; }
     case 'table': {
       const ed = canEdit();
       const head = (b.check ? '<th class="pr-ck">Cumplido</th>' : '') + (b.head || []).map(h => `<th>${fmtTxt(h)}</th>`).join('');
@@ -2320,7 +2321,7 @@ function prEdit(b, bi) {
     case 'h': return `<input class="pr-in pr-in-h" data-eb="${bi}" value="${esc(b.text || '')}" aria-label="Subtítulo">`;
     case 'p': case 'cap': return ta(b.text, Math.max(2, Math.ceil(String(b.text || '').length / 100) + 1));
     case 'ul': case 'ol': return `<p class="pr-lab">${b.t === 'ul' ? 'Viñetas' : 'Lista numerada'}: un elemento por línea</p>` + ta((b.items || []).join('\n'), Math.max(3, (b.items || []).length + 1));
-    case 'img': return prBlock(b, '', bi);
+    case 'img': case 'file': return prBlock(b, '', bi);
     case 'table': return `<div class="tbl pr-tbl pr-etbl" data-eb="${bi}"><table><thead><tr>${(b.head || []).map(h => `<th contenteditable="true">${esc(h)}</th>`).join('')}<th class="pr-x"></th></tr></thead><tbody>${(b.rows || []).map((r, ri) => `<tr data-ri="${ri}">${r.map(c => `<td contenteditable="true">${esc(c)}</td>`).join('')}<td class="pr-x"><button type="button" class="icon-btn" data-act="pr-delrow" aria-label="Eliminar fila">✕</button></td></tr>`).join('')}</tbody></table></div><button type="button" class="btn sm" data-act="pr-addrow" data-v="${bi}">Agregar fila</button>`;
   }
   return '';
