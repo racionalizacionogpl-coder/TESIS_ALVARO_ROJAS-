@@ -1772,17 +1772,50 @@ const nameOf = id => { const p = profileOf(id); if (!p) return 'Alguien'; return
 /* =========================================================
    Escritura
    ========================================================= */
-const canEdit = () => S.mode === 'live' && !S.readOnly && S.canWrite !== false;
+// permisos: la plataforma decide si la cuenta puede escribir; el intranet decide qué puede tocar cada integrante
+const canWriteBase = () => S.mode === 'live' && !S.readOnly && S.canWrite !== false;
+// acceso total: el propietario del sistema y los integrantes marcados como administradores
+const fullAccess = () => !!(S.isOwner || (sessionMember() && sessionMember().admin));
+const inProject = (m, pid) => !!(m && pid && projectsOf(m).some(x => x.p.id === pid));
+// los demás integrantes editan solo los proyectos en los que participan
+const canEditP = pid => canWriteBase() && (fullAccess() || inProject(sessionMember(), pid));
+function ctxPid() { const pl = UI.planOpen ? planById(UI.planOpen) : null; return pl ? pl.pid || '' : UI.view === 'project' ? UI.pid || '' : ''; }
+// edición según la pantalla: en un proyecto, solo su equipo; en el intranet, lo propio; en el resto, solo acceso total
+const canEdit = () => { if (!canWriteBase()) return false; if (fullAccess()) return true; const pid = ctxPid(); return pid ? inProject(sessionMember(), pid) : UI.view === 'me' && !!sessionMember(); };
+// etiqueta de acceso en la barra superior
+function accessPill() {
+  if (S.mode !== 'live') return '';
+  if (!canWriteBase()) return '<span class="pill" title="La cuenta de claude.ai con la que abriste el sistema solo puede leer. El propietario debe compartirlo con permiso para interactuar.">Solo lectura</span>';
+  if (fullAccess()) return '<span class="pill ok" title="Acceso total a todos los proyectos">Acceso total</span>';
+  const me = sessionMember(); if (!me) return '<span class="pill" title="Ingresa al intranet para editar tus proyectos">Solo lectura · ingresa al intranet</span>';
+  const L = projectsOf(me).map(x => x.p.code).filter(Boolean);
+  return `<span class="pill data" title="Puedes editar solo los proyectos en los que participas">Editor${L.length ? ' · ' + esc(L.join(', ')) : ''}</span>`;
+}
+const permErr = msg => Object.assign(new Error(msg), { code: 'perm_denied' });
+// control de cada escritura, aunque el botón se haya mostrado
+function guardWrite(coll, id, data) {
+  if (fullAccess()) return;
+  const me = sessionMember(), keys = Object.keys(data || {}).filter(k => k !== 'updatedAt' && k !== 'updatedBy');
+  if (coll === 'members') { if (keys.every(k => k === 'lastLogin')) return; if (!me || me.id !== id || keys.some(k => k === 'admin' || k === 'active' || k === 'email')) throw permErr('Solo un administrador puede modificar a otros integrantes.'); return; }
+  if (coll === 'meetings') { if (keys.length && keys.every(k => k === 'confirm')) return; throw permErr('Solo Alvaro Rojas y José Antonio Chumacero programan o modifican reuniones.'); }
+  if (coll === 'feed' || coll === 'agentRuns') return;
+  if (coll === 'projects' && !id) throw permErr('Solo un administrador puede crear proyectos.');
+  const rec = coll === 'projects' ? { pid: id } : id ? (S[coll] || []).find(x => x.id === id) : null;
+  const pid = (rec && rec.pid) || (data && data.pid) || '';
+  if (!me) throw permErr('Ingresa al intranet con tu correo para editar.');
+  if (!pid || !inProject(me, pid)) throw permErr(`Solo puedes modificar los proyectos en los que participas${pid && projectById(pid) ? ` (no participas en ${projectById(pid).code})` : ''}.`);
+}
 const stamp = () => ({ updatedAt: new Date().toISOString(), updatedBy: (S.me && S.me.id) || null });
 function writeErr(e) {
   const code = e && e.code;
+  if (code === 'perm_denied') { toast(e.message, 'warn'); return; }
   if (code === 'invalid_argument') { S.readOnly = true; toast('Tu acceso es de solo lectura. Pide al propietario que te comparta el sistema como Colaborador.', 'crit'); schedule(); }
   else if (code === 'quota_exceeded') toast('La base de datos llegó a su límite. Elimina registros antiguos (por ejemplo, de la bitácora) para seguir.', 'crit');
   else if (code === 'resource_exhausted') toast('Demasiadas operaciones seguidas. Espera unos segundos y vuelve a intentarlo.', 'warn');
   else toast('No se pudo guardar. Revisa tu conexión y vuelve a intentarlo.', 'crit');
 }
-async function createRec(coll, data) { const now = new Date().toISOString(); return db.collection(coll).add(Object.assign({}, data, stamp(), { createdAt: now, createdBy: (S.me && S.me.id) || null })); }
-async function updateRec(coll, id, data) { return db.doc(`${coll}/${id}`).update(Object.assign({}, data, stamp())); }
+async function createRec(coll, data) { guardWrite(coll, '', data); const now = new Date().toISOString(); return db.collection(coll).add(Object.assign({}, data, stamp(), { createdAt: now, createdBy: (S.me && S.me.id) || null })); }
+async function updateRec(coll, id, data) { guardWrite(coll, id, data); return db.doc(`${coll}/${id}`).update(Object.assign({}, data, stamp())); }
 let feedWrites = 0;
 async function logFeed(pid, text) {
   if (!db) return;
@@ -1997,7 +2030,7 @@ function renderNav() {
       <details class="${UI.view === 'project' ? 'on' : ''}"><summary>Proyectos <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5L5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></summary><div class="dd">${dd}</div></details>
       <button data-act="go-guide" aria-current="${UI.view === 'guide'}" title="Guía PMBOK">Guía</button>
     </nav>
-    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${S.mode === 'live' && !canEdit() ? '<span class="pill">Solo lectura</span>' : ''}${canSchedule() ? `<button class="sos-nav" data-act="sos-new" title="Reunión de emergencia" aria-label="Convocar una reunión de emergencia">${icon('rayo', 17)}</button>` : ''}${canEdit() ? '<button class="btn pill np" data-act="new-project" title="Nuevo proyecto"><span class="np-plus" aria-hidden="true">+</span><span class="np-t">Nuevo proyecto</span></button>' : ''}${(() => { const sm = sessionMember(); return `<button class="nav-me" data-act="go-me" aria-current="${UI.view === 'me'}" title="${sm ? esc(sm.name) : 'Ingresar al intranet del equipo'}">${sm ? avatar(sm) : `<span class="ni">${icon('equipo', 15)}</span>`}${sm ? esc(String(mName(sm)).split(' ')[0]) : 'Intranet'}</button>`; })()}</div>
+    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${accessPill()}${canSchedule() ? `<button class="sos-nav" data-act="sos-new" title="Reunión de emergencia" aria-label="Convocar una reunión de emergencia">${icon('rayo', 17)}</button>` : ''}${canEdit() ? '<button class="btn pill np" data-act="new-project" title="Nuevo proyecto"><span class="np-plus" aria-hidden="true">+</span><span class="np-t">Nuevo proyecto</span></button>' : ''}${(() => { const sm = sessionMember(); return `<button class="nav-me" data-act="go-me" aria-current="${UI.view === 'me'}" title="${sm ? esc(sm.name) : 'Ingresar al intranet del equipo'}">${sm ? avatar(sm) : `<span class="ni">${icon('equipo', 15)}</span>`}${sm ? esc(String(mName(sm)).split(' ')[0]) : 'Intranet'}</button>`; })()}</div>
   </div>`;
 }
 function renderFoot() {
@@ -2856,6 +2889,8 @@ async function deleteFromForm(form) {
   const rec = S[coll].find(r => r.id === id) || {};
   const zone = $('#del-zone'); if (zone) zone.innerHTML = '<span>Eliminando…</span>';
   try {
+    guardWrite(coll, id, { pid: rec.pid || '', deleted: true });
+    if (coll === 'projects' && !fullAccess()) throw permErr('Solo un administrador puede eliminar proyectos.');
     await db.doc(`${coll}/${id}`).delete();
     if (coll === 'projects') {
       for (const c of [...Object.keys(COLL), 'meetings']) for (const r of of(c, id)) await db.doc(`${c}/${r.id}`).delete();
@@ -2905,7 +2940,7 @@ document.addEventListener('click', e => {
     case 'sos-hide': sosHide(el.dataset.id); renderSos(); break;
     case 'sos-end': { const f = $('#sos-send-form'), mt = f && sosById(f.dataset.id); if (!mt || !mt.id || !canSchedule()) break; updateRec('meetings', mt.id, { status: 'Realizada' }).then(() => { closeModal(); toast('Reunión de emergencia marcada como realizada', 'ok'); logFeed(mt.pid || null, `cerró la reunión de emergencia «${mt.title}»`); }).catch(writeErr); break; }
     case 'sos-copy': { const box = el.dataset.v === 'mails' ? $('#sos-to') : $('#sos-msg'); if (!box) break; copyText(box.value).then(ok => toast(ok ? (el.dataset.v === 'mails' ? 'Correos copiados' : 'Mensaje copiado') : 'No se pudo copiar: selecciona el texto y cópialo.', ok ? 'ok' : 'warn')); break; }
-    case 'sos-ics': { const f = $('#sos-send-form'), mt = f && sosById(f.dataset.id); if (!mt || !downloads) break; downloads.save({ filename: 'reunion_emergencia.ics', data: sosIcs(mt) }).catch(er => { const c = er && er.code; if (c && !/cancel|declin|denied|dismiss/i.test(c)) toast('No se pudo preparar la invitación.', 'warn'); }); break; }
+    case 'sos-ics': { const f = $('#sos-send-form'), mt = f && sosById(f.dataset.id); if (!mt || !downloads) break; downloads.save({ filename: isUrgent(mt) ? 'reunion_emergencia.ics' : 'convocatoria_reunion.ics', data: sosIcs(mt) }).catch(er => { const c = er && er.code; if (c && !/cancel|declin|denied|dismiss/i.test(c)) toast('No se pudo preparar la invitación.', 'warn'); }); break; }
     case 'mt-pick': { const f = $('#mt-form'); if (!f) break; const [d, a, dur] = el.dataset.v.split(':').map(Number); if (dowOf(f.elements.date.value) !== d) f.elements.date.value = nextDateFor(d); f.elements.start.value = m2t(a); f.elements.end.value = m2t(a + dur); mtFormCheck(); break; }
     case 'mt-del': { const f = $('#mt-form'), mt = f && (S.meetings || []).find(x => x.id === f.dataset.id), z = $('#del-zone'); if (!mt || !z) break; z.innerHTML = `<span>¿Eliminar?</span><button type="button" class="btn sm danger" data-act="mt-del-go" data-v="one">Solo esta</button>${mt.series ? '<button type="button" class="btn sm danger" data-act="mt-del-go" data-v="next">Esta y las siguientes</button>' : ''}<button type="button" class="btn sm" data-act="close-modal">No</button>`; break; }
     case 'mt-del-go': {
@@ -2914,19 +2949,19 @@ document.addEventListener('click', e => {
       (async () => { try { for (const x of L) await db.doc('meetings/' + x.id).delete(); closeModal(); toast(L.length > 1 ? `${L.length} reuniones eliminadas` : 'Reunión eliminada', 'ok'); logFeed(mt.pid || null, `eliminó ${L.length > 1 ? `${L.length} reuniones` : 'la reunión'} «${mt.title}»`); } catch (err) { writeErr(err); } })();
       break;
     }
-    case 'mt-rsvp': { const me = sessionMember(), mt = (S.meetings || []).find(x => x.id === el.dataset.id); if (!me || !mt || !canEdit()) { toast('Ingresa al intranet para confirmar tu asistencia.', 'warn'); break; } const conf = Object.assign({}, mt.confirm || {}); conf[me.id] = conf[me.id] === el.dataset.v ? '' : el.dataset.v; updateRec('meetings', mt.id, { confirm: conf }).then(() => toast(conf[me.id] === 'si' ? 'Asistencia confirmada' : conf[me.id] === 'no' ? 'Avisaste que no podrás asistir' : 'Respuesta retirada', 'ok')).catch(writeErr); break; }
+    case 'mt-rsvp': { const me = sessionMember(), mt = (S.meetings || []).find(x => x.id === el.dataset.id); if (!me || !mt || !canWriteBase()) { toast('Ingresa al intranet para confirmar tu asistencia.', 'warn'); break; } const conf = Object.assign({}, mt.confirm || {}); conf[me.id] = conf[me.id] === el.dataset.v ? '' : el.dataset.v; updateRec('meetings', mt.id, { confirm: conf }).then(() => toast(conf[me.id] === 'si' ? 'Asistencia confirmada' : conf[me.id] === 'no' ? 'Avisaste que no podrás asistir' : 'Respuesta retirada', 'ok')).catch(writeErr); break; }
     case 'mt-csv': { const f2 = UI.mtScope || 'all-all'; saveCsv(upcomingMeetings(meetingsAll()).filter(mt => f2 === 'all-all' || (f2 === 'all' ? !mt.pid : mt.pid === f2)), 'reuniones_equipo_gestion.csv'); break; }
     case 'me-csv': { const m = curMember(); if (m) saveCsv(upcomingMeetings(meetingsAll()).filter(mt => attendeesOf(mt).some(x => x.id === m.id)), 'mis_reuniones_gestion.csv'); break; }
     case 'sched-edit': { const m = memberById(el.dataset.id); if (m && canEditMember(m)) openScheduleForm(m.id); break; }
     case 'sch-add': { const tpl = $('#sch-tpl'), box = $('#sch-rows'); if (tpl && box) { box.appendChild(tpl.content.cloneNode(true)); const r = box.lastElementChild; if (r) { const prev = r.previousElementSibling; if (prev) r.querySelector('[name=d]').value = prev.querySelector('[name=d]').value; r.querySelector('[name=s]').focus(); } } break; }
     case 'sch-del': { const r = el.closest('.sch-row'); if (r) r.remove(); break; }
-    case 'mem-new': if (canEdit() && isAdmin()) openMemberForm(null); break;
+    case 'mem-new': if (canSchedule()) openMemberForm(null); break;
     case 'dir-mode': UI.dirMode = el.dataset.v; render(); break;
     case 'dir-assign': openAssignForm({ key: el.dataset.key || '', pid: el.dataset.pid || '' }); break;
     case 'dir-register': { if (!canSchedule()) break; const x = dirPeople().find(y => y.key === el.dataset.key); if (x) openMemberForm(null, { name: x.name, short: x.name, role: (x.assign[0] && x.assign[0].t && x.assign[0].t.role) || '', email: x.email || '', aliases: x.name, from: x.key, has: x.assign.filter(a => a.t).map(a => ({ pid: a.p.id, role: a.t.role || '' })) }); break; }
     case 'dir-unassign': { const t = (S.team || []).find(x => x.id === el.dataset.id), pj = t && projectById(t.pid); if (!t || !canSchedule()) break; if (!confirm(`¿Quitar a ${t.name} del equipo de ${pj ? pj.code : 'este proyecto'}? Sus tareas, acuerdos y registros se conservan.`)) break; db.doc('team/' + t.id).delete().then(() => { toast(`${t.name} salió de ${pj ? pj.code : 'el proyecto'}`, 'ok'); logFeed(t.pid, `quitó a ${t.name} del equipo del proyecto`); }).catch(writeErr); break; }
-    case 'mem-edit': if (canEdit() && isAdmin()) openMemberForm(el.dataset.id); break;
-    case 'mem-reset': { const m = memberById(el.dataset.id); if (!m || !canEdit() || !isAdmin()) break; if (!confirm(`¿Restablecer la contraseña de ${mName(m)} a la inicial?`)) break; passHash(m.id, DEF_PASS).then(h => updateRec('members', m.id, { pinHash: h, mustChange: true })).then(() => toast(`Contraseña de ${mName(m)} restablecida`, 'ok')).catch(writeErr); break; }
+    case 'mem-edit': if (canSchedule()) openMemberForm(el.dataset.id); break;
+    case 'mem-reset': { const m = memberById(el.dataset.id); if (!m || !canSchedule()) break; if (!confirm(`¿Restablecer la contraseña de ${mName(m)} a la inicial?`)) break; passHash(m.id, DEF_PASS).then(h => updateRec('members', m.id, { pinHash: h, mustChange: true })).then(() => toast(`Contraseña de ${mName(m)} restablecida`, 'ok')).catch(writeErr); break; }
     case 'view-as': if (isAdmin()) { UI.viewAs = el.dataset.id; go('me'); } break;
     case 'view-as-exit': UI.viewAs = null; UI.teamTab = 'acc'; go('team'); break;
     case 'pw-open': openPassForm(); break;
@@ -3772,8 +3807,8 @@ function saveSession(s) { try { if (s) localStorage.setItem('dgp-session', JSON.
 const sessionMember = () => { const s = UI.session; const m = s && memberById(s.id); return m && m.active !== false ? m : null; };
 const isAdmin = () => !!(S.isOwner || (sessionMember() && sessionMember().admin));
 const curMember = () => (UI.viewAs && isAdmin() ? memberById(UI.viewAs) : null) || sessionMember();
-const canEditMember = m => canEdit() && (isAdmin() || (sessionMember() && sessionMember().id === m.id));
-const canSchedule = () => canEdit() && isAdmin();
+const canEditMember = m => canWriteBase() && (isAdmin() || (sessionMember() && sessionMember().id === m.id));
+const canSchedule = () => canWriteBase() && isAdmin();
 async function sha256hex(str) {
   const data = new TextEncoder().encode(str);
   if (window.crypto && crypto.subtle) { try { const h = await crypto.subtle.digest('SHA-256', data); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join(''); } catch (e) { /* respaldo */ } }
@@ -3852,7 +3887,7 @@ function mtRow(mt, me, ro) {
   const p = mt.pid ? projectById(mt.pid) : null, att = attendeesOf(mt), cf = conflictsOf(mt), conf = mt.confirm || {};
   const d = parseD(mt.date);
   const st = mt.status && mt.status !== 'Programada' ? pill(mt.status === 'Realizada' ? 'ok' : mt.status === 'Cancelada' ? 'crit' : 'warn', mt.status) : '';
-  const meBtns = me && !ro && isOpenMt(mt) && canEdit() ? `<span class="mt-rsvp">${['si', 'no'].map(v => `<button class="btn sm${conf[me.id] === v ? (v === 'si' ? ' ok-on' : ' no-on') : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('')}</span>` : '';
+  const meBtns = me && !ro && isOpenMt(mt) && canWriteBase() ? `<span class="mt-rsvp">${['si', 'no'].map(v => `<button class="btn sm${conf[me.id] === v ? (v === 'si' ? ' ok-on' : ' no-on') : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('')}</span>` : '';
   return `<article class="mt-row${mt.status === 'Cancelada' ? ' off' : ''}${isUrgent(mt) ? ' urgent' : ''}">
     <div class="mt-date">${d ? `<span>${DIAS3[(d.getDay() + 6) % 7]}</span><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span>` : '—'}</div>
     <div class="mt-main"><p class="mt-top"><span class="mono">${esc(mt.start)}–${esc(mt.end)}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : isUrgent(mt) && mt.who === 'people' ? '<span class="code-chip all">Personas elegidas</span>' : '<span class="code-chip all">Equipo completo</span>'}${isUrgent(mt) ? pill('crit', 'Emergencia') : ''}${st}${FERIADOS[mt.date] ? pill('warn', 'Feriado') : ''}</p>
@@ -3860,7 +3895,7 @@ function mtRow(mt, me, ro) {
       <p class="mt-att">${att.map(m => `<span class="mt-a${conf[m.id] === 'si' ? ' si' : conf[m.id] === 'no' ? ' no' : ''}" title="${esc(mName(m))}${conf[m.id] === 'si' ? ' · asistirá' : conf[m.id] === 'no' ? ' · no podrá' : ''}">${avatar(m, 'sm')}</span>`).join('')}${(mt.guests || []).length ? `<small class="mt-g">+ ${esc(mt.guests.map(g => g.name || g.email).join(', '))}</small>` : ''}<small>${esc(mt.place || 'Lugar por definir')}</small></p>
       ${cf.length ? `<p class="mt-cf">${icon('alerta', 16)}Choca con: ${cf.map(x => `${esc(mName(x.m))} (${esc(x.b.t)} ${m2t(x.b.s)}–${m2t(x.b.e)})`).join('; ')}</p>` : ''}
       ${mt.agenda ? `<details class="mt-ag"><summary>Agenda</summary><p>${fmtTxt(mt.agenda)}</p></details>` : ''}</div>
-    <div class="mt-acts">${meBtns}<a class="btn sm" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer" title="Agregar a Google Calendar para recibir avisos">Google Calendar ↗</a>${isUrgent(mt) && !ro ? `<button class="btn sm sos" data-act="sos-send" data-id="${esc(mt.id)}">${canSchedule() ? 'Convocatoria' : 'Detalles'}</button>` : ''}${canSchedule() && !ro ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Editar</button>` : ''}</div></article>`;
+    <div class="mt-acts">${meBtns}<a class="btn sm" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer" title="Agregar a Google Calendar para recibir avisos">Google Calendar ↗</a>${isUrgent(mt) && !ro ? `<button class="btn sm sos" data-act="sos-send" data-id="${esc(mt.id)}">${canSchedule() ? 'Convocatoria' : 'Detalles'}</button>` : ''}${!isUrgent(mt) && !ro && canSchedule() && isOpenMt(mt) ? `<button class="btn sm" data-act="sos-send" data-id="${esc(mt.id)}" title="Correo con los participantes ya cargados">Convocar por correo</button>` : ''}${canSchedule() && !ro ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Editar</button>` : ''}</div></article>`;
 }
 function weekLabel(iso) { const d = parseD(iso); const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7)); const sun = new Date(mon); sun.setDate(mon.getDate() + 6); return `Semana del ${mon.getDate()} ${MES[mon.getMonth()]} al ${sun.getDate()} ${MES[sun.getMonth()]}`; }
 function meetingList(list, me, ro) {
@@ -4037,18 +4072,22 @@ function sosRecipients(mt) {
   return out;
 }
 function sosWhen(mt) { const n = dBetween(today(), parseD(mt.date)); return `${n === 0 ? 'hoy, ' : n === 1 ? 'mañana, ' : ''}${fmtDay(mt.date).toLowerCase()}, de ${mt.start} a ${mt.end} (hora de Lima)`; }
-const sosSubject = mt => `[URGENTE] ${mt.title}${mt.pid ? ` · ${(projectById(mt.pid) || {}).code || ''}` : ''} · ${dBetween(today(), parseD(mt.date)) === 0 ? 'hoy' : fmtDay(mt.date)} a las ${mt.start}`;
+// tipo de aviso por correo: emergencia, convocatoria normal o cambio de una reunión ya programada
+const mtKindOf = mt => (isUrgent(mt) ? 'urgente' : UI.mtKind === 'cambio' ? 'cambio' : 'conv');
+const MT_PFX = { urgente: '[URGENTE] ', conv: 'Convocatoria: ', cambio: 'Cambio de reunión: ' };
+const sosSubject = mt => `${MT_PFX[mtKindOf(mt)]}${mt.title}${mt.pid ? ` · ${(projectById(mt.pid) || {}).code || ''}` : ''} · ${dBetween(today(), parseD(mt.date)) === 0 ? 'hoy' : fmtDay(mt.date)} a las ${mt.start}`;
 function sosMsg(mt) {
   const p = mt.pid ? projectById(mt.pid) : null;
-  const L = [`Reunión de emergencia: ${mt.title}`, '', `Cuándo: ${sosWhen(mt)}`, `Dónde: ${mt.place || 'te enviaremos el enlace o el lugar en breve'}`];
+  const k = mtKindOf(mt);
+  const L = [`${k === 'urgente' ? 'Reunión de emergencia' : k === 'cambio' ? 'Se actualizó la reunión' : 'Te convocamos a la reunión'}: ${mt.title}`, '', `Cuándo: ${sosWhen(mt)}`, `Dónde: ${mt.place || 'te enviaremos el enlace o el lugar en breve'}`];
   if (p) L.push(`Proyecto: ${p.code} · ${p.name}`);
   L.push(`Convoca: ${mt.organizer || 'Dirección de proyectos'}`, `Participan: ${sosNames(mt).join(', ')}`);
-  if (mt.agenda) L.push('', 'Qué hay que resolver:', mt.agenda);
+  if (mt.agenda) L.push('', k === 'urgente' ? 'Qué hay que resolver:' : 'Agenda:', mt.agenda);
   L.push('', 'Confirma tu asistencia respondiendo este mensaje o en el intranet del sistema.', 'Sistema de Dirección de Gestión de Proyectos · DGP OGPL-UNMSM');
   return L.join('\n');
 }
 const uenc = encodeURIComponent;
-const sosTitle = mt => `[URGENTE] ${mt.title}${mt.pid ? ` · ${(projectById(mt.pid) || {}).code || ''}` : ''}`;
+const sosTitle = mt => `${isUrgent(mt) ? '[URGENTE] ' : ''}${mt.title}${mt.pid ? ` · ${(projectById(mt.pid) || {}).code || ''}` : ''}`;
 function sosLinks(mt) {
   const R = sosRecipients(mt), msg = sosMsg(mt), sub = sosSubject(mt);
   const d = String(mt.date).replace(/-/g, ''), s = String(mt.start).replace(':', '') + '00', e = String(mt.end).replace(':', '') + '00';
@@ -4072,10 +4111,10 @@ function sosIcs(mt) {
   const org = mailOk(mt.organizerEmail);
   const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DGP OGPL-UNMSM//Gestion//ES', 'CALSCALE:GREGORIAN', `METHOD:${org ? 'REQUEST' : 'PUBLISH'}`, 'BEGIN:VEVENT',
     `UID:${mt.id || Date.now().toString(36)}@gestion-dgp-ogpl`, `DTSTAMP:${utc(new Date())}`, `DTSTART:${utc(mtAt(mt, 'start'))}`, `DTEND:${utc(mtAt(mt, 'end'))}`,
-    `SUMMARY:${tx(sub)}`, `DESCRIPTION:${tx(msg)}`, `LOCATION:${tx(mt.place || '')}`, 'PRIORITY:1', 'STATUS:CONFIRMED']
+    `SUMMARY:${tx(sub)}`, `DESCRIPTION:${tx(msg)}`, `LOCATION:${tx(mt.place || '')}`, `PRIORITY:${isUrgent(mt) ? 1 : 5}`, 'STATUS:CONFIRMED']
     .concat(org ? [`ORGANIZER;CN=${cn(mt.organizer)}:mailto:${mt.organizerEmail}`] : [])
     .concat(R.map(e => `ATTENDEE;CN=${cn(names.get(e) || e)};ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${e}`))
-    .concat(['BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Reunión de emergencia', 'TRIGGER:-PT5M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR']);
+    .concat(['BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${isUrgent(mt) ? 'Reunión de emergencia' : 'Recordatorio de reunión'}`, `TRIGGER:${isUrgent(mt) ? '-PT5M' : '-PT15M'}`, 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR']);
   return L.map(fold).join('\r\n') + '\r\n';
 }
 async function copyText(txt) {
@@ -4084,19 +4123,21 @@ async function copyText(txt) {
     document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (er) { ok = false; } ta.remove(); return ok;
   }
 }
-function openSosSend(arg) {
-  const mt = typeof arg === 'string' ? sosById(arg) : arg; if (!mt) return;
-  UI.sosLast = mt;
+function openSosSend(arg, kind) {
+  let mt = typeof arg === 'string' ? sosById(arg) : arg; if (!mt) return;
+  const org0 = sessionMember(); if (!mt.organizer && org0) mt = Object.assign({}, mt, { organizer: org0.name, organizerEmail: mailOk(org0.email) ? org0.email : '' });
+  UI.sosLast = mt; UI.mtKind = kind || '';
+  const k = mtKindOf(mt), urg = k === 'urgente';
   const L = sosLinks(mt), admin = canSchedule(), att = attendeesOf(mt), conf = mt.confirm || {}, p = mt.pid ? projectById(mt.pid) : null;
   const miss = att.filter(m => !mailOk(m.email)).map(mName).concat((mt.guests || []).filter(g => !mailOk(g.email)).map(g => g.name || 'Invitado'));
   const me = sessionMember(), mine = me && att.some(a => a.id === me.id);
-  const body = `<div class="sos-card"><p class="mt-top">${pill('crit', 'Emergencia')}<span class="mono">${esc(whenTxt(mt))}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : ''}${mt.status && mt.status !== 'Programada' ? pill(mt.status === 'Realizada' ? 'ok' : 'idle', mt.status) : ''}</p>
+  const body = `<div class="sos-card"><p class="mt-top">${urg ? pill('crit', 'Emergencia') : k === 'cambio' ? pill('warn', 'Cambio') : pill('data', 'Convocatoria')}<span class="mono">${esc(whenTxt(mt))}</span>${p ? `<span class="code-chip">${esc(p.code)}</span>` : ''}${mt.status && mt.status !== 'Programada' ? pill(mt.status === 'Realizada' ? 'ok' : 'idle', mt.status) : ''}</p>
       <h3>${esc(mt.title)}</h3><p class="note">Convoca ${esc(mt.organizer || 'Dirección de proyectos')} · ${esc(sosGroup(mt))}</p>
       <p class="sos-place">${isUrl(mt.place) ? `<a class="btn sm sos" href="${esc(mt.place)}" target="_blank" rel="noopener noreferrer">Unirse a la reunión ↗</a>` : esc(mt.place || 'Lugar o enlace por definir')}</p>
       ${mt.agenda ? `<p>${fmtTxt(mt.agenda)}</p>` : ''}
       <p class="mt-att">${att.map(m => `<span class="mt-a${conf[m.id] === 'si' ? ' si' : conf[m.id] === 'no' ? ' no' : ''}" title="${esc(mName(m))}${conf[m.id] === 'si' ? ' · asistirá' : conf[m.id] === 'no' ? ' · no podrá' : ''}">${avatar(m, 'sm')}</span>`).join('')}${(mt.guests || []).length ? `<small>+ ${esc(mt.guests.map(g => g.name || g.email).join(', '))}</small>` : ''}</p>
-      ${mine && canEdit() && isOpenMt(mt) ? `<p class="mt-rsvp">${['si', 'no'].map(v => `<button type="button" class="btn sm${conf[me.id] === v ? (v === 'si' ? ' ok-on' : ' no-on') : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('')}</p>` : ''}</div>
-    ${admin ? `<h4 class="sos-h">Envía la convocatoria</h4>
+      ${mine && canWriteBase() && isOpenMt(mt) ? `<p class="mt-rsvp">${['si', 'no'].map(v => `<button type="button" class="btn sm${conf[me.id] === v ? (v === 'si' ? ' ok-on' : ' no-on') : ''}" data-act="mt-rsvp" data-id="${esc(mt.id)}" data-v="${v}">${v === 'si' ? 'Asistiré' : 'No podré'}</button>`).join('')}</p>` : ''}</div>
+    ${admin ? `<h4 class="sos-h">${k === 'cambio' ? 'Avisa el cambio a los participantes' : 'Envía la convocatoria'}${kind === 'serie' ? ' <small>(primera fecha de la serie)</small>' : ''}</h4>
     <div class="sos-send">
       <a class="btn sos" href="${esc(L.gmail)}" target="_blank" rel="noopener noreferrer">${icon('correo', 18)}Enviar por Gmail ↗</a>
       <a class="btn" href="${esc(L.cal)}" target="_blank" rel="noopener noreferrer">Invitación de Google Calendar ↗</a>
@@ -4110,8 +4151,8 @@ function openSosSend(arg) {
     ${miss.length ? `<p class="cf-bad">${icon('alerta', 16)}Sin correo: ${esc(miss.join(', '))}. Agrégalo en el Directorio o avísale por WhatsApp.</p>` : ''}
     <p class="note">Gmail y Google Calendar se abren con los correos, el asunto y el mensaje ya escritos: revisa y pulsa Enviar o Guardar. En Google Calendar puedes sumar la videollamada de Meet antes de guardar; así cada persona recibe la invitación en su correo.</p>` : ''}
     <textarea hidden id="sos-msg">${esc(L.msg)}</textarea>`;
-  const foot = `<div class="foot-r">${admin && mt.id && isOpenMt(mt) ? '<button type="button" class="btn" data-act="sos-end">Marcar como realizada</button>' : ''}<button type="button" class="btn primary" data-act="close-modal">Listo</button></div>`;
-  dlg('Reunión de emergencia', body, foot, 'sos-send-form');
+  const foot = `<div class="foot-r">${admin && urg && mt.id && isOpenMt(mt) ? '<button type="button" class="btn" data-act="sos-end">Marcar como realizada</button>' : ''}<button type="button" class="btn primary" data-act="close-modal">Listo</button></div>`;
+  dlg(urg ? 'Reunión de emergencia' : k === 'cambio' ? 'Avisar el cambio por correo' : 'Convocatoria por correo', body, foot, 'sos-send-form');
   $('#sos-send-form').dataset.id = mt.id || '';
 }
 // --- aviso en vivo
@@ -4366,7 +4407,8 @@ function mtFormCheck() {
     const cf = []; out.forEach(iso => { const d = dowOf(iso); ms.forEach(m => busyIn(m, d, s, e).forEach(b => cf.push(`${fmtDay(iso)}: ${mName(m)} (${b.t} ${m2t(b.s)}–${m2t(b.e)})`))); });
     msg = (cf.length ? `<p class="cf-bad">${icon('alerta', 16)}Choca con clases: ${esc(cf.slice(0, 4).join('; '))}${cf.length > 4 ? ` y ${cf.length - 4} más` : ''}.</p>` : `<p class="cf-ok">✓ Nadie de ${esc(scopeName(v.scope))} tiene clase en ese horario${out.length > 1 ? ` (${plural(out.length, 'fecha', 'fechas')})` : ''}.</p>`)
       + (skipped.length ? `<p class="note">Feriados ${v.rep === 14 ? 'movidos una semana' : 'omitidos'}: ${skipped.map(x => `${fmtDay(x)} (${FERIADOS[x]})`).join(', ')}.</p>` : '')
-      + (pend.length ? `<p class="note">Sin horario cargado: ${esc(pend.map(mName).join(', '))}; confírmalo con ${pend.length > 1 ? 'ellos' : 'esa persona'}.</p>` : '');
+      + (pend.length ? `<p class="note">Sin horario cargado: ${esc(pend.map(mName).join(', '))}; confírmalo con ${pend.length > 1 ? 'ellos' : 'esa persona'}.</p>` : '')
+      + (() => { const ok = ms.filter(m => mailOk(m.email)), no = ms.filter(m => !mailOk(m.email)); return `<p class="note">${icon('correo', 14)} Al guardar se abre la convocatoria por correo, ya dirigida a: ${esc(ok.map(m => m.email).join(', ') || 'nadie con correo registrado')}${no.length ? `. Sin correo: ${esc(no.map(mName).join(', '))}` : ''}.</p>`; })();
   }
   box.innerHTML = msg;
   const dur = s != null && e != null && e > s ? e - s : 60;
@@ -4380,13 +4422,19 @@ async function submitMeeting(f) {
   const base = { title: v.title, pid: v.scope === 'all' ? '' : v.scope, start: v.start, end: v.end, place: v.place, agenda: v.agenda };
   const btn = f.querySelector('[type=submit]'); btn.disabled = true;
   try {
-    if (id) { await updateRec('meetings', id, Object.assign(base, { date: v.date, status: v.status })); toast('Reunión actualizada', 'ok'); }
+    if (id) {
+      const prev = (S.meetings || []).find(x => x.id === id) || {};
+      await updateRec('meetings', id, Object.assign(base, { date: v.date, status: v.status })); toast('Reunión actualizada: avisa el cambio por correo', 'ok');
+      closeModal(); schedule(); openSosSend(Object.assign({}, prev, base, { id, date: v.date, status: v.status }), 'cambio'); return;
+    }
     else {
       const { out } = mtDates(v); if (!out.length) { formErr('No hay fechas válidas entre la fecha inicial y la final.'); btn.disabled = false; return; }
       const series = out.length > 1 ? 'S-' + Date.now().toString(36) : '';
-      for (const iso of out) await createRec('meetings', Object.assign({}, base, { date: iso, status: 'Programada', series, confirm: {} }));
+      let first = null;
+      for (const iso of out) { const ref = await createRec('meetings', Object.assign({}, base, { date: iso, status: 'Programada', series, confirm: {} })); if (!first) first = Object.assign({ id: (ref && ref.id) || '' }, base, { date: iso, status: 'Programada', series, confirm: {} }); }
       toast(out.length > 1 ? `${plural(out.length, 'reunión programada', 'reuniones programadas')}` : 'Reunión programada', 'ok');
       logFeed(base.pid || null, `programó ${out.length > 1 ? `${out.length} reuniones` : 'una reunión'} «${v.title}» desde el ${fmtD(out[0])}`);
+      closeModal(); schedule(); if (first) openSosSend(first, out.length > 1 ? 'serie' : ''); return;
     }
     closeModal(); schedule();
   } catch (e) { btn.disabled = false; writeErr(e); }
@@ -4471,7 +4519,7 @@ async function submitLogin(f) {
   const ok = m && (await passHash(m.id, pass)) === m.pinHash;
   if (!ok) { loginFails++; if (loginFails >= 5) { loginLock = Date.now() + 30000; loginFails = 0; } show(m ? 'La contraseña no es correcta.' : 'Ese correo no está registrado en el equipo. Pide al administrador que lo registre.'); return; }
   loginFails = 0; UI.session = { id: m.id, exp: Date.now() + 7 * DAY }; saveSession(UI.session); UI.viewAs = null;
-  if (canEdit()) updateRec('members', m.id, { lastLogin: new Date().toISOString() }).catch(() => {});
+  if (canWriteBase()) updateRec('members', m.id, { lastLogin: new Date().toISOString() }).catch(() => {});
   toast(`Bienvenido, ${mName(m)}`, 'ok'); render(); window.scrollTo(0, 0);
 }
 function viewLogin() {
@@ -5807,7 +5855,7 @@ function ofPanelHtml() {
   }
   if (s.startsWith('r:')) {
     const r = (S.agentRuns || []).find(x => x.id === s.slice(2)); if (!r) return '';
-    const m = memberById(r.member), mine = canEdit() && (isAdmin() || (S.me && r.createdBy === S.me.id));
+    const m = memberById(r.member), mine = canWriteBase() && (isAdmin() || (S.me && r.createdBy === S.me.id));
     return `<header class="of-ph">${m ? avatar(m, 'lg') : ''}<div><h3>${esc(r.title)}</h3><p>Agente de ${esc(m ? m.name : 'un integrante')} · ${fmtD(String(r.createdAt).slice(0, 10))}</p></div>${close}</header>
       ${r.ask ? `<p class="note">Pedido: ${esc(r.ask)}</p>` : ''}<div class="of-out ai-body">${mdLite(r.text)}</div>
       <footer class="of-pf">${m ? `<button class="btn sm" data-act="of-sel" data-v="m:${esc(m.id)}">Ver a ${esc(String(mName(m)).split(' ')[0])}</button>` : ''}${downloads ? `<button class="btn sm" data-act="of-run-dl" data-v="${esc(r.id)}">Descargar (.md)</button>` : ''}${mine ? `<button class="btn sm danger" data-act="of-run-del" data-v="${esc(r.id)}">Eliminar</button>` : ''}</footer>`;
@@ -5960,7 +6008,7 @@ async function ofAgentRun(mid, k, ask) {
 let ofPaintRaf = 0;
 function ofAgentPaint() { if (ofPaintRaf) return; ofPaintRaf = requestAnimationFrame(() => { ofPaintRaf = 0; const o = $('#of-agent-out'); if (o && UI.of.ag) { const nearEnd = o.scrollHeight - o.scrollTop - o.clientHeight < 40; o.innerHTML = mdLite(UI.of.ag.text); if (nearEnd) o.scrollTop = o.scrollHeight; } }); }
 async function ofAgentSave() {
-  const g = UI.of.ag; if (!g || !g.text || g.saved || !canEdit()) return;
+  const g = UI.of.ag; if (!g || !g.text || g.saved || !canWriteBase()) return;
   const m = memberById(g.mid), po = m ? ofPorg(m) : '', pid = m ? ((projectsOf(m).find(x => projOrgId(x.p) === po) || projectsOf(m)[0] || {}).p || {}).id || '' : '';
   try { await createRec('agentRuns', { member: g.mid, title: g.title, action: g.k, ask: g.ask || '', text: g.text, pid }); g.saved = true; toast('Guardado en la producción de los agentes', 'ok'); logFeed(pid || null, `guardó el trabajo del agente de IA de ${m ? mName(m) : 'un integrante'}: «${g.title}»`); ofPanelPaint(); }
   catch (e) { writeErr(e); }
@@ -6000,7 +6048,7 @@ function ofClick(act, el) {
     case 'of-agent-copy': { const g = UI.of.ag; if (g && g.text && navigator.clipboard) navigator.clipboard.writeText(g.text).then(() => toast('Copiado', 'ok')).catch(() => toast('No se pudo copiar.', 'warn')); return true; }
     case 'of-run': UI.of.sel = 'r:' + el.dataset.v; ofPanelPaint(); { const o = $('#of'); if (o && !el.closest('#of')) o.scrollIntoView({ behavior: ofReduced() ? 'auto' : 'smooth', block: 'start' }); } return true;
     case 'of-run-dl': { const r = (S.agentRuns || []).find(x => x.id === el.dataset.v), m = r && memberById(r.member); if (r) ofSaveMd(r.title, m ? m.name : 'integrante', r.text); return true; }
-    case 'of-run-del': { const r = (S.agentRuns || []).find(x => x.id === el.dataset.v); if (!r || !canEdit() || !confirm('¿Eliminar este trabajo del agente?')) return true; db.doc('agentRuns/' + r.id).delete().then(() => { UI.of.sel = r.member ? 'm:' + r.member : null; toast('Trabajo eliminado', 'ok'); }).catch(writeErr); return true; }
+    case 'of-run-del': { const r = (S.agentRuns || []).find(x => x.id === el.dataset.v); if (!r || !canWriteBase() || !(isAdmin() || (S.me && r.createdBy === S.me.id)) || !confirm('¿Eliminar este trabajo del agente?')) return true; db.doc('agentRuns/' + r.id).delete().then(() => { UI.of.sel = r.member ? 'm:' + r.member : null; toast('Trabajo eliminado', 'ok'); }).catch(writeErr); return true; }
     case 'of-retry': OF.fail = ''; ofMount(); return true;
   }
   return false;
