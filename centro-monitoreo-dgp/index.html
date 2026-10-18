@@ -1377,7 +1377,7 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .sos-place{font-size:14px}
 .sos-h{margin:16px 0 8px;font:800 14px/1.3 var(--font-display)}
 .sos-send{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.me-req{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:13px}.req-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.acc-steps{margin:0 0 10px 18px;display:grid;gap:6px}.acc-st small{display:block;margin-top:4px}.req-pill{cursor:pointer;border:0;font:inherit}@media (max-width:600px){.nav-r .acc-pill{display:none}}
+.me-req{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:13px}.req-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.acc-steps{margin:0 0 10px 18px;display:grid;gap:6px}.acc-st small{display:block;margin-top:4px}.req-pill{cursor:pointer;border:0;font:inherit}.prop-note{display:flex;gap:8px;align-items:flex-start;background:var(--warn-soft);color:var(--ink);border-radius:10px;padding:10px 12px;margin:0 0 14px;font-size:13.5px}.prop-ban{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px;padding:12px 16px;border-radius:14px;background:var(--warn-soft);color:var(--ink);font-size:14px}.prop-ban span{flex:1;min-width:220px}.ap-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:8px}.ap-head p{flex:1;min-width:240px;margin:0}.ap-proj{margin-top:18px}.ap-list{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:10px}.ap-item{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}.ap-top{display:flex;gap:10px;align-items:flex-start}.ap-top>div{min-width:0}.ap-top p{margin:0}.ap-top small{color:var(--ink-muted)}.ap-diff{margin-top:8px}.ap-diff summary{cursor:pointer;font-size:13px;color:var(--ink-muted)}.ap-t td{vertical-align:top;font-size:13px}.ap-t td.wrap{min-width:0;max-width:none;overflow-wrap:anywhere}.ap-old{color:var(--ink-muted);text-decoration:line-through;text-decoration-color:rgba(153,27,27,.45)}.ap-new{font-weight:600}.ap-hist{margin-top:18px}.ap-hist summary{cursor:pointer}.ap-not{margin:12px 0}@media (max-width:600px){.nav-r .acc-pill{display:none}}
 .sos-send .btn{display:inline-flex;align-items:center;gap:6px}
 .sos-to textarea{font:500 12.5px/1.45 var(--font-mono);resize:vertical}
 .mt-row.urgent{border-left:4px solid var(--sos)}
@@ -1790,7 +1790,8 @@ function accessPill() {
   if (fullAccess()) { const n = reqPend().length; return `<span class="pill ok${n && isAdmin() ? ' acc-pill' : ''}" title="Acceso total a todos los proyectos">Acceso total</span>` + (n && isAdmin() ? `<button class="pill warn req-pill" data-act="go-reqs" title="Solicitudes del equipo que esperan tu decisión">${plural(n, 'solicitud', 'solicitudes')}</button>` : ''); }
   const me = sessionMember(); if (!me) return '<span class="pill" title="Ingresa al intranet para editar tus proyectos">Solo lectura · ingresa al intranet</span>';
   const L = projectsOf(me).map(x => x.p.code).filter(Boolean);
-  return `<span class="pill data" title="Puedes editar solo los proyectos en los que participas">Editor${L.length ? ' · ' + esc(L.join(', ')) : ''}</span>`;
+  const nn = newsUnseen(me);
+  return `<span class="pill data${nn ? ' acc-pill' : ''}" title="Propones cambios en los proyectos en los que participas; se aplican cuando los aprueba un administrador">Editor${L.length ? ' · ' + esc(L.join(', ')) : ''}</span>${nn ? `<button class="pill warn req-pill" data-act="go-me" title="Cambios aprobados o rechazados desde tu última visita al intranet">${plural(nn, 'novedad', 'novedades')}</button>` : ''}`;
 }
 const permErr = msg => Object.assign(new Error(msg), { code: 'perm_denied' });
 // control de cada escritura, aunque el botón se haya mostrado
@@ -1798,11 +1799,11 @@ function guardWrite(coll, id, data) {
   if (fullAccess()) return;
   const me = sessionMember(), keys = Object.keys(data || {}).filter(k => k !== 'updatedAt' && k !== 'updatedBy');
   if (coll === 'members') { if (keys.every(k => k === 'lastLogin' || k === 'accessOk')) return; if (!me || me.id !== id || keys.some(k => k === 'admin' || k === 'active' || k === 'email')) throw permErr('Solo un administrador puede modificar a otros integrantes.'); return; }
-  if (coll === 'meetings') { if (keys.length && keys.every(k => k === 'confirm')) return; throw permErr('Solo Alvaro Rojas y José Antonio Chumacero programan o modifican reuniones.'); }
+  if (coll === 'meetings') { if (keys.length && keys.every(k => k === 'confirm')) return; throw permErr('Solo puedes proponer reuniones de los proyectos en los que participas; las del equipo completo las programa un administrador.'); }
   if (coll === 'feed' || coll === 'agentRuns') return;
   if (coll === 'requests') {
     if (!me) throw permErr('Ingresa al intranet con tu correo para enviar solicitudes.');
-    if (!id && data && data.member === me.id && data.status === 'pendiente' && data.type === 'salida') return;
+    if (!id && data && data.member === me.id && data.status === 'pendiente' && (data.type === 'salida' || data.type === 'cambio')) return;
     const r = id ? (S.requests || []).find(x => x.id === id) : null;
     if (r && r.member === me.id && r.status === 'pendiente' && keys.every(k => k === 'status') && data.status === 'cancelada') return;
     throw permErr('Solo un administrador resuelve las solicitudes.');
@@ -1819,13 +1820,238 @@ const stamp = () => ({ updatedAt: new Date().toISOString(), updatedBy: (S.me && 
 function writeErr(e) {
   const code = e && e.code;
   if (code === 'perm_denied') { toast(e.message, 'warn'); return; }
+  if (code === 'queued') { closeModal(); if (UI.planEdit) { UI.planEdit = null; renderPlanReader(true); } toast(`Enviado a ${adminNames()} para su aprobación. Lo verás en «Mis propuestas» de tu intranet.`, 'ok'); schedule(); return; }
+  if (code === 'noop') { closeModal(); toast('No hay cambios que enviar.', 'warn'); return; }
   if (code === 'invalid_argument') { S.readOnly = true; toast('Tu cuenta de claude.ai solo tiene permiso de lectura: pide acceso al administrador.', 'crit'); schedule(); if (sessionMember()) setTimeout(openAccessReq, 60); }
   else if (code === 'quota_exceeded') toast('La base de datos llegó a su límite. Elimina registros antiguos (por ejemplo, de la bitácora) para seguir.', 'crit');
   else if (code === 'resource_exhausted') toast('Demasiadas operaciones seguidas. Espera unos segundos y vuelve a intentarlo.', 'warn');
   else toast('No se pudo guardar. Revisa tu conexión y vuelve a intentarlo.', 'crit');
 }
-async function createRec(coll, data) { guardWrite(coll, '', data); const now = new Date().toISOString(); return db.collection(coll).add(Object.assign({}, data, stamp(), { createdAt: now, createdBy: (S.me && S.me.id) || null })); }
-async function updateRec(coll, id, data) { guardWrite(coll, id, data); return db.doc(`${coll}/${id}`).update(Object.assign({}, data, stamp())); }
+/* =========================================================
+   Propuestas de cambio: lo que un colaborador cambia en un proyecto (cronograma, gobernanza, bitácora,
+   reuniones y demás registros) queda pendiente hasta que un administrador lo aprueba; al aprobarlo
+   se aplica y se avisa al equipo del proyecto
+   ========================================================= */
+const SYS_URL = 'https://claude.ai/artifact/68XxUnphaxw9qK4KJQsvTW';
+const NEEDS_OK = new Set([...Object.keys(COLL), 'projects', 'plans', 'planSections', 'meetings']);
+const META_K = new Set(['updatedAt', 'updatedBy', 'createdAt', 'createdBy']);
+const normV = v => (v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v));
+const queuedErr = () => Object.assign(new Error('Cambio enviado para aprobación'), { code: 'queued' });
+// el colaborador trabaja en modo propuesta: sus cambios esperan la aprobación de un administrador
+const propMode = () => !fullAccess() && !!sessionMember();
+const recOf = (coll, id) => (!id ? null : coll === 'projects' ? projectById(id) : (S[coll] || []).find(x => x.id === id) || null);
+const COLL_ONE = c => (c === 'projects' ? 'acta del proyecto' : c === 'meetings' ? 'reunión' : c === 'plans' ? 'plan de gestión' : c === 'planSections' ? 'sección del plan' : (COLL[c] || {}).one || c);
+function recName(coll, r) {
+  if (!r) return '';
+  if (coll === 'tasks') return `${r.wbs ? r.wbs + ' ' : ''}${r.name || ''}`.trim();
+  if (coll === 'planSections') return r.title || '';
+  if (coll === 'plans') return `${r.code || ''} ${r.title || ''}`.trim();
+  if (coll === 'projects') return r.code || '';
+  return r.name || r.title || r.text || r.activity || r.description || r.situation || r.code || '';
+}
+const cutTxt = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; };
+function changeLabel(coll, rec, d, op) {
+  const nm = cutTxt(recName(coll, rec) || recName(coll, d), 80), ks = Object.keys(d || {});
+  if (coll === 'meetings') return `${op === 'create' ? 'Nueva reunión' : op === 'delete' ? 'Eliminar la reunión' : 'Modificar la reunión'}: «${cutTxt((d && d.title) || (rec && rec.title), 90)}»`;
+  if (op === 'update' && coll === 'tasks' && ks.every(k => k === 'progress' || k === 'doneAt' || k === 'prevProgress')) return `Avance de la tarea ${nm}: ${num(rec && rec.progress)} % → ${num(d.progress)} %`;
+  if (op === 'update' && coll === 'agreements' && d.status === 'Cumplido') return `Acuerdo cumplido: «${nm}»`;
+  if (op === 'update' && coll === 'projects' && ks.length === 1 && d.phase) return `Área de enfoque de ${nm}: ${(rec && rec.phase) || '—'} → ${d.phase}`;
+  if (op === 'update' && d.owner !== undefined && ks.every(k => k === 'owner' || k === 'transfers')) return `Transferir «${nm}» a ${d.owner || '—'}`;
+  if (op === 'update' && coll === 'planSections' && rec) { const pl = planById(rec.plan); return `Plan ${pl ? pl.code : ''}: «${cutTxt(rec.title, 80)}»`; }
+  return `${op === 'create' ? 'Agregar' : op === 'delete' ? 'Eliminar' : 'Modificar'} ${COLL_ONE(coll)}${nm ? `: «${nm}»` : ''}`;
+}
+// convierte una escritura del colaborador en propuesta; null = la escritura sigue su curso normal
+function proposalFor(coll, id, data, op) {
+  if (fullAccess() || !NEEDS_OK.has(coll)) return null;
+  const me = sessionMember(); if (!me) return null;
+  const d = {}; Object.entries(data || {}).forEach(([k, v]) => { if (!META_K.has(k) && v !== undefined) d[k] = v; });
+  if (coll === 'meetings' && op === 'update' && Object.keys(d).every(k => k === 'confirm')) return null;
+  const rec = recOf(coll, id), pid = coll === 'projects' ? id : (rec && rec.pid) || d.pid || '';
+  if (!pid || !inProject(me, pid)) return null;
+  if (coll === 'projects' && op !== 'update') return null;
+  const prev = {};
+  if (op === 'update') {
+    Object.keys(d).forEach(k => { if (rec && normV(rec[k]) === normV(d[k])) delete d[k]; else prev[k] = rec && rec[k] !== undefined ? rec[k] : null; });
+    if (!Object.keys(d).length) return { noop: true };
+  }
+  // quién integra el equipo lo decide un administrador (guardWrite lo rechaza); el rol y la dedicación sí se proponen
+  if (coll === 'team' && (op !== 'update' || Object.keys(d).some(k => k === 'name' || k === 'memberId' || k === 'pid'))) return null;
+  if (op === 'delete' && rec) Object.keys(rec).forEach(k => { if (!META_K.has(k) && k !== 'id') prev[k] = rec[k]; });
+  return { type: 'cambio', member: me.id, pid, coll, doc: id || '', op, data: op === 'delete' ? {} : d, prev, label: changeLabel(coll, rec, d, op), status: 'pendiente' };
+}
+async function submitProposal(pr) {
+  await createRec('requests', pr);
+  logFeed(pr.pid, `propuso un cambio para aprobación: ${String(pr.label).slice(0, 120)}`);
+}
+// detalle de una propuesta: campo, antes y propuesto
+const MT_LBL = { title: 'Asunto', date: 'Fecha', start: 'Inicio', end: 'Fin', place: 'Lugar o enlace', agenda: 'Puntos a tratar', status: 'Estado' };
+function fieldLbl(coll, k) {
+  const F = coll === 'projects' ? PROJECT_FIELDS : (COLL[coll] || {}).fields || [];
+  const f = F.find(x => x.k === k); if (f) return f.l;
+  return (coll === 'meetings' && MT_LBL[k]) || { blocks: 'Contenido de la sección', validated: 'Secciones validadas', progress: 'Avance (%)', doneAt: 'Fecha de término', owner: 'Responsable', status: 'Estado' }[k] || k;
+}
+function valFmt(k, v) {
+  if (v == null || v === '') return '—';
+  if (Array.isArray(v)) return plural(v.length, 'elemento', 'elementos');
+  if (typeof v === 'object') return '…';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(v))) return fmtD(v);
+  return String(v);
+}
+const blocksTxt = bl => (bl || []).map(b => b.t === 'table' ? [(b.head || []).join(' | ')].concat((b.rows || []).map((r, i) => `${(b.done || [])[i] ? '✓ ' : ''}${(r || []).join(' | ')}`)).join('\n')
+  : b.t === 'ul' || b.t === 'ol' ? (b.items || []).join('\n') : b.t === 'img' ? '[figura]' : b.t === 'file' ? `[archivo: ${b.label || b.src || ''}]` : String(b.text || ''));
+function diffList(r) {
+  const out = [], HIDE = new Set(['prevProgress', 'transfers', 'confirm', 'series', 'pid', 'proposedBy']);
+  if (r.op === 'delete') return [{ label: COLL_ONE(r.coll), before: recName(r.coll, r.prev) || 'el registro', after: 'Se elimina' }];
+  for (const [k, v] of Object.entries(r.data || {})) {
+    if (HIDE.has(k)) continue;
+    if (k === 'blocks') {
+      const a = blocksTxt((r.prev || {}).blocks), b = blocksTxt(v), n = Math.max(a.length, b.length);
+      for (let i = 0; i < n; i++) if ((a[i] || '') !== (b[i] || '')) {
+        // en tablas largas se muestran solo las filas que cambian
+        const la = String(a[i] || '').split('\n'), lb = String(b[i] || '').split('\n');
+        const da = la.filter(x => !lb.includes(x)), db_ = lb.filter(x => !la.includes(x));
+        out.push({ label: `Bloque ${i + 1}`, before: (da.join('\n') || '—').slice(0, 700), after: (db_.join('\n') || '—').slice(0, 700) });
+      }
+      continue;
+    }
+    out.push({ label: fieldLbl(r.coll, k), before: r.op === 'create' ? '' : valFmt(k, (r.prev || {})[k]), after: valFmt(k, v) });
+  }
+  if (r.coll === 'meetings' && Array.isArray(r.dates) && r.dates.length > 1) out.push({ label: 'Fechas', before: '', after: r.dates.map(fmtD).join(', ') });
+  return out;
+}
+const diffTable = (d, op) => `<div class="tbl"><table class="ap-t"><thead><tr><th>Campo</th>${op === 'create' ? '' : '<th>Antes</th>'}<th>${op === 'delete' ? 'Cambio' : 'Propuesto'}</th></tr></thead><tbody>${d.map(x => `<tr><td class="nowrap">${esc(x.label)}</td>${op === 'create' ? '' : `<td class="wrap ap-old">${fmtTxt(x.before)}</td>`}<td class="wrap ap-new">${fmtTxt(x.after)}</td></tr>`).join('')}</tbody></table></div>`;
+const PEND_PILL = '<span class="pill warn" title="Tiene un cambio pendiente de aprobación">En aprobación</span>';
+const pendSet = coll => new Set((S.requests || []).filter(r => r.type === 'cambio' && r.status === 'pendiente' && r.coll === coll && r.doc).map(r => r.doc));
+// pantalla de aprobaciones (administradores)
+function propCard(r, past) {
+  const m = memberById(r.member), d = diffList(r), tone = { aprobada: 'ok', rechazada: 'crit' };
+  return `<li class="ap-item"><div class="ap-top">${m ? avatar(m, 'sm') : ''}<div><p><b>${esc(r.label)}</b></p><small>Propuesto por ${esc(m ? mName(m) : 'un integrante')} · ${esc(ago(Date.parse(r.createdAt || '') || Date.now()))}${past ? ` · ${pill(tone[r.status] || '', REQ_LBL[r.status] || r.status)}${r.reply ? ' ' + esc(r.reply) : ''}` : ''}</small></div></div>${d.length ? `<details class="ap-diff"${past ? '' : ' open'}><summary>Detalle (${plural(d.length, 'cambio', 'cambios')})</summary>${diffTable(d, r.op)}</details>` : ''}${!past && canSchedule() ? `<p class="req-acts"><button class="btn sm primary" data-act="prop-ok" data-id="${esc(r.id)}">Aprobar</button><button class="btn sm" data-act="prop-no" data-id="${esc(r.id)}">Rechazar</button></p>` : ''}</li>`;
+}
+function teamApprovals() {
+  const P = reqPend().filter(r => r.type === 'cambio'), byP = new Map();
+  P.forEach(r => { if (!byP.has(r.pid)) byP.set(r.pid, []); byP.get(r.pid).push(r); });
+  const head = `<div class="ap-head"><p>${P.length ? `<b>${plural(P.length, 'cambio espera', 'cambios esperan')} tu aprobación.</b>` : 'No hay cambios pendientes.'} Nada se aplica al proyecto hasta que lo apruebes; al aprobarlo, el equipo del proyecto lo ve en las novedades de su intranet y puedes avisarle por correo.</p>${P.length > 1 ? `<button class="btn sm primary" data-act="prop-all">Aprobar todos (${P.length})</button>` : ''}</div>`;
+  const groups = [...byP.entries()].map(([pid, L]) => { const p = projectById(pid); return `<section class="ap-proj"><h3 class="sub-h"><span class="code-chip">${esc(p ? p.code : '—')}</span> ${esc(p ? p.name : '')} <small>${plural(L.length, 'cambio', 'cambios')}</small>${L.length > 1 ? ` <button class="linkish" data-act="prop-all" data-v="${esc(pid)}">Aprobar los ${L.length}</button>` : ''}</h3><ul class="ap-list">${L.map(r => propCard(r)).join('')}</ul></section>`; }).join('');
+  const done = reqsAll().filter(r => r.type === 'cambio' && (r.status === 'aprobada' || r.status === 'rechazada')).slice(0, 15);
+  const hist = done.length ? `<details class="ap-hist"><summary>Últimas decisiones (${done.length})</summary><ul class="ap-list">${done.map(r => propCard(r, true)).join('')}</ul></details>` : '';
+  return panel('Cambios propuestos por el equipo', 'Cronograma, gobernanza, bitácora, reuniones y demás registros de cada proyecto.', head + groups + hist) + `<div style="margin-top:20px">${requestsPanel()}</div>`;
+}
+function conflictsOf_(r) {
+  if (r.op !== 'update') return [];
+  const rec = recOf(r.coll, r.doc); if (!rec) return [{ gone: true }];
+  return Object.keys(r.data || {}).filter(k => k !== 'transfers' && k !== 'prevProgress' && normV(rec[k]) !== normV((r.prev || {})[k])).map(k => ({ label: fieldLbl(r.coll, k), now: k === 'blocks' ? 'otro contenido' : valFmt(k, rec[k]) }));
+}
+function openPropDecide(id, ok) {
+  const r = (S.requests || []).find(x => x.id === id); if (!r || !canSchedule()) return;
+  const m = memberById(r.member), p = projectById(r.pid), cf = ok ? conflictsOf_(r) : [], gone = cf.some(c => c.gone);
+  const body = `<div class="tr-card"><p class="mini-h"><span class="code-chip">${esc(p ? p.code : '—')}</span> Propuesto por ${esc(m ? mName(m) : '—')}</p><p><b>${esc(r.label)}</b></p></div>${diffTable(diffList(r), r.op)}`
+    + (gone ? `<p class="cf-bad">${icon('alerta', 16)}El registro ya no existe, así que no se puede aplicar. Recházala para cerrarla.</p>` : cf.length ? `<p class="cf-bad">${icon('alerta', 16)}Cambió desde que se propuso: ${esc(cf.map(c => `${c.label} (ahora: ${c.now})`).join('; '))}. Si apruebas, se reemplaza por lo propuesto.</p>` : '')
+    + fld(ok ? `Mensaje para ${m ? String(mName(m)).split(' ')[0] : 'quien lo propuso'} (opcional)` : 'Motivo del rechazo', '<textarea name="reply" rows="2" maxlength="600"></textarea>', 1)
+    + (ok ? `<p class="note">Al aprobar se aplica el cambio y el equipo de ${esc(p ? p.code : 'el proyecto')} lo verá en las novedades de su intranet; luego podrás avisarle por correo.</p>` : '');
+  dlg(ok ? 'Aprobar el cambio' : 'Rechazar el cambio', body, `<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button>${ok && gone ? '' : `<button class="btn primary" type="submit">${ok ? 'Aprobar y aplicar' : 'Rechazar'}</button>`}</div>`, 'propdec-form');
+  const f = $('#propdec-form'); f.dataset.id = id; f.dataset.ok = ok ? '1' : '';
+}
+async function applyProposal(r) {
+  const data = Object.assign({}, r.data || {});
+  if (r.op === 'delete') { if (recOf(r.coll, r.doc)) await db.doc(`${r.coll}/${r.doc}`).delete(); return {}; }
+  if (r.op === 'update') {
+    const rec = recOf(r.coll, r.doc); if (!rec) throw permErr('El registro ya no existe: no se puede aplicar el cambio.');
+    await updateRec(r.coll, r.doc, data);
+    return { mt: r.coll === 'meetings' ? Object.assign({}, rec, data, { id: r.doc }) : null };
+  }
+  if (r.coll === 'meetings') {
+    const dates = Array.isArray(r.dates) && r.dates.length ? r.dates : [data.date], series = dates.length > 1 ? 'S-' + Date.now().toString(36) : '';
+    let first = null;
+    for (const iso of dates) { const doc = Object.assign({}, data, { date: iso, status: 'Programada', series, confirm: {}, proposedBy: r.member }); const ref = await createRec('meetings', doc); if (!first) first = Object.assign({ id: (ref && ref.id) || '' }, doc); }
+    return { mt: first, n: dates.length };
+  }
+  const ref = await createRec(r.coll, data); return { id: ref && ref.id };
+}
+async function decideProposal(r, ok, reply) {
+  await updateRec('requests', r.id, { status: ok ? 'aprobada' : 'rechazada', reply: reply || '', decidedAt: new Date().toISOString(), decidedBy: (sessionMember() || {}).id || null });
+  const m = memberById(r.member);
+  logFeed(r.pid, `${ok ? 'aprobó' : 'rechazó'} el cambio propuesto por ${m ? mName(m) : 'un integrante'}: ${String(r.label).slice(0, 110)}`);
+}
+async function submitPropDecide(f) {
+  const ok = !!f.dataset.ok, r = (S.requests || []).find(x => x.id === f.dataset.id); if (!r || !canSchedule()) { closeModal(); return; }
+  const reply = f.elements.reply.value.trim(); if (!ok && !reply) { formErr('Escribe el motivo del rechazo.'); return; }
+  const btn = f.querySelector('[type=submit]'); if (btn) btn.disabled = true;
+  try {
+    const res = ok ? await applyProposal(r) : null;
+    await decideProposal(r, ok, reply);
+    closeModal(); toast(ok ? 'Cambio aprobado y aplicado' : 'Cambio rechazado', 'ok');
+    if (ok) afterApprove([{ r: Object.assign({}, r, { reply }), res }]); else rejectNotice(r, reply);
+  } catch (e) { if (btn) btn.disabled = false; writeErr(e); }
+}
+async function approveAll(pid) {
+  const L = reqPend().filter(r => r.type === 'cambio' && (!pid || r.pid === pid)).reverse(); if (!L.length || !canSchedule()) return;
+  if (!confirm(`¿Aprobar y aplicar ${plural(L.length, 'cambio', 'cambios')}${pid ? ` de ${(projectById(pid) || {}).code || 'este proyecto'}` : ''}? Revisa antes el detalle de cada uno.`)) return;
+  const done = [], bad = [];
+  for (const r of L) {
+    try { if (conflictsOf_(r).some(c => c.gone)) { bad.push(r); continue; } const res = await applyProposal(r); await decideProposal(r, true, ''); done.push({ r, res }); }
+    catch (e) { bad.push(r); }
+  }
+  toast(`${plural(done.length, 'cambio aprobado', 'cambios aprobados')}${bad.length ? ` · ${bad.length} no se pudo aplicar` : ''}`, bad.length ? 'warn' : 'ok');
+  if (done.length) afterApprove(done);
+}
+// avisos al equipo del proyecto (en el intranet de cada integrante y por correo)
+const projMails = pid => membersOfProject(pid).map(m => m.email).filter(mailOk);
+const mailBtns2 = L => `<div class="sos-send"><a class="btn sos" href="${esc(L.gmail)}" target="_blank" rel="noopener noreferrer">${icon('correo', 18)}Enviar por Gmail ↗</a><a class="btn" href="${esc(L.mail)}">Abrir en mi correo</a></div>`;
+function propNotice(rs) {
+  const p = projectById(rs[0].pid), by = sessionMember() ? mName(sessionMember()) : 'Dirección de proyectos';
+  const L = [`Hola, equipo de ${p ? p.code : 'el proyecto'}:`, '', rs.length > 1 ? `Se aprobaron ${rs.length} cambios en ${p ? `${p.code} · ${p.name}` : 'el proyecto'}:` : `Se aprobó un cambio en ${p ? `${p.code} · ${p.name}` : 'el proyecto'}:`, ''];
+  rs.forEach(r => {
+    const m = memberById(r.member); L.push(`• ${r.label}${m ? ` (propuesto por ${mName(m)})` : ''}`);
+    diffList(r).slice(0, 6).forEach(x => L.push(`   - ${x.label}: ${x.before && x.before !== '—' ? `${String(x.before).replace(/\n/g, ' / ').slice(0, 120)} → ` : ''}${String(x.after || '').replace(/\n/g, ' / ').slice(0, 160)}`));
+    if (r.reply) L.push(`   Nota: ${r.reply}`);
+  });
+  L.push('', `Aprobado por ${by}. El detalle está en las novedades de tu intranet del Sistema de Dirección de Gestión de Proyectos:`, SYS_URL);
+  return L.join('\n');
+}
+function afterApprove(items) {
+  const meet = items.filter(x => x.res && x.res.mt);
+  if (items.length === 1 && meet.length === 1) { openSosSend(meet[0].res.mt, meet[0].r.op === 'update' ? 'cambio' : meet[0].res.n > 1 ? 'serie' : ''); return; }
+  const byP = new Map(); items.filter(x => !(x.res && x.res.mt)).forEach(x => { if (!byP.has(x.r.pid)) byP.set(x.r.pid, []); byP.get(x.r.pid).push(x.r); });
+  const blocks = [...byP.entries()].map(([pid, rs]) => { const p = projectById(pid), to = projMails(pid), Lk = mailLinks(to, `[${p ? p.code : 'Proyecto'}] ${rs.length > 1 ? `${rs.length} cambios aprobados` : 'Cambio aprobado: ' + String(rs[0].label).slice(0, 80)}`, propNotice(rs)); return `<div class="ap-not"><p class="mini-h"><span class="code-chip">${esc(p ? p.code : '—')}</span> ${plural(rs.length, 'cambio aprobado', 'cambios aprobados')} · aviso para ${plural(to.length, 'integrante', 'integrantes')}</p>${mailBtns2(Lk)}</div>`; }).join('');
+  const mts = meet.length ? `<h4 class="sos-h">Reuniones aprobadas</h4><ul class="pd-list">${meet.map(x => `<li class="pd"><span class="pd-ok">✓</span><div><p>${esc(x.res.mt.title || 'Reunión')}</p><small>${esc(fmtD(x.res.mt.date))} · ${esc(x.res.mt.start || '')}${x.res.n > 1 ? ` · ${x.res.n} fechas` : ''}</small><p class="req-acts"><button class="btn sm primary" data-act="sos-send" data-id="${esc(x.res.mt.id)}">Enviar la convocatoria</button></p></div></li>`).join('')}</ul>` : '';
+  dlg(items.length > 1 ? 'Cambios aprobados' : 'Cambio aprobado', `<p>${items.length > 1 ? 'Los cambios ya están aplicados' : 'El cambio ya está aplicado'} y el equipo lo ve en las novedades de su intranet.</p>${blocks ? `<p class="note">Avísale también por correo: el mensaje ya está escrito y dirigido a los integrantes de cada proyecto.</p>${blocks}` : ''}${mts}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
+}
+function rejectNotice(r, reply) {
+  const m = memberById(r.member), p = projectById(r.pid); if (!m) return;
+  const msg = [`Hola ${String(mName(m)).split(' ')[0]}:`, '', `No se aprobó el cambio que propusiste en ${p ? `${p.code} · ${p.name}` : 'el proyecto'}:`, `• ${r.label}`, '', `Motivo: ${reply}`, '', sessionMember() ? mName(sessionMember()) : 'Dirección de proyectos', SYS_URL].join('\n');
+  const L = mailLinks(mailOk(m.email) ? [m.email] : [], `[${p ? p.code : 'Proyecto'}] No se aprobó tu cambio: ${String(r.label).slice(0, 70)}`, msg);
+  dlg('Cambio rechazado', `<p>${esc(m.name)} verá el rechazo y el motivo en su intranet. Avísale también por correo si quieres: el mensaje ya está escrito.</p>${mailBtns2(L)}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
+}
+// intranet: mis propuestas y novedades de mis proyectos
+function myProposalsPanel(m, preview) {
+  const L = reqsAll().filter(r => r.type === 'cambio' && r.member === m.id && r.status !== 'cancelada').slice(0, 15); if (!L.length) return '';
+  const tone = { pendiente: 'warn', aprobada: 'ok', rechazada: 'crit' }, pend = L.filter(r => r.status === 'pendiente');
+  const msg = [`Hola ${adminsM().map(x => String(mName(x)).split(' ')[0]).join(' y ')}:`, '', `Tengo ${plural(pend.length, 'cambio', 'cambios')} esperando tu aprobación en el Sistema de Dirección de Gestión de Proyectos:`, ''].concat(pend.map(r => `• ${(projectById(r.pid) || {}).code || ''} · ${r.label}`)).concat(['', 'Están en Equipo › Aprobaciones.', SYS_URL, '', mName(m)]).join('\n');
+  const foot = pend.length && !preview ? `<a class="btn sm" href="${esc(mailLinks(adminMails(), `Cambios por aprobar · ${mName(m)}`, msg).gmail)}" target="_blank" rel="noopener noreferrer">${icon('correo', 15)}Avisar por correo (${pend.length})</a>` : '';
+  return panel('Mis propuestas de cambio', `Lo que cambias en tus proyectos se aplica cuando lo aprueba ${esc(adminNames())}.`, `<ul class="pd-list">${L.map(r => { const p = projectById(r.pid); return `<li class="pd ${r.status === 'pendiente' ? '' : 'done'}"><span class="pd-ok">${r.status === 'aprobada' ? '✓' : r.status === 'rechazada' ? '✕' : '•'}</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(r.label)}</p><small>${pill(tone[r.status] || '', REQ_LBL[r.status] || r.status)} ${esc(ago(Date.parse(r.decidedAt || r.createdAt || '') || Date.now()))}${r.reply ? ` · ${esc(r.reply)}` : ''}</small>${r.status === 'pendiente' && !preview ? `<p class="req-acts"><button class="linkish" data-act="req-cancel" data-id="${esc(r.id)}">Retirar</button></p>` : ''}</div></li>`; }).join('')}</ul>`, foot);
+}
+const NEWS_DAYS = 30;
+function newsOf(m) { const pids = new Set(projectsOf(m).map(x => x.p.id)); return reqsAll().filter(r => r.type === 'cambio' && r.status === 'aprobada' && pids.has(r.pid) && Date.now() - (Date.parse(r.decidedAt || r.createdAt || '') || 0) < NEWS_DAYS * DAY).sort((a, b) => String(b.decidedAt || '').localeCompare(String(a.decidedAt || ''))); }
+function newsPanel(m) {
+  const L = newsOf(m).slice(0, 12); if (!L.length) return '';
+  return panel('Novedades de tus proyectos', `Cambios aprobados en los proyectos en los que participas (últimos ${NEWS_DAYS} días).`, `<ul class="pd-list">${L.map(r => { const p = projectById(r.pid), a = memberById(r.member), b = memberById(r.decidedBy); return `<li class="pd"><span class="pd-ok">✓</span><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(r.label)}</p><small>${a ? `Propuesto por ${esc(mName(a))} · ` : ''}aprobado${b ? ` por ${esc(mName(b))}` : ''} ${esc(ago(Date.parse(r.decidedAt || '') || Date.now()))}${r.reply ? ` · ${esc(r.reply)}` : ''}</small></div></li>`; }).join('')}</ul>`);
+}
+const seenKey = m => 'dgp-news-' + m.id;
+function newsUnseen(m) {
+  let t = 0; try { t = +localStorage.getItem(seenKey(m)) || 0; } catch (e) { /* sin almacenamiento */ }
+  const after = r => (Date.parse(r.decidedAt || '') || 0) > t;
+  return newsOf(m).filter(r => r.member !== m.id && after(r)).length + reqsAll().filter(r => r.type === 'cambio' && r.member === m.id && r.status !== 'pendiente' && r.status !== 'cancelada' && after(r)).length;
+}
+function markNewsSeen(m) { try { localStorage.setItem(seenKey(m), String(Date.now())); } catch (e) { /* sin almacenamiento */ } }
+// aviso en la página del proyecto
+function propBanner(p) {
+  const L = reqPend().filter(r => r.type === 'cambio' && r.pid === p.id); if (!L.length) return '';
+  if (isAdmin()) return `<div class="prop-ban">${icon('alerta', 18)}<span><b>${plural(L.length, 'cambio espera', 'cambios esperan')} tu aprobación</b> en ${esc(p.code)}: ${esc(L.slice(0, 3).map(r => r.label).join(' · '))}${L.length > 3 ? '…' : ''}</span><button class="btn sm primary" data-act="go-reqs">Revisar</button></div>`;
+  const me = sessionMember(), mine = me ? L.filter(r => r.member === me.id).length : 0;
+  return `<div class="prop-ban">${icon('alerta', 18)}<span>${plural(L.length, 'cambio está', 'cambios están')} en aprobación en ${esc(p.code)}${mine ? ` (${mine} ${mine === 1 ? 'es tuyo' : 'son tuyos'})` : ''}. Se aplican cuando los aprueba ${esc(adminNames())}.</span></div>`;
+}
+async function createRec(coll, data) { const pr = proposalFor(coll, '', data, 'create'); if (pr) { await submitProposal(pr); throw queuedErr(); } guardWrite(coll, '', data); const now = new Date().toISOString(); return db.collection(coll).add(Object.assign({}, data, stamp(), { createdAt: now, createdBy: (S.me && S.me.id) || null })); }
+async function updateRec(coll, id, data) { const pr = proposalFor(coll, id, data, 'update'); if (pr) { if (pr.noop) throw Object.assign(new Error('Sin cambios'), { code: 'noop' }); await submitProposal(pr); throw queuedErr(); } guardWrite(coll, id, data); return db.doc(`${coll}/${id}`).update(Object.assign({}, data, stamp())); }
 let feedWrites = 0;
 async function logFeed(pid, text) {
   if (!db) return;
@@ -2040,14 +2266,14 @@ function renderNav() {
       <details class="${UI.view === 'project' ? 'on' : ''}"><summary>Proyectos <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5L5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></summary><div class="dd">${dd}</div></details>
       <button data-act="go-guide" aria-current="${UI.view === 'guide'}" title="Guía PMBOK">Guía</button>
     </nav>
-    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${accessPill()}${canSchedule() ? `<button class="sos-nav" data-act="sos-new" title="Reunión de emergencia" aria-label="Convocar una reunión de emergencia">${icon('rayo', 17)}</button>` : ''}${canEdit() ? '<button class="btn pill np" data-act="new-project" title="Nuevo proyecto"><span class="np-plus" aria-hidden="true">+</span><span class="np-t">Nuevo proyecto</span></button>' : ''}${(() => { const sm = sessionMember(); return `<button class="nav-me" data-act="go-me" aria-current="${UI.view === 'me'}" title="${sm ? esc(sm.name) : 'Ingresar al intranet del equipo'}">${sm ? avatar(sm) : `<span class="ni">${icon('equipo', 15)}</span>`}${sm ? esc(String(mName(sm)).split(' ')[0]) : 'Intranet'}</button>`; })()}</div>
+    <div class="nav-r">${live}${avs ? `<span class="avs" title="${plural(peers.length, 'persona conectada', 'personas conectadas')}">${avs}</span>` : ''}${accessPill()}${canSchedule() ? `<button class="sos-nav" data-act="sos-new" title="Reunión de emergencia" aria-label="Convocar una reunión de emergencia">${icon('rayo', 17)}</button>` : ''}${canWriteBase() && fullAccess() ? '<button class="btn pill np" data-act="new-project" title="Nuevo proyecto"><span class="np-plus" aria-hidden="true">+</span><span class="np-t">Nuevo proyecto</span></button>' : ''}${(() => { const sm = sessionMember(); return `<button class="nav-me" data-act="go-me" aria-current="${UI.view === 'me'}" title="${sm ? esc(sm.name) : 'Ingresar al intranet del equipo'}">${sm ? avatar(sm) : `<span class="ni">${icon('equipo', 15)}</span>`}${sm ? esc(String(mName(sm)).split(' ')[0]) : 'Intranet'}</button>`; })()}</div>
   </div>`;
 }
 function renderFoot() {
   const P = projectsSorted();
   $('#foot').innerHTML = `<div class="wrap"><div class="foot-grid">
     <div><h4>Sistema de Dirección de Gestión de Proyectos</h4><p>Sistema de dirección de proyectos de la Dirección de Gestión de Proyectos (DGP) de la OGPL-UNMSM. Basado en la Guía del PMBOK® 8.ª edición: 6 principios, 7 dominios de desempeño y 5 áreas de enfoque.</p></div>
-    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-model">Modelo de gestión</button></li><li><button class="fl" data-act="go-board">Pizarra digital</button></li><li><button class="fl" data-act="go-team">Equipo y agenda</button></li><li><button class="fl" data-act="go-office">Oficina virtual 3D</button></li><li><button class="fl" data-act="go-me">Intranet del equipo</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canEdit() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
+    <div><h4>Sistema</h4><ul><li><button class="fl" data-act="go-portfolio">Portafolio y alertas</button></li><li><button class="fl" data-act="go-model">Modelo de gestión</button></li><li><button class="fl" data-act="go-board">Pizarra digital</button></li><li><button class="fl" data-act="go-team">Equipo y agenda</button></li><li><button class="fl" data-act="go-office">Oficina virtual 3D</button></li><li><button class="fl" data-act="go-me">Intranet del equipo</button></li><li><button class="fl" data-act="go-guide">Guía PMBOK</button></li>${canWriteBase() && fullAccess() ? '<li><button class="fl" data-act="new-project">Nuevo proyecto</button></li>' : ''}</ul></div>
     <div><h4>Dominios PMBOK 8</h4><ul>${['Gobernanza', 'Alcance', 'Cronograma', 'Finanzas', 'Interesados', 'Recursos', 'Riesgo'].map(d => `<li>${d}</li>`).join('')}</ul></div>
     <div><h4>Proyectos</h4><ul>${P.slice(0, 8).map(p => `<li><button class="fl" data-act="go-project" data-id="${esc(p.id)}"><span class="mono">${esc(p.code)}</span> · ${esc(String(p.name || '').slice(0, 46))}${String(p.name || '').length > 46 ? '…' : ''}</button></li>`).join('') || '<li>Sin proyectos aún</li>'}</ul></div>
   </div>
@@ -2082,8 +2308,8 @@ function panel(title, note, body, actions) {
 }
 function regTable(coll, rows, cols, opts = {}) {
   if (!rows.length) return `<div class="empty"><p>${esc(opts.empty || 'Todavía no hay registros.')}</p>${addBtn(coll)}</div>`;
-  const ed = canEdit();
-  return `<div class="tbl"><table><thead><tr>${cols.map(c => `<th class="${c.cls || ''}">${esc(c.h)}</th>`).join('')}${ed || opts.extra ? '<th class="act-col"><span class="sr">Acciones</span></th>' : ''}</tr></thead><tbody>${rows.map(r => `<tr>${cols.map(c => `<td class="${c.cls || ''}">${c.v(r)}</td>`).join('')}${ed || opts.extra ? `<td class="act-col">${opts.extra && ed ? opts.extra(r) : ''}${ed ? `<button class="icon-btn" data-act="edit" data-coll="${coll}" data-id="${esc(r.id)}">Editar</button>` : ''}</td>` : ''}</tr>`).join('')}</tbody></table></div>`;
+  const ed = canEdit(), ps = pendSet(coll), act = ed || opts.extra || rows.some(r => ps.has(r.id));
+  return `<div class="tbl"><table><thead><tr>${cols.map(c => `<th class="${c.cls || ''}">${esc(c.h)}</th>`).join('')}${act ? '<th class="act-col"><span class="sr">Acciones</span></th>' : ''}</tr></thead><tbody>${rows.map(r => `<tr>${cols.map(c => `<td class="${c.cls || ''}">${c.v(r)}</td>`).join('')}${act ? `<td class="act-col">${ps.has(r.id) ? PEND_PILL : ''}${opts.extra && ed ? opts.extra(r) : ''}${ed ? `<button class="icon-btn" data-act="edit" data-coll="${coll}" data-id="${esc(r.id)}">Editar</button>` : ''}</td>` : ''}</tr>`).join('')}</tbody></table></div>`;
 }
 const T_ = v => esc(v || '—');
 const wrapTxt = v => v ? esc(v) : '<span class="tone-idle">—</span>';
@@ -2107,13 +2333,13 @@ function viewPortfolio() {
   const highR = all.reduce((s, x) => s + x.m.highR.length, 0);
   const lateA = all.reduce((s, x) => s + x.m.lateA.length, 0);
   const late = all.reduce((s, x) => s + x.m.late.length, 0);
-  const actions = `${sample && P.length ? `<button class="round-wrap" data-act="ai" data-scope="portfolio"><span class="round">${icon('asesor', 24)}</span><span>Generar informe<br>de portafolio con IA</span></button>` : ''}${canEdit() ? '<button class="btn primary" data-act="new-project">Nuevo proyecto</button>' : ''}`;
+  const actions = `${sample && P.length ? `<button class="round-wrap" data-act="ai" data-scope="portfolio"><span class="round">${icon('asesor', 24)}</span><span>Generar informe<br>de portafolio con IA</span></button>` : ''}${canWriteBase() && fullAccess() ? '<button class="btn primary" data-act="new-project">Nuevo proyecto</button>' : ''}`;
   const blobRows = all.map(({ p, m }) => `<div class="bl-row"><span class="mono">${esc(p.code)}</span><div class="bl-trk"><span style="width:${clamp(m.realPct || 0, 0, 100).toFixed(1)}%"></span>${m.planPct != null ? `<i style="left:calc(${clamp(m.planPct, 0, 100).toFixed(1)}% - 1px)"></i>` : ''}</div><span class="bl-val">${pct(m.realPct)}</span></div>`).join('');
   const hero = `<section class="hero"><span class="bubble" style="width:22px;height:22px;left:4%;top:16%"></span><span class="bubble" style="width:14px;height:14px;left:47%;bottom:14%"></span><div class="wrap">
     <div><p class="eyebrow">Cartera de proyectos · DGP OGPL-UNMSM</p><h1 class="hero-t">Dirige tu cartera con datos en tiempo real</h1><p class="lead">Estado consolidado al ${fmtD(today())}: ${plural(P.length, 'proyecto', 'proyectos')}, ${plural(crit, 'alerta crítica', 'alertas críticas')} y ${plural(lateA, 'acuerdo vencido', 'acuerdos vencidos')}. Cada avance que registra el equipo actualiza este tablero al instante.</p><div class="hero-actions">${actions}</div></div>
     <div class="blob"><h2>Avance real de la cartera hoy</h2>${blobRows || '<p style="text-align:center;color:var(--on-navy-muted)">Sin proyectos registrados.</p>'}<div class="bl-leg"><span><i></i>Avance real</span><span><i class="plan"></i>Planificado a hoy</span></div></div>
   </div></section>`;
-  if (!P.length) return hero + `<div class="wrap section"><div class="empty"><p>Aún no hay proyectos en la cartera. Crea el primero con «Nuevo proyecto»: empezarás por el acta de constitución, como indica el área de enfoque de Inicio del PMBOK.</p>${canEdit() ? '<button class="btn primary" data-act="new-project">Nuevo proyecto</button>' : ''}</div></div>`;
+  if (!P.length) return hero + `<div class="wrap section"><div class="empty"><p>Aún no hay proyectos en la cartera. Crea el primero con «Nuevo proyecto»: empezarás por el acta de constitución, como indica el área de enfoque de Inicio del PMBOK.</p>${canWriteBase() && fullAccess() ? '<button class="btn primary" data-act="new-project">Nuevo proyecto</button>' : ''}</div></div>`;
   const byPhase = OPT.phase.map(ph => [ph, P.filter(p => (p.phase || 'Inicio') === ph).length]).filter(x => x[1]).map(x => `${x[1]} en ${x[0].toLowerCase()}`).join(' · ');
   const focus = all.map(x => ({ x, score: alertsFor(x.p).reduce((s, a) => s + (a.sev === 2 ? 3 : a.sev), 0) })).sort((a, b) => b.score - a.score)[0];
   const featId = focus && focus.score > 0 ? focus.x.p.id : null;
@@ -2236,7 +2462,7 @@ function viewProject(p) {
   const tabs = `<div class="tabs" role="tablist">${TABS.map(([k, l]) => `<button class="tab" role="tab" aria-selected="${UI.tab === k}" data-act="tab" data-tab="${k}">${l}${tabCount[k] ? `<span class="cnt">${tabCount[k]}</span>` : ''}</button>`).join('')}</div>`;
   const dn = DOMAIN[UI.tab] ? `<p class="domain-note"><b>${DOMAIN[UI.tab][0]}</b><span>${DOMAIN[UI.tab][1]}</span></p>` : '';
   const body = { resumen: tabResumen, gobernanza: tabGobernanza, alcance: tabAlcance, cronograma: tabCronograma, finanzas: tabFinanzas, interesados: tabInteresados, recursos: tabRecursos, riesgo: tabRiesgo, bitacora: tabBitacora }[UI.tab] || tabResumen;
-  return hero + `<div class="wrap">${ph}${tabs}${dn}<div class="stack">${body(p, m)}</div></div>`;
+  return hero + `<div class="wrap">${propBanner(p)}${ph}${tabs}${dn}<div class="stack">${body(p, m)}</div></div>`;
 }
 
 function tabResumen(p, m) {
@@ -2845,7 +3071,7 @@ function openForm(coll, id) {
   const rec = id ? (S[coll].find(r => r.id === id) || {}) : {};
   const pid = isP ? (id || null) : UI.pid;
   const title = id ? (isP ? 'Editar acta del proyecto' : `Editar ${COLL[coll].one}`) : (isP ? 'Nuevo proyecto' : `Agregar ${COLL[coll].one}`);
-  let html = `<div class="overlay" data-act="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title"><form id="rec-form" novalidate data-coll="${coll}" data-id="${esc(id || '')}"><header class="dlg-head"><h2 id="dlg-title">${esc(title)}</h2><button type="button" class="icon-btn" data-act="close-modal" aria-label="Cerrar">Cerrar</button></header><div class="dlg-body"><div class="fgrid">`;
+  let html = `<div class="overlay" data-act="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title"><form id="rec-form" novalidate data-coll="${coll}" data-id="${esc(id || '')}"><header class="dlg-head"><h2 id="dlg-title">${esc(title)}</h2><button type="button" class="icon-btn" data-act="close-modal" aria-label="Cerrar">Cerrar</button></header><div class="dlg-body">${propMode() ? `<p class="prop-note">${icon('alerta', 16)}Tu cambio se aplicará cuando lo apruebe ${esc(adminNames())}; el equipo del proyecto recibirá el aviso.</p>` : ''}<div class="fgrid">`;
   for (const f of fields) {
     if (f.group) html += `<h3 class="fgroup">${esc(f.group)}</h3>`;
     let v = rec[f.k];
@@ -2857,7 +3083,7 @@ function openForm(coll, id) {
     else ctl = `<input id="${fid}" name="${f.k}" type="${f.t === 'number' ? 'number' : f.t === 'date' ? 'date' : 'text'}" value="${esc(v)}"${f.min != null ? ` min="${f.min}"` : ''}${f.max != null ? ` max="${f.max}"` : ''}${f.t === 'number' ? ' step="any" inputmode="decimal"' : ''}${f.ph ? ` placeholder="${esc(f.ph)}"` : ''}${f.dl ? ' list="dl-team" autocomplete="off"' : ''}>`;
     html += `<label class="f${f.wide ? ' wide' : ''}" for="${fid}"><span>${esc(f.l)}${f.req ? ' <b class="req" aria-hidden="true">*</b>' : ''}</span>${ctl}${f.hint ? `<small>${esc(f.hint)}</small>` : ''}</label>`;
   }
-  html += `</div><datalist id="dl-team">${teamNames(pid).map(n => `<option value="${esc(n)}"></option>`).join('')}</datalist></div><p class="form-err" id="form-err" hidden></p><footer class="dlg-foot">${id ? `<div class="del-zone" id="del-zone"><button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button></div>` : ''}<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">Guardar</button></div></footer></form></div></div>`;
+  html += `</div><datalist id="dl-team">${teamNames(pid).map(n => `<option value="${esc(n)}"></option>`).join('')}</datalist></div><p class="form-err" id="form-err" hidden></p><footer class="dlg-foot">${id ? `<div class="del-zone" id="del-zone"><button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button></div>` : ''}<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">${propMode() ? 'Enviar para aprobación' : 'Guardar'}</button></div></footer></form></div></div>`;
   const mdl = $('#modal'); mdl.innerHTML = html; mdl.hidden = false;
   setTimeout(() => { const first = mdl.querySelector('input:not([type=hidden]),select,textarea'); if (first) first.focus(); }, 30);
 }
@@ -2899,6 +3125,7 @@ async function deleteFromForm(form) {
   const rec = S[coll].find(r => r.id === id) || {};
   const zone = $('#del-zone'); if (zone) zone.innerHTML = '<span>Eliminando…</span>';
   try {
+    const pr = proposalFor(coll, id, {}, 'delete'); if (pr) { await submitProposal(pr); throw queuedErr(); }
     guardWrite(coll, id, { pid: rec.pid || '', deleted: true });
     if (coll === 'projects' && !fullAccess()) throw permErr('Solo un administrador puede eliminar proyectos.');
     await db.doc(`${coll}/${id}`).delete();
@@ -2940,8 +3167,8 @@ document.addEventListener('click', e => {
     case 'pf-org': UI.pfOrg = el.dataset.v; render(); break;
     case 'av-scope': UI.av.scope = el.dataset.v; render(); break;
     case 'mt-filter': UI.mtScope = el.dataset.v; render(); break;
-    case 'mt-new': { if (!canSchedule()) break; const pre = {}; if (el.dataset.v) { const [d, t] = el.dataset.v.split(':').map(Number); pre.date = nextDateFor(d); pre.start = m2t(t); } if (el.dataset.scope) pre.scope = el.dataset.scope; else if (UI.view === 'team') pre.scope = UI.av.scope; openMeetingForm(null, pre); break; }
-    case 'mt-edit': if (canSchedule()) openMeetingForm(el.dataset.id); break;
+    case 'mt-new': { if (!canSchedule() && !canProposeMt()) break; const pre = {}; if (el.dataset.v) { const [d, t] = el.dataset.v.split(':').map(Number); pre.date = nextDateFor(d); pre.start = m2t(t); } if (el.dataset.scope) pre.scope = el.dataset.scope; else if (UI.view === 'team') pre.scope = UI.av.scope; openMeetingForm(null, pre); break; }
+    case 'mt-edit': { const mt = (S.meetings || []).find(x => x.id === el.dataset.id); if (canSchedule() || (mt && canProposeMt(mt.pid) && !isUrgent(mt))) openMeetingForm(el.dataset.id); break; }
     case 'sos-new': if (canSchedule()) openSosForm({ pid: el.dataset.pid || (UI.view === 'project' ? UI.pid : ''), who: el.dataset.who || '' }); break;
     case 'sos-send': openSosSend(el.dataset.id); break;
     case 'tr-open': if (canEdit()) openTransfer(el.dataset.k, el.dataset.id); break;
@@ -2949,8 +3176,11 @@ document.addEventListener('click', e => {
     case 'leave-req': openLeaveReq(el.dataset.id); break;
     case 'req-ok': openDecide(el.dataset.id, true); break;
     case 'req-no': openDecide(el.dataset.id, false); break;
-    case 'req-cancel': { const r = (S.requests || []).find(x => x.id === el.dataset.id); if (!r || !confirm('¿Retirar tu solicitud de salida?')) break; updateRec('requests', r.id, { status: 'cancelada' }).then(() => toast('Solicitud retirada', 'ok')).catch(writeErr); break; }
-    case 'go-reqs': UI.teamTab = 'acc'; go('team'); break;
+    case 'req-cancel': { const r = (S.requests || []).find(x => x.id === el.dataset.id); if (!r || !confirm(r.type === 'cambio' ? '¿Retirar esta propuesta de cambio?' : '¿Retirar tu solicitud de salida?')) break; updateRec('requests', r.id, { status: 'cancelada' }).then(() => toast('Solicitud retirada', 'ok')).catch(writeErr); break; }
+    case 'go-reqs': UI.teamTab = 'aprob'; go('team'); break;
+    case 'prop-ok': openPropDecide(el.dataset.id, true); break;
+    case 'prop-no': openPropDecide(el.dataset.id, false); break;
+    case 'prop-all': approveAll(el.dataset.v || ''); break;
     case 'copy-txt': copyText(el.dataset.v || '').then(ok => toast(ok ? 'Copiado' : 'No se pudo copiar', ok ? 'ok' : 'warn')); break;
     case 'sos-all': sosMark(true); break;
     case 'sos-none': sosMark(false); break;
@@ -3034,7 +3264,7 @@ document.addEventListener('click', e => {
     case 'close-modal': closeModal(); break;
     case 'top': window.scrollTo(0, 0); break;
     case 'tfilter': UI.tfilter = el.dataset.v || 'all'; render(); break;
-    case 'ask-delete': { const z = $('#del-zone'); if (z) z.innerHTML = `<span>¿Eliminar definitivamente?${$('#rec-form').dataset.coll === 'projects' ? ' Se borrarán también todos sus registros.' : ''}</span><button type="button" class="btn sm danger" data-act="confirm-delete">Sí, eliminar</button><button type="button" class="btn sm" data-act="cancel-delete">No</button>`; break; }
+    case 'ask-delete': { const z = $('#del-zone'); if (z) z.innerHTML = `<span>${propMode() ? '¿Proponer que se elimine? Se eliminará cuando lo apruebe un administrador.' : '¿Eliminar definitivamente?'}${$('#rec-form').dataset.coll === 'projects' ? ' Se borrarán también todos sus registros.' : ''}</span><button type="button" class="btn sm danger" data-act="confirm-delete">Sí, eliminar</button><button type="button" class="btn sm" data-act="cancel-delete">No</button>`; break; }
     case 'cancel-delete': { const z = $('#del-zone'); if (z) z.innerHTML = '<button type="button" class="btn ghost danger" data-act="ask-delete">Eliminar</button>'; break; }
     case 'confirm-delete': deleteFromForm($('#rec-form')); break;
     case 'set-phase': {
@@ -3083,7 +3313,7 @@ document.addEventListener('input', e => {
   box.querySelector('.md-sem-out').innerHTML = `${pill(st.k, st.t)} <small>rango ${st.r}</small>`;
 });
 document.addEventListener('submit', e => {
-  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign, 'sos-form': submitSos, 'tr-form': submitTransfer, 'tr-done-form': () => closeModal(), 'leave-form': submitLeave, 'dec-form': submitDecide, 'accreq-form': () => closeModal(), 'sos-send-form': () => closeModal() }[f.id];
+  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign, 'sos-form': submitSos, 'tr-form': submitTransfer, 'tr-done-form': () => closeModal(), 'leave-form': submitLeave, 'dec-form': submitDecide, 'propdec-form': submitPropDecide, 'accreq-form': () => closeModal(), 'sos-send-form': () => closeModal() }[f.id];
   if (!h) return; e.preventDefault(); h(f);
 });
 document.addEventListener('change', e => {
@@ -3827,6 +4057,8 @@ const isAdmin = () => !!(S.isOwner || (sessionMember() && sessionMember().admin)
 const curMember = () => (UI.viewAs && isAdmin() ? memberById(UI.viewAs) : null) || sessionMember();
 const canEditMember = m => canWriteBase() && (isAdmin() || (sessionMember() && sessionMember().id === m.id));
 const canSchedule = () => canWriteBase() && isAdmin();
+// un colaborador propone reuniones de sus proyectos; se programan al aprobarlas un administrador
+const canProposeMt = pid => canWriteBase() && propMode() && (pid ? inProject(sessionMember(), pid) : projectsOf(sessionMember()).length > 0);
 async function sha256hex(str) {
   const data = new TextEncoder().encode(str);
   if (window.crypto && crypto.subtle) { try { const h = await crypto.subtle.digest('SHA-256', data); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join(''); } catch (e) { /* respaldo */ } }
@@ -3864,7 +4096,7 @@ const classItems = m => (m.schedule || []).map(b => ({ d: +b.d, s: t2m(b.s), e: 
 
 /* ---------- vista Equipo ---------- */
 function viewTeam() {
-  const tabs = [['dir', 'Directorio'], ['org', 'Organigramas'], ['disp', 'Disponibilidad común'], ['reun', 'Cronograma de reuniones'], ['hor', 'Horarios']].concat(isAdmin() ? [['acc', 'Accesos al intranet']] : []);
+  const tabs = [['dir', 'Directorio'], ['org', 'Organigramas'], ['disp', 'Disponibilidad común'], ['reun', 'Cronograma de reuniones'], ['hor', 'Horarios']].concat(isAdmin() ? [['aprob', `Aprobaciones${reqPend().length ? ` (${reqPend().length})` : ''}`], ['acc', 'Accesos al intranet']] : []);
   const tab = tabs.some(t => t[0] === UI.teamTab) ? UI.teamTab : 'disp';
   const ms = membersActive(), withS = ms.filter(m => schedState(m) !== 'pend');
   const up = upcomingMeetings(meetingsAll());
@@ -3872,7 +4104,7 @@ function viewTeam() {
   const hero = `<section class="hero"><span class="bubble" style="width:18px;height:18px;left:5%;top:20%"></span><div class="wrap"><div><p class="eyebrow">Equipo y agenda · DGP OGPL-UNMSM</p><h1 class="title">Horarios del equipo, horas libres en común y reuniones</h1><p class="lead">Cruza los horarios de clases de cada integrante, encuentra las franjas en que todos están libres y programa las reuniones de cada proyecto o del equipo completo. Las reuniones avisan si chocan con una clase.</p>${canSchedule() ? `<p class="hero-cta"><button class="btn sos" data-act="sos-new">${icon('rayo', 18)}Reunión de emergencia</button></p>` : ''}</div>
     <div class="blob"><h2>El equipo hoy</h2><div class="md-blob-k"><div><div class="k-val">${ms.length}</div><div class="k-label">Integrantes</div></div><div><div class="k-val">${withS.length}/${ms.length}</div><div class="k-label">Horarios cargados</div></div><div><div class="k-val">${up.length}</div><div class="k-label">Reuniones por venir</div></div><div><div class="k-val" style="font-size:20px">${next ? esc(whenTxt(next).split(' · ')[0]) : '—'}</div><div class="k-label">Próxima reunión</div></div></div></div></div></section>`;
   if (!S.loaded.has('members')) return hero + '<div class="wrap section"><div class="empty"><p>Cargando el equipo…</p></div></div>';
-  const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'acc' ? teamAccess() : tab === 'dir' ? teamDirectory() : tab === 'org' ? teamOrgs() : teamDisp();
+  const body = tab === 'reun' ? teamMeetings() : tab === 'hor' ? teamSchedules() : tab === 'aprob' ? teamApprovals() : tab === 'acc' ? teamAccess() : tab === 'dir' ? teamDirectory() : tab === 'org' ? teamOrgs() : teamDisp();
   return hero + `<div class="wrap"><div class="tabs" role="tablist" aria-label="Secciones del equipo">${tabs.map(([k, l]) => `<button class="tab" role="tab" aria-selected="${tab === k}" data-act="team-tab" data-v="${k}">${esc(l)}</button>`).join('')}</div>${body}</div>`;
 }
 function scopeChips(cur, act) {
@@ -3892,14 +4124,14 @@ function teamDisp() {
     return `<button class="avg-c ${lvl}" ${all && canSchedule() ? `data-act="mt-new" data-v="${d}:${t}"` : 'tabindex="-1"'} title="${esc(tip)}" aria-label="${esc(tip)}">${all ? '✓' : free ? free : ''}</button>`;
   }).join('')}</div>`).join('');
   const ranges = days.map(d => ({ d, r: freeRanges(known, d, { from, to, buf: o.buf, min: o.min }) })).filter(x => x.r.length);
-  const list = ranges.length ? `<ul class="fr-list">${ranges.map(({ d, r }) => `<li><b>${DIAS[d - 1]}</b><span>${r.map(([a, b]) => `<span class="fr">${m2t(a)}–${m2t(b)} <small>${durTxt(b - a)}</small>${canSchedule() ? `<button class="linkish" data-act="mt-new" data-v="${d}:${a}">Programar</button>` : ''}</span>`).join('')}</span></li>`).join('')}</ul>` : '<p class="note">No hay franjas comunes con esa duración mínima. Prueba con una duración menor o un margen más corto.</p>';
+  const list = ranges.length ? `<ul class="fr-list">${ranges.map(({ d, r }) => `<li><b>${DIAS[d - 1]}</b><span>${r.map(([a, b]) => `<span class="fr">${m2t(a)}–${m2t(b)} <small>${durTxt(b - a)}</small>${canSchedule() ? `<button class="linkish" data-act="mt-new" data-v="${d}:${a}">Programar</button>` : canProposeMt() ? `<button class="linkish" data-act="mt-new" data-v="${d}:${a}">Proponer</button>` : ''}</span>`).join('')}</span></li>`).join('')}</ul>` : '<p class="note">No hay franjas comunes con esa duración mínima. Prueba con una duración menor o un margen más corto.</p>';
   const who = `<div class="av-who">${ms.map(m => `<span class="av-w ${schedState(m)}">${avatar(m)}<span>${esc(mName(m))}<small>${esc(SCHED_LBL[schedState(m)][1])}</small></span></span>`).join('')}</div>`;
   return panel('Cruce de horarios', `Franjas de ${m2t(from)} a ${m2t(to)}. Verde con ✓: todos libres; el número indica cuántos están libres; el color se oscurece cuantos más estén en clase.${canSchedule() ? ' Toca un ✓ para programar una reunión.' : ''}`,
     `<div class="av-ctl">${scopeChips(o.scope, 'av-scope')}<label class="mini-f">Margen antes y después de clase<select data-change="av-buf">${[0, 15, 30].map(v => `<option value="${v}"${+o.buf === v ? ' selected' : ''}>${v} min</option>`).join('')}</select></label><label class="mini-f">Duración mínima<select data-change="av-min">${[30, 60, 90, 120].map(v => `<option value="${v}"${+o.min === v ? ' selected' : ''}>${durTxt(v)}</option>`).join('')}</select></label><label class="mini-c"><input type="checkbox" data-change="av-sun"${o.sun ? ' checked' : ''}> Incluir domingo</label></div>
     ${who}${pend.length ? `<p class="av-warn">${icon('alerta', 18)}<span><b>${plural(pend.length, 'integrante sin horario', 'integrantes sin horario')}:</b> ${pend.map(mName).join(', ')}. Mientras no se cargue su horario se consideran libres, así que una franja «común» puede chocar con sus clases.</span></p>` : ''}
     <div class="split av-split"><div class="avg" style="--avg-cols:${days.length}" role="grid" aria-label="Disponibilidad por media hora">${head}${grid}</div>
     <div><h3 class="sub-h">Franjas libres en común <small>${esc(scopeName(o.scope))} · mínimo ${durTxt(o.min)}${o.buf ? ` · margen ${o.buf} min` : ''}</small></h3>${list}</div></div>`,
-    canSchedule() ? '<button class="btn sm primary" data-act="mt-new">Programar reunión</button>' : '');
+    canSchedule() ? '<button class="btn sm primary" data-act="mt-new">Programar reunión</button>' : canProposeMt() ? '<button class="btn sm primary" data-act="mt-new">Proponer reunión</button>' : '');
 }
 function mtRow(mt, me, ro) {
   const p = mt.pid ? projectById(mt.pid) : null, att = attendeesOf(mt), cf = conflictsOf(mt), conf = mt.confirm || {};
@@ -3912,8 +4144,8 @@ function mtRow(mt, me, ro) {
       <h4>${esc(mt.title || 'Reunión')}</h4>
       <p class="mt-att">${att.map(m => `<span class="mt-a${conf[m.id] === 'si' ? ' si' : conf[m.id] === 'no' ? ' no' : ''}" title="${esc(mName(m))}${conf[m.id] === 'si' ? ' · asistirá' : conf[m.id] === 'no' ? ' · no podrá' : ''}">${avatar(m, 'sm')}</span>`).join('')}${(mt.guests || []).length ? `<small class="mt-g">+ ${esc(mt.guests.map(g => g.name || g.email).join(', '))}</small>` : ''}<small>${esc(mt.place || 'Lugar por definir')}</small></p>
       ${cf.length ? `<p class="mt-cf">${icon('alerta', 16)}Choca con: ${cf.map(x => `${esc(mName(x.m))} (${esc(x.b.t)} ${m2t(x.b.s)}–${m2t(x.b.e)})`).join('; ')}</p>` : ''}
-      ${mt.agenda ? `<details class="mt-ag"><summary>Agenda</summary><p>${fmtTxt(mt.agenda)}</p></details>` : ''}</div>
-    <div class="mt-acts">${meBtns}<a class="btn sm" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer" title="Agregar a Google Calendar para recibir avisos">Google Calendar ↗</a>${isUrgent(mt) && !ro ? `<button class="btn sm sos" data-act="sos-send" data-id="${esc(mt.id)}">${canSchedule() ? 'Convocatoria' : 'Detalles'}</button>` : ''}${!isUrgent(mt) && !ro && canSchedule() && isOpenMt(mt) ? `<button class="btn sm" data-act="sos-send" data-id="${esc(mt.id)}" title="Correo con los participantes ya cargados">Convocar por correo</button>` : ''}${canSchedule() && !ro ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Editar</button>` : ''}</div></article>`;
+      ${mt.agenda ? `<details class="mt-ag"><summary>Puntos a tratar</summary><p>${fmtTxt(mt.agenda)}</p></details>` : ''}</div>
+    <div class="mt-acts">${meBtns}<a class="btn sm" href="${esc(gcalUrl(mt))}" target="_blank" rel="noopener noreferrer" title="Agregar a Google Calendar para recibir avisos">Google Calendar ↗</a>${isUrgent(mt) && !ro ? `<button class="btn sm sos" data-act="sos-send" data-id="${esc(mt.id)}">${canSchedule() ? 'Convocatoria' : 'Detalles'}</button>` : ''}${!isUrgent(mt) && !ro && canSchedule() && isOpenMt(mt) ? `<button class="btn sm" data-act="sos-send" data-id="${esc(mt.id)}" title="Correo con los participantes ya cargados">Convocar por correo</button>` : ''}${canSchedule() && !ro ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Editar</button>` : !ro && mt.pid && !isUrgent(mt) && isOpenMt(mt) && canProposeMt(mt.pid) ? `<button class="icon-btn" data-act="mt-edit" data-id="${esc(mt.id)}">Proponer cambio</button>` : ''}${pendSet('meetings').has(mt.id) ? PEND_PILL : ''}</div></article>`;
 }
 function weekLabel(iso) { const d = parseD(iso); const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7)); const sun = new Date(mon); sun.setDate(mon.getDate() + 6); return `Semana del ${mon.getDate()} ${MES[mon.getMonth()]} al ${sun.getDate()} ${MES[sun.getMonth()]}`; }
 function meetingList(list, me, ro) {
@@ -3934,7 +4166,7 @@ function teamMeetings() {
   const ser = series.size ? `<div class="ser-list">${[...series.values()].map(L => { const a = L[0], g = gcalSeriesUrl(L); return `<div class="ser"><div><b>${esc(a.title)}</b><small>${esc(DIAS[dowOf(a.date) - 1])} ${esc(a.start)}–${esc(a.end)} · ${plural(L.length, 'fecha', 'fechas')} hasta el ${fmtD(L[L.length - 1].date)}</small></div>${g ? `<a class="btn sm" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Agregar la serie a Google Calendar ↗</a>` : '<small class="note">Tiene fechas movidas por feriados: agrégalas una por una o con el CSV.</small>'}</div>`; }).join('')}</div>` : '';
   return panel('Cronograma de reuniones', `${plural(up.length, 'reunión por venir', 'reuniones por venir')}${cfN ? ` · <b class="tone-crit">${plural(cfN, 'choca', 'chocan')} con alguna clase</b>` : ''}. Agrega las reuniones a Google Calendar para recibir los avisos en el celular.`,
     `${chips}${ser ? `<h3 class="sub-h">Series programadas</h3>${ser}` : ''}<h3 class="sub-h">Próximas reuniones</h3>${meetingList(up, null)}${past.length ? `<details class="mt-past"><summary>Reuniones anteriores o canceladas (${past.length})</summary>${meetingList(past, null)}</details>` : ''}`,
-    `${downloads && up.length ? '<button class="btn sm" data-act="mt-csv">Descargar CSV para Google Calendar</button>' : ''}${canSchedule() ? `<button class="btn sm sos" data-act="sos-new">${icon('rayo', 15)}Emergencia</button><button class="btn sm primary" data-act="mt-new">Programar reunión</button>` : ''}`);
+    `${downloads && up.length ? '<button class="btn sm" data-act="mt-csv">Descargar CSV para Google Calendar</button>' : ''}${canSchedule() ? `<button class="btn sm sos" data-act="sos-new">${icon('rayo', 15)}Emergencia</button><button class="btn sm primary" data-act="mt-new">Programar reunión</button>` : canProposeMt() ? '<button class="btn sm primary" data-act="mt-new">Proponer reunión</button>' : ''}`);
 }
 function teamSchedules() {
   const ms = membersActive();
@@ -3947,8 +4179,8 @@ function teamSchedules() {
 function teamAccess() {
   const ms = membersAll();
   const accSt = m => m.accessOk ? `<span class="pill ok"><i></i>Puede editar</span><small class="note">verificado ${esc(ago(Date.parse(m.accessOk)))}</small>` : `<span class="pill warn"><i></i>Sin verificar</span><small class="note">aún no ingresa con permiso para editar</small>`;
-  const guide = panel('Dar acceso para editar', 'El intranet identifica a cada persona y decide qué puede tocar; el permiso para escribir lo da claude.ai.', `<ol class="acc-steps"><li>Abre el sistema en claude.ai con la cuenta propietaria.</li><li>Entra al menú <b>Compartir</b> de la página.</li><li>Agrega el correo de la cuenta de claude.ai del integrante (te lo envía con «Solicitar acceso» desde su intranet; puede ser distinto al institucional).</li><li>Elige el permiso para <b>interactuar (Colaborador)</b>, no solo para ver.</li><li>Pídele que vuelva a abrir el sistema e ingrese al intranet: la columna «Acceso en claude.ai» pasará a «Puede editar».</li></ol><p class="note">Con ese permiso, cada integrante edita solo los proyectos de su equipo; Alvaro Rojas y José Antonio Chumacero tienen acceso total. Nadie sale de un equipo sin tu autorización.</p>`);
-  return requestsPanel() + `<div style="margin-top:20px">${guide}</div><div style="margin-top:20px">` + panel('Accesos al intranet', `Cada integrante ingresa con su correo institucional y su contraseña. La contraseña inicial es <b class="mono">${DEF_PASS}</b> y el sistema pide cambiarla en el primer ingreso. Revisa que cada correo sea el real: los marcados «por confirmar» se armaron con el formato nombre.apellido@unmsm.edu.pe.`,
+  const guide = panel('Dar acceso para editar', 'El intranet identifica a cada persona y decide qué puede tocar; el permiso para escribir lo da claude.ai.', `<ol class="acc-steps"><li>Abre el sistema en claude.ai con la cuenta propietaria y entra al menú <b>Compartir</b>.</li><li>Invita el correo de la cuenta de claude.ai de cada integrante con el permiso <b>Editor</b> (te lo envía con «Solicitar acceso» desde su intranet; puede ser distinto al institucional).</li><li><b>Desactiva el enlace público:</b> cambia «Cualquier persona puede abrir este enlace» a acceso restringido. Mientras el enlace público esté activo, claude.ai deja en <b>solo lectura</b> a todos los invitados de fuera de tu organización, aunque figuren como Editor.</li><li>Quien solo deba mirar (por ejemplo, decanos) se invita como <b>Lector</b>: sin el enlace público, solo entran las personas invitadas.</li><li>Cada integrante abre el sistema con la cuenta invitada e ingresa al intranet: la columna «Acceso en claude.ai» pasa a «Puede editar».</li></ol><p class="cf-bad">${icon('alerta', 16)}Las invitaciones a personas de fuera vencen (la plataforma muestra la fecha, por ejemplo «vence el 16 nov»): renuévalas antes de esa fecha.</p><p class="note">En el sistema, cada colaborador propone cambios solo en los proyectos de su equipo y tú los apruebas en Equipo › Aprobaciones; Alvaro Rojas y José Antonio Chumacero tienen acceso total. Nadie sale de un equipo sin tu autorización.</p>`);
+  return guide + `<div style="margin-top:20px">` + panel('Accesos al intranet', `Cada integrante ingresa con su correo institucional y su contraseña. La contraseña inicial es <b class="mono">${DEF_PASS}</b> y el sistema pide cambiarla en el primer ingreso. Revisa que cada correo sea el real: los marcados «por confirmar» se armaron con el formato nombre.apellido@unmsm.edu.pe.`,
     `<div class="tbl"><table class="acc-t"><thead><tr><th>Integrante</th><th>Correo</th><th>Acceso en claude.ai</th><th>Contraseña</th><th>Último ingreso</th><th><span class="sr">Acciones</span></th></tr></thead><tbody>${ms.map(m => `<tr${m.active === false ? ' class="off"' : ''}><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b>${m.admin ? ' <span class="pill accent">Administrador</span>' : ''}${m.active === false ? ' <span class="pill">Inactivo</span>' : ''}<small>${esc(m.role || '')}</small></span></span></td><td class="nowrap">${m.email ? `${esc(m.email)}${m.emailOk ? '' : '<br><span class="pill warn"><i></i>Por confirmar</span>'}` : '<span class="note">Sin correo: no puede ingresar</span>'}${m.email ? `<br><button class="linkish" data-act="copy-txt" data-v="${esc(m.email)}">Copiar correo</button>` : ''}</td><td class="nowrap acc-st">${accSt(m)}</td><td class="nowrap">${m.mustChange ? '<span class="pill warn"><i></i>Inicial</span>' : '<span class="pill ok"><i></i>Personal</span>'}</td><td class="nowrap">${m.lastLogin ? esc(ago(Date.parse(m.lastLogin))) : '—'}</td><td><div class="acc-acts">${canEdit() ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(m.id)}">Editar</button><button class="icon-btn" data-act="mem-reset" data-id="${esc(m.id)}">Restablecer contraseña</button>` : ''}<button class="icon-btn" data-act="view-as" data-id="${esc(m.id)}">Ver su intranet</button></div></td></tr>`).join('')}</tbody></table></div>
     <p class="note" style="margin-top:12px"><b>Importante:</b> el ingreso identifica a cada integrante y personaliza su vista; no es una barrera de seguridad. Cualquier persona con acceso al sistema puede ver la cartera, así que no guardes aquí información confidencial. Para que un integrante pueda marcar tareas, confirmar reuniones o editar su horario, compártele el sistema desde claude.ai con permiso para interactuar.</p>`,
     canEdit() ? '<button class="btn sm primary" data-act="mem-new">Agregar integrante</button>' : '') + '</div>';
@@ -4102,7 +4334,8 @@ function sosMsg(mt) {
   const L = [`${k === 'urgente' ? 'Reunión de emergencia' : k === 'cambio' ? 'Se actualizó la reunión' : 'Te convocamos a la reunión'}: ${mt.title}`, '', `Cuándo: ${sosWhen(mt)}`, `Dónde: ${mt.place || 'te enviaremos el enlace o el lugar en breve'}`];
   if (p) L.push(`Proyecto: ${p.code} · ${p.name}`);
   L.push(`Convoca: ${mt.organizer || 'Dirección de proyectos'}`, `Participan: ${sosNames(mt).join(', ')}`);
-  if (mt.agenda) L.push('', k === 'urgente' ? 'Qué hay que resolver:' : 'Agenda:', mt.agenda);
+  if (mt.proposedBy && memberById(mt.proposedBy)) L.push(`Propuesta por: ${mName(memberById(mt.proposedBy))}`);
+  if (mt.agenda) L.push('', k === 'urgente' ? 'Qué hay que resolver:' : 'Puntos a tratar:', mt.agenda);
   L.push('', 'Confirma tu asistencia respondiendo este mensaje o en el intranet del sistema.', 'Sistema de Dirección de Gestión de Proyectos · DGP OGPL-UNMSM');
   return L.join('\n');
 }
@@ -4267,13 +4500,13 @@ function accReqMsg(m, acct) {
   return [`Hola ${adminsM().map(x => String(mName(x)).split(' ')[0]).join(' y ') || ''}:`.replace(' :', ':'), '',
     `Te pido acceso de Colaborador al Sistema de Dirección de Gestión de Proyectos. Ingreso al intranet como ${m.name} (${m.email || 'sin correo registrado'}), pero mi cuenta de claude.ai solo tiene permiso de lectura: no puedo cambiar mi contraseña, marcar avances, confirmar reuniones ni editar mi horario.`, '',
     `Correo de mi cuenta de claude.ai: ${acct || '(escribe aquí el correo)'}`, '',
-    'Cómo darme acceso: abre el sistema en claude.ai con la cuenta propietaria, entra al menú Compartir, agrega ese correo y elige el permiso para interactuar (Colaborador).', '',
+    'Cómo darme acceso: abre el sistema en claude.ai con la cuenta propietaria, entra al menú Compartir, invita ese correo como Editor y desactiva el enlace público («Cualquier persona puede abrir este enlace»): mientras esté activo, los invitados de fuera de la organización solo pueden leer.', '',
     'Gracias,', mName(m)].join('\n');
 }
 function openAccessReq() {
   const m = sessionMember(); if (!m) { toast('Ingresa primero al intranet con tu correo.', 'warn'); return; }
   const L = mailLinks(adminMails(), accReqSub(m), accReqMsg(m, m.email || ''));
-  const body = `<p>Tu cuenta de claude.ai solo puede <b>leer</b> el sistema. El permiso para escribir lo da el propietario desde el menú <b>Compartir</b> de claude.ai: el intranet no puede cambiarlo por su cuenta. Envía esta solicitud a ${esc(adminNames())}; cuando te dé acceso, vuelve a abrir el sistema.</p>
+  const body = `<p>Tu cuenta de claude.ai solo puede <b>leer</b> el sistema. El permiso para escribir lo da el propietario desde el menú <b>Compartir</b> de claude.ai: el intranet no puede cambiarlo por su cuenta. Envía esta solicitud a ${esc(adminNames())}; cuando te dé acceso, vuelve a abrir el sistema.</p><p class="note">¿Ya te invitaron como Editor y sigues en solo lectura? Revisa dos cosas: que hayas abierto el sistema con la misma cuenta de claude.ai a la que llegó la invitación, y que el propietario haya desactivado el enlace público (mientras esté activo, los invitados solo pueden leer).</p>
     ${fld('Correo de tu cuenta de claude.ai', `<input id="acc-mail" type="email" value="${esc(m.email || '')}" autocomplete="email">`, 1, 'Es el correo con el que inicias sesión en claude.ai; puede ser distinto a tu correo institucional.')}
     <h4 class="sos-h">Enviar la solicitud</h4>${mailBtns(L)}
     <label class="f wide sos-to"><span>Para</span><textarea readonly rows="1">${esc(adminMails().join(', '))}</textarea></label>`;
@@ -4301,7 +4534,7 @@ async function submitLeave(f) {
   const m = sessionMember(), p = projectById(f.dataset.pid); if (!m || !p) { closeModal(); return; }
   const reason = f.elements.reason.value.trim(); if (!reason) { formErr('Escribe el motivo.'); return; }
   const sub = `Solicitud de salida de ${p.code} · ${mName(m)}`;
-  const msg = [`${mName(m)} solicita salir del equipo de ${p.code} · ${p.name}.`, '', `Motivo: ${reason}`, '', 'Para aprobarla o rechazarla, ingresa al sistema: Equipo › Accesos al intranet › Solicitudes del equipo.', '', 'Sistema de Dirección de Gestión de Proyectos · DGP OGPL-UNMSM'].join('\n');
+  const msg = [`${mName(m)} solicita salir del equipo de ${p.code} · ${p.name}.`, '', `Motivo: ${reason}`, '', 'Para aprobarla o rechazarla, ingresa al sistema: Equipo › Aprobaciones › Solicitudes del equipo.', '', 'Sistema de Dirección de Gestión de Proyectos · DGP OGPL-UNMSM'].join('\n');
   const L = mailLinks(adminMails(), sub, msg);
   if (!canWriteBase()) {
     dlg('Envía tu solicitud por correo', `<p>Tu cuenta de claude.ai solo puede leer el sistema, así que la solicitud no puede guardarse aquí. Envíala por correo a ${esc(adminNames())}: ya está escrita.</p>${mailBtns(L)}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
@@ -4311,11 +4544,11 @@ async function submitLeave(f) {
   try {
     await createRec('requests', { type: 'salida', member: m.id, pid: p.id, reason, status: 'pendiente' });
     logFeed(p.id, `solicitó salir del equipo de ${p.code}`);
-    dlg('Solicitud enviada', `<p>${esc(adminNames())} la verá en el sistema, en Equipo › Accesos. Mientras tanto sigues en el equipo de ${esc(p.code)}.</p><p class="note">¿Le avisas también por correo? El mensaje ya está escrito.</p>${mailBtns(L)}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
+    dlg('Solicitud enviada', `<p>${esc(adminNames())} la verá en el sistema, en Equipo › Aprobaciones. Mientras tanto sigues en el equipo de ${esc(p.code)}.</p><p class="note">¿Le avisas también por correo? El mensaje ya está escrito.</p>${mailBtns(L)}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
   } catch (e) { btn.disabled = false; writeErr(e); }
 }
 function requestsPanel() {
-  const L = reqsAll().filter(r => r.status !== 'cancelada');
+  const L = reqsAll().filter(r => r.type === 'salida' && r.status !== 'cancelada');
   const pend = L.filter(r => r.status === 'pendiente'), done = L.filter(r => r.status !== 'pendiente').slice(0, 6);
   const row = r => { const m = memberById(r.member), p = projectById(r.pid), n = m && p ? pendIn(m, p.id) : { t: 0, a: 0 }; return `<li class="pd ${r.status === 'pendiente' ? '' : 'done'}"><span class="pd-ok">${r.status === 'pendiente' ? '•' : r.status === 'aprobada' ? '✓' : '✕'}</span><div><p><b>${esc(m ? mName(m) : 'Integrante')}</b> pide salir de <span class="code-chip">${esc(p ? p.code : '—')}</span> ${esc(p ? p.name : '')}</p><small>${esc(fmtD(String(r.createdAt || '').slice(0, 10)))} · Motivo: ${esc(r.reason || '—')}${r.status === 'pendiente' ? ` · ${plural(n.t, 'tarea pendiente', 'tareas pendientes')} y ${plural(n.a, 'acuerdo', 'acuerdos')} en el proyecto` : ` · ${esc(REQ_LBL[r.status] || r.status)}${r.reply ? ': ' + esc(r.reply) : ''}`}</small>${r.status === 'pendiente' && canSchedule() ? `<p class="req-acts"><button class="btn sm primary" data-act="req-ok" data-id="${esc(r.id)}">Aprobar</button><button class="btn sm" data-act="req-no" data-id="${esc(r.id)}">Rechazar</button></p>` : ''}</div></li>`; };
   return panel('Solicitudes del equipo', pend.length ? `${plural(pend.length, 'solicitud espera', 'solicitudes esperan')} tu decisión. Nadie sale de un proyecto sin tu autorización.` : 'No hay solicitudes pendientes. Nadie sale de un proyecto sin tu autorización.', L.length ? `<ul class="pd-list">${pend.concat(done).map(row).join('')}</ul>` : '<p class="note">Cuando un integrante pida salir de un proyecto desde su intranet, la solicitud aparecerá aquí.</p>');
@@ -4485,22 +4718,24 @@ const fld = (label, ctl, wide, hint) => `<label class="f${wide ? ' wide' : ''}">
 function nextDateFor(d) { const t = today(); const x = new Date(t); x.setDate(t.getDate() + ((d - (((t.getDay() + 6) % 7) + 1) + 7) % 7 || 7)); return isoD(x); }
 function openMeetingForm(id, pre) {
   const mt = id ? (S.meetings || []).find(x => x.id === id) || {} : {};
-  const scope = id ? mtScope(mt) : (pre && pre.scope) || (UI.view === 'project' ? UI.pid : UI.av.scope) || 'all';
+  const prop = propMode(), mine = prop ? projectsOf(sessionMember()).map(x => x.p) : [];
+  let scope = id ? mtScope(mt) : (pre && pre.scope) || (UI.view === 'project' ? UI.pid : UI.av.scope) || 'all';
+  if (prop && !mine.some(p => p.id === scope)) scope = mine.length ? mine[0].id : scope;
   const date = mt.date || (pre && pre.date) || nextDateFor(2), start = mt.start || (pre && pre.start) || '16:00';
   const end = mt.end || m2t((t2m(start) || 960) + 60);
-  const opts = [['all', 'Equipo completo (todos los proyectos)']].concat(projectsSorted().map(p => [p.id, `${p.code} · ${p.name}`]));
-  const body = `<div class="fgrid">
-    ${fld('Título', `<input name="title" value="${esc(mt.title || (scope === 'all' ? 'Reunión general del equipo' : `Seguimiento · ${scopeName(scope)}`))}" required>`, 1)}
+  const opts = prop ? mine.map(p => [p.id, `${p.code} · ${p.name}`]) : [['all', 'Equipo completo (todos los proyectos)']].concat(projectsSorted().map(p => [p.id, `${p.code} · ${p.name}`]));
+  const body = `${prop ? `<p class="prop-note">${icon('alerta', 16)}La reunión ${id ? 'cambiará' : 'se programará'} cuando la apruebe ${esc(adminNames())}; luego se convoca por correo a los integrantes del proyecto.</p>` : ''}<div class="fgrid">
+    ${fld('Asunto', `<input name="title" value="${esc(mt.title || (scope === 'all' ? 'Reunión general del equipo' : `Seguimiento · ${scopeName(scope)}`))}" required maxlength="140">`, 1)}
     ${fld('Participan', `<select name="scope">${opts.map(([k, l]) => `<option value="${esc(k)}"${k === scope ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`, 1)}
     ${fld('Fecha', `<input type="date" name="date" value="${esc(date)}" required>`)}
     <div class="f2">${fld('Inicio', `<input type="time" name="start" value="${esc(start)}" step="900" required>`)}${fld('Fin', `<input type="time" name="end" value="${esc(end)}" step="900" required>`)}</div>
     ${id ? fld('Estado', `<select name="status">${MT_STATUS.map(s => `<option${(mt.status || 'Programada') === s ? ' selected' : ''}>${s}</option>`).join('')}</select>`) : fld('Repetir', `<select name="rep"><option value="no">No se repite</option><option value="7">Cada semana</option><option value="14">Cada dos semanas</option></select>`)}
     ${id ? fld('Lugar o enlace', `<input name="place" value="${esc(mt.place || '')}" placeholder="OGPL, aula o enlace de Meet">`) : fld('Repetir hasta', `<input type="date" name="until" value="2026-12-18">`)}
     ${id ? '' : fld('Lugar o enlace', `<input name="place" value="" placeholder="OGPL, aula o enlace de Meet">`, 1)}
-    ${fld('Agenda', `<textarea name="agenda" rows="3">${esc(mt.agenda || '1. Avance del cronograma. 2. Acuerdos pendientes. 3. Riesgos y bloqueos. 4. Próximos pasos.')}</textarea>`, 1)}
+    ${fld('Puntos a tratar', `<textarea name="agenda" rows="5" maxlength="2000">${esc(mt.agenda || '1. Avance del cronograma\n2. Acuerdos pendientes\n3. Riesgos y bloqueos\n4. Próximos pasos y responsables')}</textarea>`, 1, 'Un punto por línea. Se incluyen en la convocatoria por correo.')}
   </div><div class="mt-check" id="mt-check" aria-live="polite"></div><div class="mt-sug" id="mt-sug"></div>`;
-  const foot = `${id ? '<div class="del-zone" id="del-zone"><button type="button" class="btn ghost danger" data-act="mt-del">Eliminar</button></div>' : ''}<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">${id ? 'Guardar' : 'Programar'}</button></div>`;
-  dlg(id ? 'Editar reunión' : 'Programar reunión', body, foot, 'mt-form');
+  const foot = `${id && !prop ? '<div class="del-zone" id="del-zone"><button type="button" class="btn ghost danger" data-act="mt-del">Eliminar</button></div>' : ''}<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button type="submit" class="btn primary">${prop ? 'Enviar para aprobación' : id ? 'Guardar' : 'Programar'}</button></div>`;
+  dlg(prop ? (id ? 'Proponer un cambio en la reunión' : 'Proponer una reunión') : id ? 'Editar reunión' : 'Programar reunión', body, foot, 'mt-form');
   $('#mt-form').dataset.id = id || '';
   mtFormCheck();
 }
@@ -4537,9 +4772,19 @@ function mtFormCheck() {
 }
 async function submitMeeting(f) {
   const v = mtFormVals(f), id = f.dataset.id || null;
-  if (!v.title || !v.date || !v.start || !v.end) { formErr('Completa título, fecha, inicio y fin.'); return; }
+  if (!v.title || !v.date || !v.start || !v.end) { formErr('Completa asunto, fecha, inicio y fin.'); return; }
   if (t2m(v.end) <= t2m(v.start)) { formErr('La hora de fin debe ser posterior a la de inicio.'); return; }
   const base = { title: v.title, pid: v.scope === 'all' ? '' : v.scope, start: v.start, end: v.end, place: v.place, agenda: v.agenda };
+  if (propMode() && !id) {
+    const me = sessionMember(); if (!base.pid || !inProject(me, base.pid)) { formErr('Elige uno de los proyectos en los que participas.'); return; }
+    const { out } = mtDates(v); if (!out.length) { formErr('No hay fechas válidas entre la fecha inicial y la final.'); return; }
+    const b2 = f.querySelector('[type=submit]'); b2.disabled = true;
+    try {
+      await submitProposal({ type: 'cambio', member: me.id, pid: base.pid, coll: 'meetings', doc: '', op: 'create', data: Object.assign({ date: out[0] }, base), dates: out, prev: {}, label: `Nueva reunión: «${cutTxt(v.title, 90)}» · ${fmtD(out[0])} ${v.start}${out.length > 1 ? ` (${out.length} fechas)` : ''}`, status: 'pendiente' });
+      throw queuedErr();
+    } catch (e) { b2.disabled = false; writeErr(e); }
+    return;
+  }
   const btn = f.querySelector('[type=submit]'); btn.disabled = true;
   try {
     if (id) {
@@ -4736,9 +4981,10 @@ function viewMe() {
   const funcs = groups.length ? groups.map(fnBlock).join('') + (fx ? '' : '<p class="note" style="margin-top:10px">Tus funciones detalladas aparecerán aquí cuando el plan de gestión de tu proyecto las incluya en la sección 7.2.</p>') : fx ? fxHtml(fx) : '<p class="note">Tus funciones detalladas aparecerán aquí cuando el plan de gestión de tu proyecto las incluya en la sección 7.2.</p>';
   const raci = rc ? `<div class="me-raci"><p class="mini-h">Tu papel en la matriz RACI (${esc(rc.pl.code || '')}, columna «${esc(m.raci)}»)</p>${[['R', 'Lo haces'], ['A', 'Lo apruebas'], ['C', 'Te consultan'], ['I', 'Te informan']].filter(([k]) => rc.g[k].length).map(([k, l]) => `<div class="raci-g"><b class="raci-k ${k}">${k}</b><div><small>${l}</small><p>${rc.g[k].map(esc).join(' · ')}</p></div></div>`).join('')}</div>` : '';
   // pendientes
-  const tRow = t => { const st = taskState(t, td), p = projectById(t.pid); return `<li class="pd ${st.k}"><label class="pd-ck"><input type="checkbox" data-quick="done" data-id="${esc(t.id)}"${num(t.progress) >= 100 ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como hecha"></label><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> <span class="mono">${esc(t.wbs || '')}</span> ${esc(t.name)}</p><small>${pill(st.tone, st.label)} ${t.end ? `Fin ${fmtD(t.end)}` : ''} · ${Math.round(num(t.progress))}%${trTag(trItem('t', t.id), m)}${trOk && num(t.progress) < 100 ? trBtn('t', t.id) : ''}</small></div></li>`; };
+  const pendT = pendSet('tasks'), pendA = pendSet('agreements');
+  const tRow = t => { const st = taskState(t, td), p = projectById(t.pid); return `<li class="pd ${st.k}"><label class="pd-ck"><input type="checkbox" data-quick="done" data-id="${esc(t.id)}"${num(t.progress) >= 100 ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como hecha"></label><div><p><span class="code-chip">${esc(p ? p.code : '')}</span> <span class="mono">${esc(t.wbs || '')}</span> ${esc(t.name)}</p><small>${pill(st.tone, st.label)} ${t.end ? `Fin ${fmtD(t.end)}` : ''} · ${Math.round(num(t.progress))}%${pendT.has(t.id) ? ' ' + PEND_PILL : ''}${trTag(trItem('t', t.id), m)}${trOk && num(t.progress) < 100 ? trBtn('t', t.id) : ''}</small></div></li>`; };
   const pRow = x => `<li class="pd ${x.done ? 'done' : ''}"><label class="pd-ck"><input type="checkbox" data-pchk="${esc(x.sec.id)}:${x.bi}:${x.ri}"${x.done ? ' checked' : ''}${ed ? '' : ' disabled'} aria-label="Marcar como cumplida"></label><div><p><span class="code-chip">${esc(x.pl.code || 'Plan')}</span> ${fmtTxt(x.text)}</p><small>${x.date ? esc(x.date) : ''}${x.done ? ` · cumplida el ${fmtD(x.done)}` : ''} · <button class="linkish" data-act="open-plan" data-id="${esc(x.pl.id)}">ver en el plan</button>${trTag(trItem('p', `${x.sec.id}:${x.bi}:${x.ri}`), m)}${trOk && !x.done ? trBtn('p', `${x.sec.id}:${x.bi}:${x.ri}`) : ''}</small></div></li>`;
-  const aRow = a => { const p = projectById(a.pid), d = parseD(a.due), late = a.status === 'Pendiente' && d && d < td; return `<li class="pd ${a.status === 'Pendiente' ? (late ? 'late' : '') : 'done'}">${a.status === 'Pendiente' && ed ? `<button class="icon-btn" data-act="agree-done" data-id="${esc(a.id)}">Cumplido</button>` : `<span class="pd-ok">${a.status === 'Pendiente' ? '•' : '✓'}</span>`}<div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(a.text)}</p><small>${a.due ? `${late ? '<b class="tone-crit">Venció</b>' : 'Vence'} ${fmtD(a.due)} · ` : ''}${esc(a.meeting || '')}${trTag(trItem('a', a.id), m)}${trOk && a.status === 'Pendiente' ? trBtn('a', a.id) : ''}</small></div></li>`; };
+  const aRow = a => { const p = projectById(a.pid), d = parseD(a.due), late = a.status === 'Pendiente' && d && d < td; return `<li class="pd ${a.status === 'Pendiente' ? (late ? 'late' : '') : 'done'}">${a.status === 'Pendiente' && ed ? `<button class="icon-btn" data-act="agree-done" data-id="${esc(a.id)}">Cumplido</button>` : `<span class="pd-ok">${a.status === 'Pendiente' ? '•' : '✓'}</span>`}<div><p><span class="code-chip">${esc(p ? p.code : '')}</span> ${esc(a.text)}</p><small>${a.due ? `${late ? '<b class="tone-crit">Venció</b>' : 'Vence'} ${fmtD(a.due)} · ` : ''}${esc(a.meeting || '')}${pendA.has(a.id) ? ' ' + PEND_PILL : ''}${trTag(trItem('a', a.id), m)}${trOk && a.status === 'Pendiente' ? trBtn('a', a.id) : ''}</small></div></li>`; };
   const itOrg = pid => projOrgId(projectById(pid));
   const orgsIn = [...new Set([...openT, ...openA, ...it.risks].map(x => itOrg(x.pid)).concat(openP.map(x => itOrg(x.pl.pid))).filter(Boolean))];
   const fo = orgsIn.length > 1 && orgsIn.includes(UI.meOrg) ? UI.meOrg : 'all', inO = pid => fo === 'all' || itOrg(pid) === fo;
@@ -4762,6 +5008,7 @@ function viewMe() {
   return banner + mustChange + hero + `<div class="wrap">${kpis}
     <section class="section">${secTitle('Mis proyectos y funciones', 'Qué te toca', 'Tu rol en cada proyecto, tus funciones según el plan de gestión y tu lugar en la matriz de responsabilidades.')}${projCards || '<div class="me-projs"><div class="empty"><p>Aún no figuras en el equipo de ningún proyecto.</p></div></div>'}${extra}<div class="split" style="margin-top:20px">${panel('Mis funciones', '', funcs)}${raci ? panel('Mis responsabilidades', '', raci) : panel('Mis responsabilidades', '', '<p class="note">Tu papel en la matriz RACI aparecerá cuando tu columna esté definida en el plan.</p>')}</div></section>
     <section class="section">${secTitle('Mis pendientes', 'Para hacer', 'Marca lo que terminas: se actualiza el cronograma, el plan y el tablero de todo el equipo.')}${panel('Pendientes asignados a mí', '', pend)}${risks ? `<div style="margin-top:20px">${risks}</div>` : ''}</section>
+    ${(() => { if (!real || (preview && !isAdmin())) return ''; const nw = newsPanel(m), mp = myProposalsPanel(m, preview); if (!preview) markNewsSeen(real); return nw || mp ? `<section class="section">${secTitle('Novedades y propuestas', 'Cambios', 'Lo que se aprobó en tus proyectos y el estado de los cambios que propusiste.')}<div class="${nw && mp ? 'split' : ''}">${nw}${mp}</div></section>` : ''; })()}
     <section class="section">${secTitle('Mi semana', 'Agenda', sunday ? 'Tus clases y tus reuniones de la semana que empieza mañana.' : 'Tus clases y tus reuniones de esta semana.')}${panel('Clases y reuniones', 'Gris: clases. Turquesa: reuniones del equipo.', weekCal(days, wkItems, { from: 8 * 60, to: 22 * 60, today: sunday ? 0 : ((td.getDay() + 6) % 7) + 1, dates }), canEditMember(m) && !preview ? `<button class="btn sm" data-act="sched-edit" data-id="${esc(m.id)}">Editar mi horario</button>` : '')}<div style="margin-top:20px">${mts}</div></section>
     <section class="section">${secTitle('Bitácora y equipo', 'Día a día')}<div class="split">${panel('Bitácora de trabajo', 'Registra en un minuto lo que avanzaste; alimenta la bitácora del proyecto.', logs)}${panel('Equipo', '¿Quién está libre ahora? Según su horario de clases.', dir)}</div></section>
   </div>`;
@@ -4775,7 +5022,7 @@ async function submitLog(f) {
   try {
     await createRec('logbook', { pid, date: f.elements.date.value || isoD(today()), person: tm ? tm.name : m.name, hours: Math.max(0, Math.min(24, Number(f.elements.hours.value) || 0)), wbs: '', activity: act, blockers: f.elements.blockers.value.trim() });
     toast('Registrado en la bitácora', 'ok'); logFeed(pid, `registró su avance en la bitácora: «${act.slice(0, 70)}»`);
-  } catch (e) { writeErr(e); } finally { btn.disabled = false; }
+  } catch (e) { if (e && e.code === 'queued') f.reset(); writeErr(e); } finally { btn.disabled = false; }
 }
 /* recordatorios en el portafolio y en cada proyecto */
 function meetingAlerts(p) {
@@ -4793,7 +5040,7 @@ function agendaBand() {
 }
 function projectMeetingsPanel(p) {
   const up = upcomingMeetings(meetingsAll()).filter(mt => mt.pid === p.id).slice(0, 4);
-  return panel('Reuniones del equipo del proyecto', `Participan: ${esc(membersOfProject(p.id).map(mName).join(', ') || 'sin integrantes registrados')}. Se programan en las franjas libres de todos.`, up.length ? meetingList(up, null) : '<div class="empty"><p>No hay reuniones programadas para este proyecto.</p></div>', `<button class="btn sm" data-act="go-team" data-v="disp" data-scope="${esc(p.id)}">Ver horas libres</button>${canSchedule() ? `<button class="btn sm sos" data-act="sos-new" data-pid="${esc(p.id)}" data-who="project">${icon('rayo', 15)}Emergencia</button><button class="btn sm primary" data-act="mt-new" data-scope="${esc(p.id)}">Programar reunión</button>` : ''}`);
+  return panel('Reuniones del equipo del proyecto', `Participan: ${esc(membersOfProject(p.id).map(mName).join(', ') || 'sin integrantes registrados')}. Se programan en las franjas libres de todos.`, up.length ? meetingList(up, null) : '<div class="empty"><p>No hay reuniones programadas para este proyecto.</p></div>', `<button class="btn sm" data-act="go-team" data-v="disp" data-scope="${esc(p.id)}">Ver horas libres</button>${canSchedule() ? `<button class="btn sm sos" data-act="sos-new" data-pid="${esc(p.id)}" data-who="project">${icon('rayo', 15)}Emergencia</button><button class="btn sm primary" data-act="mt-new" data-scope="${esc(p.id)}">Programar reunión</button>` : canProposeMt(p.id) ? `<button class="btn sm primary" data-act="mt-new" data-scope="${esc(p.id)}">Proponer reunión</button>` : ''}`);
 }
 
 /* =========================================================
