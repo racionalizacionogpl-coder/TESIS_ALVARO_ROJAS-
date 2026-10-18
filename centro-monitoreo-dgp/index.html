@@ -1377,6 +1377,7 @@ html.of-lock,html.of-lock body{overflow:hidden}
 .sos-place{font-size:14px}
 .sos-h{margin:16px 0 8px;font:800 14px/1.3 var(--font-display)}
 .sos-send{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.me-req{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:13px}.req-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.acc-steps{margin:0 0 10px 18px;display:grid;gap:6px}.acc-st small{display:block;margin-top:4px}.req-pill{cursor:pointer;border:0;font:inherit}@media (max-width:600px){.nav-r .acc-pill{display:none}}
 .sos-send .btn{display:inline-flex;align-items:center;gap:6px}
 .sos-to textarea{font:500 12.5px/1.45 var(--font-mono);resize:vertical}
 .mt-row.urgent{border-left:4px solid var(--sos)}
@@ -1681,7 +1682,7 @@ const COLL = {
     { k: 'action', l: 'Recomendación para próximos proyectos', t: 'textarea', wide: 1 },
   ] },
 };
-const LISTS = ['projects', ...Object.keys(COLL), 'planSections', 'members', 'meetings', 'agentRuns', 'orgs'];
+const LISTS = ['projects', ...Object.keys(COLL), 'planSections', 'members', 'meetings', 'agentRuns', 'orgs', 'requests'];
 
 /* =========================================================
    Estado
@@ -1786,7 +1787,7 @@ const canEdit = () => { if (!canWriteBase()) return false; if (fullAccess()) ret
 function accessPill() {
   if (S.mode !== 'live') return '';
   if (!canWriteBase()) return '<span class="pill" title="La cuenta de claude.ai con la que abriste el sistema solo puede leer. El propietario debe compartirlo con permiso para interactuar.">Solo lectura</span>';
-  if (fullAccess()) return '<span class="pill ok" title="Acceso total a todos los proyectos">Acceso total</span>';
+  if (fullAccess()) { const n = reqPend().length; return `<span class="pill ok${n && isAdmin() ? ' acc-pill' : ''}" title="Acceso total a todos los proyectos">Acceso total</span>` + (n && isAdmin() ? `<button class="pill warn req-pill" data-act="go-reqs" title="Solicitudes del equipo que esperan tu decisión">${plural(n, 'solicitud', 'solicitudes')}</button>` : ''); }
   const me = sessionMember(); if (!me) return '<span class="pill" title="Ingresa al intranet para editar tus proyectos">Solo lectura · ingresa al intranet</span>';
   const L = projectsOf(me).map(x => x.p.code).filter(Boolean);
   return `<span class="pill data" title="Puedes editar solo los proyectos en los que participas">Editor${L.length ? ' · ' + esc(L.join(', ')) : ''}</span>`;
@@ -1796,9 +1797,18 @@ const permErr = msg => Object.assign(new Error(msg), { code: 'perm_denied' });
 function guardWrite(coll, id, data) {
   if (fullAccess()) return;
   const me = sessionMember(), keys = Object.keys(data || {}).filter(k => k !== 'updatedAt' && k !== 'updatedBy');
-  if (coll === 'members') { if (keys.every(k => k === 'lastLogin')) return; if (!me || me.id !== id || keys.some(k => k === 'admin' || k === 'active' || k === 'email')) throw permErr('Solo un administrador puede modificar a otros integrantes.'); return; }
+  if (coll === 'members') { if (keys.every(k => k === 'lastLogin' || k === 'accessOk')) return; if (!me || me.id !== id || keys.some(k => k === 'admin' || k === 'active' || k === 'email')) throw permErr('Solo un administrador puede modificar a otros integrantes.'); return; }
   if (coll === 'meetings') { if (keys.length && keys.every(k => k === 'confirm')) return; throw permErr('Solo Alvaro Rojas y José Antonio Chumacero programan o modifican reuniones.'); }
   if (coll === 'feed' || coll === 'agentRuns') return;
+  if (coll === 'requests') {
+    if (!me) throw permErr('Ingresa al intranet con tu correo para enviar solicitudes.');
+    if (!id && data && data.member === me.id && data.status === 'pendiente' && data.type === 'salida') return;
+    const r = id ? (S.requests || []).find(x => x.id === id) : null;
+    if (r && r.member === me.id && r.status === 'pendiente' && keys.every(k => k === 'status') && data.status === 'cancelada') return;
+    throw permErr('Solo un administrador resuelve las solicitudes.');
+  }
+  // quién integra cada equipo lo decide un administrador; el integrante solo puede pedir su salida
+  if (coll === 'team' && (!id || (data && data.deleted) || keys.some(k => k === 'name' || k === 'memberId' || k === 'pid'))) throw permErr('Solo un administrador cambia quién integra el equipo. Para salir de un proyecto usa «Solicitar salir» en tu intranet.');
   if (coll === 'projects' && !id) throw permErr('Solo un administrador puede crear proyectos.');
   const rec = coll === 'projects' ? { pid: id } : id ? (S[coll] || []).find(x => x.id === id) : null;
   const pid = (rec && rec.pid) || (data && data.pid) || '';
@@ -1809,7 +1819,7 @@ const stamp = () => ({ updatedAt: new Date().toISOString(), updatedBy: (S.me && 
 function writeErr(e) {
   const code = e && e.code;
   if (code === 'perm_denied') { toast(e.message, 'warn'); return; }
-  if (code === 'invalid_argument') { S.readOnly = true; toast('Tu acceso es de solo lectura. Pide al propietario que te comparta el sistema como Colaborador.', 'crit'); schedule(); }
+  if (code === 'invalid_argument') { S.readOnly = true; toast('Tu cuenta de claude.ai solo tiene permiso de lectura: pide acceso al administrador.', 'crit'); schedule(); if (sessionMember()) setTimeout(openAccessReq, 60); }
   else if (code === 'quota_exceeded') toast('La base de datos llegó a su límite. Elimina registros antiguos (por ejemplo, de la bitácora) para seguir.', 'crit');
   else if (code === 'resource_exhausted') toast('Demasiadas operaciones seguidas. Espera unos segundos y vuelve a intentarlo.', 'warn');
   else toast('No se pudo guardar. Revisa tu conexión y vuelve a intentarlo.', 'crit');
@@ -2935,6 +2945,13 @@ document.addEventListener('click', e => {
     case 'sos-new': if (canSchedule()) openSosForm({ pid: el.dataset.pid || (UI.view === 'project' ? UI.pid : ''), who: el.dataset.who || '' }); break;
     case 'sos-send': openSosSend(el.dataset.id); break;
     case 'tr-open': if (canEdit()) openTransfer(el.dataset.k, el.dataset.id); break;
+    case 'acc-req': openAccessReq(); break;
+    case 'leave-req': openLeaveReq(el.dataset.id); break;
+    case 'req-ok': openDecide(el.dataset.id, true); break;
+    case 'req-no': openDecide(el.dataset.id, false); break;
+    case 'req-cancel': { const r = (S.requests || []).find(x => x.id === el.dataset.id); if (!r || !confirm('¿Retirar tu solicitud de salida?')) break; updateRec('requests', r.id, { status: 'cancelada' }).then(() => toast('Solicitud retirada', 'ok')).catch(writeErr); break; }
+    case 'go-reqs': UI.teamTab = 'acc'; go('team'); break;
+    case 'copy-txt': copyText(el.dataset.v || '').then(ok => toast(ok ? 'Copiado' : 'No se pudo copiar', ok ? 'ok' : 'warn')); break;
     case 'sos-all': sosMark(true); break;
     case 'sos-none': sosMark(false); break;
     case 'sos-hide': sosHide(el.dataset.id); renderSos(); break;
@@ -2964,7 +2981,7 @@ document.addEventListener('click', e => {
     case 'mem-reset': { const m = memberById(el.dataset.id); if (!m || !canSchedule()) break; if (!confirm(`¿Restablecer la contraseña de ${mName(m)} a la inicial?`)) break; passHash(m.id, DEF_PASS).then(h => updateRec('members', m.id, { pinHash: h, mustChange: true })).then(() => toast(`Contraseña de ${mName(m)} restablecida`, 'ok')).catch(writeErr); break; }
     case 'view-as': if (isAdmin()) { UI.viewAs = el.dataset.id; go('me'); } break;
     case 'view-as-exit': UI.viewAs = null; UI.teamTab = 'acc'; go('team'); break;
-    case 'pw-open': openPassForm(); break;
+    case 'pw-open': if (S.mode === 'live' && !canWriteBase()) openAccessReq(); else openPassForm(); break;
     case 'logout': UI.session = null; UI.viewAs = null; saveSession(null); toast('Sesión cerrada', 'ok'); render(); break;
     case 'open-plan': UI.planOpen = el.dataset.id; UI.planEdit = null; renderPlanReader(true); { const b = document.querySelector('#plan-reader .pr-close-f, #plan-reader [data-act="pr-close"]'); if (b) b.focus(); } break;
     case 'pr-close': prClose(); break;
@@ -3056,6 +3073,7 @@ document.addEventListener('input', e => {
   const t = e.target;
   if (t.closest && t.closest('#sos-form')) { if (t.name !== 'p' && t.name !== 'who' && t.name !== 'pid') sosSum(); return; }
   if (t.closest && t.closest('#mt-form') && /^(start|end|date)$/.test(t.name)) { mtFormCheck(); return; }
+  if (t.id === 'acc-mail') { const m = sessionMember(); if (m) { const L = mailLinks(adminMails(), accReqSub(m), accReqMsg(m, t.value.trim())); const a = $('#ml-gm'), b = $('#ml-mt'); if (a) a.href = L.gmail; if (b) b.href = L.mail; } return; }
   if (t.id === 'dir-q') { UI.dirQ = t.value; const pos = t.selectionStart; render(); const q = $('#dir-q'); if (q) { q.focus({ preventScroll: true }); try { q.setSelectionRange(pos, pos); } catch (er) { /* no aplica */ } } return; }
   if (t.id === 'of-range') { UI.of.min = +t.value || JORNADA.from; OF.dirty = true; OF.jump = true; ofClockPaint(false); return; }
   if (!(t.dataset && t.dataset.change === 'sem')) return;
@@ -3065,7 +3083,7 @@ document.addEventListener('input', e => {
   box.querySelector('.md-sem-out').innerHTML = `${pill(st.k, st.t)} <small>rango ${st.r}</small>`;
 });
 document.addEventListener('submit', e => {
-  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign, 'sos-form': submitSos, 'tr-form': submitTransfer, 'tr-done-form': () => closeModal(), 'sos-send-form': () => closeModal() }[f.id];
+  const f = e.target, h = { 'rec-form': submitForm, 'mt-form': submitMeeting, 'sch-form': submitSchedule, 'mem-form': submitMember, 'pw-form': submitPass, 'login-form': submitLogin, 'log-form': submitLog, 'of-ask-form': ofAsk, 'asg-form': submitAssign, 'sos-form': submitSos, 'tr-form': submitTransfer, 'tr-done-form': () => closeModal(), 'leave-form': submitLeave, 'dec-form': submitDecide, 'accreq-form': () => closeModal(), 'sos-send-form': () => closeModal() }[f.id];
   if (!h) return; e.preventDefault(); h(f);
 });
 document.addEventListener('change', e => {
@@ -3928,10 +3946,12 @@ function teamSchedules() {
 }
 function teamAccess() {
   const ms = membersAll();
-  return panel('Accesos al intranet', `Cada integrante ingresa con su correo institucional y su contraseña. La contraseña inicial es <b class="mono">${DEF_PASS}</b> y el sistema pide cambiarla en el primer ingreso. Revisa que cada correo sea el real: los marcados «por confirmar» se armaron con el formato nombre.apellido@unmsm.edu.pe.`,
-    `<div class="tbl"><table class="acc-t"><thead><tr><th>Integrante</th><th>Correo</th><th>Contraseña</th><th>Último ingreso</th><th><span class="sr">Acciones</span></th></tr></thead><tbody>${ms.map(m => `<tr${m.active === false ? ' class="off"' : ''}><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b>${m.admin ? ' <span class="pill accent">Administrador</span>' : ''}${m.active === false ? ' <span class="pill">Inactivo</span>' : ''}<small>${esc(m.role || '')}</small></span></span></td><td class="nowrap">${m.email ? `${esc(m.email)}${m.emailOk ? '' : '<br><span class="pill warn"><i></i>Por confirmar</span>'}` : '<span class="note">Sin correo: no puede ingresar</span>'}</td><td class="nowrap">${m.mustChange ? '<span class="pill warn"><i></i>Inicial</span>' : '<span class="pill ok"><i></i>Personal</span>'}</td><td class="nowrap">${m.lastLogin ? esc(ago(Date.parse(m.lastLogin))) : '—'}</td><td><div class="acc-acts">${canEdit() ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(m.id)}">Editar</button><button class="icon-btn" data-act="mem-reset" data-id="${esc(m.id)}">Restablecer contraseña</button>` : ''}<button class="icon-btn" data-act="view-as" data-id="${esc(m.id)}">Ver su intranet</button></div></td></tr>`).join('')}</tbody></table></div>
+  const accSt = m => m.accessOk ? `<span class="pill ok"><i></i>Puede editar</span><small class="note">verificado ${esc(ago(Date.parse(m.accessOk)))}</small>` : `<span class="pill warn"><i></i>Sin verificar</span><small class="note">aún no ingresa con permiso para editar</small>`;
+  const guide = panel('Dar acceso para editar', 'El intranet identifica a cada persona y decide qué puede tocar; el permiso para escribir lo da claude.ai.', `<ol class="acc-steps"><li>Abre el sistema en claude.ai con la cuenta propietaria.</li><li>Entra al menú <b>Compartir</b> de la página.</li><li>Agrega el correo de la cuenta de claude.ai del integrante (te lo envía con «Solicitar acceso» desde su intranet; puede ser distinto al institucional).</li><li>Elige el permiso para <b>interactuar (Colaborador)</b>, no solo para ver.</li><li>Pídele que vuelva a abrir el sistema e ingrese al intranet: la columna «Acceso en claude.ai» pasará a «Puede editar».</li></ol><p class="note">Con ese permiso, cada integrante edita solo los proyectos de su equipo; Alvaro Rojas y José Antonio Chumacero tienen acceso total. Nadie sale de un equipo sin tu autorización.</p>`);
+  return requestsPanel() + `<div style="margin-top:20px">${guide}</div><div style="margin-top:20px">` + panel('Accesos al intranet', `Cada integrante ingresa con su correo institucional y su contraseña. La contraseña inicial es <b class="mono">${DEF_PASS}</b> y el sistema pide cambiarla en el primer ingreso. Revisa que cada correo sea el real: los marcados «por confirmar» se armaron con el formato nombre.apellido@unmsm.edu.pe.`,
+    `<div class="tbl"><table class="acc-t"><thead><tr><th>Integrante</th><th>Correo</th><th>Acceso en claude.ai</th><th>Contraseña</th><th>Último ingreso</th><th><span class="sr">Acciones</span></th></tr></thead><tbody>${ms.map(m => `<tr${m.active === false ? ' class="off"' : ''}><td class="wrap"><span class="mem-n">${avatar(m, 'sm')}<span><b>${esc(m.name)}</b>${m.admin ? ' <span class="pill accent">Administrador</span>' : ''}${m.active === false ? ' <span class="pill">Inactivo</span>' : ''}<small>${esc(m.role || '')}</small></span></span></td><td class="nowrap">${m.email ? `${esc(m.email)}${m.emailOk ? '' : '<br><span class="pill warn"><i></i>Por confirmar</span>'}` : '<span class="note">Sin correo: no puede ingresar</span>'}${m.email ? `<br><button class="linkish" data-act="copy-txt" data-v="${esc(m.email)}">Copiar correo</button>` : ''}</td><td class="nowrap acc-st">${accSt(m)}</td><td class="nowrap">${m.mustChange ? '<span class="pill warn"><i></i>Inicial</span>' : '<span class="pill ok"><i></i>Personal</span>'}</td><td class="nowrap">${m.lastLogin ? esc(ago(Date.parse(m.lastLogin))) : '—'}</td><td><div class="acc-acts">${canEdit() ? `<button class="icon-btn" data-act="mem-edit" data-id="${esc(m.id)}">Editar</button><button class="icon-btn" data-act="mem-reset" data-id="${esc(m.id)}">Restablecer contraseña</button>` : ''}<button class="icon-btn" data-act="view-as" data-id="${esc(m.id)}">Ver su intranet</button></div></td></tr>`).join('')}</tbody></table></div>
     <p class="note" style="margin-top:12px"><b>Importante:</b> el ingreso identifica a cada integrante y personaliza su vista; no es una barrera de seguridad. Cualquier persona con acceso al sistema puede ver la cartera, así que no guardes aquí información confidencial. Para que un integrante pueda marcar tareas, confirmar reuniones o editar su horario, compártele el sistema desde claude.ai con permiso para interactuar.</p>`,
-    canEdit() ? '<button class="btn sm primary" data-act="mem-new">Agregar integrante</button>' : '');
+    canEdit() ? '<button class="btn sm primary" data-act="mem-new">Agregar integrante</button>' : '') + '</div>';
 }
 
 /* ---------- reuniones de emergencia ---------- */
@@ -4227,6 +4247,106 @@ function trRecent(m, it) {
   it.tasks.forEach(t => out.push(trItem('t', t.id))); it.agreements.forEach(a => out.push(trItem('a', a.id))); it.risks.forEach(r => out.push(trItem('r', r.id))); it.plan.forEach(x => out.push(trItem('p', `${x.sec.id}:${x.bi}:${x.ri}`)));
   return out.filter(x => { const l = trLast(x); return l && trTag(x, m) && Date.parse(l.at) >= lim; }).length;
 }
+/* =========================================================
+   Accesos y solicitudes: pedir acceso para editar y pedir la salida de un proyecto con autorización del administrador
+   ========================================================= */
+const adminsM = () => membersActive().filter(m => m.admin);
+const adminMails = () => adminsM().map(m => m.email).filter(mailOk);
+const adminNames = () => adminsM().map(mName).join(' o ') || 'el administrador';
+const mailLinks = (to, sub, msg) => ({ gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${uenc(to.join(','))}&su=${uenc(sub)}&body=${uenc(msg)}`, mail: `mailto:${to.join(',')}?subject=${uenc(sub)}&body=${uenc(msg)}` });
+const mailBtns = L => `<div class="sos-send"><a class="btn sos" id="ml-gm" href="${esc(L.gmail)}" target="_blank" rel="noopener noreferrer">${icon('correo', 18)}Enviar por Gmail ↗</a><a class="btn" id="ml-mt" href="${esc(L.mail)}">Abrir en mi correo</a></div>`;
+const reqsAll = () => (S.requests || []).slice().sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+const reqPend = () => reqsAll().filter(r => r.status === 'pendiente');
+const myLeaveReq = (m, pid) => reqsAll().find(r => r.type === 'salida' && r.member === m.id && r.pid === pid && r.status !== 'cancelada');
+const isManagerOf = (m, p) => !!(m && p && memberMatches(m, p.manager));
+const REQ_LBL = { pendiente: 'Pendiente', aprobada: 'Aprobada', rechazada: 'Rechazada', cancelada: 'Retirada' };
+function pendIn(m, pid) { const it = myItems(m); return { t: it.tasks.filter(t => t.pid === pid && num(t.progress) < 100).length, a: it.agreements.filter(a => a.pid === pid && a.status === 'Pendiente').length }; }
+// pedir acceso: la cuenta de claude.ai solo puede leer, así que la solicitud sale por correo a los administradores
+const accReqSub = m => `Solicitud de acceso al Sistema de Dirección de Proyectos · ${mName(m)}`;
+function accReqMsg(m, acct) {
+  return [`Hola ${adminsM().map(x => String(mName(x)).split(' ')[0]).join(' y ') || ''}:`.replace(' :', ':'), '',
+    `Te pido acceso de Colaborador al Sistema de Dirección de Gestión de Proyectos. Ingreso al intranet como ${m.name} (${m.email || 'sin correo registrado'}), pero mi cuenta de claude.ai solo tiene permiso de lectura: no puedo cambiar mi contraseña, marcar avances, confirmar reuniones ni editar mi horario.`, '',
+    `Correo de mi cuenta de claude.ai: ${acct || '(escribe aquí el correo)'}`, '',
+    'Cómo darme acceso: abre el sistema en claude.ai con la cuenta propietaria, entra al menú Compartir, agrega ese correo y elige el permiso para interactuar (Colaborador).', '',
+    'Gracias,', mName(m)].join('\n');
+}
+function openAccessReq() {
+  const m = sessionMember(); if (!m) { toast('Ingresa primero al intranet con tu correo.', 'warn'); return; }
+  const L = mailLinks(adminMails(), accReqSub(m), accReqMsg(m, m.email || ''));
+  const body = `<p>Tu cuenta de claude.ai solo puede <b>leer</b> el sistema. El permiso para escribir lo da el propietario desde el menú <b>Compartir</b> de claude.ai: el intranet no puede cambiarlo por su cuenta. Envía esta solicitud a ${esc(adminNames())}; cuando te dé acceso, vuelve a abrir el sistema.</p>
+    ${fld('Correo de tu cuenta de claude.ai', `<input id="acc-mail" type="email" value="${esc(m.email || '')}" autocomplete="email">`, 1, 'Es el correo con el que inicias sesión en claude.ai; puede ser distinto a tu correo institucional.')}
+    <h4 class="sos-h">Enviar la solicitud</h4>${mailBtns(L)}
+    <label class="f wide sos-to"><span>Para</span><textarea readonly rows="1">${esc(adminMails().join(', '))}</textarea></label>`;
+  dlg('Solicitar acceso para editar', body, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
+}
+// salida de un proyecto: el integrante la pide y un administrador la aprueba o la rechaza
+function leaveCtl(p, real, preview) {
+  if (preview || !real || real.admin || isManagerOf(real, p)) return '';
+  const r = myLeaveReq(real, p.id);
+  if (r && r.status === 'pendiente') return `<p class="me-req">${pill('warn', 'Salida solicitada')}<span>Espera la autorización de ${esc(adminNames())}.</span><button class="linkish" data-act="req-cancel" data-id="${esc(r.id)}">Retirar la solicitud</button></p>`;
+  const no = r && r.status === 'rechazada' ? `<p class="me-req note">Tu solicitud de salida fue rechazada${r.reply ? `: ${esc(r.reply)}` : '.'}</p>` : '';
+  return `${no}<p class="me-req"><button class="linkish" data-act="leave-req" data-id="${esc(p.id)}">Solicitar salir del proyecto</button></p>`;
+}
+function openLeaveReq(pid) {
+  const m = sessionMember(), p = projectById(pid); if (!m || !p) return;
+  if (isManagerOf(m, p)) { toast('Diriges este proyecto: para dejarlo, un administrador debe asignar otro director en el acta.', 'warn'); return; }
+  const n = pendIn(m, pid), roles = (S.team || []).filter(t => t.pid === pid && teamOf(m, t)).map(t => t.role).filter(Boolean);
+  const body = `<div class="tr-card"><p class="mini-h"><span class="code-chip">${esc(p.code)}</span> ${esc(p.name)}</p><p class="note">Tu rol: ${esc(roles.join(' · ') || '—')}</p><p class="note">Tienes ${plural(n.t, 'tarea pendiente', 'tareas pendientes')} y ${plural(n.a, 'acuerdo pendiente', 'acuerdos pendientes')} en este proyecto. Si se aprueba tu salida, el administrador los reasignará.</p></div>
+    <p>Tu salida necesita la autorización de ${esc(adminNames())}. Mientras no la apruebe, sigues en el equipo.</p>
+    ${fld('Motivo', '<textarea name="reason" rows="3" maxlength="600" placeholder="Explica brevemente por qué quieres dejar el proyecto"></textarea>', 1)}`;
+  dlg('Solicitar salir del proyecto', body, '<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button class="btn primary" type="submit">Enviar solicitud</button></div>', 'leave-form');
+  $('#leave-form').dataset.pid = pid;
+}
+async function submitLeave(f) {
+  const m = sessionMember(), p = projectById(f.dataset.pid); if (!m || !p) { closeModal(); return; }
+  const reason = f.elements.reason.value.trim(); if (!reason) { formErr('Escribe el motivo.'); return; }
+  const sub = `Solicitud de salida de ${p.code} · ${mName(m)}`;
+  const msg = [`${mName(m)} solicita salir del equipo de ${p.code} · ${p.name}.`, '', `Motivo: ${reason}`, '', 'Para aprobarla o rechazarla, ingresa al sistema: Equipo › Accesos al intranet › Solicitudes del equipo.', '', 'Sistema de Dirección de Gestión de Proyectos · DGP OGPL-UNMSM'].join('\n');
+  const L = mailLinks(adminMails(), sub, msg);
+  if (!canWriteBase()) {
+    dlg('Envía tu solicitud por correo', `<p>Tu cuenta de claude.ai solo puede leer el sistema, así que la solicitud no puede guardarse aquí. Envíala por correo a ${esc(adminNames())}: ya está escrita.</p>${mailBtns(L)}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
+    return;
+  }
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    await createRec('requests', { type: 'salida', member: m.id, pid: p.id, reason, status: 'pendiente' });
+    logFeed(p.id, `solicitó salir del equipo de ${p.code}`);
+    dlg('Solicitud enviada', `<p>${esc(adminNames())} la verá en el sistema, en Equipo › Accesos. Mientras tanto sigues en el equipo de ${esc(p.code)}.</p><p class="note">¿Le avisas también por correo? El mensaje ya está escrito.</p>${mailBtns(L)}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
+  } catch (e) { btn.disabled = false; writeErr(e); }
+}
+function requestsPanel() {
+  const L = reqsAll().filter(r => r.status !== 'cancelada');
+  const pend = L.filter(r => r.status === 'pendiente'), done = L.filter(r => r.status !== 'pendiente').slice(0, 6);
+  const row = r => { const m = memberById(r.member), p = projectById(r.pid), n = m && p ? pendIn(m, p.id) : { t: 0, a: 0 }; return `<li class="pd ${r.status === 'pendiente' ? '' : 'done'}"><span class="pd-ok">${r.status === 'pendiente' ? '•' : r.status === 'aprobada' ? '✓' : '✕'}</span><div><p><b>${esc(m ? mName(m) : 'Integrante')}</b> pide salir de <span class="code-chip">${esc(p ? p.code : '—')}</span> ${esc(p ? p.name : '')}</p><small>${esc(fmtD(String(r.createdAt || '').slice(0, 10)))} · Motivo: ${esc(r.reason || '—')}${r.status === 'pendiente' ? ` · ${plural(n.t, 'tarea pendiente', 'tareas pendientes')} y ${plural(n.a, 'acuerdo', 'acuerdos')} en el proyecto` : ` · ${esc(REQ_LBL[r.status] || r.status)}${r.reply ? ': ' + esc(r.reply) : ''}`}</small>${r.status === 'pendiente' && canSchedule() ? `<p class="req-acts"><button class="btn sm primary" data-act="req-ok" data-id="${esc(r.id)}">Aprobar</button><button class="btn sm" data-act="req-no" data-id="${esc(r.id)}">Rechazar</button></p>` : ''}</div></li>`; };
+  return panel('Solicitudes del equipo', pend.length ? `${plural(pend.length, 'solicitud espera', 'solicitudes esperan')} tu decisión. Nadie sale de un proyecto sin tu autorización.` : 'No hay solicitudes pendientes. Nadie sale de un proyecto sin tu autorización.', L.length ? `<ul class="pd-list">${pend.concat(done).map(row).join('')}</ul>` : '<p class="note">Cuando un integrante pida salir de un proyecto desde su intranet, la solicitud aparecerá aquí.</p>');
+}
+function openDecide(id, ok) {
+  const r = (S.requests || []).find(x => x.id === id), m = r && memberById(r.member), p = r && projectById(r.pid);
+  if (!r || !m || !p || !canSchedule()) return;
+  const T = (S.team || []).filter(t => t.pid === p.id && teamOf(m, t)), n = pendIn(m, p.id), first = String(mName(m)).split(' ')[0];
+  const body = (ok ? `<p>Se quitará a <b>${esc(m.name)}</b> del equipo de <b>${esc(p.code)}</b>${T.length ? ` (${esc(T.map(t => t.role).filter(Boolean).join(' · ') || 'sin rol')})` : ''}.</p>${n.t + n.a ? `<p class="cf-bad">${icon('alerta', 16)}Le quedan ${plural(n.t, 'tarea pendiente', 'tareas pendientes')} y ${plural(n.a, 'acuerdo pendiente', 'acuerdos pendientes')} en ${esc(p.code)}: seguirán a su nombre hasta que los reasignes desde el proyecto.</p>` : ''}${isManagerOf(m, p) ? `<p class="cf-bad">${icon('alerta', 16)}Dirige el proyecto: primero asigna otro director en el acta.</p>` : ''}`
+    : `<p>La solicitud de <b>${esc(m.name)}</b> para salir de <b>${esc(p.code)}</b> quedará rechazada y seguirá en el equipo.</p>`)
+    + `<p class="note">Motivo de la solicitud: ${esc(r.reason || '—')}</p>` + fld(ok ? `Mensaje para ${first} (opcional)` : 'Motivo del rechazo', '<textarea name="reply" rows="3" maxlength="600"></textarea>', 1);
+  dlg(ok ? 'Aprobar la salida' : 'Rechazar la solicitud', body, `<div class="foot-r"><button type="button" class="btn" data-act="close-modal">Cancelar</button><button class="btn primary" type="submit">${ok ? 'Aprobar la salida' : 'Rechazar'}</button></div>`, 'dec-form');
+  const f = $('#dec-form'); f.dataset.id = id; f.dataset.ok = ok ? '1' : '';
+}
+async function submitDecide(f) {
+  const ok = !!f.dataset.ok, r = (S.requests || []).find(x => x.id === f.dataset.id), m = r && memberById(r.member), p = r && projectById(r.pid);
+  if (!r || !m || !p || !canSchedule()) { closeModal(); return; }
+  const reply = f.elements.reply.value.trim();
+  if (!ok && !reply) { formErr('Escribe el motivo del rechazo.'); return; }
+  if (ok && isManagerOf(m, p)) { formErr('Dirige el proyecto: primero asigna otro director en el acta.'); return; }
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    if (ok) for (const t of (S.team || []).filter(t => t.pid === p.id && teamOf(m, t))) await db.doc('team/' + t.id).delete();
+    await updateRec('requests', r.id, { status: ok ? 'aprobada' : 'rechazada', reply, decidedAt: new Date().toISOString(), decidedBy: (sessionMember() || {}).id || null });
+    logFeed(p.id, ok ? `aprobó la salida de ${mName(m)} del equipo de ${p.code}` : `rechazó la solicitud de salida de ${mName(m)} de ${p.code}`);
+    const sub = `${ok ? 'Aprobada' : 'Rechazada'}: tu solicitud de salida de ${p.code}`;
+    const msg = [`Hola ${String(mName(m)).split(' ')[0]}:`, '', ok ? `Se aprobó tu salida del equipo de ${p.code} · ${p.name}.` : `No se aprobó tu salida del equipo de ${p.code} · ${p.name}; sigues en el equipo.`, reply ? `\n${reply}` : '', '', sessionMember() ? mName(sessionMember()) : 'Dirección de proyectos', 'Sistema de Dirección de Gestión de Proyectos · DGP OGPL-UNMSM'].join('\n');
+    const L = mailLinks(mailOk(m.email) ? [m.email] : [], sub, msg);
+    dlg(ok ? 'Salida aprobada' : 'Solicitud rechazada', `<p>${ok ? `${esc(m.name)} ya no figura en el equipo de ${esc(p.code)}.` : `${esc(m.name)} sigue en el equipo de ${esc(p.code)}.`} También lo verá en su intranet.</p><p class="note">Avísale por correo: el mensaje ya está escrito.</p>${mailBtns(L)}`, '<div class="foot-r"><button type="button" class="btn primary" data-act="close-modal">Listo</button></div>', 'accreq-form');
+  } catch (e) { btn.disabled = false; writeErr(e); }
+}
 function openTransfer(k, id) {
   const it = trItem(k, id), m = curMember(); if (!it || !m) return;
   const P = dirPeople().filter(x => !(x.m && x.m.id === m.id));
@@ -4519,7 +4639,7 @@ async function submitLogin(f) {
   const ok = m && (await passHash(m.id, pass)) === m.pinHash;
   if (!ok) { loginFails++; if (loginFails >= 5) { loginLock = Date.now() + 30000; loginFails = 0; } show(m ? 'La contraseña no es correcta.' : 'Ese correo no está registrado en el equipo. Pide al administrador que lo registre.'); return; }
   loginFails = 0; UI.session = { id: m.id, exp: Date.now() + 7 * DAY }; saveSession(UI.session); UI.viewAs = null;
-  if (canWriteBase()) updateRec('members', m.id, { lastLogin: new Date().toISOString() }).catch(() => {});
+  if (canWriteBase()) updateRec('members', m.id, { lastLogin: new Date().toISOString(), accessOk: new Date().toISOString() }).catch(e => { if (e && e.code === 'invalid_argument') { S.readOnly = true; schedule(); } });
   toast(`Bienvenido, ${mName(m)}`, 'ok'); render(); window.scrollTo(0, 0);
 }
 function viewLogin() {
@@ -4591,19 +4711,20 @@ function viewMe() {
   const myMt = upcomingMeetings(meetingsAll()).filter(mt => attendeesOf(mt).some(x => x.id === m.id));
   const nxt = myMt[0];
   const ed = canEdit() && !preview, trOk = canEdit() && (!preview || isAdmin());
+  if (real && !preview && canWriteBase() && !UI.accOk && String(real.accessOk || '').slice(0, 10) !== isoD(today())) { UI.accOk = true; updateRec('members', real.id, { accessOk: new Date().toISOString() }).catch(e => { if (e && e.code === 'invalid_argument') { S.readOnly = true; schedule(); } }); }
   // semana actual (el domingo se muestra la semana que empieza): clases y reuniones
   const sunday = td.getDay() === 0, mon = new Date(td); mon.setDate(td.getDate() + (sunday ? 1 : -((td.getDay() + 6) % 7)));
   const dates = {}, wkItems = classItems(m);
   for (let i = 0; i < 7; i++) { const x = new Date(mon); x.setDate(mon.getDate() + i); const iso = isoD(x); dates[i + 1] = `${x.getDate()} ${MES[x.getMonth()]}`; meetingsAll().filter(mt => mt.date === iso && mt.status !== 'Cancelada' && attendeesOf(mt).some(a => a.id === m.id)).forEach(mt => wkItems.push({ d: i + 1, s: t2m(mt.start), e: t2m(mt.end), t: (mt.pid ? scopeName(mtScope(mt)) + ' · ' : '') + mt.title, k: 'reunion', sub: scopeName(mtScope(mt)) })); }
   const days = wkItems.some(i => i.d === 7) ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6];
   const banner = preview ? `<div class="me-preview">${icon('equipo', 18)}<span>Vista previa del intranet de <b>${esc(m.name)}</b>, tal como lo ve al ingresar.</span><button class="btn sm" data-act="view-as-exit">Salir de la vista previa</button></div>` : '';
-  const mustChange = preview || !real ? '' : !canEdit() ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Modo de solo lectura.</b> Puedes ver tu información, pero para marcar avances, confirmar reuniones${real.mustChange ? ', cambiar la contraseña inicial' : ''} o editar tu horario, el director debe compartirte el sistema con permiso para interactuar.</span></div>` : real.mustChange ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Estás usando la contraseña inicial.</b> Cámbiala por una personal para proteger tu acceso.</span><button class="btn sm primary" data-act="pw-open">Cambiar contraseña</button></div>` : '';
+  const mustChange = preview || !real ? '' : !canWriteBase() ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Modo de solo lectura.</b> Tu cuenta de claude.ai solo puede leer el sistema. Para marcar avances, confirmar reuniones${real.mustChange ? ', cambiar la contraseña inicial' : ''} o editar tu horario, ${esc(adminNames())} debe darte acceso de Colaborador.</span><button class="btn sm primary" data-act="acc-req">Solicitar acceso</button></div>` : real.mustChange ? `<div class="me-alert">${icon('alerta', 20)}<span><b>Estás usando la contraseña inicial.</b> Cámbiala por una personal para proteger tu acceso.</span><button class="btn sm primary" data-act="pw-open">Cambiar contraseña</button></div>` : '';
   const hero = `<section class="hero me-hero"><div class="wrap"><div class="me-id">${avatar(m, 'xl')}<div><p class="eyebrow">Intranet del equipo · ${esc(m.role || 'Integrante')}</p><h1 class="title">Hola, ${esc(String(mName(m)).split(' ')[0])}</h1><p class="lead">${esc(m.name)} · ${esc(m.email || '')}</p>${memberOrgs(m).map(e => `<p class="me-org">${orgDot(e.org)}${esc(orgLineOf(e))}</p>`).join('')}<p class="me-chips">${it.projs.map(x => `<button class="code-chip" data-act="go-project" data-id="${esc(x.p.id)}">${esc(x.p.code)}</button>`).join('')}</p><div class="hero-actions">${preview ? '' : `${canEdit() ? '<button class="btn sm" data-act="pw-open">Cambiar contraseña</button>' : ''}<button class="btn sm" data-act="logout">Cerrar sesión</button>`}</div></div></div>
     <div class="blob"><h2>Ahora mismo</h2><p class="me-now ${nowStatus(m).k}">${esc(nowStatus(m).t)}</p>${nxt ? `<p class="me-next"><small>Tu próxima reunión</small><b>${esc(nxt.title)}</b><span>${esc(whenTxt(nxt))}</span></p>` : '<p class="me-next"><small>Tu próxima reunión</small><b>Sin reuniones programadas</b></p>'}</div></div></section>`;
   const kpis = `<section class="section kband"><div class="kpis">${kpi('Mis proyectos', it.projs.length, esc(it.projs.map(x => x.p.code).join(' · ') || '—'), 'portafolio')}${kpi('Tareas pendientes', openT.length + openP.length, `${openT.length} del cronograma · ${openP.length} del plan`, 'cronograma')}${kpi('Vencidas', lateT.length, lateT.length ? 'Ponte al día esta semana' : 'Nada vencido', 'alerta')}${kpi('Acuerdos pendientes', openA.length, 'Compromisos de reuniones', 'acuerdo')}${kpi('Reuniones por venir', myMt.length, nxt ? esc(whenTxt(nxt)) : 'Sin reuniones', 'equipo')}</div></section>`;
   // proyectos y funciones
   const fx = myPlanFunctions(m, it.pids), rc = myRaci(m, it.pids);
-  const card = ({ p, role, dedication }) => { const mm = S.loaded.has('tasks') ? metrics(p) : null; return `<article class="me-proj"><header><span class="code-chip">${esc(p.code)}</span>${mm ? pill(mm.health.tone, mm.health.label) : ''}</header><h3>${esc(p.name)}</h3><p class="me-role"><small>Tu rol</small>${esc(role || '—')}${dedication ? ` · ${dedication}% de dedicación` : ''}</p>${mm ? `<div class="me-bar"><span style="width:${clamp(mm.realPct || 0, 0, 100).toFixed(0)}%"></span></div><p class="note num">Avance real ${pct(mm.realPct)} · planificado ${pct(mm.planPct)} · área de enfoque: ${esc(p.phase || '—')}</p>` : ''}<div class="me-acts"><button class="btn sm" data-act="go-project" data-id="${esc(p.id)}">Abrir el proyecto</button>${driveUrl(p.drive) ? `<a class="btn sm" href="${esc(driveUrl(p.drive))}" target="_blank" rel="noopener noreferrer">Carpeta en Drive ↗</a>` : ''}${(S.plans || []).filter(pl => pl.pid === p.id && secsOf(pl.id).length).map(pl => `<button class="btn sm" data-act="open-plan" data-id="${esc(pl.id)}">Plan ${esc(String(pl.phase || '').split(' · ')[0])}</button>`).join('')}</div></article>`; };
+  const card = ({ p, role, dedication }) => { const mm = S.loaded.has('tasks') ? metrics(p) : null; return `<article class="me-proj"><header><span class="code-chip">${esc(p.code)}</span>${mm ? pill(mm.health.tone, mm.health.label) : ''}</header><h3>${esc(p.name)}</h3><p class="me-role"><small>Tu rol</small>${esc(role || '—')}${dedication ? ` · ${dedication}% de dedicación` : ''}</p>${mm ? `<div class="me-bar"><span style="width:${clamp(mm.realPct || 0, 0, 100).toFixed(0)}%"></span></div><p class="note num">Avance real ${pct(mm.realPct)} · planificado ${pct(mm.planPct)} · área de enfoque: ${esc(p.phase || '—')}</p>` : ''}<div class="me-acts"><button class="btn sm" data-act="go-project" data-id="${esc(p.id)}">Abrir el proyecto</button>${driveUrl(p.drive) ? `<a class="btn sm" href="${esc(driveUrl(p.drive))}" target="_blank" rel="noopener noreferrer">Carpeta en Drive ↗</a>` : ''}${(S.plans || []).filter(pl => pl.pid === p.id && secsOf(pl.id).length).map(pl => `<button class="btn sm" data-act="open-plan" data-id="${esc(pl.id)}">Plan ${esc(String(pl.phase || '').split(' · ')[0])}</button>`).join('')}</div>${leaveCtl(p, real, preview)}</article>`; };
   // San Marcos y ROIC & Company: proyectos, cargo y funciones de cada organización por separado
   const mo = memberOrgs(m), groups = orgsList().map(o => ({ o, e: mo.find(x => x.org.id === o.id) || null, projs: it.projs.filter(x => projOrgId(x.p) === o.id) })).filter(g => g.e || g.projs.length);
   const loose = it.projs.filter(x => !groups.some(g => g.projs.includes(x)));
