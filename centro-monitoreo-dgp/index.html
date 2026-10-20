@@ -516,9 +516,9 @@ td.c,th.c{text-align:center}
 }
 
 /* modelo de gestión (láminas) */
-:root{--m-proj:#2F6FB3;--m-proc:#1A7049;--m-acred:#A65310;--m-cert:#6A4BA3;--m-risk:#5F6D84;--m-calidad:#0A7E90;--m-apoyo:#7A879C;--m-on:#FFFFFF;--m-yellow:#FFD84D;--m-yellow-ink:#0B1D3A}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--m-proj:#7DB3EE;--m-proc:#5BC98F;--m-acred:#F0A35E;--m-cert:#B79CF0;--m-risk:#A6B4CA;--m-calidad:#3CC4D6;--m-apoyo:#7C8CA6;--m-on:#061127}}
-:root[data-theme="dark"]{--m-proj:#7DB3EE;--m-proc:#5BC98F;--m-acred:#F0A35E;--m-cert:#B79CF0;--m-risk:#A6B4CA;--m-calidad:#3CC4D6;--m-apoyo:#7C8CA6;--m-on:#061127}
+:root{--m-proj:#2F6FB3;--m-proc:#1A7049;--m-acred:#A65310;--m-cert:#6A4BA3;--m-risk:#5F6D84;--m-calidad:#0A7E90;--m-on:#FFFFFF;--m-yellow:#FFD84D;--m-yellow-ink:#0B1D3A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--m-proj:#7DB3EE;--m-proc:#5BC98F;--m-acred:#F0A35E;--m-cert:#B79CF0;--m-risk:#A6B4CA;--m-calidad:#3CC4D6;--m-on:#061127}}
+:root[data-theme="dark"]{--m-proj:#7DB3EE;--m-proc:#5BC98F;--m-acred:#F0A35E;--m-cert:#B79CF0;--m-risk:#A6B4CA;--m-calidad:#3CC4D6;--m-on:#061127}
 .md-blob-k{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;text-align:center}
 .md-blob-k .k-label{color:var(--on-navy-muted)}
 .md-slides{display:flex;gap:6px;overflow-x:auto;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);scrollbar-width:thin}
@@ -547,14 +547,14 @@ td.c,th.c{text-align:center}
 .vz.sel .vz-c{fill-opacity:.32;stroke-width:3.5}
 .vz-big{fill:var(--m-calidad);fill-opacity:.04;stroke:var(--m-calidad);stroke-width:2;stroke-dasharray:6 5}
 .vz.sel .vz-big{fill-opacity:.1;stroke-width:3}
-.vz-side{fill:var(--surface-alt);stroke:var(--m-apoyo);stroke-width:1.6}
-.vz.sel .vz-side{stroke-width:3;fill:var(--surface)}
 .vz-title{font:800 19px var(--font-display);fill:var(--teal-700)}
-.vz-lbl{font:700 14px var(--font-display);fill:var(--ink);pointer-events:none}
+.vz-lbl{font:700 14px var(--font-display);fill:var(--ink);pointer-events:none;paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.vz-out{pointer-events:auto;cursor:pointer}
+.vz-lbl.vz-out{font-size:15px}
 .vz-small{font:600 12.5px var(--font-body);fill:var(--ink-muted);pointer-events:none}
 .vz-num{fill:var(--m-yellow);stroke:var(--navy-900);stroke-width:2}
 .vz-numt{font:800 13px var(--font-display);fill:var(--m-yellow-ink);pointer-events:none}
-.vz:focus-visible .vz-c,.vz:focus-visible .vz-big,.vz:focus-visible .vz-side{stroke:var(--teal-700);stroke-width:4}
+.vz:focus-visible .vz-c,.vz:focus-visible .vz-big{stroke:var(--teal-700);stroke-width:4}
 .md-side{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--mc);border-radius:var(--radius-md);padding:22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:12px;min-width:0}
 .md-side h3{font:700 20px/1.25 var(--font-display)}
 .md-side h4,.md-phase h4,.md-sub{font:700 11px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin:6px 0 2px}
@@ -716,6 +716,24 @@ td.c,th.c{text-align:center}
 .md-cert .md-cl:hover{border-color:var(--m-cert)}
 .md-cert .md-cl.on{background:var(--m-cert);border-color:var(--m-cert)}
 @media (max-width:640px){.md-figs{grid-template-columns:repeat(2,minmax(0,1fr))}.md-fig b{font-size:24px}.md-cmp,.md-cmp tbody,.md-cmp tr,.md-cmp th,.md-cmp td{display:block;width:100%}.md-cmp thead{display:none}.md-cmp tr{padding:10px 0;border-bottom:1px solid var(--line)}.md-cmp th[scope=row]{padding:0 0 4px;min-width:0}.md-cmp td{min-width:0;padding:2px 0}.md-cmp td::before{content:attr(data-l) ": ";font-weight:700;color:var(--ink)}}
+.md-wrows{display:flex;flex-direction:column;gap:10px}
+.md-wr{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:10px 22px;padding:14px 16px;border:1px solid var(--line);border-left:5px solid var(--mc);border-radius:var(--radius-md);background:var(--surface)}
+.md-wr-k{display:flex;flex-direction:column;gap:8px;min-width:0}
+.md-wr-k h4{font:700 15.5px/1.3 var(--font-display)}
+.md-wr-t{display:flex;flex-direction:column;gap:8px;min-width:0;font-size:14px}
+.md-wr-t .md-adj{margin-top:0}
+@media (max-width:760px){.md-wr{grid-template-columns:minmax(0,1fr)}}
+.md-wc-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;width:100%}
+.md-wc-h b{font:800 22px/1 var(--font-display);color:var(--ink);white-space:nowrap}
+.md-wc-h small{font:600 12px/1 var(--font-body);color:var(--ink-muted)}
+.md-wbar{width:100%;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.md-wbar span{display:block;height:100%;background:var(--mc);border-radius:4px}
+.md-wl{list-style:none;margin:0;padding:0;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 12px}
+.md-wl li{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--ink-muted);border-bottom:1px dashed var(--line);padding:3px 0}
+.md-wl b{color:var(--ink)}
+.md-wframe{margin-top:14px;display:grid;gap:8px;padding:14px 16px;background:var(--surface-alt);border-radius:var(--radius-md);font-size:14px}
+.md-wline{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px;color:var(--ink-muted)}
+.md-wline b{color:var(--ink)}
 @media (max-width:900px){.md-map,.md-phase,.md-key{grid-template-columns:minmax(0,1fr)}.md-phases{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.md-head{flex-direction:column;padding:18px}.md-num.big{min-width:46px;height:46px;font-size:20px}.md-plan{grid-template-columns:minmax(0,1fr)}.md-plan li{grid-template-columns:28px minmax(0,1fr)}.md-plan li>.linkish,.md-plan li>a{grid-column:2;justify-self:start}.md-ph{font-size:13px;padding:10px}.md-verbs em{margin-left:0;width:100%}.md-tab{flex-basis:130px}.md-sem-scale{font-size:10.5px}}
 
@@ -3538,39 +3556,61 @@ const INTERS = {
 };
 const xPair = k => k.split('-');
 
-// mapa: acreditación y certificación son dos círculos que se cruzan en el SGC; riesgo, procesos y proyectos
-// están sobre el eje central y cortan a los dos. VZ_X marca un punto dentro de cada intersección
-const VZ_X = { 'acred-risk': [272, 232], 'cert-risk': [328, 232], 'acred-proc': [243, 352], 'cert-proc': [357, 352], 'acred-proj': [262, 455], 'cert-proj': [338, 455] };
+// peso de cada disciplina: de 1 a 5 en alcance, permanencia, base para las demás y exigencia externa.
+// El área de cada círculo es proporcional a su puntaje (procesos, con 20 de 20, tiene radio 112)
+const W_CRIT = ['Alcance', 'Permanencia', 'Base para las demás', 'Exigencia externa'];
+const WEIGHT = { proc: [5, 5, 5, 5], acred: [3, 4, 2, 5], cert: [4, 4, 3, 3], risk: [4, 4, 3, 3], proj: [3, 3, 4, 2] };
+const wSum = k => WEIGHT[k].reduce((a, b) => a + b, 0);
+const vzR = k => Math.round(112 * Math.sqrt(wSum(k) / 20));
+// mapa: procesos al centro, como base; acreditación y certificación a los lados, cruzándose en el SGC;
+// riesgo arriba y proyectos abajo, cortando a las dos. VZ_X marca un punto dentro de cada intersección
+const VZ_C = { proc: [300, 318], acred: [226, 318], cert: [374, 318], risk: [300, 194], proj: [300, 448] };
+const VZ_X = { 'acred-risk': [263, 256], 'cert-risk': [337, 256], 'acred-proc': [224, 352], 'cert-proc': [376, 352], 'acred-proj': [263, 384], 'cert-proj': [337, 384] };
 function vennSVG(sel, still) {
   const pair = INTERS[sel] ? xPair(sel) : [];
   const act = (k, label, on) => (still ? '' : ` data-act="msel" data-v="${k}" role="button" tabindex="0" aria-pressed="${on}" aria-label="${esc(label)}"`);
-  const c = (key, cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" class="vz-c" style="--mc:var(--m-${key})"/>`;
+  const c = key => `<circle cx="${VZ_C[key][0]}" cy="${VZ_C[key][1]}" r="${vzR(key)}" class="vz-c" style="--mc:var(--m-${key})"/>`;
   const grp = (key, label, body) => `<g class="vz${sel === key ? ' sel' : pair.includes(key) ? ' pair' : ''}"${act(key, label, sel === key)}>${body}</g>`;
-  const num = (x, y, n) => `<circle cx="${x}" cy="${y}" r="13" class="vz-num"/><text x="${x}" y="${y + 5}" text-anchor="middle" class="vz-numt">${n}</text>`;
-  const txt = (x, y, s, cls) => `<text x="${x}" y="${y}" text-anchor="middle" class="${cls || 'vz-lbl'}">${s}</text>`;
+  const num = (x, y, n) => `<circle cx="${x}" cy="${y}" r="12" class="vz-num"/><text x="${x}" y="${y + 4.5}" text-anchor="middle" class="vz-numt">${n}</text>`;
+  const txt = (x, y, s, cls, anchor, style) => `<text x="${x}" y="${y}" text-anchor="${anchor || 'middle'}" class="${cls || 'vz-lbl'}"${style ? ` style="${style}"` : ''}>${s}</text>`;
   const marks = Object.entries(VZ_X).map(([k, [x, y]]) => `<g class="vz-x${sel === k ? ' on' : ''}"${act(k, INTERS[k].t + ': ver la intersección', sel === k)}><circle cx="${x}" cy="${y}" r="12"/>${txt(x, y + 5, '+', '')}</g>`).join('');
   return `<svg class="venn" viewBox="0 0 600 600" role="group" aria-label="Mapa de la gestión de la calidad total">
-    ${grp('calidad', 'Gestión de la calidad total', `<circle cx="300" cy="320" r="270" class="vz-big"/>${txt(300, 118, 'Gestión de la Calidad Total', 'vz-title')}`)}
-    ${grp('apoyo', 'Áreas de apoyo: logística y transportes', `<circle cx="250" cy="50" r="47" class="vz-side"/><circle cx="350" cy="50" r="47" class="vz-side"/>${txt(250, 54, 'Logística', 'vz-small')}${txt(350, 54, 'Transportes', 'vz-small')}`)}
-    ${grp('acred', 'Acreditación', `${c('acred', 195, 335, 150)}${txt(128, 322, 'Acreditación')}${txt(128, 340, 'Sineace · Coneau 2025', 'vz-small')}${num(128, 280, '3')}`)}
-    ${grp('cert', 'Certificación ISO 9001', `${c('cert', 405, 335, 150)}${txt(472, 322, 'Certificación')}${txt(472, 340, 'ISO 9001:2015', 'vz-small')}${num(472, 280, '4')}`)}
-    ${grp('risk', 'Gestión del riesgo', `${c('risk', 300, 196, 58)}${txt(300, 172, 'Gestión')}${txt(300, 189, 'del riesgo')}`)}
-    ${grp('proc', 'Gestión por procesos', `${c('proc', 300, 352, 70)}${txt(300, 340, 'Gestión por')}${txt(300, 357, 'procesos')}${num(300, 392, '2')}`)}
-    ${grp('proj', 'Gestión de proyectos', `${c('proj', 300, 480, 62)}${num(300, 468, '1')}${txt(300, 500, 'Gestión de')}${txt(300, 517, 'proyectos')}`)}
-    <g class="vz-x sgc${sel === 'acred-cert' ? ' on' : ''}"${act('acred-cert', INTERS['acred-cert'].t + ': ver lo que comparten', sel === 'acred-cert')}><rect x="280" y="257" width="40" height="22" rx="11"/>${txt(300, 272, 'SGC', '')}</g>
+    ${grp('calidad', 'Gestión de la calidad total', `<circle cx="300" cy="306" r="282" class="vz-big"/>${txt(300, 86, 'Gestión de la Calidad Total', 'vz-title')}`)}
+    ${grp('acred', 'Acreditación', `${c('acred')}${num(148, 168, '3')}${txt(148, 202, 'Acreditación', 'vz-lbl vz-out', 'middle', 'fill:var(--m-acred)')}${txt(148, 219, 'Coneau 2025', 'vz-small vz-out')}`)}
+    ${grp('cert', 'Certificación ISO 9001', `${c('cert')}${num(452, 168, '4')}${txt(452, 202, 'Certificación', 'vz-lbl vz-out', 'middle', 'fill:var(--m-cert)')}${txt(452, 219, 'ISO 9001:2015', 'vz-small vz-out')}`)}
+    ${grp('risk', 'Gestión del riesgo', `${c('risk')}${txt(300, 140, 'Gestión')}${txt(300, 157, 'del riesgo')}`)}
+    ${grp('proc', 'Gestión por procesos', `${c('proc')}${txt(306, 334, 'Gestión por')}${txt(306, 350, 'procesos')}${num(252, 326, '2')}`)}
+    ${grp('proj', 'Gestión de proyectos', `${c('proj')}${num(300, 470, '1')}${txt(300, 494, 'Gestión de')}${txt(300, 511, 'proyectos')}`)}
+    <g class="vz-x sgc${sel === 'acred-cert' ? ' on' : ''}"${act('acred-cert', INTERS['acred-cert'].t + ': ver lo que comparten', sel === 'acred-cert')}><rect x="283" y="291" width="34" height="18" rx="9"/>${txt(300, 304, 'SGC', '')}</g>
     ${marks}
   </svg>`;
 }
 
+// conceptos de cada disciplina, desde la mirada experta, con sus fuentes en el panel de pesos
+const SGC_DEF = 'Conjunto de políticas, procesos, procedimientos y recursos interrelacionados con los que una institución planifica, implementa, monitorea y mejora la calidad. Es lo que la acreditación (estándar 10) y la certificación (cláusulas 4 a 10) exigen por igual.';
 const MAP_INFO = {
-  calidad: { t: 'Gestión de la Calidad Total', c: 'calidad', q: null, body: '<p>Es el paraguas de todo el modelo: la organización completa trabaja para cumplir lo que el usuario espera y mejorar siempre. Dentro de ella viven la gestión de proyectos, la gestión por procesos, la acreditación, la certificación y la gestión del riesgo, y se cruzan entre sí.</p>' + mdSynth, slide: null },
-  apoyo: { t: 'Logística y Transportes', c: 'apoyo', q: null, body: '<p>En tu lámina aparecen en el borde superior del círculo de calidad total: son áreas de apoyo de la organización que también pueden ordenarse con este mismo modelo (procesos, indicadores y mejora).</p>' + mdSynth, slide: null },
-  proj: { t: '1 · Gestión de proyectos', c: 'proj', q: 'Busca definir, gestionar, dirigir, evaluar y monitorear toda la planificación de un proyecto, al que mapea de inicio a fin.', slide: SL.proj },
-  proc: { t: '2 · Gestión por procesos', c: 'proc', q: 'Generar valor es lograr que el usuario sienta el beneficio de que solucionamos su problema y cumplimos con lo que esperaba. ¡Es esa nuestra meta!', slide: SL.proc },
-  acred: { t: '3 · Acreditación', c: 'acred', q: 'La acreditación busca el cumplimiento de estándares de calidad…', def: 'Es el reconocimiento público y temporal que el Estado, por medio del Coneau, otorga a un programa de estudios que demuestra cumplir los 10 estándares del modelo 2025 tras su autoevaluación y una evaluación externa.', slide: SL.acred },
-  cert: { t: '4 · Certificación ISO 9001', c: 'cert', q: '…y la certificación, el cumplimiento de las cláusulas 4 a 10, que contienen los requisitos auditables y obligatorios.', def: 'Es la constancia que emite un organismo certificador acreditado cuando su auditoría comprueba que el sistema de gestión de la calidad cumple la ISO 9001:2015. Vale 3 años, con auditorías de seguimiento cada año.', slide: SL.cert },
-  risk: { t: 'Gestión del riesgo', c: 'risk', q: null, body: '<p>Anticipa lo que puede impedir que un proyecto, un proceso, una acreditación o una certificación logre su objetivo, y prepara la respuesta antes de que ocurra. Por eso en tu mapa cruza a los demás círculos.</p>' + mdSynth, slide: SL.risk },
+  calidad: { t: 'Gestión de la Calidad Total', c: 'calidad', q: null, def: 'Filosofía de gestión en la que toda la institución se orienta al usuario y a la mejora continua, guiada por los siete principios de la gestión de la calidad: enfoque al cliente, liderazgo, compromiso de las personas, enfoque a procesos, mejora, decisiones basadas en la evidencia y gestión de las relaciones.', note: 'Es el marco del modelo: las cinco disciplinas viven dentro de ella y el tamaño de cada círculo refleja su peso.', slide: null },
+  proj: { t: '1 · Gestión de proyectos', c: 'proj', q: 'Busca definir, gestionar, dirigir, evaluar y monitorear toda la planificación de un proyecto, al que mapea de inicio a fin.', def: 'Un proyecto es un esfuerzo temporal para crear un producto, servicio o resultado único. Los proyectos transforman la institución, por ejemplo al implementar procesos, el SGC o la acreditación; los procesos sostienen lo logrado.', slide: SL.proj },
+  proc: { t: '2 · Gestión por procesos', c: 'proc', q: 'Generar valor es lograr que el usuario sienta el beneficio de que solucionamos su problema y cumplimos con lo que esperaba. ¡Es esa nuestra meta!', def: 'Un proceso es un conjunto de actividades relacionadas que transforman entradas en un resultado previsto. Gestionar por procesos es organizar la institución según cómo fluye el valor hacia el usuario, no según su organigrama; en la UNMSM se rige por la Norma Técnica N.º 002-2025-PCM-SGP.', slide: SL.proc },
+  acred: { t: '3 · Acreditación', c: 'acred', q: 'La acreditación busca el cumplimiento de estándares de calidad…', def: 'Es el reconocimiento público y temporal que el Estado, por medio del Coneau, otorga a un programa de estudios que demuestra cumplir los 10 estándares del modelo 2025 tras su autoevaluación y una evaluación externa.', note: 'Es garantía de la calidad, no control: el licenciamiento de la Sunedu verifica condiciones básicas obligatorias; la acreditación reconoce altos estándares y es voluntaria, salvo en Salud, Derecho y Educación.', slide: SL.acred },
+  cert: { t: '4 · Certificación ISO 9001', c: 'cert', q: '…y la certificación, el cumplimiento de las cláusulas 4 a 10, que contienen los requisitos auditables y obligatorios.', def: 'Es la constancia que emite un organismo certificador acreditado cuando su auditoría comprueba que el sistema de gestión de la calidad cumple la ISO 9001:2015. Vale 3 años, con auditorías de seguimiento cada año.', note: 'Certifica el sistema de gestión, no el programa ni a sus egresados, y la otorga una tercera parte independiente.', slide: SL.cert },
+  risk: { t: 'Gestión del riesgo', c: 'risk', q: null, def: 'El riesgo es el efecto de la incertidumbre sobre los objetivos y puede ser negativo, una amenaza, o positivo, una oportunidad. Gestionarlo es identificarlo, analizarlo con probabilidad × impacto, tratarlo y vigilarlo dentro de cada proceso y proyecto.', slide: SL.risk },
 };
+// por qué cada disciplina tiene ese peso
+const W_WHY = {
+  proc: 'Es la base: sin procesos no hay sistema de gestión de la calidad que acreditar ni certificar.',
+  acred: 'Pesa por su exigencia: la otorga el Estado y es obligatoria en Salud, Derecho y Educación, aunque su alcance es un programa de estudios.',
+  cert: 'Ordena el SGC de toda la organización y suma 8 puntos a la acreditación de excelencia, pero es voluntaria.',
+  risk: 'Es transversal: protege los objetivos de proyectos, procesos y del SGC; la piden la ISO 9001 y el Coneau.',
+  proj: 'Es el vehículo del cambio: cada proyecto es temporal y lo que logra pasa a sostenerse en los procesos.',
+};
+function weightsPanel() {
+  const row = k => { const s = wSum(k), info = MAP_INFO[k]; return `<div class="md-wr" style="--mc:var(--m-${k})"><div class="md-wr-k"><div class="md-wc-h"><h4>${esc(info.t)}</h4><b class="num">${s}<small> / 20</small></b></div><div class="md-wbar" role="img" aria-label="Peso ${s} de 20"><span style="width:${Math.round(s / 20 * 100)}%"></span></div><ul class="md-wl">${WEIGHT[k].map((v, i) => `<li><span>${W_CRIT[i]}</span><b class="num">${v}</b></li>`).join('')}</ul></div><div class="md-wr-t"><p>${info.def}</p><p class="md-adj">${W_WHY[k]}</p></div></div>`; };
+  return panel('Concepto y peso de cada disciplina', 'Cada disciplina se califica de 1 a 5 en alcance, permanencia, base para las demás y exigencia externa. El área de cada círculo es proporcional a su puntaje; por eso los tamaños son parecidos: el mayor es la gestión por procesos y el menor, la gestión de proyectos.',
+    `<div class="md-wrows">${['proc', 'acred', 'cert', 'risk', 'proj'].map(row).join('')}</div>
+    <div class="md-wframe"><p><b>Gestión de la Calidad Total, el marco.</b> ${MAP_INFO.calidad.def}</p><p><b>Sistema de gestión de la calidad (SGC), el punto de encuentro.</b> ${SGC_DEF}</p></div>
+    ${mdSrc('Puntajes asignados con criterio experto a partir del modelo Coneau 2025, la ISO 9001:2015, la ISO 31000 (gestión del riesgo), la Guía del PMBOK y la Norma Técnica N.º 002-2025-PCM-SGP.')}`);
+}
 // otras relaciones del mapa, fuera de la acreditación y la certificación
 const CROSSES = [
   ['proj', 'proc', 'Un proyecto puede tener como producto un proceso: P01 es el proyecto que implementa la gestión por procesos en las facultades.'],
@@ -3609,7 +3649,8 @@ function mapSide(sel) {
   const xs = Object.keys(INTERS).filter(k => xPair(k).includes(sel));
   return `<aside class="md-side" style="--mc:var(--m-${info.c})">
     <p class="eyebrow">${discKey ? 'Disciplina' : 'Marco'}</p><h3>${info.t}</h3>
-    ${info.q ? mdQuote(info.q) : ''}${info.def ? `<p>${info.def}</p>` : ''}${info.body || ''}
+    ${info.q ? mdQuote(info.q) : ''}${info.def ? `<p>${info.def}</p>` : ''}${info.note ? `<p class="md-adj">${info.note}</p>` : ''}
+    ${WEIGHT[sel] ? `<div class="md-wline"><span>Peso en el modelo</span><div class="md-wbar"><span style="width:${Math.round(wSum(sel) / 20 * 100)}%"></span></div><b class="num">${wSum(sel)} / 20</b></div>` : ''}
     ${xs.length ? `<h4>Se cruza con</h4><div class="md-xchips">${xs.map(k => { const o = xPair(k).find(v => v !== sel); return `<button class="md-xchip" data-act="msel" data-v="${k}"><span class="md-dot" style="--mc:var(--m-${o})"></span>${esc(DISC[o].name)}</button>`; }).join('')}</div>` : ''}
     ${discKey ? `<h4>Proyectos que la trabajan</h4>${linkedList(p => discOf(p)[discKey], p => esc(p.modeloRol || ''))}` : ''}
     ${info.slide != null ? slideBtn(info.slide, 'primary') : ''}
@@ -3651,6 +3692,7 @@ function slideMapa() {
     <div class="md-venn-wrap">${vennSVG(sel)}<p class="note" style="text-align:center">Toca un círculo o un «+» para ver qué comparten.</p></div>
     ${mapSide(sel)}
   </div>
+  ${weightsPanel()}
   ${panel('Dónde se cruzan la acreditación y la certificación', 'Cada una se cruza con la gestión por procesos, la gestión del riesgo y la gestión de proyectos; las dos comparten el sistema de gestión de la calidad. Toca una tarjeta para ver el detalle.', xGrid(sel))}
   ${panel('En breve: acreditación, certificación y procesos', 'Desde la mirada de un evaluador del Coneau y de un auditor de la ISO 9001 en educación.', brief())}
   <div class="md-cross">${CROSSES.map(([a, b, t]) => `<div class="md-cross-i"><span class="md-dot" style="--mc:var(--m-${a})"></span><span class="md-dot" style="--mc:var(--m-${b})"></span><p><b>${DISC[a].name} + ${DISC[b].name}.</b> ${t}</p></div>`).join('')}</div>`;
@@ -3696,7 +3738,7 @@ function slideProyectos() {
     plan = `${sel}<div class="md-plan-head"><div><b class="num">${ok} de ${items.length}</b> componentes del plan ya están en el sistema para <b>${esc(cur.code)}</b></div><div class="md-bar"><span style="width:${Math.round(ok / items.length * 100)}%"></span></div></div>
     <ol class="md-plan">${items.map(([t, tab, done, note], i) => `<li class="${done ? 'ok' : ''}"><span class="md-ck" aria-hidden="true">${done ? '✓' : i + 1}</span><div><b>${esc(t)}</b><small>${esc(note)}</small></div>${tab ? `<button class="linkish" data-act="go-project" data-id="${esc(cur.id)}" data-tab="${tab}">Ver en ${esc(tabLabel(tab))}</button>` : driveUrl(cur.drive) ? `<a class="linkish" href="${esc(driveUrl(cur.drive))}" target="_blank" rel="noopener noreferrer">Abrir carpeta ↗</a>` : ''}</li>`).join('')}</ol>`;
   }
-  return `<div class="md-head" style="--mc:var(--m-proj)">${mdNum('1', 'big')}<div><h3>¿Qué busca la gestión de proyectos?</h3>${mdQuote(MAP_INFO.proj.q)}</div></div>
+  return `<div class="md-head" style="--mc:var(--m-proj)">${mdNum('1', 'big')}<div><h3>¿Qué busca la gestión de proyectos?</h3>${mdQuote(MAP_INFO.proj.q)}<p class="md-lead md-def">${MAP_INFO.proj.def}</p></div></div>
   <div class="md-verbs">${['Definir', 'Gestionar', 'Dirigir', 'Evaluar', 'Monitorear'].map((v, i) => `<span>${v}</span>${i < 4 ? '<i aria-hidden="true">→</i>' : ''}`).join('')}<em>de inicio a fin</em></div>
   <div class="md-tools">${tools.map(([n, t, d, tab, where]) => `<div class="md-tool">${mdNum(n)}<h4>${t}</h4><p>${d}</p><p class="where"><b>En el sistema:</b> ${where}</p>${tab && cur ? `<button class="linkish" data-act="go-project" data-id="${esc(cur.id)}" data-tab="${tab}">Abrir en ${esc(cur.code)} →</button>` : ''}</div>`).join('')}</div>
   ${panel('El contenido de un plan de gestión del proyecto (1.4)', 'Los 13 componentes de tu lámina. El sistema revisa en vivo cuáles ya tiene cada proyecto; elige uno.', plan)}`;
@@ -3717,10 +3759,10 @@ function slideProcesos() {
       <div class="md-sem-scale"><span class="crit">&lt; 75 Crítico</span><span class="warn">75 – 90 Aceptable</span><span class="ok">≥ 90 Óptimo</span></div>
       <label class="md-sem-in"><span>Prueba un indicador:</span><input type="range" min="0" max="100" step="1" value="${v}" data-change="sem" aria-label="Valor del indicador"><output class="num">${v}</output></label>
       <p class="md-sem-out">${pill(st.k, st.t)} <small>rango ${st.r}</small></p>
-      <p class="note">Es la misma semaforización que usan los indicadores de calidad de la acreditación (3.2).</p>
+      <p class="note">Los rangos se fijan en la ficha de cada indicador según su meta; 75 y 90 son los valores por defecto del modelo. El Coneau no usa este semáforo: compara cada indicador con su valor de referencia, con un margen de ±3 %, y valora su evolución.</p>
     </div>` : '';
   const linked = linkedList(p => stepsOf(p).includes(f.k), p => esc(p.modeloRol || ''), 'Ningún proyecto trabaja esta fase todavía.');
-  return `<div class="md-head" style="--mc:var(--m-proc)">${mdNum('2', 'big')}<div><h3>¿Qué busca la gestión por procesos?</h3>${mdQuote(MAP_INFO.proc.q)}</div></div>
+  return `<div class="md-head" style="--mc:var(--m-proc)">${mdNum('2', 'big')}<div><h3>¿Qué busca la gestión por procesos?</h3>${mdQuote(MAP_INFO.proc.q)}<p class="md-lead md-def">${MAP_INFO.proc.def}</p></div></div>
   <div class="md-phases" role="tablist" aria-label="Fases">${PHASES.map((x, i) => `<button role="tab" aria-selected="${i === ph}" class="md-ph${i === ph ? ' on' : ''}${i < ph ? ' past' : ''}" data-act="phase" data-v="${i}">${mdNum(x.k)}<span><small>Fase ${i + 1}</small>${esc(x.t)}</span></button>`).join('')}</div>
   <div class="md-phase" style="--mc:var(--m-proc)">
     <div><p class="md-q">${esc(f.q)}</p>
@@ -3776,7 +3818,7 @@ function slideAcreditacion() {
     ['6 años', 'Todos los estándares logrados plenamente.'],
     ['8 años · excelencia', 'Todos logrados plenamente y 16 puntos o más en los criterios de excelencia; un SGC certificado suma 8.'],
   ];
-  return `<div class="md-head" style="--mc:var(--m-acred)">${mdNum('3', 'big')}<div><h3>¿Qué busca la acreditación?</h3>${mdQuote(MAP_INFO.acred.q)}<p class="md-lead md-def">${MAP_INFO.acred.def}</p></div></div>
+  return `<div class="md-head" style="--mc:var(--m-acred)">${mdNum('3', 'big')}<div><h3>¿Qué busca la acreditación?</h3>${mdQuote(MAP_INFO.acred.q)}<p class="md-lead md-def">${MAP_INFO.acred.def}</p><p class="md-adj">${MAP_INFO.acred.note}</p></div></div>
   ${mdFigs('acred', [['10', 'Estándares'], ['53', 'Criterios'], ['52', 'Evidencias'], ['29', 'Indicadores']])}
   ${panel('Los 10 estándares del modelo Coneau 2025', 'El modelo es holístico: evalúa las entradas, los procesos y los resultados del programa de estudios.', `<div class="md-tools md-std">${CONEAU_STD.map(([n, t, d, k]) => `<div class="md-tool">${mdNum(String(n))}<h4>${esc(t)}</h4><p>${esc(d)}</p><p class="where"><b>${k} criterios</b></p></div>`).join('')}</div>`)}
   <div class="split even">
@@ -3805,7 +3847,7 @@ function slideCertificacion() {
     'Los requisitos legales y reglamentarios incluyen la Ley Universitaria y las condiciones básicas de calidad de la Sunedu.',
     'Para organizaciones educativas existe además la ISO 21001:2018, alineada con la ISO 9001.',
   ];
-  return `<div class="md-head" style="--mc:var(--m-cert)">${mdNum('4', 'big')}<div><h3>¿Qué busca la certificación?</h3>${mdQuote(MAP_INFO.cert.q)}<p class="md-lead md-def">${MAP_INFO.cert.def}</p></div></div>
+  return `<div class="md-head" style="--mc:var(--m-cert)">${mdNum('4', 'big')}<div><h3>¿Qué busca la certificación?</h3>${mdQuote(MAP_INFO.cert.q)}<p class="md-lead md-def">${MAP_INFO.cert.def}</p><p class="md-adj">${MAP_INFO.cert.note}</p></div></div>
   ${mdFigs('cert', [['4 a 10', 'Cláusulas con requisitos'], ['PHVA', 'Ciclo de mejora'], ['3 años', 'Vigencia del certificado'], ['1 al año', 'Auditoría de seguimiento']])}
   ${panel('Cláusulas 4 a 10', 'Toca una cláusula. Los requisitos de la norma usan «debe»: son auditables y obligatorios.', `<div class="md-clauses md-cert" role="tablist" aria-label="Cláusulas">${CLAUSES.map(c => `<button role="tab" aria-selected="${c === cl}" class="md-cl${c === cl ? ' on' : ''}" data-act="clause" data-v="${c[0]}">${c[0]}</button>`).join('')}</div>
     <div class="md-cl-body" style="--mc:var(--m-cert)"><p class="eyebrow">${esc(cl[4])}</p><h4>Cláusula ${cl[0]}: ${esc(cl[1])}</h4><p>${esc(cl[2])}</p>${cl[0] === 4 ? '<p class="md-adj">Precisión: el organigrama apoya la cláusula 5.3 (roles, responsabilidades y autoridades), no la 4.</p>' : ''}${cl[3] ? `<p class="where"><b>Se apoya en:</b> ${linkTo(cl[3])}</p>` : ''}</div>${mdSrc(`Síntesis de la ${SRC_ISO}.`)}`)}
@@ -3824,7 +3866,7 @@ function slideRiesgo() {
   const ready = S.loaded.has('risks');
   const rows = P.map(p => { const R = ready ? of('risks', p.id) : []; const open = R.filter(r => r.status !== 'Cerrado'); const sc = r => num(r.probability) * num(r.impact); return { p, open, high: open.filter(r => sc(r) >= 15), mid: open.filter(r => sc(r) >= 8 && sc(r) < 15) }; });
   const top = rows.flatMap(x => x.high.map(r => ({ r, p: x.p }))).sort((a, b) => num(b.r.probability) * num(b.r.impact) - num(a.r.probability) * num(a.r.impact)).slice(0, 5);
-  return `<div class="md-head" style="--mc:var(--m-risk)">${mdNum('R', 'big')}<div><h3>¿Qué busca la gestión del riesgo?</h3><p class="md-lead">Anticipar lo que puede impedir que un proyecto, un proceso, una acreditación o una certificación cumpla su objetivo, y preparar la respuesta antes de que ocurra.</p>${mdSynth}</div></div>
+  return `<div class="md-head" style="--mc:var(--m-risk)">${mdNum('R', 'big')}<div><h3>¿Qué busca la gestión del riesgo?</h3><p class="md-lead">Anticipar lo que puede impedir que un proyecto, un proceso, una acreditación o una certificación cumpla su objetivo, y preparar la respuesta antes de que ocurra.</p><p class="md-def">${MAP_INFO.risk.def}</p></div></div>
   <div class="md-tools" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
     <div class="md-tool"><h4>En los proyectos</h4><p>Cada riesgo se califica con probabilidad × impacto (1 a 5). Desde 15 es alto, de 8 a 14 medio y hasta 7 bajo.</p></div>
     <div class="md-tool"><h4>En los procesos</h4><p>Riesgos operativos, como la baja remisión de documentación de las facultades señalada en el cierre de la fase 1.</p></div>
@@ -3943,7 +3985,7 @@ function wbModel() {
   });
   if (!P.length) add({ id: 'pr-wait', f: 'f5', x: 120, y: 1430, w: 1120, h: 130, k: 'card', c: 'navy', t: S.loaded.has('projects') ? 'Aún no hay proyectos en la cartera' : 'Conectando con la cartera…', b: '<p>Cuando la base de datos responda, aquí aparecerán los proyectos con su estado, avance y pasos del modelo, en vivo.</p>' });
   // f8 · intersecciones
-  add({ id: 'x-venn', f: 'f8', x: 120, y: 2390, w: 760, h: 790, k: 'venn', c: 'calidad', t: 'Mapa integrado', b: vennSVG(null, true), more: '<p>Acreditación y certificación son dos círculos que se cruzan en el sistema de gestión de la calidad (SGC). La gestión del riesgo, la gestión por procesos y la gestión de proyectos están sobre el eje central y cortan a los dos.</p>', links: wbLink('Abrir el mapa integrado', `data-act="wb-slide" data-v="${SL.mapa}"`) });
+  add({ id: 'x-venn', f: 'f8', x: 120, y: 2390, w: 760, h: 790, k: 'venn', c: 'calidad', t: 'Mapa integrado', b: vennSVG(null, true), more: `<p>La gestión por procesos está al centro, como base; la acreditación y la certificación, a los lados, se cruzan en el sistema de gestión de la calidad (SGC); la gestión del riesgo, arriba, y la gestión de proyectos, abajo, cortan a las dos.</p><p><b>Peso de cada disciplina</b> (el área del círculo es proporcional):</p><ul>${['proc', 'acred', 'cert', 'risk', 'proj'].map(k => `<li><b>${esc(MAP_INFO[k].t)}:</b> ${wSum(k)} de 20. ${esc(W_WHY[k])}</li>`).join('')}</ul>`, links: wbLink('Abrir el mapa integrado', `data-act="wb-slide" data-v="${SL.mapa}"`) });
   const xCard = (k, x, y, w, h, c, nPts) => { const it = INTERS[k]; add({ id: 'x-' + k, f: 'f8', x, y, w, h, k: 'card', c, t: it.t, b: `<p><b>${esc(it.lead)}</b></p>${it.pts.slice(nPts[0], nPts[1]).map(t => `<p>${esc(t)}</p>`).join('')}`, more: `<p><b>${esc(it.lead)}</b></p><ul>${it.pts.map(t => `<li>${esc(t)}</li>`).join('')}</ul>${it.sys ? `<p><b>En el sistema:</b> ${esc(it.sys)}</p>` : ''}`, links: wbLink('Ver en el mapa integrado', `data-act="xgo" data-v="${k}"`) }); };
   ['proc', 'risk', 'proj'].forEach((b, i) => { xCard('acred-' + b, 920 + i * 797, 2390, 766, 240, 'acred', [0, 1]); xCard('cert-' + b, 920 + i * 797, 2650, 766, 240, 'cert', [0, 1]); });
   xCard('acred-cert', 920, 2910, 2357, 260, 'calidad', [1, 2]);
